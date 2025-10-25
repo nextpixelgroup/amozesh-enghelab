@@ -22,7 +22,7 @@ class AuthLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'username' => 'required|string',
             'password' => 'required'
         ];
     }
@@ -30,8 +30,8 @@ class AuthLoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.email' => 'ایمیل معتبر وارد نمایید',
-            'password' => 'رمزعبور را وارد نمایید'
+            'username.required' => 'نام کاربری را وارد نمایید',
+            'password.required' => 'رمزعبور را وارد نمایید'
         ];
     }
 }

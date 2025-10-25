@@ -11,6 +11,7 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:sanctum','admin'])->group(function () {
         Route::get('/courses', [CourseController::class, 'index']);
         Route::post('/course/create', [CourseController::class, 'create']);
+        Route::get('/me', [AuthController::class, 'me']);
 
     });
 

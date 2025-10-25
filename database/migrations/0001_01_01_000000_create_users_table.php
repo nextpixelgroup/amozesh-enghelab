@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('firstname')->index();
             $table->string('lastname')->index();
+            $table->string('username')->nullable();
             $table->string('mobile', 11)->nullable()->index();
             $table->string('email')->nullable()->index();
             $table->date('birth_date')->nullable();
