@@ -13,26 +13,9 @@ if(env('APP_ENV') === 'production') {
 }
 
 Route::get('/', function (){
-    return Inertia::render('App/Index', [
-        'name' => 'Hossein'
-    ]);
-});
-
-Route::get('/contact', function (){
-    return Inertia::render('App/Contact');
-});
-
-Route::get('/admin/login', function (){
-    return Inertia::render('Admin/Auth/Login');
-});
-
-Route::get('/admin/courses', function (){
-    return Inertia::render('Admin/Courses/List');
-});
-
-Route::get('/admin/users', function (){
-    return Inertia::render('Admin/Users/List');
+    return Inertia::render('App/Index');
 });
 
 
-Route::get('/test', [TestController::class, 'index']);
+require_once 'web/admin.php';
+require_once 'web/panel.php';

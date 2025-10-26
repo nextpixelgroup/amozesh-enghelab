@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin\V1;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AuthLoginRequest;
@@ -10,9 +10,16 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class AuthController extends Controller
 {
+
+    public function showLoginForm()
+    {
+        return Inertia::render('Admin/Auth/Login');
+    }
+
     /**
      * Handle an admin login request.
      *

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin\V1;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Api\V1\Admin\ContactMessage;
 use App\Http\Controllers\Controller;

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin\V1;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CourseCreateRequest;
 use App\Models\Course;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 use Verta;
 
 class CourseController extends Controller
@@ -30,15 +31,20 @@ class CourseController extends Controller
     }
     public function index()
     {
-        return sendJson(data: []);
+        return Inertia::render('Admin/Courses/List');
     }
 
-    public function create(CourseCreateRequest $request)
+    public function create()
+    {
+        return Inertia::render('Admin/Courses/Create');
+    }
+
+    public function store(CourseCreateRequest $request)
     {
         return DB::transaction(function () use ($request) {
             try {
                 // Create course
-                $course = $this->createCourse($request);
+                $course = $this->storeCourse($request);
 
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processSeasons($course, $request->seasons);
@@ -51,7 +57,7 @@ class CourseController extends Controller
         });
     }
 
-    private function createCourse($request)
+    private function storeCourse($request)
     {
         $slug = $request->slug ?? \Illuminate\Support\Str::slug($request->title);
 
