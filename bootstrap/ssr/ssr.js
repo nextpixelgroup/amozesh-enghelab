@@ -459,31 +459,18 @@ const __vite_glob_0_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.def
   __proto__: null,
   default: Index
 }, Symbol.toStringTag, { value: "Module" }));
-createServer((page) => createInertiaApp({
-  page,
-  render: renderToString,
-  resolve: async (name) => {
-    const pages = /* @__PURE__ */ Object.assign({ "./Pages/Admin/Auth/Login.vue": __vite_glob_0_0, "./Pages/Admin/Courses/List.vue": __vite_glob_0_1, "./Pages/Admin/Users/List.vue": __vite_glob_0_2, "./Pages/App/Contact.vue": __vite_glob_0_3, "./Pages/App/Index.vue": __vite_glob_0_4, "./Pages/Panel/Auth/Index.vue": __vite_glob_0_5 });
-    const path = `./Pages/${name}.vue`;
-    if (!pages[path]) {
-      throw new Error(`Page not found: ${path}`);
+createServer(
+  (page) => createInertiaApp({
+    page,
+    render: renderToString,
+    resolve: (name) => {
+      const pages = /* @__PURE__ */ Object.assign({ "./Pages/Admin/Auth/Login.vue": __vite_glob_0_0, "./Pages/Admin/Courses/List.vue": __vite_glob_0_1, "./Pages/Admin/Users/List.vue": __vite_glob_0_2, "./Pages/App/Contact.vue": __vite_glob_0_3, "./Pages/App/Index.vue": __vite_glob_0_4, "./Pages/Panel/Auth/Index.vue": __vite_glob_0_5 });
+      return pages[`./Pages/${name}.vue`];
+    },
+    setup({ App, props, plugin }) {
+      return createSSRApp({
+        render: () => h(App, props)
+      }).use(plugin);
     }
-    const page2 = pages[path].default;
-    const noSsrPaths = ["admin", "panel"];
-    const shouldDisableSsr = noSsrPaths.some(
-      (prefix) => name.toLowerCase().startsWith(prefix.toLowerCase() + "/") || name.toLowerCase() === prefix.toLowerCase()
-    );
-    if (shouldDisableSsr) {
-      page2.ssr = false;
-      console.log(`SSR disabled for: ${name}`);
-    } else {
-      console.log(`SSR enable for: ${name}`);
-    }
-    return page2;
-  },
-  setup({ el, App, props, plugin }) {
-    return createSSRApp({
-      render: () => h(App, props)
-    }).use(plugin);
-  }
-}));
+  })
+);
