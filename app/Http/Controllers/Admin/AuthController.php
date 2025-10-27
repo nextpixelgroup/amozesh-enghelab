@@ -45,4 +45,11 @@ class AuthController extends Controller
         }
     }
 
+    public function logout()
+    {
+        Auth::logout();
+        return redirectMessage('success','خروج با موفقیت انجام شد',null,route('admin.login'));
+
+    }
+
 }

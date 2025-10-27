@@ -67,23 +67,6 @@ export default {
                             hide-details="auto"
                         ></v-text-field>
 
-                        <div class="d-flex justify-space-between align-center mb-6">
-                            <v-checkbox
-                                v-model="form.remember"
-                                label="مرا به خاطر بسپار"
-                                density="compact"
-                                hide-details
-                            ></v-checkbox>
-
-                            <a
-                                href="#"
-                                class="text-decoration-none text-primary"
-                                @click.prevent=""
-                            >
-                                رمز عبور را فراموش کرده‌اید؟
-                            </a>
-                        </div>
-
                         <v-btn
                             type="submit"
                             color="primary"
