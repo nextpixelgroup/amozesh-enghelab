@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\AuthLoginRequest;
 use App\Http\Resources\AdminResource;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -20,38 +20,28 @@ class AuthController extends Controller
         return Inertia::render('Admin/Auth/Login');
     }
 
-    /**
-     * Handle an admin login request.
-     *
-     * @param AuthLoginRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(AuthLoginRequest $request): JsonResponse
+
+    public function store(AuthLoginRequest $request): RedirectResponse
     {
         try {
             $credentials = $request->only('username', 'password');
 
             if (!Auth::attempt($credentials)) {
                 throw ValidationException::withMessages([
-                    'email' => 'ایمیل یا رمز عبور اشتباه است',
+                    'username' => 'نام کاربری یا رمز عبور نادرست است.',
                 ]);
             }
 
-            $user = User::where('username', $request->username)->firstOrFail();
-            // Revoke existing tokens
-            $user->tokens()->delete();
-
-            // Create new token
-            $token = $user->createToken('admin-token', ['admin'])->plainTextToken;
-
-            return sendJson(data: [
-                'user' => (new AdminResource($user)),
-                'token' => $token,
-            ]);
+            // Successful login, regenerate session and redirect
+            $request->session()->regenerate();
+            return redirect()
+                ->intended(route('admin.users.index'))
+                ->with('success', 'با موفقیت وارد شدید');
         }
         catch (Exception $error){
-            return sendJson(status: 'error', message: $error->getMessage());
+            return back()->withErrors([
+                'username' => $error->getMessage(),
+            ])->onlyInput('username');
         }
     }
 

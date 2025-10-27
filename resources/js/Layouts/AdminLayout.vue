@@ -1,6 +1,7 @@
 <!-- resources/js/Layouts/AdminLayout.vue -->
 <script setup>
 import { Link } from '@inertiajs/vue3'
+import FlashMessage from '../Components/FlashMessage.vue'
 </script>
 
 <template>
@@ -29,6 +30,9 @@ import { Link } from '@inertiajs/vue3'
                 </div>
             </footer>
         </div>
+        
+        <!-- Snackbar سراسری برای نمایش پیام‌ها -->
+        <FlashMessage />
     </v-app>
 </template>
 

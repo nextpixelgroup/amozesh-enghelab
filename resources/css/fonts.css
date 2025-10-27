@@ -1,0 +1,39 @@
+
+/* Test class to verify font loading */
+.font-test {
+    font-family: 'Estedad', sans-serif;
+    font-size: 24px;
+    color: #333;
+}
+
+@font-face {
+    font-family: 'Estedad';
+    src: url('/assets/fonts/Estedad-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Estedad';
+    src: url('/assets/fonts/Estedad-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Estedad';
+    src: url('/assets/fonts/Estedad-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Estedad';
+    src: url('/assets/fonts/Estedad-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
