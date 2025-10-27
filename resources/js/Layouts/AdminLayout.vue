@@ -20,13 +20,13 @@ const isActive = (routeName) => {
   // Get the full route path and clean it
   const routePath = new URL(route(routeName), window.location.origin).pathname;
   const currentPath = window.location.pathname;
-  
+
   // Normalize paths (remove trailing slashes for consistent comparison)
   const normalizedRoutePath = routePath.replace(/\/+$/, '');
   const normalizedCurrentPath = currentPath.replace(/\/+$/, '');
-  
+
   // Check for exact match or if current path starts with route path
-  return normalizedCurrentPath === normalizedRoutePath || 
+  return normalizedCurrentPath === normalizedRoutePath ||
          normalizedCurrentPath.startsWith(normalizedRoutePath + '/');
 }
 
@@ -48,7 +48,7 @@ const navigate = (routeName) => {
     >
       <v-list-item
         prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="مدیر سیستم"
+        title="حسین هزاره"
         nav
       >
         <template v-slot:append>
