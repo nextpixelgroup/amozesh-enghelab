@@ -3,8 +3,11 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "dev": "vite",
         "build": "vite build && vite build --ssr",
-        "dev": "vite"
+        "build:ssr": "vite build --ssr",
+        "ssr:start": "php artisan inertia:start-ssr",
+        "deploy": "npm run build && npm run ssr:start"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

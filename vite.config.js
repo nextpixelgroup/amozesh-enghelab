@@ -38,4 +38,11 @@ export default defineConfig(({ ssrBuild }) => ({
             }
             : {}),
     },
+    optimizeDeps: {
+        include: ['vue', '@inertiajs/vue3', 'ziggy-js', 'vuetify'],
+    },
+    server: {
+        // اختیاری: برای اینکه ارورهای HMR تجربه رفرش را متوقف نکند
+        hmr: { overlay: false },
+    },
 }))

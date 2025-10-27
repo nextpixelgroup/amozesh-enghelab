@@ -5,21 +5,24 @@ import { createInertiaApp } from '@inertiajs/vue3'
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+import { VApp, VMain, VForm, VTextField, VBtn } from 'vuetify/components'
+import { Ripple } from 'vuetify/directives'
 
 const vuetify = createVuetify({
-    components,
-    directives,
+    components: { VApp, VMain, VForm, VTextField, VBtn },
+    directives: { Ripple },
     theme: {
         defaultTheme: 'light',
     },
 })
 
 createInertiaApp({
-    resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-        return pages[`./Pages/${name}.vue`]
+    resolve: async name => {
+        const pages = import.meta.glob('./Pages/**/*.vue')
+        const importer = pages[`./Pages/${name}.vue`]
+        if (!importer) throw new Error(`Page not found: ${name}`)
+        const mod = await importer()
+        return mod.default
     },
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
