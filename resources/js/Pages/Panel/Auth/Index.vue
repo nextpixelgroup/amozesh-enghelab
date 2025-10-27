@@ -10,6 +10,6 @@ export default defineComponent({
 </script>
 
 <template>
-    <Head title="Auth" />
-    <h1>Auth</h1>
+    <Head title="Login" />
+    <h1>Login</h1>
 </template>

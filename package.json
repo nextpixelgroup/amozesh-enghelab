@@ -17,6 +17,10 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.2.11",
-        "@vue/server-renderer": "^3.5.22"
+        "@mdi/font": "^7.4.47",
+        "@vue/server-renderer": "^3.5.22",
+        "sass": "^1.93.2",
+        "vuetify": "^3.10.7",
+        "ziggy-js": "^2.6.0"
     }
 }

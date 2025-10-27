@@ -15,7 +15,7 @@ use Inertia\Inertia;
 class AuthController extends Controller
 {
 
-    public function showLoginForm()
+    public function index()
     {
         return Inertia::render('Admin/Auth/Login');
     }
@@ -27,7 +27,7 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function login(AuthLoginRequest $request): JsonResponse
+    public function store(AuthLoginRequest $request): JsonResponse
     {
         try {
             $credentials = $request->only('username', 'password');
@@ -55,8 +55,4 @@ class AuthController extends Controller
         }
     }
 
-    public function me()
-    {
-        return sendJson(data: new AdminResource(Auth::user()));
-    }
 }
