@@ -46,7 +46,7 @@
 </div>
 
 <script>
-    const launchDate = new Date("2026-01-11T00:00:00").getTime();
+    const launchDate = new Date("2026-01-18T00:00:00").getTime();
 
     const countdown = setInterval(() => {
         const now = new Date().getTime();
