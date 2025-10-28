@@ -42,6 +42,50 @@ class HandleInertiaRequests extends Middleware
                 'error'   => fn () => $request->session()->get('error'),
                 'message' => fn () => $request->session()->get('message'),
             ],
+            'menuItems' => [
+                [
+                    'title' => 'دروس',
+                    'icon' => 'mdi-book-open-page-variant',
+                    'route' => 'admin.courses.index',
+                    'children' => [
+                        [
+                            'title' => 'لیست دوره‌ها',
+                            'icon'  => 'mdi-format-list-bulleted',
+                            'route' => 'admin.courses.index'
+                        ],
+                        [
+                            'title' => 'ایجاد دوره جدید',
+                            'icon' => 'mdi-plus-circle',
+                            'route' => 'admin.courses.create'
+                        ],
+                        [
+                            'title' => 'دسته‌بندی‌ها',
+                            'icon' => 'mdi-shape',
+                            'route' => 'admin.courses.categories.index'
+                        ],
+                    ]
+                ],
+                [
+                    'title' => 'کاربران',
+                    'icon' => 'mdi-account-group',
+                    'route' => 'admin.users.index'
+                ],
+                [
+                    'title' => 'کتاب‌ها',
+                    'icon' => 'mdi-book',
+                    'route' => 'admin.books.index'
+                ],
+                [
+                    'title' => 'مسیرها',
+                    'icon' => 'mdi-routes',
+                    'route' => 'admin.paths.index'
+                ],
+                [
+                    'title' => 'سفارشات',
+                    'icon' => 'mdi-cart',
+                    'route' => 'admin.orders.index'
+                ],
+            ],
         ];
     }
 }

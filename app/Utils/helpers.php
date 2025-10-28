@@ -2,6 +2,7 @@
 
 use App\Enums\GenderEnum;
 use App\Models\Category;
+use App\Models\Course;
 use Illuminate\Support\Str;
 
 if (!function_exists('enumNames')) {
@@ -404,4 +405,21 @@ if (!function_exists('generateTransactionId')) {
     {
         return Str::random(3) . (now()->getTimestampMs() * mt_rand(100, 2000));
     }
+}
+
+
+function makeSlugUnique(string $slug, string $modelClass, int $count = 0): string
+{
+    $newSlug = $count === 0 ? $slug : $slug . '-' . $count;
+
+    // Check if the model class exists and has the 'where' method
+    if (class_exists($modelClass) && method_exists($modelClass, 'where')) {
+        if ($modelClass::where('slug', $newSlug)->exists()) {
+            return makeSlugUnique($slug, $modelClass, $count + 1);
+        }
+    } else {
+        throw new \InvalidArgumentException("Invalid model class: {$modelClass}");
+    }
+
+    return $newSlug;
 }
