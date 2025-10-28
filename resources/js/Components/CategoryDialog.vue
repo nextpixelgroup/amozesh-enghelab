@@ -1,6 +1,5 @@
 <script setup>
 import {computed, ref, watch} from "vue";
-
 const props = defineProps({
     modelValue: {
         type: Boolean,
@@ -12,7 +11,7 @@ const props = defineProps({
             title: '',
             slug: '',
             description: '',
-            status: true
+            is_active: true
         })
     },
     isEditing: {
@@ -57,30 +56,31 @@ const close = () => {
                                 v-model="form.title"
                                 label="عنوان دسته"
                                 required
-                                outlined
-                                dense
+                                variant="outlined"
+                                density="comfortable"
                             ></v-text-field>
                             <v-text-field
                                 v-model="form.slug"
                                 label="نامک"
                                 required
-                                outlined
-                                dense
+                                variant="outlined"
+                                density="comfortable"
                             ></v-text-field>
                         </v-col>
                         <v-col cols="12">
                             <v-textarea
                                 v-model="form.description"
                                 label="توضیحات"
-                                outlined
+                                variant="outlined"
+                                density="comfortable"
                                 rows="3"
                                 dense
                             ></v-textarea>
                         </v-col>
                         <v-col cols="12">
                             <v-switch
-                                v-model="form.status"
-                                :label="`وضعیت: ${form.status ? 'فعال' : 'غیرفعال'}`"
+                                v-model="form.is_active"
+                                :label="`وضعیت: ${form.is_active ? 'فعال' : 'غیرفعال'}`"
                                 color="success"
                                 hide-details
                             ></v-switch>

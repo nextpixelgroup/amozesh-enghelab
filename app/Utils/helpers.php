@@ -41,12 +41,12 @@ if (!function_exists('redirectMessage')) {
     {
         if ($status == 'success') {
             return $redirect === null
-                ? back()->with($status, ['message' => $message, 'data' => $data])
-                : redirect($redirect)->with($status, $message);
+                ? back()->with($status, $message)
+                : redirect()->intended($redirect)->with($status, $message);
         } else {
             return $redirect === null
-                ? back()->withErrors(['status' => $status, 'message' => $message])
-                : redirect($redirect)->withErrors(['status' => $status, 'message' => $message]);
+                ? back()->withErrors($message)
+                : redirect()->intended($redirect)->withErrors(['status' => $status, 'message' => $message]);
         }
 
     }
@@ -412,8 +412,7 @@ function makeSlugUnique(string $slug, string $modelClass, int $count = 0): strin
 {
     $newSlug = $count === 0 ? $slug : $slug . '-' . $count;
 
-    // Check if the model class exists and has the 'where' method
-    if (class_exists($modelClass) && method_exists($modelClass, 'where')) {
+    if (class_exists($modelClass)) {
         if ($modelClass::where('slug', $newSlug)->exists()) {
             return makeSlugUnique($slug, $modelClass, $count + 1);
         }
@@ -422,4 +421,24 @@ function makeSlugUnique(string $slug, string $modelClass, int $count = 0): strin
     }
 
     return $newSlug;
+}
+
+function createSlug($string, $separator = '-')
+{
+    // حذف فاصله‌های اضافی و trim
+    $string = trim($string);
+
+    // جایگزینی فاصله با جداکننده
+    $string = preg_replace('/[\s]+/u', $separator, $string);
+
+    // حذف کاراکترهای غیرمجاز (به جز حروف فارسی، اعداد، و جداکننده)
+    $string = preg_replace('/[^آ-ی۰-۹a-zA-Z0-9\-_]+/u', '', $string);
+
+    // حذف جداکننده‌های تکراری
+    $string = preg_replace('/' . preg_quote($separator, '/') . '{2,}/', $separator, $string);
+
+    // حذف جداکننده از ابتدا و انتها
+    $string = trim($string, $separator);
+
+    return $string;
 }

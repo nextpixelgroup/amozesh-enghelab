@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('type')->default('general')->comment('Type of category (e.g., course, blog, product)');
-            $table->string('icon')->unique();
-            $table->boolean('is_active');
+            $table->string('icon')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

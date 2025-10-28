@@ -1,9 +1,10 @@
 <script setup>
 import {router, usePage} from '@inertiajs/vue3'
-import {ref, computed} from 'vue'
+import {ref, computed, onMounted} from 'vue'
 import FlashMessage from '../Components/FlashMessage.vue'
 import {route} from "ziggy-js";
 import {isActive, navigate} from "../utils/helpers.js";
+import ConfirmDialog from "@/Components/ConfirmDialog.vue";
 
 const drawer = ref(true)
 const rail = ref(false)
@@ -11,10 +12,24 @@ const page = usePage()
 
 const menuItems = computed(() => page.props.menuItems || []);
 
+const confirmRef = ref(null)
+
+// بعد از mount، متد open رو در window ذخیره می‌کنیم تا از هرجا قابل صدا زدن باشه
+onMounted(() => {
+    window.$confirm = async (message, options = {}) => {
+        return await confirmRef.value.open({
+            msg: message,
+            ttl: options.title || 'تأیید عملیات',
+            color: options.color || 'red',
+        })
+    }
+})
 </script>
 
 <template>
     <v-app>
+        <ConfirmDialog ref="confirmRef"/>
+
         <v-navigation-drawer
             v-model="drawer"
             :rail="rail"

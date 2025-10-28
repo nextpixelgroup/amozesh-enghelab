@@ -32,8 +32,8 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
         Route::get('/courses/categories', [CourseCategoryController::class, 'index'])->name('courses.categories.index');
         Route::post('/courses/categories/create', [CourseCategoryController::class, 'store'])->name('courses.categories.store');
-        Route::put('/courses/categories/{id}', [CourseCategoryController::class, 'update'])->name('users.index.update');
-        Route::delete('/courses/categories/{id}', [CourseCategoryController::class, 'destroy'])->name('users.index.destroy');
+        Route::put('/courses/categories/{id}', [CourseCategoryController::class, 'update'])->name('courses.categories.update');
+        Route::delete('/courses/categories/{id}', [CourseCategoryController::class, 'destroy'])->name('courses.categories.destroy');
 
         /********* Paths *********/
         Route::get('/paths', [PathController::class, 'index'])->name('paths.index');

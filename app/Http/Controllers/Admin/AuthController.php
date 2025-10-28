@@ -34,21 +34,22 @@ class AuthController extends Controller
 
             $user = $request->user();
             Auth::login($user,true);
-            return redirect()
-                ->intended(route('admin.courses.index'))
-                ->with('success', 'با موفقیت وارد شدید');
+
+            return redirectMessage('success','با موفقیت وارد شدید', redirect: route('admin.courses.index'));
         }
         catch (Exception $error){
-            return back()->withErrors([
+           /* return back()->withErrors([
                 'username' => $error->getMessage(),
-            ])->onlyInput('username');
+            ])->onlyInput('username');*/
+
+            return redirectMessage('error', $error->getMessage());
         }
     }
 
     public function logout()
     {
         Auth::logout();
-        return redirectMessage('success','خروج با موفقیت انجام شد',null,route('admin.login'));
+        return redirectMessage('success','خروج با موفقیت انجام شد', redirect: route('admin.login'));
 
     }
 
