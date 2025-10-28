@@ -23,8 +23,15 @@
     "dependencies": {
         "@inertiajs/vue3": "^2.2.11",
         "@mdi/font": "^7.4.47",
+        "@tinymce/tinymce-vue": "^5.1.1",
         "@vue/server-renderer": "^3.5.22",
+        "@vueuse/core": "^14.0.0",
+        "@vueuse/integrations": "^14.0.0",
+        "sortablejs": "^1.15.6",
+        "tinymce": "^8.2.0",
+        "uuid": "^13.0.0",
         "vite-plugin-vuetify": "^2.1.2",
+        "vuedraggable": "^4.1.0",
         "vuetify": "^3.10.7",
         "ziggy-js": "^2.6.0"
     }

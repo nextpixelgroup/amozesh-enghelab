@@ -9,7 +9,7 @@
     @vite('resources/js/app.js')
     @inertiaHead
 </head>
-<body>
+<body dir="rtl">
 @inertia
 </body>
 </html>

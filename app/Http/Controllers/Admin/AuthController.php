@@ -32,10 +32,10 @@ class AuthController extends Controller
                 ]);
             }
 
-            // Successful login, regenerate session and redirect
-            $request->session()->regenerate();
+            $user = $request->user();
+            Auth::login($user,true);
             return redirect()
-                ->intended(route('admin.users.index'))
+                ->intended(route('admin.courses.index'))
                 ->with('success', 'با موفقیت وارد شدید');
         }
         catch (Exception $error){
