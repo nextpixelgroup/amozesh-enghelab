@@ -27,18 +27,18 @@ watch(
     () => page.props.flash,
     (flash) => {
         if (!flash) return
-
+        console.log(flash)
         if (flash.error) {
             snackColor.value = 'error'
             snackText.value = typeof flash.error === 'string'
                 ? flash.error
-                : flash.error?.message || 'خطایی رخ داد'
+                : flash?.message || 'خطایی رخ داد'
             snackbar.value = true
         } else if (flash.success) {
             snackColor.value = 'success'
             snackText.value = typeof flash.success === 'string'
                 ? flash.success
-                : flash.success?.message || 'عملیات موفق'
+                : flash?.message || 'عملیات موفق'
             snackbar.value = true
         } else if (flash.message) {
             snackColor.value = 'info'

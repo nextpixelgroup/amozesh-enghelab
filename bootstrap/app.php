@@ -11,7 +11,9 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -46,8 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->header('X-Inertia')) {
                 return null; // لاراول خودش redirect/back با errors برمی‌گرداند
             }
-
-            if($request->header('Content-Type') == 'application/json') {
+            elseif($request->header('Content-Type') == 'application/json') {
                //dd(get_class($e));
                 //dd($request->url());
                 if($e instanceof AuthenticationException){
@@ -72,6 +73,38 @@ return Application::configure(basePath: dirname(__DIR__))
                 }
                 elseif ($e instanceof  ThrottleRequestsException){
                     return sendJson('error', 'تعداد درخواست های شما بیش از حد مجاز می باشد.');
+                }
+            }
+            else{
+                $path = $request->path();
+                if($e instanceof MethodNotAllowedHttpException){
+                    // برای مسیرهای ادمین
+                    if (str_starts_with($path, 'admin')) {
+                        return Inertia::render('Admin/405');
+                    }
+
+                    // برای مسیرهای پنل
+                    if (str_starts_with($path, 'panel')) {
+                        return response()->view('errors.admin.405', [], 405);
+                    }
+
+                    // برای سایر موارد
+                    return response()->view('errors.405', [], 405);
+                }
+                elseif ($e instanceof NotFoundHttpException) {
+
+                    // برای مسیرهای ادمین
+                    if (str_starts_with($path, 'admin')) {
+                        return Inertia::render('Admin/404');
+                    }
+
+                    // برای مسیرهای پنل
+                    if (str_starts_with($path, 'panel')) {
+                        return response()->view('errors.admin.404', [], 404);
+                    }
+
+                    // برای سایر موارد
+                    return response()->view('errors.404', [], 404);
                 }
             }
         });

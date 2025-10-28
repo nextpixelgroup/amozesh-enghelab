@@ -1,51 +1,35 @@
 <script setup>
-import {Head, Link, router, usePage} from '@inertiajs/vue3'
-import {ref, computed} from 'vue'
+import {router, usePage} from '@inertiajs/vue3'
+import {ref, computed, onMounted} from 'vue'
 import FlashMessage from '../Components/FlashMessage.vue'
 import {route} from "ziggy-js";
+import {isActive, navigate} from "../utils/helpers.js";
+import ConfirmDialog from "@/Components/ConfirmDialog.vue";
 
 const drawer = ref(true)
 const rail = ref(false)
 const page = usePage()
 
-const menuItems = [
-    {
-        title: 'دروس',
-        icon: 'mdi-book-open-page-variant',
-        route: 'admin.courses.index',
-        children: [
-            {title: 'لیست دوره‌ها', icon: 'mdi-format-list-bulleted', route: 'admin.courses.index'},
-            {title: 'ایجاد دوره جدید', icon: 'mdi-plus-circle', route: 'admin.courses.create'},
-            {title: 'دسته‌بندی‌ها', icon: 'mdi-shape', route: 'admin.courses.categories.index'},
-        ]
-    },
-    {title: 'کاربران', icon: 'mdi-account-group', route: 'admin.users.index'},
-    {title: 'کتاب‌ها', icon: 'mdi-book', route: 'admin.books.index'},
-    {title: 'مسیرها', icon: 'mdi-routes', route: 'admin.paths.index'},
-    {title: 'سفارشات', icon: 'mdi-cart', route: 'admin.orders.index'},
-]
+const menuItems = computed(() => page.props.menuItems || []);
 
-const isActive = (routeName) => {
-    // Get the full route path and clean it
-    const routePath = new URL(route(routeName), window.location.origin).pathname;
-    const currentPath = window.location.pathname;
+const confirmRef = ref(null)
 
-    // Normalize paths (remove trailing slashes for consistent comparison)
-    const normalizedRoutePath = routePath.replace(/\/+$/, '');
-    const normalizedCurrentPath = currentPath.replace(/\/+$/, '');
-
-    // Check for exact match or if current path starts with route path
-    return normalizedCurrentPath === normalizedRoutePath ||
-        normalizedCurrentPath.startsWith(normalizedRoutePath + '/');
-}
-
-const navigate = (routeName) => {
-    router.visit(route(routeName), {preserveState: true});
-}
+// بعد از mount، متد open رو در window ذخیره می‌کنیم تا از هرجا قابل صدا زدن باشه
+onMounted(() => {
+    window.$confirm = async (message, options = {}) => {
+        return await confirmRef.value.open({
+            msg: message,
+            ttl: options.title || 'تأیید عملیات',
+            color: options.color || 'red',
+        })
+    }
+})
 </script>
 
 <template>
-    <v-app dir="rtl">
+    <v-app>
+        <ConfirmDialog ref="confirmRef"/>
+
         <v-navigation-drawer
             v-model="drawer"
             :rail="rail"
@@ -54,7 +38,6 @@ const navigate = (routeName) => {
             @click="rail = false"
             color="primary"
             class="elevation-3"
-            dir="rtl"
         >
             <v-list-item
                 prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
@@ -72,7 +55,7 @@ const navigate = (routeName) => {
 
             <v-divider></v-divider>
 
-            <v-list density="compact" nav>
+            <v-list density="comfortable" nav class="px-0">
                 <template v-for="(item, i) in menuItems" :key="i">
                     <!-- Menu items with children (submenu) -->
                     <v-list-group v-if="item.children" :value="item.title" color="warning">
@@ -80,10 +63,10 @@ const navigate = (routeName) => {
                             <v-list-item
                                 v-bind="props"
                                 :prepend-icon="item.icon"
+                                class="pl-۱ mb-1"
                                 :title="item.title"
                                 :value="item.route"
                                 :active="isActive(item.route) || item.children.some(child => isActive(child.route))"
-                                class="mb-1"
                                 rounded="lg"
                             ></v-list-item>
                         </template>
@@ -94,9 +77,9 @@ const navigate = (routeName) => {
                             :title="child.title"
                             :value="child.route"
                             :prepend-icon="child.icon"
+                            class="pl-2"
                             :active="isActive(child.route)"
                             @click="navigate(child.route)"
-                            class="mr-4"
                             rounded="lg"
                         ></v-list-item>
                     </v-list-group>

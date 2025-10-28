@@ -3,7 +3,14 @@ import laravel from 'laravel-vite-plugin'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 
+import path from 'path';
+
 export default defineConfig(({ ssrBuild }) => ({
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './resources/js'),
+        },
+    },
     plugins: [
         laravel({
             input: 'resources/js/app.js',
@@ -42,7 +49,7 @@ export default defineConfig(({ ssrBuild }) => ({
         include: ['vue', '@inertiajs/vue3', 'ziggy-js', 'vuetify'],
     },
     server: {
-        // اختیاری: برای اینکه ارورهای HMR تجربه رفرش را متوقف نکند
+        // اختیاری: برای اینکه ارورهای HMR تجربه رفحص را متوقف نکند
         hmr: { overlay: false },
     },
 }))
