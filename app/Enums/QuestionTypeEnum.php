@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum QuestionTypeEnum: string
 {
-    case multiple_choice = 'چند گزینه‌ای';
+    case multiple_option = 'چند گزینه‌ای';
     case true_false = 'درست و غلط';
     case short_answer = 'پاسخ کوتاه';
 

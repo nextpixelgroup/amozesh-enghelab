@@ -1,29 +1,189 @@
-<!-- resources/js/Layouts/AdminLayout.vue -->
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import {Head, Link, router, usePage} from '@inertiajs/vue3'
+import {ref, computed} from 'vue'
+import FlashMessage from '../Components/FlashMessage.vue'
+import {route} from "ziggy-js";
+
+const drawer = ref(true)
+const rail = ref(false)
+const page = usePage()
+
+const menuItems = [
+    {
+        title: 'دروس',
+        icon: 'mdi-book-open-page-variant',
+        route: 'admin.courses.index',
+        children: [
+            {title: 'لیست دوره‌ها', icon: 'mdi-format-list-bulleted', route: 'admin.courses.index'},
+            {title: 'ایجاد دوره جدید', icon: 'mdi-plus-circle', route: 'admin.courses.create'},
+            {title: 'دسته‌بندی‌ها', icon: 'mdi-shape', route: 'admin.courses.categories.index'},
+        ]
+    },
+    {title: 'کاربران', icon: 'mdi-account-group', route: 'admin.users.index'},
+    {title: 'کتاب‌ها', icon: 'mdi-book', route: 'admin.books.index'},
+    {title: 'مسیرها', icon: 'mdi-routes', route: 'admin.paths.index'},
+    {title: 'سفارشات', icon: 'mdi-cart', route: 'admin.orders.index'},
+]
+
+const isActive = (routeName) => {
+    // Get the full route path and clean it
+    const routePath = new URL(route(routeName), window.location.origin).pathname;
+    const currentPath = window.location.pathname;
+
+    // Normalize paths (remove trailing slashes for consistent comparison)
+    const normalizedRoutePath = routePath.replace(/\/+$/, '');
+    const normalizedCurrentPath = currentPath.replace(/\/+$/, '');
+
+    // Check for exact match or if current path starts with route path
+    return normalizedCurrentPath === normalizedRoutePath ||
+        normalizedCurrentPath.startsWith(normalizedRoutePath + '/');
+}
+
+const navigate = (routeName) => {
+    router.visit(route(routeName), {preserveState: true});
+}
 </script>
 
 <template>
-    <div class="admin-layout">
-        <header class="bg-gray-800 text-white p-4">
-            <nav class="container mx-auto flex justify-between items-center">
-                <h1 class="text-xl font-bold">پنل مدیریت</h1>
-                <div class="space-x-4">
-                    <Link href="/admin/dashboard" class="hover:text-gray-300 mask-b-from-lime-400 mr-4">داشبورد</Link>
-                    <Link href="/admin/courses" class="hover:text-gray-300">دروس</Link>
-                    <Link href="/admin/users" class="hover:text-gray-300">کاربران</Link>
+    <v-app>
+        <v-navigation-drawer
+            v-model="drawer"
+            :rail="rail"
+            permanent
+            location="right"
+            @click="rail = false"
+            color="primary"
+            class="elevation-3"
+        >
+            <v-list-item
+                prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
+                title="حسین هزاره"
+                nav
+            >
+                <template v-slot:append>
+                    <v-btn
+                        variant="text"
+                        :icon="rail ? 'mdi-chevron-left' : 'mdi-chevron-right'"
+                        @click.stop="rail = !rail"
+                    ></v-btn>
+                </template>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list density="compact" nav>
+                <template v-for="(item, i) in menuItems" :key="i">
+                    <!-- Menu items with children (submenu) -->
+                    <v-list-group v-if="item.children" :value="item.title" color="warning">
+                        <template v-slot:activator="{ props }">
+                            <v-list-item
+                                v-bind="props"
+                                :prepend-icon="item.icon"
+                                :title="item.title"
+                                :value="item.route"
+                                :active="isActive(item.route) || item.children.some(child => isActive(child.route))"
+                                class="mb-1"
+                                rounded="lg"
+                            ></v-list-item>
+                        </template>
+
+                        <v-list-item
+                            v-for="(child, childIndex) in item.children"
+                            :key="`child-${childIndex}`"
+                            :title="child.title"
+                            :value="child.route"
+                            :prepend-icon="child.icon"
+                            :active="isActive(child.route)"
+                            @click="navigate(child.route)"
+                            class="mr-4"
+                            rounded="lg"
+                        ></v-list-item>
+                    </v-list-group>
+
+                    <!-- Regular menu items -->
+                    <v-list-item
+                        v-else
+                        :prepend-icon="item.icon"
+                        :title="item.title"
+                        :active="isActive(item.route)"
+                        :value="item.route"
+                        color="warning"
+                        class="mb-1"
+                        rounded="lg"
+                        @click="navigate(item.route)"
+                    ></v-list-item>
+                </template>
+            </v-list>
+
+            <template v-slot:append>
+                <div class="pa-2">
+                    <v-btn
+                        block
+                        color="error"
+                        variant="tonal"
+                        prepend-icon="mdi-logout"
+                        @click="router.post(route('admin.logout'))"
+                    >
+                        خروج از سیستم
+                    </v-btn>
                 </div>
-            </nav>
-        </header>
+            </template>
+        </v-navigation-drawer>
 
-        <main class="container mx-auto p-4">
-            <slot />
-        </main>
-
-        <footer class="bg-gray-100 p-4 mt-8">
-            <div class="container mx-auto text-center text-gray-600">
-                تمامی حقوق محفوظ است © 2025
+        <v-app-bar color="white" elevation="1" density="comfortable" class="d-flex justify-space-between">
+            <div class="d-flex align-center">
+                <v-btn icon class="ml-2">
+                    <v-badge color="error" content="2" dot>
+                        <v-icon>mdi-bell</v-icon>
+                    </v-badge>
+                </v-btn>
             </div>
-        </footer>
-    </div>
+
+            <v-toolbar-title class="text-h6 font-weight-bold">
+                پنل مدیریت
+            </v-toolbar-title>
+
+            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        </v-app-bar>
+
+        <v-main class="bg-grey-lighten-3">
+            <v-container fluid class="py-6 px-6">
+                <v-sheet
+                    min-height="calc(100vh - 140px)"
+                    rounded="lg"
+                    class="pa-6 bg-white"
+                >
+                    <slot/>
+                </v-sheet>
+            </v-container>
+        </v-main>
+
+        <v-footer app color="white" class="justify-center py-4">
+            <div class="text-caption text-medium-emphasis">
+                تمامی حقوق محفوظ است © {{ new Date().getFullYear() }} - سیستم مدیریت محتوا
+            </div>
+        </v-footer>
+
+        <!-- Global Flash Message -->
+        <FlashMessage/>
+    </v-app>
 </template>
+
+<style scoped>
+.v-navigation-drawer {
+    direction: rtl;
+}
+
+.v-list-item {
+    text-align: right;
+}
+
+.v-list-item__prepend {
+    margin-right: 0;
+    margin-left: 12px;
+}
+
+.v-list-item--active {
+    background: rgba(255, 255, 255, 0.1);
+}
+</style>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>به زودی!</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/logo.png') }}">
     <script src="{{ asset('tailwind.js') }}"></script>
 
     <!-- فونت فارسی Vazir -->
@@ -46,7 +47,7 @@
 </div>
 
 <script>
-    const launchDate = new Date("2025-12-31T00:00:00").getTime();
+    const launchDate = new Date("2026-01-18T00:00:00").getTime();
 
     const countdown = setInterval(() => {
         const now = new Date().getTime();

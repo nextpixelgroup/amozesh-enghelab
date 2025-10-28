@@ -126,7 +126,7 @@ class CourseController extends Controller
         foreach ($questions as $questionData) {
             $question = $quiz->questions()->create([
                 'question_text' => $questionData['question'],
-                'type'          => $questionData['type'] ?? 'multiple_choice',
+                'type'          => $questionData['type'] ?? 'multiple_option',
                 'explanation'   => $questionData['explanation'] ?? null,
             ]);
 

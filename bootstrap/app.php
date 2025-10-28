@@ -28,9 +28,25 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if (str_starts_with($request->path(), 'admin')) {
+                return route('admin.login');
+            } elseif (str_starts_with($request->path(), 'panel')) {
+                return route('panel.login'); // Make sure this route exists
+            }
+            return route('login'); // Fallback to default login route
+        });
+
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, Request $request) {
+            // اگر درخواست از Inertia است، اجازه بده لاراول به‌صورت پیش‌فرض هندل کند
+            if ($request->header('X-Inertia')) {
+                return null; // لاراول خودش redirect/back با errors برمی‌گرداند
+            }
+
             if($request->header('Content-Type') == 'application/json') {
                //dd(get_class($e));
                 //dd($request->url());
