@@ -45,7 +45,7 @@ const navigate = (routeName) => {
 </script>
 
 <template>
-    <v-app>
+    <v-app dir="rtl">
         <v-navigation-drawer
             v-model="drawer"
             :rail="rail"
@@ -54,6 +54,7 @@ const navigate = (routeName) => {
             @click="rail = false"
             color="primary"
             class="elevation-3"
+            dir="rtl"
         >
             <v-list-item
                 prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"

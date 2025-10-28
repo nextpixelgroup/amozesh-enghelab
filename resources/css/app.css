@@ -8,14 +8,64 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-/* Apply Estedad font globally */
-:root {
-    --font-family-sans: 'Estedad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-
 * {
-    font-family: var(--font-family-sans);
+    font-family: 'Estedad' !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
+html[dir="rtl"], body[dir="rtl"] {
+    font-family: 'Estedad', sans-serif;
+    direction: rtl;
+    text-align: right;
+}
+
+/* Vuetify RTL Support */
+.v-application[dir="rtl"] {
+    direction: rtl;
+}
+
+.v-application[dir="rtl"] .v-list-item__prepend {
+    margin-right: 0;
+    margin-left: 12px;
+}
+
+.v-application[dir="rtl"] .v-list-item__append {
+    margin-left: 0;
+    margin-right: 12px;
+}
+
+.v-application[dir="rtl"] .v-btn__prepend {
+    margin-right: 0;
+    margin-left: 8px;
+}
+
+.v-application[dir="rtl"] .v-btn__append {
+    margin-left: 0;
+    margin-right: 8px;
+}
+
+.v-application[dir="rtl"] .v-text-field .v-field__input {
+    text-align: right;
+}
+
+.v-application[dir="rtl"] .v-data-table .v-data-table__td {
+    text-align: right;
+}
+
+.v-application[dir="rtl"] .v-card-title {
+    text-align: right;
+}
+
+.v-application[dir="rtl"] .v-card-text {
+    text-align: right;
+}
+
+body {
+    text-indent: -9999px;
+}
+
+#app {
+    margin: -24px 0 0;
+    text-indent: initial;
+}

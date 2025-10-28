@@ -7,7 +7,7 @@ const isMenuOpen = ref(false)
 </script>
 
 <template>
-    <div class="app-layout min-h-screen flex flex-col">
+    <div class="app-layout min-h-screen flex flex-col" dir="rtl">
         <!-- Header -->
         <header class="bg-white shadow-sm">
             <div class="container mx-auto px-4 py-4">

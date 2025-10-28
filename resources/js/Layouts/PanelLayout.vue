@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/vue3'
 </script>
 
 <template>
-    <div class="panel-layout">
+    <div class="panel-layout" dir="rtl">
         <header class="bg-blue-600 text-white p-4">
             <nav class="container mx-auto flex justify-between items-center">
                 <h1 class="text-xl font-bold">پنل کاربری</h1>
