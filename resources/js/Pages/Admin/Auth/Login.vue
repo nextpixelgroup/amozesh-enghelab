@@ -97,10 +97,8 @@ export default {
                                     width="2"
                                     class="mr-2"
                                 ></v-progress-circular>
-                                در حال ورود...
                             </template>
                         </v-btn>
-
                         <ul class="zo-social">
                             <li v-for="(btn, index) in socialButtons" :key="index">
                                 <v-btn color="primary">
@@ -108,10 +106,12 @@ export default {
                                 </v-btn>
                             </li>
                         </ul>
+                        <div class="zo-copyright">
+                            طراحی و پیاده سازی توسط نکست پیکسل
+                        </div>
                     </v-form>
                 </div>
             </v-col>
-
             <v-col cols="12" lg="6" class="d-none d-lg-flex zo-cover"/>
         </v-row>
     </v-container>
@@ -178,5 +178,15 @@ export default {
     min-height: 45px;
     padding: 0;
     border-radius: 50%;
+}
+
+.zo-login-section .zo-copyright {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    left: 15px;
+    font-size: .875rem;
+    color: rgb(0, 0, 0, .5);
+    text-align: center;
 }
 </style>
