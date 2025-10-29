@@ -129,3 +129,10 @@ export const isActive = (routeName) => {
 export const navigate = (routeName) => {
     router.visit(route(routeName), {preserveState: true});
 }
+
+export const truncateText = (text, maxLength = 100) => {
+    if (!text) return '';
+    return text.length > maxLength
+        ? text.substring(0, maxLength) + '...'
+        : text;
+}

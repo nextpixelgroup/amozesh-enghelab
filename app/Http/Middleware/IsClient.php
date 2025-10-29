@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class IsAdmin
+class IsClient
 {
     /**
      * Handle an incoming request.
@@ -33,7 +33,7 @@ class IsAdmin
             }
             else{
 
-                return redirectMessage('error',message: $message, redirect: route('admin.login'));
+                return redirectMessage('error',message: $message, redirect: route('panel.login'));
             }
         }
 

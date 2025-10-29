@@ -61,10 +61,6 @@ html[dir="rtl"], body[dir="rtl"] {
     text-align: right;
 }
 
-body {
-    text-indent: -9999px;
-}
-
 #app {
     margin: -24px 0 0;
     text-indent: initial;

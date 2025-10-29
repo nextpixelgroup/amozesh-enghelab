@@ -13,7 +13,7 @@ class CourseCategoryController extends Controller
 {
     public function index()
     {
-        $categories = AdminCategoryResource::collection(Category::where('type', 'course')->paginate(10));
+        $categories = AdminCategoryResource::collection(Category::where('type', 'course')->orderBy('id', 'desc')->paginate(config('app.per_page')));
         return Inertia::render('Admin/Courses/Categories/List', compact('categories'));
 
     }
@@ -21,22 +21,29 @@ class CourseCategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255|unique:categories,title',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
+        ],[
+            'title.required' => 'فیلد عنوان الزامی است.',
+            'title.string' => 'فیلد عنوان باید متن باشد.',
+            'title.max' => 'فیلد عنوان نباید بیشتر از :max کاراکتر باشد.',
+            'title.unique' => 'عنوان در پایگاه داده وجود دارد، عنوان دیگری وارد کنید',
+            'description' => 'توضیحات به درستی وارد نشده است.',
+            'is_active.boolean' => 'وضعیت باید فعال یا غیرفعال باشد.'
         ]);
 
         try {
             $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
             $slug = makeSlugUnique($slug, Category::class);
             $category = Category::create([
-                'title' => $validated['title'],
+                'title'       => $validated['title'],
                 'description' => $validated['description'] ?? null,
-                'slug' => $slug,
-                'type' => 'course',
-                'is_active' => $validated['is_active'],
+                'slug'        => $slug,
+                'type'        => 'course',
+                'is_active'   => $validated['is_active'],
             ]);
-            return redirectMessage('success', 'دسته با موفقیت ایجاد شد.');
+            return redirectMessage('success', 'دسته با موفقیت ایجاد شد.', redirect: route('admin.courses.categories.index'));
         }
         catch (\Exception $exception){
             return redirectMessage('error', $exception->getMessage());
@@ -49,12 +56,26 @@ class CourseCategoryController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
+        ],[
+            'title.required' => 'فیلد عنوان الزامی است.',
+            'title.string' => 'فیلد عنوان باید متن باشد.',
+            'title.max' => 'فیلد عنوان نباید بیشتر از :max کاراکتر باشد.',
+            'description' => 'توضیحات به درستی وارد نشده است.',
+            'is_active.boolean' => 'وضعیت باید فعال یا غیرفعال باشد.'
         ]);
 
         try {
+            if($category->slug !== $request->slug) {
+                $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
+                $slug = makeSlugUnique($slug, Category::class);
+            }
+            else{
+                $slug = $request->slug;
+            }
             $category->update([
                 'title' => $validated['title'],
                 'description' => $validated['description'] ?? null,
+                'slug' => $slug,
                 'is_active' => $validated['is_active'],
             ]);
             return redirectMessage('success', 'دسته با موفقیت به روز رسانی شد.');
@@ -66,6 +87,7 @@ class CourseCategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        sleep(3);
         try {
             $category->delete();
             return redirectMessage('success', 'دسته با موفقیت حذف شد.');

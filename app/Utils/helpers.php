@@ -46,7 +46,7 @@ if (!function_exists('redirectMessage')) {
         } else {
             return $redirect === null
                 ? back()->withErrors($message)
-                : redirect()->intended($redirect)->withErrors(['status' => $status, 'message' => $message]);
+                : redirect()->intended($redirect)->with($status, $message);
         }
 
     }

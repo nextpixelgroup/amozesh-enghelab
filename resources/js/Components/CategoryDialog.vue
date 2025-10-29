@@ -11,13 +11,14 @@ const props = defineProps({
             title: '',
             slug: '',
             description: '',
-            is_active: true
+            isActive: true
         })
     },
     isEditing: {
         type: Boolean,
         default: false
-    }
+    },
+    loading: Boolean
 })
 
 const emit = defineEmits(['update:modelValue', 'save'])
@@ -26,6 +27,7 @@ const form = ref({...props.category})
 const title = computed(() => props.isEditing ? 'ویرایش دسته' : 'افزودن دسته جدید')
 
 watch(() => props.category, (newVal) => {
+    console.log(form)
     form.value = {...newVal}
 }, {deep: true})
 
@@ -91,7 +93,12 @@ const close = () => {
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="error" text @click="close">انصراف</v-btn>
-                <v-btn color="primary" @click="save">ذخیره</v-btn>
+                <v-btn
+                    color="primary"
+                    @click="save"
+                    :loading="loading"
+                    :disabled="loading"
+                >ذخیره</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

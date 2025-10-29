@@ -15,11 +15,12 @@ class AdminCategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'          => $this->id,
             'title'       => $this->title,
             'description' => $this->description,
             'slug'        => $this->slug,
-            'isActive'    => $this->isActiveObject,
-            'createdAt'   => $this->createdAtObject,
+            'is_active'   => $this->isActiveObject,
+            'created_at'  => $this->createdAtObject,
         ];
     }
 }

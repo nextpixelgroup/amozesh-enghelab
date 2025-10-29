@@ -17,6 +17,10 @@ class AuthController extends Controller
 
     public function index()
     {
+        if(auth()->check()){
+            return redirect()->route('admin.courses.index');
+        }
+
         return Inertia::render('Admin/Auth/Login');
     }
 
