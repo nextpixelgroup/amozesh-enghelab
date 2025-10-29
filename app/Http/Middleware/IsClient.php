@@ -21,7 +21,7 @@ class IsClient
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $allowedRoles = ['super-admin', 'admin', 'content-manager'];
+        $allowedRoles = ['client','super-admin'];
 
         if (!$user->hasAnyRole($allowedRoles)) {
             $message = 'دسترسی غیر مجاز';
@@ -32,7 +32,6 @@ class IsClient
                 return response()->json(['message' => $message], 403);
             }
             else{
-
                 return redirectMessage('error',message: $message, redirect: route('panel.login'));
             }
         }
