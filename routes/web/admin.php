@@ -18,7 +18,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
     Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 
-    Route::group(function () {
+    /*Route::middleware(['auth', 'admin'])->group(function () {*/
 
         /********* Books *********/
         Route::get('/books', [BookController::class, 'index'])->name('books.index');
@@ -57,7 +57,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         Route::get('/test', [TestController::class, 'index']);
-    });
+   /* });*/
 
 });
 
