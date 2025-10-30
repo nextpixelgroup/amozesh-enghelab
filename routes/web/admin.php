@@ -18,7 +18,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
     Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 
-    Route::middleware(['auth', 'admin'])->group(function () {
+    Route::/*middleware(['auth', 'admin'])->*/group(function () {
 
         /********* Books *********/
         Route::get('/books', [BookController::class, 'index'])->name('books.index');
