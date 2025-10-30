@@ -87,8 +87,9 @@ class UserController extends Controller
         $years = years();
         $months = months();
         $days = days();
+        $site_url = env('APP_URL');
         $user = new UserResource($user);
-        return Inertia::render('Admin/Users/Edit', compact('status', 'roles', 'gender', 'years', 'months', 'days', 'user'));
+        return Inertia::render('Admin/Users/Edit', compact('status', 'roles', 'gender', 'years', 'months', 'days', 'user', 'site_url'));
     }
 
     public function update(User $user, UserUpdateRequest $request)

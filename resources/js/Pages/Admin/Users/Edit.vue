@@ -1,7 +1,7 @@
 <template>
     <AdminLayout>
         <Head title="ویرایش کاربر"/>
-        <v-form @submit.prevent="addUser">
+        <v-form @submit.prevent="updateUser">
             <v-container>
                 <v-row>
                     <v-col cols="4">
@@ -164,15 +164,27 @@
                             variant="outlined"
                             density="comfortable"
                             label="نامک"
-                            suffix="https://amozesh.enghelab.ir/t/"
+                            :suffix="site_url+'/'"
                             dir="ltr"
-                        />
+                        >
+                            <template v-slot:append>
+                                <v-btn
+                                    icon
+                                    variant="text"
+                                    :disabled="!form.slug"
+                                    @click="viewPage"
+                                    title="مشاهده"
+                                >
+                                    <v-icon>mdi-open-in-new</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-text-field>
                     </v-col>
                     <v-col cols="12">
                         <v-btn
                             color="primary"
                             type="submit"
-                            @click="addUser"
+                            @click="updateUser"
                             :loading="isLoading"
                         >ویرایش کاربر</v-btn>
                     </v-col>
@@ -183,7 +195,7 @@
     </AdminLayout>
 </template>
 <script setup>
-import {Form, Head, useForm, usePage} from '@inertiajs/vue3'
+import {Form, Head, router, useForm, usePage} from '@inertiajs/vue3'
 import {defineComponent, ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
@@ -199,14 +211,16 @@ const props = defineProps({
     months: Object,
     days: Object,
     user: Object,
+    site_url: Object,
 })
-const status = ref(props.status);
-const roles  = ref(props.roles);
-const gender = ref(props.gender);
-const years  = ref(props.years);
-const months = ref(props.months);
-const days   = ref(props.days);
-const user   = ref(props.user.data);
+const status   = ref(props.status);
+const roles    = ref(props.roles);
+const gender   = ref(props.gender);
+const years    = ref(props.years);
+const months   = ref(props.months);
+const days     = ref(props.days);
+const user     = ref(props.user.data);
+const site_url = ref(props.site_url);
 console.log(user.value.status.value)
 const isLoading = ref(false);
 const form = useForm({
@@ -228,7 +242,12 @@ const form = useForm({
     'password': '',
     'slug': user.value.slug,
 });
-const addUser = () => {
+
+const viewPage = () => {
+    window.open(route('app.teacher.show',form.slug),'_blank');
+}
+
+const updateUser = () => {
     form.put(route('admin.users.update', user.value.id), {
         onStart: () => {
             isLoading.value = true;
