@@ -8,12 +8,16 @@ import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css'
 import {createVuetify} from 'vuetify';
 import * as components from 'vuetify/components';
+import { VDateInput } from 'vuetify/labs/VDateInput'
+
 import * as directives from 'vuetify/directives';
 import {aliases, mdi} from 'vuetify/iconsets/mdi'
 import { fa, en } from 'vuetify/locale'
 
 const vuetify = createVuetify({
-    components,
+    components: {
+        VDateInput
+    },
     directives,
 
     theme: {

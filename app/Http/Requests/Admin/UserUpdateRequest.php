@@ -10,7 +10,7 @@ use App\Rules\IsMobile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UserCreateRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,9 +31,23 @@ class UserCreateRequest extends FormRequest
             'firstname'     => 'required|string|min:2|max:255',
             'lastname'      => 'nullable|string|min:2|max:255',
             'gender'        => 'nullable|in:'.collect(GenderEnum::cases())->pluck('name')->implode(','),
-            'national_code' => 'nullable|string|digits:10|unique:users,national_code',
-            'mobile'        => ['required', 'unique:users,mobile', new IsMobile],
-            'email'         => 'nullable|email|unique:users,email',
+            'national_code' => [
+                'nullable',
+                'string',
+                'digits:10',
+                Rule::unique('users', 'national_code')->ignore($this->route('user'))
+
+            ],
+            'mobile' => [
+                'required',
+                new IsMobile,
+                Rule::unique('users', 'mobile')->ignore($this->route('user'))
+            ],
+            'email'         => [
+                'nullable',
+                'email',
+                Rule::unique('users', 'email')->ignore($this->route('user'))
+            ],
             'address'       => 'nullable|string|min:5|max:255',
             'postal_code'   => 'nullable|numeric',
             'birth_day'     => 'nullable|numeric',

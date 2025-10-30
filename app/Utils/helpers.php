@@ -17,7 +17,7 @@ if (!function_exists('enumFormated')) {
     {
         return collect($enumCase)->map(function ($item) {
             return [
-                'label' => $item->value,
+                'title' => $item->value,
                 'value' => $item->name,
             ];
         });
@@ -103,51 +103,51 @@ if (!function_exists('months')) {
     {
         return [
             [
-                'label' => 'فروردین',
+                'title' => 'فروردین',
                 'value' => 1,
             ],
             [
-                'label' => 'اردیبهشت',
+                'title' => 'اردیبهشت',
                 'value' => 2,
             ],
             [
-                'label' => 'خرداد',
+                'title' => 'خرداد',
                 'value' => 3,
             ],
             [
-                'label' => 'تیر',
+                'title' => 'تیر',
                 'value' => 4,
             ],
             [
-                'label' => 'مرداد',
+                'title' => 'مرداد',
                 'value' => 5,
             ],
             [
-                'label' => 'شهریور',
+                'title' => 'شهریور',
                 'value' => 6,
             ],
             [
-                'label' => 'مهر',
+                'title' => 'مهر',
                 'value' => 7,
             ],
             [
-                'label' => 'آبان',
+                'title' => 'آبان',
                 'value' => 8,
             ],
             [
-                'label' => 'آذر',
+                'title' => 'آذر',
                 'value' => 9,
             ],
             [
-                'label' => 'دی',
+                'title' => 'دی',
                 'value' => 10,
             ],
             [
-                'label' => 'بهمن',
+                'title' => 'بهمن',
                 'value' => 11,
             ],
             [
-                'label' => 'اسفند',
+                'title' => 'اسفند',
                 'value' => 12,
             ],
         ];
@@ -160,7 +160,7 @@ if (!function_exists('dayes')) {
         $days = [];
         for ($i = 1; $i <= 31; $i++) {
             $days[] = [
-                'label' => $i,
+                'title' => $i,
                 'value' => $i,
             ];
         }
@@ -174,7 +174,7 @@ if (!function_exists('hours')) {
         $hours = [];
         for ($i = 0; $i <= 23; $i++) {
             $hours[] = [
-                'label' => $i,
+                'title' => $i,
                 'value' => $i,
             ];
         }
@@ -189,7 +189,7 @@ if (!function_exists('minutes')) {
         $minutes = [];
         for ($i = 0; $i <= 59; $i++) {
             $minutes[] = [
-                'label' => $i,
+                'title' => $i,
                 'value' => $i,
             ];
         }
@@ -283,14 +283,14 @@ if (!function_exists('years')) {
             for ($i = $now; $i < $now + 100; $i++) {
                 $years[] = [
                     'value' => $i,
-                    'label' => $i,
+                    'title' => $i,
                 ];
             }
         } else {
             for ($i = $now; $i > $now - 100; $i--) {
                 $years[] = [
                     'value' => $i,
-                    'label' => $i,
+                    'title' => $i,
                 ];
             }
         }
@@ -441,4 +441,17 @@ function createSlug($string, $separator = '-')
     $string = trim($string, $separator);
 
     return $string;
+}
+
+
+
+if (!function_exists('isMobile')) {
+    function isMobile(string $mobile): bool
+    {
+        // Remove any non-digit characters
+        $mobile = preg_replace('/[^0-9]/', '', $mobile);
+
+        // Check if the number starts with 09 and is 11 digits long
+        return (bool)preg_match('/^09[0-9]{9}$/', $mobile);
+    }
 }

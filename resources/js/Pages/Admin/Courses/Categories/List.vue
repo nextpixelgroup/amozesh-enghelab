@@ -31,7 +31,7 @@
                         </template>
                         <template v-slot:item.is_active="{ item }">
                             <v-chip :color="item.is_active.value ? 'success' : 'error'" dark small>
-                                {{ item.is_active.label }}
+                                {{ item.is_active.title }}
                             </v-chip>
                         </template>
 

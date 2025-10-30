@@ -11,7 +11,7 @@ enum GenderEnum: string
     {
         $cases = (new \ReflectionEnum(self::class))->getCases();
         foreach ($cases as $case) {
-            if ($case->getName() === strtoupper($key)) {
+            if ($case->getName() === strtolower($key)) {
                 return $case->getValue();
             }
         }
