@@ -2,25 +2,56 @@
     <AdminLayout>
         <form @submit.prevent="submitForm">
             <div>
-                <v-label>عنوان دوره</v-label>
-                <v-text-field v-model="course.title" type="text"/>
+                <v-text-field
+                    v-model="course.title"
+                    variant="outlined"
+                    density="comfortable"
+                    label="عنوان دوره"
+                    type="text"
+                />
             </div>
 
-            <div>
-                <v-label>نامک</v-label>
-                <v-text-field v-model="course.slug" type="text"/>
-            </div>
+            <v-text-field
+                type="text"
+                v-model="course.slug"
+                variant="outlined"
+                density="comfortable"
+                label="نامک"
+                suffix="https://amozesh.enghelab.test/courses/"
+                dir="ltr"
+            >
+                <template v-slot:append>
+                    <v-btn
+                        icon
+                        variant="text"
+                        :disabled="!course.slug"
+                        @click=""
+                        title="مشاهده"
+                    >
+                        <v-icon>mdi-open-in-new</v-icon>
+                    </v-btn>
+                </template>
+            </v-text-field>
 
             <div>
-                <v-label>دسته</v-label>
-                <v-select v-model="course.category">
+                <v-select
+                    v-model="course.category"
+                    variant="outlined"
+                    density="comfortable"
+                    label="دسته"
+                >
                     <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
                 </v-select>
             </div>
 
             <div>
-                <v-label>مدرس</v-label>
-                <v-select v-model="course.teacher">
+                <v-select
+                    v-model="course.teacher"
+
+                    variant="outlined"
+                    density="comfortable"
+                    label="مدرس"
+                >
                     <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">{{
                             teacher.name
                         }}
@@ -49,27 +80,38 @@
             </div>
 
             <div>
-                <v-label>پیش نیازها</v-label>
-                <v-textarea v-model="course.requirements"></v-textarea>
+                <v-textarea
+                    v-model="course.requirements"
+                    variant="outlined"
+                    density="comfortable"
+                    label="پیش‌نیازها"
+                ></v-textarea>
             </div>
 
             <div>
-                <v-label>تاریخ انتشار</v-label>
-                <v-text-field v-model="course.published_at" type="text" placeholder="تاریخ شمسی"/>
+                <v-date-input
+                    v-model="course.published_at"
+                    type="text"
+                    placeholder="تاریخ شمسی"
+                    variant="outlined"
+                    density="comfortable"
+                    label="تاریخ انتشار"
+                />
             </div>
 
             <div>
-                <v-label>ضروری بودن آزمون‌ها</v-label>
                 <v-select
                     v-model="course.must_complete_quizzes"
                     :items="[
                         { text: 'خیر', value: 'no' },
                         { text: 'بله', value: 'yes' }
                       ]"
-                    label="وضعیت"
+                    label="ضروری بودن آزمون ها"
                     outlined
                     dense
                     class="mt-2"
+                    variant="outlined"
+                    density="comfortable"
                 ></v-select>
             </div>
 
@@ -85,6 +127,8 @@
                     outlined
                     dense
                     class="mt-2"
+                    variant="outlined"
+                    density="comfortable"
                 ></v-select>
             </div>
 
