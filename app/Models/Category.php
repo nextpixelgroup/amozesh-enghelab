@@ -35,7 +35,7 @@ class Category extends Model
             get: function ($value, $attributes) {
                 $value = $attributes['created_at'];
                 $label = verta()->instance($value)->format('Y/m/d H:i');
-                return ['value' => $value, 'label' => $label];
+                return ['value' => $value, 'title' => $label];
             }
         );
     }
@@ -46,7 +46,7 @@ class Category extends Model
             get: function ($value, $attributes) {
                 $value = $attributes['is_active'];
                 $label = $value ? 'فعال' : 'غیر فعال';
-                return ['value' => $value, 'label' => $label];
+                return ['value' => $value, 'title' => $label];
             }
         );
     }

@@ -7,7 +7,6 @@ import {isActive, navigate} from "../utils/helpers.js";
 import ConfirmDialog from "@/Components/ConfirmDialog.vue";
 
 const drawer = ref(true)
-const rail = ref(false)
 const page = usePage()
 
 const menuItems = computed(() => page.props.menuItems || []);
@@ -32,10 +31,8 @@ onMounted(() => {
 
         <v-navigation-drawer
             v-model="drawer"
-            :rail="rail"
             permanent
             location="right"
-            @click="rail = false"
             color="primary"
             class="elevation-3"
         >
@@ -44,13 +41,6 @@ onMounted(() => {
                 title="حسین هزاره"
                 nav
             >
-                <template v-slot:append>
-                    <v-btn
-                        variant="text"
-                        :icon="rail ? 'mdi-chevron-left' : 'mdi-chevron-right'"
-                        @click.stop="rail = !rail"
-                    ></v-btn>
-                </template>
             </v-list-item>
 
             <v-divider></v-divider>
@@ -115,6 +105,16 @@ onMounted(() => {
         </v-navigation-drawer>
 
         <v-app-bar color="white" elevation="1" density="comfortable" class="d-flex justify-space-between">
+
+
+            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+
+
+
+            <v-toolbar-title class="text-h6 font-weight-bold">
+                پنل مدیریت
+            </v-toolbar-title>
+
             <div class="d-flex align-center">
                 <v-btn icon class="ml-2">
                     <v-badge color="error" content="2" dot>
@@ -123,11 +123,6 @@ onMounted(() => {
                 </v-btn>
             </div>
 
-            <v-toolbar-title class="text-h6 font-weight-bold">
-                پنل مدیریت
-            </v-toolbar-title>
-
-            <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         </v-app-bar>
 
         <v-main class="bg-grey-lighten-3">
@@ -144,7 +139,7 @@ onMounted(() => {
 
         <v-footer app color="white" class="justify-center py-4">
             <div class="text-caption text-medium-emphasis">
-                تمامی حقوق محفوظ است © {{ new Date().getFullYear() }} - سیستم مدیریت محتوا
+                تمامی حقوق محفوظ است © {{ new Date().getFullYear() }} - گروه فناوری اطلاعات نکست پیکسل
             </div>
         </v-footer>
 

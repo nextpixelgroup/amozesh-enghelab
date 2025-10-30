@@ -18,7 +18,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
     Route::post('/login', [AuthController::class, 'store'])->name('login.store');
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'admin'])->group(function () {
 
         /********* Books *********/
         Route::get('/books', [BookController::class, 'index'])->name('books.index');
@@ -32,8 +32,8 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
         Route::get('/courses/categories', [CourseCategoryController::class, 'index'])->name('courses.categories.index');
         Route::post('/courses/categories/create', [CourseCategoryController::class, 'store'])->name('courses.categories.store');
-        Route::put('/courses/categories/{id}', [CourseCategoryController::class, 'update'])->name('courses.categories.update');
-        Route::delete('/courses/categories/{id}', [CourseCategoryController::class, 'destroy'])->name('courses.categories.destroy');
+        Route::put('/courses/categories/{category}', [CourseCategoryController::class, 'update'])->name('courses.categories.update');
+        Route::delete('/courses/categories/{category}', [CourseCategoryController::class, 'destroy'])->name('courses.categories.destroy');
 
         /********* Paths *********/
         Route::get('/paths', [PathController::class, 'index'])->name('paths.index');
@@ -47,7 +47,8 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+        Route::get('/users/{user}', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
         /********* Setting *********/
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

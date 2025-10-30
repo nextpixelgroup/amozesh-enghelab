@@ -2,12 +2,11 @@
 
 namespace App\Enums;
 
-enum CourseStatusEnum: string
+enum UserStatusEnum: string
 {
-    case draft = 'پیش نویس';
-    case pending = 'درانتظار';
-    case publish = 'منتشر شده';
-    case trash = 'حذف شده';
+    case active = 'فعال';
+    case deactive = 'غیرفعال';
+    case suspended = 'مسدود';
 
     public static function fromKey(string $key): ?self
     {

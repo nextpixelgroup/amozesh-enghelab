@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\GenderEnum;
+use App\Enums\UserStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->string('firstname')->index();
             $table->string('lastname')->index();
             $table->string('username')->nullable();
+            $table->string('slug',100)->nullable()->unique()->index();
             $table->string('mobile', 11)->nullable()->index();
             $table->string('email')->nullable()->index();
             $table->date('birth_date')->nullable();
@@ -26,7 +28,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('company')->nullable(); // سازمان یا شرکت محل فعالیت
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
+            $table->enum('status', enumNames(UserStatusEnum::cases()))->index()->default('active');
             $table->rememberToken();
             $table->timestamps();
         });

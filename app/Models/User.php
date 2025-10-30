@@ -4,6 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\GenderEnum;
+use App\Enums\UserStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,6 +28,7 @@ class User extends Authenticatable
         'firstname',
         'lastname',
         'username',
+        'slug',
         'mobile',
         'email',
         'birth_date',
@@ -34,6 +38,7 @@ class User extends Authenticatable
         'address',
         'company',
         'password',
+        'status',
     ];
 
 
@@ -58,6 +63,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public static function allRoles(){
+        return collect([
+            [
+                'title' => 'مدیر',
+                'value' => 'admin',
+            ],
+            [
+                'title' => 'مدیر محتوا',
+                'value' => 'content-manager',
+            ],
+            [
+                'title' => 'مدرس',
+                'value' => 'teacher',
+            ],
+            [
+                'title' => 'کاربر',
+                'value' => 'client',
+            ]
+        ]);
     }
 
     public function educationals(): HasMany
@@ -142,5 +168,56 @@ class User extends Authenticatable
             ->exists();
     }
 
+    protected function statusObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['status'];
+                $title = UserStatusEnum::fromKey($value)->value;
+                return ['value' => $value, 'title' => $title];
+            }
+        );
+    }
+
+    protected function genderObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['gender'] ?? '';
+                $title = $value ? GenderEnum::fromKey($value)->value : '';
+                return ['value' => $value, 'title' => $title];
+            }
+        );
+    }
+    protected function roleObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $this->roles()->first()?->name ?? '';
+                $role = $this->allRoles()->where('value', $value)->first();
+                $value = isset($role['value']) ? $role['value'] : '';
+                $title = isset($role['title']) ? $role['title'] : '';
+                return ['value' => $value, 'title' => $title];
+            }
+        );
+    }
+
+    protected function birthDateObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $dateExp = explode('-',verta()->instance($attributes['birth_date'])->format('Y-m-d'));
+                return [
+                    'jalali' => $attributes['birth_date'] ? verta()->instance($attributes['birth_date'])->format('Y/m/d') : null,
+                    'gregorian' => $attributes['birth_date'] ? Carbon::parse($attributes['birth_date'])->format('Y/m/d') : null,
+                    'object' => [
+                        'year'  => $attributes['birth_date'] ? (int)removeFirstZeros($dateExp[0]) : null,
+                        'month' => $attributes['birth_date'] ? (int)removeFirstZeros($dateExp[1]) : null,
+                        'day'   => $attributes['birth_date'] ? (int)removeFirstZeros($dateExp[2]) : null,
+                    ]
+                ];
+            }
+        );
+    }
 
 }

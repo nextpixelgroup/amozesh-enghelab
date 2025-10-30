@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class IsAdmin
+class IsClient
 {
     /**
      * Handle an incoming request.
@@ -21,7 +21,7 @@ class IsAdmin
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $allowedRoles = ['super-admin', 'admin', 'content-manager'];
+        $allowedRoles = ['client','super-admin'];
 
         if (!$user->hasAnyRole($allowedRoles)) {
             $message = 'دسترسی غیر مجاز';
@@ -32,8 +32,7 @@ class IsAdmin
                 return response()->json(['message' => $message], 403);
             }
             else{
-
-                return redirectMessage('error',message: $message, redirect: route('admin.login'));
+                return redirectMessage('error',message: $message, redirect: route('panel.login'));
             }
         }
 
