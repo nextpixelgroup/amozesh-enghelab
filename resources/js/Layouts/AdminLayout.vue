@@ -104,11 +104,10 @@ onMounted(() => {
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar color="white" elevation="1" density="comfortable" class="d-flex justify-space-between">
+        <v-app-bar color="white" elevation="1" density="comfortable" class="d-flex justify-space-between mb-3">
 
 
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
 
 
             <v-toolbar-title class="text-h6 font-weight-bold">
@@ -125,19 +124,13 @@ onMounted(() => {
 
         </v-app-bar>
 
-        <v-main class="bg-grey-lighten-3">
-            <v-container fluid class="py-6 px-6">
-                <v-sheet
-                    min-height="calc(100vh - 140px)"
-                    rounded="lg"
-                    class="pa-6 bg-white"
-                >
-                    <slot/>
-                </v-sheet>
+        <v-main>
+            <v-container fluid>
+                <slot/>
             </v-container>
         </v-main>
 
-        <v-footer app color="white" class="justify-center py-4">
+        <v-footer color="white" class="justify-center py-4">
             <div class="text-caption text-medium-emphasis">
                 تمامی حقوق محفوظ است © {{ new Date().getFullYear() }} - گروه فناوری اطلاعات نکست پیکسل
             </div>
