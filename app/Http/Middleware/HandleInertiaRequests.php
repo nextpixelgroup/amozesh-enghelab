@@ -73,7 +73,19 @@ class HandleInertiaRequests extends Middleware
                 [
                     'title' => 'کتاب‌ها',
                     'icon' => 'mdi-book',
-                    'route' => 'admin.books.index'
+                    'route' => 'admin.books.index',
+                    'children' => [
+                        [
+                            'title' => 'لیست کتب',
+                            'icon'  => 'mdi-format-list-bulleted',
+                            'route' => 'admin.books.index'
+                        ],
+                        [
+                            'title' => 'دسته‌بندی‌ها',
+                            'icon' => 'mdi-shape',
+                            'route' => 'admin.books.categories.index'
+                        ],
+                    ]
                 ],
                 [
                     'title' => 'مسیرها',
