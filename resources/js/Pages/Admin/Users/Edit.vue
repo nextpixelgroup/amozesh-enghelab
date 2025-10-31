@@ -139,52 +139,51 @@
                             item-value="value"
                         />
                     </v-col>
-                    <v-col cols="6">
+                    <v-col
+                        cols="3"
+                        v-if="['admin', 'content-manager'].includes(form.role)"
+                    >
                         <v-text-field
-                            v-if="form.role === 'admin' || form.role === 'content-manager'"
                             type="text"
                             v-model="form.username"
                             variant="outlined"
                             density="comfortable"
                             label="نام کاربری"
                         />
+                    </v-col>
+                    <v-col
+                        cols="3"
+                        v-if="['user', 'admin', 'content-manager'].includes(form.role)"
+                    >
                         <v-text-field
-                            v-else-if="form.role === 'client'"
-                            type="text"
                             v-model="form.password"
                             variant="outlined"
                             density="comfortable"
                             label="کلمه عبور"
-                            placeholder="در صورت تغییر کلمه عبور این فیلد را وارد نمایید"
+                            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showPassword ? 'text' : 'password'"
+                            @click:append-inner="togglePasswordVisibility"
                         />
+                    </v-col>
+                    <v-col
+                        cols="6"
+                        v-if="form.role === 'teacher'"
+                    >
                         <v-text-field
-                            v-if="form.role === 'teacher'"
                             type="text"
                             v-model="form.slug"
                             variant="outlined"
                             density="comfortable"
                             label="نامک"
-                            :suffix="site_url+'/'"
+                            suffix="https://amozesh.enghelab.ir/t/"
                             dir="ltr"
-                        >
-                            <template v-slot:append>
-                                <v-btn
-                                    icon
-                                    variant="text"
-                                    :disabled="!form.slug"
-                                    @click="viewPage"
-                                    title="مشاهده"
-                                >
-                                    <v-icon>mdi-open-in-new</v-icon>
-                                </v-btn>
-                            </template>
-                        </v-text-field>
+                        />
                     </v-col>
                     <v-col cols="12">
+
                         <v-btn
                             color="primary"
                             type="submit"
-                            @click="updateUser"
                             :loading="isLoading"
                         >ویرایش کاربر</v-btn>
                     </v-col>
@@ -195,7 +194,7 @@
     </AdminLayout>
 </template>
 <script setup>
-import {Form, Head, router, useForm, usePage} from '@inertiajs/vue3'
+import {Form, Head, Link, router, useForm, usePage} from '@inertiajs/vue3'
 import {defineComponent, ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
@@ -221,8 +220,8 @@ const months   = ref(props.months);
 const days     = ref(props.days);
 const user     = ref(props.user.data);
 const site_url = ref(props.site_url);
-console.log(user.value.status.value)
 const isLoading = ref(false);
+const showPassword = ref(false);
 const form = useForm({
     'firstname': user.value.firstname,
     'lastname': user.value.lastname,
@@ -260,5 +259,10 @@ const updateUser = () => {
         }
     });
 };
+
+const togglePasswordVisibility = () => {
+    showPassword.value = !showPassword.value
+}
+
 
 </script>

@@ -1,78 +1,3 @@
-<script setup>
-import {Head, router} from '@inertiajs/vue3'
-import {ref} from "vue";
-import AdminLayout from "../../../Layouts/AdminLayout.vue";
-import {route} from "ziggy-js";
-
-const books = ref([
-    {
-        "id": "1",
-        "row": "1",
-        "image": '/assets/img/books/1.webp',
-        "title": "کتاب اسلام و مسیحیت؛ گفت‌وگوی تمدن‌ها",
-        "subtitle": "کتاب منتظران منجی در ادیان ابراهیمی - بررسی تطبیقی مفهوم نجات و منجی‌باوری",
-        "author": " دکتر امیر علما",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "price": "175000",
-        "sale_price": "159000",
-        "stock": "8"
-    },
-    {
-        "id": "2",
-        "row": "2",
-        "image": '/assets/img/books/2.webp',
-        "title": "کتاب جهان پس از ظهور",
-        "subtitle": "کتاب جهان پس از ظهور - ترسیم چشم‌انداز آخرالزمان در روایات اسلامی",
-        "author": " دکتر مریم عظیمیان",
-        "status": "archive",
-        "status_name": "آرشیو",
-        "price": "245000",
-        "sale_price": "190000",
-        "stock": "9"
-    },
-    {
-        "id": "3",
-        "row": "3",
-        "image": '/assets/img/books/3.webp',
-        "title": "کتاب موعود در آیینه ادیان",
-        "subtitle": "کتاب موعود در آیینه ادیان - تحلیل تاریخی و اعتقادی مهدویت در ادیان مختلف",
-        "author": " دکتر حسین نوابیان",
-        "status": "draft",
-        "status_name": "پیش نویس",
-        "price": "550000",
-        "sale_price": "",
-        "stock": "10"
-    },
-    {
-        "id": "4",
-        "row": "4",
-        "image": '/assets/img/books/4.webp',
-        "title": "کتاب اسلام و مسیحیت؛ گفت‌وگوی تمدن‌ها",
-        "subtitle": "کتاب منتظران منجی در ادیان ابراهیمی - بررسی تطبیقی مفهوم نجات و منجی‌باوری",
-        "author": " دکتر امیر علما",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "price": "175000",
-        "sale_price": "159000",
-        "stock": "8"
-    },
-    {
-        "id": "5",
-        "row": "5",
-        "image": '/assets/img/books/6.webp',
-        "title": "کتاب فلسفه انتظار و مهدویت",
-        "subtitle": "کتاب ادیان در گذر تاریخ - تحول مفاهیم دینی از باستان تا معاصر",
-        "author": " دکتر نعیم محقق",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "price": "345000",
-        "sale_price": "295000",
-        "stock": "9"
-    },
-])
-</script>
-
 <template>
     <AdminLayout>
         <Head title="کتب"/>
@@ -90,7 +15,7 @@ const books = ref([
                     </div>
                 </v-col>
                 <v-col class="v-col-lg-3 v-col-12 text-left">
-                    <v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن کتاب</v-btn>
+                    <Link :href="route('admin.books.create')"><v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن کتاب</v-btn></Link>
                 </v-col>
             </v-row>
         </div>
@@ -198,3 +123,51 @@ const books = ref([
         </v-card>
     </AdminLayout>
 </template>
+<script setup>
+import {Head, Link, router} from '@inertiajs/vue3'
+import {ref} from "vue";
+import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import {route} from "ziggy-js";
+
+const books = ref([
+    {
+        "id": "1",
+        "row": "1",
+        "image": '/assets/img/books/1.webp',
+        "title": "کتاب اسلام و مسیحیت؛ گفت‌وگوی تمدن‌ها",
+        "subtitle": "کتاب منتظران منجی در ادیان ابراهیمی - بررسی تطبیقی مفهوم نجات و منجی‌باوری",
+        "author": " دکتر امیر علما",
+        "status": "publish",
+        "status_name": "منتشر شده",
+        "price": "175000",
+        "sale_price": "159000",
+        "stock": "8"
+    },
+    {
+        "id": "2",
+        "row": "2",
+        "image": '/assets/img/books/2.webp',
+        "title": "کتاب جهان پس از ظهور",
+        "subtitle": "کتاب جهان پس از ظهور - ترسیم چشم‌انداز آخرالزمان در روایات اسلامی",
+        "author": " دکتر مریم عظیمیان",
+        "status": "archive",
+        "status_name": "آرشیو",
+        "price": "245000",
+        "sale_price": "190000",
+        "stock": "9"
+    },
+    {
+        "id": "3",
+        "row": "3",
+        "image": '/assets/img/books/3.webp',
+        "title": "کتاب موعود در آیینه ادیان",
+        "subtitle": "کتاب موعود در آیینه ادیان - تحلیل تاریخی و اعتقادی مهدویت در ادیان مختلف",
+        "author": " دکتر حسین نوابیان",
+        "status": "draft",
+        "status_name": "پیش نویس",
+        "price": "550000",
+        "sale_price": "",
+        "stock": "10"
+    },
+])
+</script>

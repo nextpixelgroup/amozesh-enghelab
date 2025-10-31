@@ -81,7 +81,7 @@ class User extends Authenticatable
             ],
             [
                 'title' => 'کاربر',
-                'value' => 'client',
+                'value' => 'user',
             ]
         ]);
     }

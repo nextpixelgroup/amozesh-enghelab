@@ -41,7 +41,7 @@ class UserUpdateRequest extends FormRequest
             'mobile' => [
                 'required',
                 new IsMobile,
-                Rule::unique('users', 'mobile')->ignore($this->route('user'))
+                Rule::unique('users', 'mobile')->ignore($this->user?->id)
             ],
             'email'         => [
                 'nullable',
@@ -65,7 +65,10 @@ class UserUpdateRequest extends FormRequest
                 Rule::unique('users', 'username')->ignore($this->user?->id)
             ],
             'password' => [
-                Rule::requiredIf(fn () => $this->input('role') === 'client'),
+                Rule::requiredIf(function () {
+                    return in_array($this->input('role'), ['client', 'admin', 'content-manager']) &&
+                        !empty($this->password);
+                }),
                 'nullable',
                 'string',
                 'min:6',
@@ -143,7 +146,7 @@ class UserUpdateRequest extends FormRequest
             'username.unique' => 'این نام کاربری قبلاً ثبت شده است.',
 
             // Password
-            'password.required' => 'برای کاربران عادی، تعیین رمز عبور الزامی است.',
+            'password.required' => 'تعیین رمز عبور الزامی است.',
             'password.string' => 'رمز عبور باید به صورت متن باشد.',
             'password.min' => 'رمز عبور باید حداقل :min کاراکتر باشد.',
             'password.confirmed' => 'تکرار رمز عبور مطابقت ندارد.',

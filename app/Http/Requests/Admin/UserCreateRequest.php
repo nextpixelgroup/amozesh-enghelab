@@ -51,7 +51,7 @@ class UserCreateRequest extends FormRequest
                 Rule::unique('users', 'username')->ignore($this->user?->id)
             ],
             'password' => [
-                Rule::requiredIf(fn () => $this->input('role') === 'client'),
+                Rule::requiredIf(fn () => in_array($this->input('role'),['client', 'admin', 'content-manager'])),
                 'nullable',
                 'string',
                 'min:6',
@@ -129,7 +129,7 @@ class UserCreateRequest extends FormRequest
             'username.unique' => 'این نام کاربری قبلاً ثبت شده است.',
 
             // Password
-            'password.required' => 'برای کاربران عادی، تعیین رمز عبور الزامی است.',
+            'password.required' => 'تعیین رمز عبور الزامی است.',
             'password.string' => 'رمز عبور باید به صورت متن باشد.',
             'password.min' => 'رمز عبور باید حداقل :min کاراکتر باشد.',
             'password.confirmed' => 'تکرار رمز عبور مطابقت ندارد.',

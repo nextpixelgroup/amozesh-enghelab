@@ -12,21 +12,48 @@ use App\Models\User;
 use Hekmatinasser\Verta\Facades\Verta;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = UserResource::collection(
-            User::whereDoesntHave('roles', function($query) {
+        $status = enumFormated(UserStatusEnum::cases());
+        $roles = User::allRoles();
+        $query = User::query()
+            ->whereDoesntHave('roles', function($query) {
                 $query->where('name', 'super-admin');
             })
-                ->with('roles')
-                ->paginate(config('app.per_page'))
-        );
-        return Inertia::render('Admin/Users/List', compact('users'));
+            ->with('roles');
+
+        // فیلتر بر اساس وضعیت
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // فیلتر بر اساس نقش
+        if ($request->filled('role')) {
+            $query->whereHas('roles', function($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
+        // جستجو
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('firstname', 'like', "%{$search}%")
+                    ->orWhere('lastname', 'like', "%{$search}%")
+                    ->orWhere('mobile', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = UserResource::collection($query->orderBy('id', 'desc')->paginate(config('app.per_page')));
+        return Inertia::render('Admin/Users/List', compact('users', 'status', 'roles'));
     }
 
     public function create()
@@ -42,35 +69,43 @@ class UserController extends Controller
 
     public function store(UserCreateRequest $request)
     {
+        Log::info(1);
         try {
-            $birthDate = null;
-            if($request->birth_day && $request->birth_month && $request->birth_year){
-                $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
-                $birthDate = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
-            }
-            $password = null;
-            if($request->password){
-                $password = Hash::make($request->password);
-            }
-            $user = User::create([
-                'firstname'     => $request->firstname,
-                'lastname'      => $request->lastname,
-                'gender'        => $request->gender,
-                'national_code' => $request->national_code,
-                'mobile'        => $request->mobile,
-                'email'         => $request->email,
-                'address'       => $request->address,
-                'postal_code'   => $request->postal_code,
-                'birth_date'    => $birthDate,
-                'company'       => $request->company,
-                'status'        => $request->status,
-                'username'      => $request->username,
-                'password'      => $password,
-                'slug'          => $request->slug,
-            ]);
-            if($user){
-                $user->assignRole($request->role);
-            }
+            DB::transaction(function () use ($request) {
+                Log::info(2);
+                $birthDate = null;
+                if($request->birth_day && $request->birth_month && $request->birth_year){
+                    $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
+                    $birthDate = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
+                }
+                $password = null;
+                if($request->password){
+                    $password = Hash::make($request->password);
+                }
+                Log::info(3);
+                $user = User::create([
+                    'firstname'     => $request->firstname,
+                    'lastname'      => $request->lastname,
+                    'gender'        => $request->gender,
+                    'national_code' => $request->national_code,
+                    'mobile'        => $request->mobile,
+                    'email'         => $request->email,
+                    'address'       => $request->address,
+                    'postal_code'   => $request->postal_code,
+                    'birth_date'    => $birthDate,
+                    'company'       => $request->company,
+                    'status'        => $request->status,
+                    'username'      => $request->username,
+                    'password'      => $password,
+                    'slug'          => $request->slug,
+                ]);
+                Log::info(4);
+                if($user){
+                    $user->assignRole($request->role);
+                }
+                Log::info(5);
+            });
+            Log::info(6);
             return redirectMessage('success', 'کاربر با موفقیت ایجاد شد.', redirect: route('admin.users.index'));
 
         }

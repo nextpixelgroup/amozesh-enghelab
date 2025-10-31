@@ -139,25 +139,37 @@
                             item-value="value"
                         />
                     </v-col>
-                    <v-col cols="6">
+                    <v-col
+                        cols="3"
+                        v-if="['admin', 'content-manager'].includes(form.role)"
+                    >
                         <v-text-field
-                            v-if="form.role === 'admin' || form.role === 'content-manager'"
                             type="text"
                             v-model="form.username"
                             variant="outlined"
                             density="comfortable"
                             label="نام کاربری"
                         />
+                    </v-col>
+                    <v-col
+                        cols="3"
+                        v-if="['user', 'admin', 'content-manager'].includes(form.role)"
+                    >
                         <v-text-field
-                            v-else-if="form.role === 'client'"
-                            type="text"
                             v-model="form.password"
                             variant="outlined"
                             density="comfortable"
                             label="کلمه عبور"
+                            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showPassword ? 'text' : 'password'"
+                            @click:append-inner="togglePasswordVisibility"
                         />
+                    </v-col>
+                    <v-col
+                        cols="6"
+                        v-if="form.role === 'teacher'"
+                    >
                         <v-text-field
-                            v-if="form.role === 'teacher'"
                             type="text"
                             v-model="form.slug"
                             variant="outlined"
@@ -171,9 +183,9 @@
                         <v-btn
                             color="primary"
                             type="submit"
-                            @click="addUser"
                             :loading="isLoading"
-                        >ایجاد کاربر</v-btn>
+                        >ایجاد کاربر
+                        </v-btn>
                     </v-col>
                 </v-row>
             </v-container>
@@ -186,6 +198,7 @@ import {Form, Head, useForm, usePage} from '@inertiajs/vue3'
 import {defineComponent, ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+
 defineComponent({
     components: {AdminLayout, Head}
 })
@@ -199,13 +212,14 @@ const props = defineProps({
     days: Object,
 })
 const status = ref(props.status);
-const roles  = ref(props.roles);
+const roles = ref(props.roles);
 const gender = ref(props.gender);
-const years  = ref(props.years);
+const years = ref(props.years);
 const months = ref(props.months);
-const days   = ref(props.days);
+const days = ref(props.days);
 
 const isLoading = ref(false);
+const showPassword = ref(false);
 
 const form = useForm({
     'firstname': '',
@@ -241,9 +255,13 @@ const addUser = () => {
     });
 };
 
+const togglePasswordVisibility = () => {
+    showPassword.value = !showPassword.value
+}
+
 </script>
 <style>
-.v-text-field__suffix__text{
+.v-text-field__suffix__text {
     direction: ltr;
 }
 </style>
