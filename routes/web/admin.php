@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PathController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,11 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/books', [BookController::class, 'index'])->name('books.index');
         Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
         Route::get('/books/edit/{id}', [BookController::class, 'edit'])->name('books.edit');
+
+        Route::get('/books/categories', [BookCategoryController::class, 'index'])->name('books.categories.index');
+        Route::post('/books/categories/create', [BookCategoryController::class, 'store'])->name('books.categories.store');
+        Route::put('/books/categories/{category}', [BookCategoryController::class, 'update'])->name('books.categories.update');
+        Route::delete('/books/categories/{category}', [BookCategoryController::class, 'destroy'])->name('books.categories.destroy');
 
         /********* Courses *********/
         Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
