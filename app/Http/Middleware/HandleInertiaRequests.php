@@ -102,6 +102,11 @@ class HandleInertiaRequests extends Middleware
                     'icon' => 'mdi-comment',
                     'route' => 'admin.comments.index'
                 ],
+                [
+                    'title' => 'تنظیمات',
+                    'icon' => 'mdi-cog',
+                    'route' => 'admin.settings.index'
+                ],
             ],
         ];
     }
