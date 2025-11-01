@@ -8,11 +8,11 @@ import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css'
 import {createVuetify} from 'vuetify';
 import * as components from 'vuetify/components';
-import { VDateInput } from 'vuetify/labs/VDateInput'
+import {VDateInput} from 'vuetify/labs/VDateInput'
 
 import * as directives from 'vuetify/directives';
 import {aliases, mdi} from 'vuetify/iconsets/mdi'
-import { fa, en } from 'vuetify/locale'
+import {fa, en} from 'vuetify/locale'
 
 const vuetify = createVuetify({
     components: {
@@ -46,11 +46,16 @@ const vuetify = createVuetify({
             mdi,
         },
     },
+    defaults: {
+        VSelect: {
+            menuIcon: 'mdi-chevron-down'
+        },
+    },
     rtl: true,
     locale: {
         locale: 'fa',
         fallback: 'en',
-        messages: { fa, en },
+        messages: {fa, en},
     },
 })
 createInertiaApp({
