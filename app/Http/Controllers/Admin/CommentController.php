@@ -9,20 +9,16 @@ use App\Models\Comment;
 use App\Models\Course;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends Controller
 {
-    /**
-     * Get all comments for a commentable item (Course or Book)
-     *
-     * @param string $type
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function index(string $type, int $id): JsonResponse
+
+    public function index()
     {
-        $model = $this->getCommentableModel($type, $id);
+        return Inertia::render('Admin/Comments/List');
+        /*$model = $this->getCommentableModel($type, $id);
 
         if (!$model) {
             return response()->json([
@@ -46,7 +42,7 @@ class CommentController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $comments
-        ]);
+        ]);*/
     }
 
     /**
