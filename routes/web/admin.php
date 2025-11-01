@@ -27,10 +27,11 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/', fn() => redirect()->route('admin.courses.index'));
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
+    Route::post('/books/store', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/edit/{id}', [BookController::class, 'edit'])->name('books.edit');
 
     Route::get('/books/categories', [BookCategoryController::class, 'index'])->name('books.categories.index');
-    Route::post('/books/categories/create', [BookCategoryController::class, 'store'])->name('books.categories.store');
+    Route::post('/books/categories/store', [BookCategoryController::class, 'store'])->name('books.categories.store');
     Route::put('/books/categories/{category}', [BookCategoryController::class, 'update'])->name('books.categories.update');
     Route::delete('/books/categories/{category}', [BookCategoryController::class, 'destroy'])->name('books.categories.destroy');
 
@@ -40,7 +41,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/courses/edit/{id}', [CourseController::class, 'edit'])->name('courses.edit');
 
     Route::get('/courses/categories', [CourseCategoryController::class, 'index'])->name('courses.categories.index');
-    Route::post('/courses/categories/create', [CourseCategoryController::class, 'store'])->name('courses.categories.store');
+    Route::post('/courses/categories/store', [CourseCategoryController::class, 'store'])->name('courses.categories.store');
     Route::put('/courses/categories/{category}', [CourseCategoryController::class, 'update'])->name('courses.categories.update');
     Route::delete('/courses/categories/{category}', [CourseCategoryController::class, 'destroy'])->name('courses.categories.destroy');
 
@@ -79,6 +80,4 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
 });
 
-Route::get('/upload', [TestController::class, 'index']);
-Route::post('/upload', [TestController::class, 'upload'])->name('upload');
 

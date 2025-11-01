@@ -12,29 +12,28 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="طرح کلی اندیشه‎ ی اسلامی در قرآن"
                                 prepend-inner-icon="mdi-text-short"
                             ></v-text-field>
                         </v-col>
                         <v-col class="v-col-12">
-                            <label class="zo-label">لینک کتاب</label>
+                            <label class="zo-label">نامک</label>
                             <v-text-field
                                 v-model="form.slug"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="Enghelab.ir/Mybook"
                                 prepend-inner-icon="mdi-link"
+                                :suffix="site_url+'/books/'"
+                                dir="ltr"
                             ></v-text-field>
                         </v-col>
                         <v-col class="v-col-12">
-                            <label class="zo-label">عنوان فرعی</label>
+                            <label class="zo-label">زیرعنوان</label>
                             <v-text-field
                                 v-model="form.subtitle"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="اصول فکری و اعتقادی اسلام در قرآن"
                                 prepend-inner-icon="mdi-text-short"
                             >
                             </v-text-field>
@@ -46,7 +45,6 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="قرآن کریم، کتاب هدایت و زندگی، تنها مجموعه‌ای از احکام و داستان‌ها نیست؛ بلکه نظامی منسجم از اندیشه، جهان‌بینی و ارزش‌های الهی را در خود جای داده است."
                                 prepend-inner-icon="mdi-text-long"
                             >
                             </v-textarea>
@@ -71,33 +69,27 @@
                         </v-col>
                         <v-col class="v-col-12 v-col-lg-6">
                             <label class="zo-label">قیمت عادی</label>
-                            <v-text-field
+                            <FieldNumber
                                 v-model="form.price"
+                                rightHint="تومان"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="275.000"
-                                prepend-inner-icon="mdi-tag"
-                            >
-                                <template #append-inner>
-                                    <small class="text-grey-darken-1">تومان</small>
-                                </template>
-                            </v-text-field>
+                                prepend-inner-icon="mdi-tag-multiple"
+                            />
                         </v-col>
                         <v-col class="v-col-12 v-col-lg-6">
                             <label class="zo-label">قیمت ویژه</label>
-                            <v-text-field
+                            <FieldNumber
                                 v-model="form.special_price"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
                                 placeholder="250.000"
                                 prepend-inner-icon="mdi-tag-multiple"
+                                rightHint="تومان"
                             >
-                                <template #append-inner>
-                                    <small class="text-grey-darken-1">تومان</small>
-                                </template>
-                            </v-text-field>
+                            </FieldNumber>
                         </v-col>
                         <v-col class="v-col-lg-4 v-col-md-6 v-col-12">
                             <label class="zo-label">ناشر</label>
@@ -154,26 +146,45 @@
                 <v-card class="pa-3 mb-3 elevation-2 position-sticky top-0">
                     <v-row dense>
                         <v-col class="v-col-12">
+                            <label class="zo-label">موجودی دارد؟</label>
+                            <v-select
+                                hide-details
+                                v-model="form.is_stock"
+                                variant="outlined"
+                                density="compact"
+                                placeholder="موجودی دارد؟"
+                                :items="[{
+                                    'title' : 'بله',
+                                    'value' : true,
+                                },
+                                {
+                                    'title' : 'خیر',
+                                    'value' : false,
+                                }]"
+                            >
+                            </v-select>
+                        </v-col>
+                        <v-col class="v-col-12" v-if="form.is_stock">
                             <label class="zo-label">موجودی انبار</label>
-                            <v-text-field
+                            <v-number-input
                                 v-model="form.stock"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
                                 placeholder="0"
                                 prepend-inner-icon="mdi-bookshelf"
-                            ></v-text-field>
+                            ></v-number-input>
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">حداکثر میزان قابل فروش</label>
-                            <v-text-field
+                            <v-number-input
                                 v-model="form.max_order"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
                                 placeholder="1"
                                 prepend-inner-icon="mdi-chart-line-variant"
-                            ></v-text-field>
+                            ></v-number-input>
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">وضعیت</label>
@@ -209,7 +220,14 @@
                             </v-file-upload>
                         </v-col>
                         <v-col class="v-col-12">
-                            <v-btn block size="large" color="primary">انتشار کتاب</v-btn>
+                            <v-btn
+                                block
+                                size="large"
+                                color="primary"
+                                :loading="isLoading"
+                                @click="AddBook"
+                            >انتشار کتاب
+                            </v-btn>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -219,16 +237,22 @@
 </template>
 
 <script setup>
-import {reactive} from 'vue';
+import {reactive, ref} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {VFileUpload} from 'vuetify/labs/VFileUpload'
 import {Head, useForm} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+import FieldNumber from "@/Components/FieldNumber.vue";
 
+const props = defineProps({
+    site_url: String
+})
+const site_url = props.site_url;
 const book = reactive({
     description: '',
 });
-
+const isLoading = ref(false);
 const form = useForm({
     'title': '',
     'subtitle': '',
@@ -241,10 +265,22 @@ const form = useForm({
     'year_published': '',
     'size': '',
     'edition': '',
-    'stock': '',
-    'max_order': '',
+    'is_stock': true,
+    'stock': null,
+    'max_order': null,
     'status': '',
     'category': '',
 });
+
+const AddBook = () => {
+    form.post(route('admin.books.store'), {
+        onStart: () => {
+            isLoading.value = true;
+        },
+        onFinish: () => {
+            isLoading.value = false;
+        }
+    })
+}
 
 </script>

@@ -164,7 +164,7 @@
                             variant="outlined"
                             density="comfortable"
                             label="نامک"
-                            suffix="https://amozesh.enghelab.ir/t/"
+                            :suffix="site_url+'/t/'"
                             dir="ltr"
                         />
                     </v-col>
@@ -198,12 +198,14 @@ const props = defineProps({
     years: Object,
     months: Object,
     days: Object,
+    site_url: String,
 })
 const roles = ref(props.roles);
 const gender = ref(props.gender);
 const years = ref(props.years);
 const months = ref(props.months);
 const days = ref(props.days);
+const site_url = ref(props.site_url);
 
 const isLoading = ref(false);
 const showPassword = ref(false);

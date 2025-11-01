@@ -15,7 +15,13 @@ class BookController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Books/Create');
+        $site_url = env('APP_URL');
+        return Inertia::render('Admin/Books/Create', compact('site_url'));
+    }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
     }
 
     public function edit()

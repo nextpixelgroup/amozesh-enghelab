@@ -71,7 +71,8 @@ class UserController extends Controller
         $years = years();
         $months = months();
         $days = days();
-        return Inertia::render('Admin/Users/Create', compact('roles', 'gender', 'years', 'months', 'days'));
+        $site_url = env('APP_URL');
+        return Inertia::render('Admin/Users/Create', compact('roles', 'gender', 'years', 'months', 'days', 'site_url'));
     }
 
     public function store(UserCreateRequest $request)
