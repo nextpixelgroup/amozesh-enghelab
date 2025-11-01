@@ -65,6 +65,9 @@ Route::name('admin.')->prefix('admin')->group(function () {
     /********* Users *********/
     Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
 
+    /********* supports *********/
+    Route::get('/supports', [CommentController::class, 'index'])->name('supports.index');
+
     /********* Setting *********/
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
 
