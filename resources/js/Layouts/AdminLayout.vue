@@ -13,13 +13,20 @@ const menuItems = computed(() => page.props.menuItems || []);
 
 const confirmRef = ref(null)
 
-// بعد از mount، متد open رو در window ذخیره می‌کنیم تا از هرجا قابل صدا زدن باشه
+const socialButtons = [
+    {src: '/assets/img/soroosh-green.svg', alt: 'Soroosh'},
+    {src: '/assets/img/bale-green.svg', alt: 'Bale'},
+    {src: '/assets/img/eitaa-green.svg', alt: 'Eitaa'},
+    {src: '/assets/img/aparat-green.svg', alt: 'Aparat'},
+]
+
 onMounted(() => {
     window.$confirm = async (message, options = {}) => {
         return await confirmRef.value.open({
             msg: message,
             ttl: options.title || 'تأیید عملیات',
             color: options.color || 'red',
+            socialButtons
         })
     }
 })
@@ -34,30 +41,28 @@ onMounted(() => {
             permanent
             location="right"
             color="primary"
-            class="elevation-3"
+            class="elevation-2 zo-drawer-section"
         >
-            <v-list-item
-                prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-                title="حسین هزاره"
-                nav
-            >
-            </v-list-item>
+            <div class="zo-logo">
+                <img src="/assets/img/logo-typo.svg" alt="">
+            </div>
 
-            <v-divider></v-divider>
+            <div class="px-3">
+                <v-divider></v-divider>
+            </div>
 
-            <v-list density="comfortable" nav class="px-0">
+            <v-list density="comfortable" class="px-1">
                 <template v-for="(item, i) in menuItems" :key="i">
                     <!-- Menu items with children (submenu) -->
-                    <v-list-group v-if="item.children" :value="item.title" color="warning">
+                    <v-list-group v-if="item.children" :value="item.title">
                         <template v-slot:activator="{ props }">
                             <v-list-item
                                 v-bind="props"
                                 :prepend-icon="item.icon"
-                                class="pl-۱ mb-1"
                                 :title="item.title"
                                 :value="item.route"
                                 :active="isActive(item.route) || item.children.some(child => isActive(child.route))"
-                                rounded="lg"
+                                rounded
                             ></v-list-item>
                         </template>
 
@@ -67,10 +72,9 @@ onMounted(() => {
                             :title="child.title"
                             :value="child.route"
                             :prepend-icon="child.icon"
-                            class="pl-2"
                             :active="isActive(child.route)"
                             @click="navigate(child.route)"
-                            rounded="lg"
+                            rounded
                         ></v-list-item>
                     </v-list-group>
 
@@ -81,44 +85,44 @@ onMounted(() => {
                         :title="item.title"
                         :active="isActive(item.route)"
                         :value="item.route"
-                        color="warning"
-                        class="mb-1"
-                        rounded="lg"
                         @click="navigate(item.route)"
+                        rounded
                     ></v-list-item>
                 </template>
             </v-list>
 
             <template v-slot:append>
-                <div class="pa-2">
-                    <v-btn
-                        block
-                        color="error"
-                        variant="tonal"
-                        prepend-icon="mdi-logout"
-                        @click="router.post(route('admin.logout'))"
-                    >
-                        خروج از سیستم
-                    </v-btn>
-                </div>
+                <ul class="zo-social">
+                    <li v-for="(btn, index) in socialButtons" :key="index">
+                        <v-btn>
+                            <img :src="btn.src" :alt="btn.alt" width="15" height="15"/>
+                        </v-btn>
+                    </li>
+                </ul>
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar color="white" elevation="1" density="comfortable" class="d-flex justify-space-between mb-3">
+        <v-app-bar color="white" elevation="2" density="comfortable" class="d-flex justify-space-between px-3 mb-3">
 
 
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
 
             <v-toolbar-title class="text-h6 font-weight-bold">
-                پنل مدیریت
+
             </v-toolbar-title>
 
             <div class="d-flex align-center">
-                <v-btn icon class="ml-2">
-                    <v-badge color="error" content="2" dot>
-                        <v-icon>mdi-bell</v-icon>
+                <v-btn icon>
+                    <v-badge color="secondary" content="9">
+                        <v-icon>mdi-message-processing</v-icon>
                     </v-badge>
+                </v-btn>
+                <v-btn icon>
+                    <v-icon>mdi-account-circle</v-icon>
+                </v-btn>
+                <v-btn icon>
+                    <v-icon>mdi-logout</v-icon>
                 </v-btn>
             </div>
 
@@ -140,22 +144,3 @@ onMounted(() => {
         <FlashMessage/>
     </v-app>
 </template>
-
-<style scoped>
-.v-navigation-drawer {
-    direction: rtl;
-}
-
-.v-list-item {
-    text-align: right;
-}
-
-.v-list-item__prepend {
-    margin-right: 0;
-    margin-left: 12px;
-}
-
-.v-list-item--active {
-    background: rgba(255, 255, 255, 0.1);
-}
-</style>

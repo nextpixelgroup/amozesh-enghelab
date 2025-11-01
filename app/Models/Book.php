@@ -10,9 +10,11 @@ class Book extends Model
 {
     protected $fillable = [
         'title',
+        'subtitle',
+        'slug',
         'thumbnail',
         'price',
-        'description',
+        'content',
         'stock',
         'max_order',
         'status',
@@ -24,6 +26,11 @@ class Book extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    public function thumbnail()
+    {
+        return $this->belongsTo(Media::class, 'thumbnail_id');
+    }
 
     /**
      * Get all categories for the book.

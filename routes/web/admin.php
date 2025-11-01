@@ -71,3 +71,5 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
 });
 
+Route::post('/test', [TestController::class, 'upload'])->name('test.upload');
+

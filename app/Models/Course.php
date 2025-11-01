@@ -15,6 +15,11 @@ class Course extends Model
         'must_complete_quizzes' => 'boolean',
     ];
 
+    public function thumbnail()
+    {
+        return $this->belongsTo(Media::class, 'thumbnail_id');
+    }
+
     // Relationships
     public function teacher()
     {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BookStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,20 +14,23 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->string('title',150);
+            $table->string('subtitle')->index()->nullable();
+            $table->string('slug')->index()->unique();
+            $table->text('expert')->nullable();
+            $table->text('content');
             $table->string('thumbnail')->nullable();
-            $table->decimal('price', 15, 0)->default(0);
-            $table->unsignedInteger('stock')->default(0);
-            $table->unsignedInteger('max_order')->default(5);
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->string('publisher',100)->nullable();
+            $table->decimal('price', 20, 0)->index()->default(0);
+            $table->decimal('special_price', 20, 0)->index()->default(0);
+            $table->unsignedInteger('stock')->index()->default(0);
+            $table->unsignedInteger('max_order')->index()->default(1);
+            $table->string('year_published',30);
+            $table->string('edition',50);
+            $table->enum('status', enumNames(BookStatusEnum::cases()))->index()->default('draft');
             $table->timestamps();
             $table->softDeletes();
-
-            // Indexes
-            $table->index('status');
-            $table->index('price');
+            $table->fullText(['title', 'content']);
         });
 
     }

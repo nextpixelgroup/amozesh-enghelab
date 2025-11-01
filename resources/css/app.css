@@ -212,3 +212,48 @@ th {
     font-size: 1rem;
     font-weight: 500
 }
+
+.zo-drawer-section .v-list .v-list-item .v-list-item__prepend {
+    width: 35px;
+}
+
+.zo-drawer-section .v-list .v-list-item .v-list-item__append {
+    position: relative;
+    left: -10px
+}
+
+.zo-drawer-section .v-list .v-list-group .v-list-group__items .v-list-item {
+    min-height: 40px;
+    padding: 0 30px 0 0 !important;
+}
+
+.zo-drawer-section .v-list .v-list-group .v-list-group__items .v-list-item .v-list-item-title {
+    font-size: .95rem
+}
+
+.zo-drawer-section .zo-logo {
+    margin: 15px auto;
+    text-align: center
+}
+
+.zo-drawer-section .zo-logo img {
+    margin: 0 auto;
+}
+
+.zo-drawer-section .zo-social {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.zo-drawer-section .zo-social li {
+    display: inline-block;
+}
+
+.zo-drawer-section .zo-social li .v-btn {
+    min-width: 35px;
+    min-height: 35px;
+    padding: 0;
+    border-radius: 50%;
+}

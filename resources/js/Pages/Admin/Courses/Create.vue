@@ -65,17 +65,17 @@
                     api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
                     v-model="course.description"
                     :init="{
-        height: 400,
-        menubar: true,
-        language: 'fa',
-        plugins: 'link image media table code lists',
-      toolbar:
-        'undo redo | formatselect | bold italic underline | ' +
-        'alignleft aligncenter alignright | bullist numlist outdent indent | ' +
-        'image media link code table',
-      images_upload_url: '/upload/image',
-      file_picker_types: 'image media',
-    }"
+                        height: 400,
+                        menubar: true,
+                        language: 'fa',
+                        plugins: 'link image media table code lists',
+                      toolbar:
+                        'undo redo | formatselect | bold italic underline | ' +
+                        'alignleft aligncenter alignright | bullist numlist outdent indent | ' +
+                        'image media link code table',
+                      images_upload_url: '/upload/image',
+                      file_picker_types: 'image media',
+                    }"
                 />
             </div>
 
