@@ -29,7 +29,7 @@ class UserResource extends JsonResource
             'birth_date'    => $this->birthDateObject,
             'company'       => $this->company,
             'role'          => $this->roleObject,
-            'status'        => $this->statusObject,
+            'status'        => $this->status(),
             'slug'          => $this->slug,
         ];
     }

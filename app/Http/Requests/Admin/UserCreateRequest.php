@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\GenderEnum;
-use App\Enums\UserGenderEnum;
-use App\Enums\UserStatusEnum;
 use App\Models\User;
 use App\Rules\IsMobile;
 use Illuminate\Foundation\Http\FormRequest;
@@ -32,7 +30,7 @@ class UserCreateRequest extends FormRequest
             'lastname'      => 'nullable|string|min:2|max:255',
             'gender'        => 'nullable|in:'.collect(GenderEnum::cases())->pluck('name')->implode(','),
             'national_code' => 'nullable|string|digits:10|unique:users,national_code',
-            'mobile'        => ['required', 'unique:users,mobile', new IsMobile],
+            'mobile'        => ['nullable', 'unique:users,mobile', new IsMobile],
             'email'         => 'nullable|email|unique:users,email',
             'address'       => 'nullable|string|min:5|max:255',
             'postal_code'   => 'nullable|numeric',
@@ -40,7 +38,6 @@ class UserCreateRequest extends FormRequest
             'birth_month'   => 'nullable|numeric',
             'birth_year'    => 'nullable|numeric',
             'company'       => 'nullable|string|min:2|max:255',
-            'status'        => 'required|in:'.collect(UserStatusEnum::cases())->pluck('name')->implode(','),
             'role'          => 'required|in:'.User::allRoles()->pluck('value')->implode(','),
             'username' => [
                 Rule::requiredIf(fn () => in_array($this->input('role'), ['admin', 'content-manager'])),
@@ -89,7 +86,6 @@ class UserCreateRequest extends FormRequest
             'national_code.unique' => 'این کد ملی قبلاً ثبت شده است.',
 
             // Mobile
-            'mobile.required' => 'وارد کردن شماره موبایل الزامی است.',
             'mobile.unique' => 'این شماره موبایل قبلاً ثبت شده است.',
 
             // Email
@@ -112,10 +108,6 @@ class UserCreateRequest extends FormRequest
             // Company
             'company.min' => 'نام شرکت باید حداقل :min کاراکتر باشد.',
             'company.max' => 'نام شرکت نمی‌تواند بیشتر از :max کاراکتر باشد.',
-
-            // Status
-            'status.required' => 'انتخاب وضعیت الزامی است.',
-            'status.in' => 'وضعیت انتخاب شده معتبر نیست.',
 
             // Role
             'role.required' => 'انتخاب نقش الزامی است.',

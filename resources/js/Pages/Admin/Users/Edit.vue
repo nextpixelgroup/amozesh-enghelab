@@ -119,17 +119,6 @@
                     </v-col>
                     <v-col cols="3">
                         <v-select
-                            v-model="form.status"
-                            label="وضعیت"
-                            variant="outlined"
-                            density="comfortable"
-                            :items="status"
-                            item-title="title"
-                            item-value="value"
-                        />
-                    </v-col>
-                    <v-col cols="3">
-                        <v-select
                             v-model="form.role"
                             label="نقش کاربری"
                             variant="outlined"
@@ -175,7 +164,7 @@
                             variant="outlined"
                             density="comfortable"
                             label="نامک"
-                            suffix="https://amozesh.enghelab.ir/t/"
+                            :suffix="site_url+'/'"
                             dir="ltr"
                         />
                     </v-col>
@@ -191,6 +180,13 @@
             </v-container>
 
         </v-form>
+        <v-divider class="mb-4 mt-4"></v-divider>
+
+        <UserRestrictionComponent
+            :user="user"
+            :restrictions="restrictions"
+            :restrictionTypes="restrictionTypes"
+        />
     </AdminLayout>
 </template>
 <script setup>
@@ -198,29 +194,31 @@ import {Form, Head, Link, router, useForm, usePage} from '@inertiajs/vue3'
 import {defineComponent, ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+import UserRestrictionComponent from "@/Components/UserRestrictionComponent.vue";
 defineComponent({
     components: {AdminLayout, Head}
 })
 
 const props = defineProps({
     roles: Object,
-    status: Object,
     gender: Object,
     years: Object,
     months: Object,
     days: Object,
     user: Object,
     site_url: Object,
+    restrictions: Object,
+    restrictionTypes: Object,
 })
-const status   = ref(props.status);
-const roles    = ref(props.roles);
-const gender   = ref(props.gender);
-const years    = ref(props.years);
-const months   = ref(props.months);
-const days     = ref(props.days);
-const user     = ref(props.user.data);
-const site_url = ref(props.site_url);
-const isLoading = ref(false);
+const roles        = ref(props.roles);
+const gender       = ref(props.gender);
+const years        = ref(props.years);
+const months       = ref(props.months);
+const days         = ref(props.days);
+const user         = ref(props.user.data);
+const restrictions = ref(props.restrictions);
+const site_url     = ref(props.site_url);
+const isLoading    = ref(false);
 const showPassword = ref(false);
 const form = useForm({
     'firstname': user.value.firstname,
@@ -235,7 +233,6 @@ const form = useForm({
     'birth_month': user.value.birth_date.object.month,
     'birth_year': user.value.birth_date.object.year,
     'company': user.value.company,
-    'status': user.value.status.value,
     'role': user.value.role.value,
     'username': user.value.username,
     'password': '',

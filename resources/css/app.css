@@ -135,6 +135,24 @@ th {
     border-radius: 2px
 }
 
+.status-temporary_ban{
+    width: 100px;
+    display: inline-block;
+    padding: 3.5px 15px;
+    background: rgba(150, 90, 5, .15);
+    color: rgb(150, 90, 5);
+    border-radius: 2px
+}
+
+.status-ban{
+    width: 100px;
+    display: inline-block;
+    padding: 3.5px 15px;
+    background: rgba(255, 0, 0, 0.15);
+    color: rgb(255, 0, 0);
+    border-radius: 2px
+}
+
 .zo-header-section .zo-info {
     display: flex;
     align-items: center;

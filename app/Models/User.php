@@ -5,7 +5,6 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\GenderEnum;
-use App\Enums\UserStatusEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,7 +37,6 @@ class User extends Authenticatable
         'address',
         'company',
         'password',
-        'status',
     ];
 
 
@@ -84,6 +82,11 @@ class User extends Authenticatable
                 'value' => 'user',
             ]
         ]);
+    }
+
+    public static function assessToAdmin()
+    {
+        return ['super-admin', 'admin', 'content-manager'];
     }
 
     public function educationals(): HasMany
@@ -168,16 +171,22 @@ class User extends Authenticatable
             ->exists();
     }
 
-    protected function statusObject(): Attribute
+    public function restrictions()
     {
-        return Attribute::make(
-            get: function ($value, $attributes) {
-                $value = $attributes['status'];
-                $title = UserStatusEnum::fromKey($value)->value;
-                return ['value' => $value, 'title' => $title];
-            }
-        );
+        return $this->hasMany(Restriction::class);
     }
+
+    public function isRestricted(): bool
+    {
+        return $this->restrictions()->where(function ($query){
+            $query->where('expires_at',null)->orWhere('expires_at','>',now());
+        })->count() > 0;
+    }
+
+    /*public function activeRestriction()
+    {
+        return $this->restrictions->first(fn ($restriction) => $restriction->isActive());
+    }*/
 
     protected function genderObject(): Attribute
     {
@@ -218,6 +227,17 @@ class User extends Authenticatable
                 ];
             }
         );
+    }
+
+    public function status()
+    {
+        //dump($this->isRestricted());
+        if($this->isRestricted()){
+            $data = ['value' => 'ban', 'title' => 'بن شده'];
+        }else{
+            $data = ['value' => 'active', 'title' => 'فعال'];
+        }
+        return $data;
     }
 
 }

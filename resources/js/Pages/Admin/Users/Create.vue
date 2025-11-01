@@ -119,17 +119,6 @@
                     </v-col>
                     <v-col cols="3">
                         <v-select
-                            v-model="form.status"
-                            label="وضعیت"
-                            variant="outlined"
-                            density="comfortable"
-                            :items="status"
-                            item-title="title"
-                            item-value="value"
-                        />
-                    </v-col>
-                    <v-col cols="3">
-                        <v-select
                             v-model="form.role"
                             label="نقش کاربری"
                             variant="outlined"
@@ -205,13 +194,11 @@ defineComponent({
 
 const props = defineProps({
     roles: Object,
-    status: Object,
     gender: Object,
     years: Object,
     months: Object,
     days: Object,
 })
-const status = ref(props.status);
 const roles = ref(props.roles);
 const gender = ref(props.gender);
 const years = ref(props.years);
@@ -234,7 +221,6 @@ const form = useForm({
     'birth_month': '',
     'birth_year': '',
     'company': '',
-    'status': 'active',
     'role': '',
     'username': '',
     'password': '',

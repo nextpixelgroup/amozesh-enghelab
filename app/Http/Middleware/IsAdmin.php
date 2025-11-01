@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class IsAdmin
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $allowedRoles = ['super-admin', 'admin', 'content-manager'];
+        $allowedRoles = User::assessToAdmin();
 
         if (!$user->hasAnyRole($allowedRoles)) {
             $message = 'دسترسی غیر مجاز';

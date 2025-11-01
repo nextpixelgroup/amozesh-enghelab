@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CourseCategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PathController;
+use App\Http\Controllers\Admin\RestrictionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BookCategoryController;
@@ -22,6 +23,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     /*Route::middleware(['auth', 'admin'])->group(function () {*/
 
         /********* Books *********/
+        Route::get('/', fn () => redirect()->route('admin.courses.index') );
         Route::get('/books', [BookController::class, 'index'])->name('books.index');
         Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
         Route::get('/books/edit/{id}', [BookController::class, 'edit'])->name('books.edit');
@@ -55,6 +57,8 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
         Route::get('/users/{user}', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::post('/users/{user}/restrictions/', [RestrictionController::class, 'store'])->name('users.restrictions.store');
+        Route::put('/users/restrictions/{restriction}', [RestrictionController::class, 'update'])->name('users.restrictions.update');
 
         /********* Setting *********/
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

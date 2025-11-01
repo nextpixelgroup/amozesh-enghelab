@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\GenderEnum;
-use App\Enums\UserGenderEnum;
-use App\Enums\UserStatusEnum;
 use App\Models\User;
 use App\Rules\IsMobile;
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,7 +37,7 @@ class UserUpdateRequest extends FormRequest
 
             ],
             'mobile' => [
-                'required',
+                'nullable',
                 new IsMobile,
                 Rule::unique('users', 'mobile')->ignore($this->user?->id)
             ],
@@ -54,7 +52,6 @@ class UserUpdateRequest extends FormRequest
             'birth_month'   => 'nullable|numeric',
             'birth_year'    => 'nullable|numeric',
             'company'       => 'nullable|string|min:2|max:255',
-            'status'        => 'required|in:'.collect(UserStatusEnum::cases())->pluck('name')->implode(','),
             'role'          => 'required|in:'.User::allRoles()->pluck('value')->implode(','),
             'username' => [
                 Rule::requiredIf(fn () => in_array($this->input('role'), ['admin', 'content-manager'])),
@@ -106,7 +103,6 @@ class UserUpdateRequest extends FormRequest
             'national_code.unique' => 'این کد ملی قبلاً ثبت شده است.',
 
             // Mobile
-            'mobile.required' => 'وارد کردن شماره موبایل الزامی است.',
             'mobile.unique' => 'این شماره موبایل قبلاً ثبت شده است.',
 
             // Email
@@ -129,10 +125,6 @@ class UserUpdateRequest extends FormRequest
             // Company
             'company.min' => 'نام شرکت باید حداقل :min کاراکتر باشد.',
             'company.max' => 'نام شرکت نمی‌تواند بیشتر از :max کاراکتر باشد.',
-
-            // Status
-            'status.required' => 'انتخاب وضعیت الزامی است.',
-            'status.in' => 'وضعیت انتخاب شده معتبر نیست.',
 
             // Role
             'role.required' => 'انتخاب نقش الزامی است.',

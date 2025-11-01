@@ -142,16 +142,21 @@ const query = new URLSearchParams(page.url.split('?')[1])
 // Props
 const props = defineProps({
     users: Object,
-    status: Object,
     roles: Object,
+    restrict: Object,
 })
 const currentPage = ref(props.users?.meta.current_page)
 const users = ref(props.users.data);
-const status = ref(props.status);
 const roles = ref(props.roles);
+const status = ref([
+    {
+        'title' : 'بن شده',
+        'value' : 'ban',
+    }
+]);
+const restrict = ref(props.restrict);
 
 const filters = ref({
-    status: query.get('status') ?? '',
     role: query.get('role') ?? '',
     search: query.get('search') ?? '',
 });

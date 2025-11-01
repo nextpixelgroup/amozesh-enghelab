@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\GenderEnum;
-use App\Enums\UserStatusEnum;
+use App\Enums\UserRestrictionTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
+use App\Http\Resources\RestrictionResource;
 use App\Http\Resources\UserResource;
+use App\Models\Restriction;
 use App\Models\User;
 use Hekmatinasser\Verta\Facades\Verta;
 use Illuminate\Database\Query\Builder;
@@ -21,7 +23,6 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $status = enumFormated(UserStatusEnum::cases());
         $roles = User::allRoles();
         $query = User::query()
             ->whereDoesntHave('roles', function($query) {
@@ -29,9 +30,16 @@ class UserController extends Controller
             })
             ->with('roles');
 
+
         // فیلتر بر اساس وضعیت
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            if($request->status == 'ban'){
+                $query->whereHas('restrictions', function($query) {
+                    $query->where('expires_at', '>', now())
+                        ->orWhereNull('expires_at');
+                });
+            }
+
         }
 
         // فیلتر بر اساس نقش
@@ -53,26 +61,23 @@ class UserController extends Controller
         }
 
         $users = UserResource::collection($query->orderBy('id', 'desc')->paginate(config('app.per_page')));
-        return Inertia::render('Admin/Users/List', compact('users', 'status', 'roles'));
+        return Inertia::render('Admin/Users/List', compact('users', 'roles'));
     }
 
     public function create()
     {
-        $status = enumFormated(UserStatusEnum::cases());
         $roles = User::allRoles();
         $gender = enumFormated(GenderEnum::cases());
         $years = years();
         $months = months();
         $days = days();
-        return Inertia::render('Admin/Users/Create', compact('status', 'roles', 'gender', 'years', 'months', 'days'));
+        return Inertia::render('Admin/Users/Create', compact('roles', 'gender', 'years', 'months', 'days'));
     }
 
     public function store(UserCreateRequest $request)
     {
-        Log::info(1);
         try {
             DB::transaction(function () use ($request) {
-                Log::info(2);
                 $birthDate = null;
                 if($request->birth_day && $request->birth_month && $request->birth_year){
                     $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
@@ -82,7 +87,6 @@ class UserController extends Controller
                 if($request->password){
                     $password = Hash::make($request->password);
                 }
-                Log::info(3);
                 $user = User::create([
                     'firstname'     => $request->firstname,
                     'lastname'      => $request->lastname,
@@ -94,18 +98,14 @@ class UserController extends Controller
                     'postal_code'   => $request->postal_code,
                     'birth_date'    => $birthDate,
                     'company'       => $request->company,
-                    'status'        => $request->status,
                     'username'      => $request->username,
                     'password'      => $password,
                     'slug'          => $request->slug,
                 ]);
-                Log::info(4);
                 if($user){
                     $user->assignRole($request->role);
                 }
-                Log::info(5);
             });
-            Log::info(6);
             return redirectMessage('success', 'کاربر با موفقیت ایجاد شد.', redirect: route('admin.users.index'));
 
         }
@@ -116,15 +116,16 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $status = enumFormated(UserStatusEnum::cases());
         $roles = User::allRoles();
         $gender = enumFormated(GenderEnum::cases());
         $years = years();
         $months = months();
         $days = days();
         $site_url = env('APP_URL');
+        $restrictions = RestrictionResource::collection($user->restrictions()->latest()->get());
+        $restrictionTypes = enumFormated(UserRestrictionTypeEnum::cases());
         $user = new UserResource($user);
-        return Inertia::render('Admin/Users/Edit', compact('status', 'roles', 'gender', 'years', 'months', 'days', 'user', 'site_url'));
+        return Inertia::render('Admin/Users/Edit', compact('roles', 'gender', 'years', 'months', 'days', 'user', 'site_url', 'restrictions', 'restrictionTypes'));
     }
 
     public function update(User $user, UserUpdateRequest $request)
@@ -146,7 +147,6 @@ class UserController extends Controller
                 'postal_code'   => $request->postal_code,
                 'birth_date'    => $birthDate,
                 'company'       => $request->company,
-                'status'        => $request->status,
                 'username'      => $request->username,
                 'slug'          => $request->slug,
             ];
@@ -155,7 +155,7 @@ class UserController extends Controller
             }
             $update = $user->update($args);
             if($update){
-                $user->assignRole($request->role);
+                $user->syncRoles($request->role);
             }
             return redirectMessage('success', 'کاربر با موفقیت ویرایش شد.');
 

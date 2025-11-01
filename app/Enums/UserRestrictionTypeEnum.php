@@ -2,11 +2,10 @@
 
 namespace App\Enums;
 
-enum UserStatusEnum: string
+enum UserRestrictionTypeEnum: string
 {
-    case active = 'فعال';
-    case deactive = 'غیرفعال';
-    case suspended = 'مسدود';
+    case ban = 'مسدود';
+    case temporary_ban = 'موقت';
 
     public static function fromKey(string $key): ?self
     {
