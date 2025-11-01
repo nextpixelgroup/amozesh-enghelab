@@ -99,7 +99,7 @@ class HandleInertiaRequests extends Middleware
                 ],
                 [
                     'title' => 'نظرات',
-                    'icon' => 'mdi-cart',
+                    'icon' => 'mdi-comment',
                     'route' => 'admin.comments.index'
                 ],
             ],
