@@ -28,6 +28,16 @@ const book = reactive({
                             ></v-text-field>
                         </v-col>
                         <v-col class="v-col-12">
+                            <label class="zo-label">لینک کتاب</label>
+                            <v-text-field
+                                hide-details
+                                density="compact"
+                                variant="outlined"
+                                placeholder="Enghelab.ir/Mybook"
+                                prepend-inner-icon="mdi-link"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col class="v-col-12">
                             <label class="zo-label">عنوان فرعی</label>
                             <v-text-field
                                 hide-details
@@ -150,6 +160,16 @@ const book = reactive({
                                 variant="outlined"
                                 placeholder="0"
                                 prepend-inner-icon="mdi-bookshelf"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <label class="zo-label">حداکثر میزان قابل فروش</label>
+                            <v-text-field
+                                hide-details
+                                density="compact"
+                                variant="outlined"
+                                placeholder="1"
+                                prepend-inner-icon="mdi-chart-line-variant"
                             ></v-text-field>
                         </v-col>
                         <v-col class="v-col-12">
