@@ -134,12 +134,6 @@ onMounted(() => {
             </v-container>
         </v-main>
 
-        <v-footer color="white" class="justify-center py-4">
-            <div class="text-caption text-medium-emphasis">
-                تمامی حقوق محفوظ است © {{ new Date().getFullYear() }} - گروه فناوری اطلاعات نکست پیکسل
-            </div>
-        </v-footer>
-
         <!-- Global Flash Message -->
         <FlashMessage/>
     </v-app>
