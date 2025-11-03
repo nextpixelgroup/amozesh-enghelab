@@ -55,7 +55,7 @@
                 <thead>
                 <tr>
                     <th class="text-center">ردیف</th>
-                    <th class="text-center">تصویر</th>
+                    <th class="text-center">کاربر</th>
                     <th class="text-right">عنوان</th>
                     <th class="text-center">نویسنده</th>
                     <th class="text-center">وضعیت</th>
@@ -83,30 +83,6 @@
                     <td class="text-center">
                         <span :class="item.status">{{ item.status_name }}</span>
                     </td>
-                    <td class="text-center">
-                        <div>
-                            <template v-if="item.sale_price">
-                                <div class="zo-price">
-                                    <del>{{ Number(item.price).toLocaleString('fa-IR') }}</del>
-                                    <div class="zo-sale">
-                                        <strong class="pe-1">
-                                            {{ Number(item.sale_price).toLocaleString('fa-IR') }}
-                                        </strong>
-                                        <small>تومان</small>
-                                    </div>
-                                </div>
-                            </template>
-                            <template v-else>
-                                <div>
-                                    <strong class="pe-1">{{ Number(item.price).toLocaleString('fa-IR') }}</strong>
-                                    <small>تومان</small>
-                                </div>
-                            </template>
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        {{ item.stock }}
-                    </td>
                     <td>
                         <div class="d-flex ga-1">
                             <v-btn icon="mdi-eye" size="small" color="primary"></v-btn>
@@ -130,41 +106,35 @@ const books = ref([
     {
         "id": "1",
         "row": "1",
-        "avatar": '/assets/img/books/1.webp',
+        "avatar": '/assets/img/prof/4.jpg',
         "author": "حسین نوابیان",
         "type": "موسسه آموزش عالی فردوس",
         "comment": "سلام خوبین",
-        "status": "pending",
-        "status_name": "در حال بررسی",
         "course": "دوره مدیریت فرهنگی جبهه انقلاب",
-        "sale_price": "159000",
-        "stock": "8"
+        "date": "1404/07/19",
+        "time": "9:42 ب.ظ"
     },
     {
         "id": "2",
         "row": "2",
-        "image": '/assets/img/books/2.webp',
-        "title": "کتاب جهان پس از ظهور",
-        "subtitle": "کتاب جهان پس از ظهور - ترسیم چشم‌انداز آخرالزمان در روایات اسلامی",
-        "author": " دکتر مریم عظیمیان",
-        "status": "archive",
-        "status_name": "آرشیو",
-        "price": "245000",
-        "sale_price": "190000",
-        "stock": "9"
+        "avatar": '/assets/img/prof/2.jpg',
+        "author": "حسین نوابیان",
+        "type": "موسسه آموزش عالی فردوس",
+        "comment": "سلام خوبین",
+        "course": "دوره مدیریت فرهنگی جبهه انقلاب",
+        "date": "1404/07/19",
+        "time": "9:42 ب.ظ"
     },
     {
         "id": "3",
         "row": "3",
-        "image": '/assets/img/books/3.webp',
-        "title": "کتاب موعود در آیینه ادیان",
-        "subtitle": "کتاب موعود در آیینه ادیان - تحلیل تاریخی و اعتقادی مهدویت در ادیان مختلف",
-        "author": " دکتر حسین نوابیان",
-        "status": "draft",
-        "status_name": "پیش نویس",
-        "price": "550000",
-        "sale_price": "",
-        "stock": "10"
+        "avatar": '/assets/img/prof/3.jpg',
+        "author": "حسین نوابیان",
+        "type": "موسسه آموزش عالی فردوس",
+        "comment": "سلام خوبین",
+        "course": "دوره مدیریت فرهنگی جبهه انقلاب",
+        "date": "1404/07/19",
+        "time": "9:42 ب.ظ"
     },
 ])
 </script>
