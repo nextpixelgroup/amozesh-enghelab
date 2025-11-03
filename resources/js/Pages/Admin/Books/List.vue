@@ -84,7 +84,7 @@
                         {{ item.author }}
                     </td>
                     <td class="text-center">
-                        <span :class="item.status">{{ item.status_name }}</span>
+                        <span :class="'status-' + item.status">{{ item.status_name }}</span>
                     </td>
                     <td class="text-center">
                         <div>

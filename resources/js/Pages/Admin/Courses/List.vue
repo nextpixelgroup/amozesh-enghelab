@@ -178,7 +178,7 @@ const books = ref([
                         <div class="d-flex align-items-center ga-3">
                             <v-avatar>
                                 <v-img
-                                    alt="John"
+                                    :alt="item.prof"
                                     :src="item.avatar"
                                 ></v-img>
                             </v-avatar>
@@ -189,7 +189,7 @@ const books = ref([
                         </div>
                     </td>
                     <td class="text-center">
-                        <span :class="item.status">{{ item.status_name }}</span>
+                        <span :class="'status-' + item.status">{{ item.status_name }}</span>
                     </td>
                     <td class="text-center">
                         {{ item.users }}

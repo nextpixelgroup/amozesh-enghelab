@@ -23,7 +23,7 @@
                               variant="outlined"
                               density="compact"
                               label="وضعیت انتشار"
-                              :items="['منتشر شده', 'پیش نویس', 'آرشیو']"
+                              :items="['موفق', 'بررسی', 'حذف']"
                     >
                     </v-select>
                 </v-col>
