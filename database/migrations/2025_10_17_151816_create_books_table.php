@@ -26,8 +26,9 @@ return new class extends Migration
             $table->boolean('is_stock')->index()->default(true);
             $table->unsignedInteger('stock')->index()->nullable();
             $table->unsignedInteger('max_order')->index()->default(1);
-            $table->string('year_published',30);
-            $table->string('edition',50);
+            $table->string('year_published',30)->nullable();
+            $table->string('edition',50)->nullable();
+            $table->string('author',100)->index()->nullable();
             $table->enum('status', enumNames(BookStatusEnum::cases()))->index()->default('draft');
             $table->timestamps();
             $table->softDeletes();

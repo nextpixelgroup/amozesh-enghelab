@@ -37,6 +37,7 @@ class BookCreateRequest extends FormRequest
             'max_order' => 'required|numeric',
             'year_published' => 'nullable',
             'edition' => 'nullable',
+            'author' => 'nullable',
             'status' => 'required|in:'.implode(',', enumNames(BookStatusEnum::cases())),
         ];
     }
