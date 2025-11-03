@@ -89,58 +89,42 @@ th {
     transform: rotate(-15deg)
 }
 
-.status-publish {
+.zo-status {
     width: 100px;
     display: block;
+    margin: auto;
     padding: 3.5px 15px;
-    background: rgba(5, 105, 60, .15);
-    color: rgb(5, 105, 60);
     border-radius: 2px
 }
 
-.status-draft {
-    width: 100px;
-    display: block;
-    padding: 3.5px 15px;
+.zo-publish {
+    background: rgba(5, 105, 60, .15);
+    color: rgb(5, 105, 60)
+}
+
+.zo-draft {
     background: rgba(150, 90, 5, .15);
     color: rgb(150, 90, 5);
-    border-radius: 2px
 }
 
-.status-archive {
-    width: 100px;
-    display: inline-block;
-    padding: 3.5px 15px;
+.zo-archive {
     background: rgba(0, 0, 0, .15);
     color: rgb(45, 45, 45);
-    border-radius: 2px
 }
 
-.status-active {
-    width: 100px;
-    display: inline-block;
-    padding: 3.5px 15px;
+.zo-active {
     background: rgba(5, 105, 60, .15);
     color: rgb(5, 105, 60);
-    border-radius: 2px
 }
 
-.status-deactive {
-    width: 100px;
-    display: inline-block;
-    padding: 3.5px 15px;
+.zo-deactive {
     background: rgba(150, 90, 5, .15);
     color: rgb(150, 90, 5);
-    border-radius: 2px
 }
 
-.status-suspended {
-    width: 100px;
-    display: inline-block;
-    padding: 3.5px 15px;
+.zo-suspended {
     background: rgba(0, 0, 0, .15);
     color: rgb(45, 45, 45);
-    border-radius: 2px
 }
 
 .status-temporary_ban {
