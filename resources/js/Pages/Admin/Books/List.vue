@@ -10,7 +10,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">لیست کتب</strong>
-                            <span>کتب تاریخی مهدویت و انقلاب اسلامی ایران</span>
+                            <span>تمامی کتب در این بخش قابل مشاهده است</span>
                         </div>
                     </div>
                 </v-col>
