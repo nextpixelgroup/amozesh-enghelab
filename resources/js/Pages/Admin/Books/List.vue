@@ -63,6 +63,7 @@
                     <th class="text-center">شناسه</th>
                     <th class="text-center">تصویر</th>
                     <th class="text-right">عنوان</th>
+                    <th class="text-center">نویسنده</th>
                     <th class="text-center">وضعیت</th>
                     <th class="text-center">قیمت</th>
                     <th class="text-center">موجودی</th>
