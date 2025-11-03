@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum BookStatusEnum: string
 {
-    case draft = 'پیش نویس';
     case publish = 'منتشر شده';
+    case draft = 'پیش نویس';
     case archived = 'بایگانی شده';
 
     public static function fromKey(string $key): ?self

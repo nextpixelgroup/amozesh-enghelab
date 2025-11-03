@@ -171,6 +171,11 @@ class User extends Authenticatable
             ->exists();
     }
 
+    public function media()
+    {
+        return $this->hasMany(Media::class);
+    }
+
     public function restrictions()
     {
         return $this->hasMany(Restriction::class);

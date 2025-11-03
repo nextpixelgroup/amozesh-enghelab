@@ -62,14 +62,14 @@ return [
 
         'ftp' => [
             'driver'   => 'ftp',
-            'host'     => env('FTP_HOST', '2193182636.cloudydl.com'),
-            'username' => env('FTP_USERNAME', 'pz22345'),
-            'password' => env('FTP_PASSWORD', 'TySqfOai'),
-            'port'     => env('FTP_PORT', 21),
-            'root'     => env('FTP_ROOT', 'public_html'),
+            'host'     => env('FTP_HOST'),
+            'username' => env('FTP_USERNAME'),
+            'password' => env('FTP_PASSWORD'),
+            'port'     => 21,
+            'root'     => env('FTP_ROOT'),
             'passive'  => true,
-            'ssl'      => false,
-            'timeout'  => 1000,
+            'ssl'      => true,
+            'timeout'  => 10000,
         ],
 
     ],

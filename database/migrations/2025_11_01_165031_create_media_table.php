@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
-            $table->string('type'); // image, video, audio, document
-            $table->string('file_name');
+            $table->foreignId('user_id')->index()->nullable();
+            $table->string('file_type')->index(); // image, video, audio, document
+            $table->string('alt')->index();
+            $table->string('file_name')->index();
             $table->string('mime_type')->nullable();
-            $table->string('disk')->default('public');
+            $table->boolean('ssl');
+            $table->string('domain')->comment('دامنه هاستی که فایل در آن آپلود شده است');
             $table->string('path'); // مسیر فایل
             $table->unsignedBigInteger('size')->nullable(); // حجم فایل
             $table->timestamps();

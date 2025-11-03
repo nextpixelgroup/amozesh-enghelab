@@ -1,5 +1,6 @@
 <template>
     <AdminLayout>
+
         <Head title="افزودن کتاب"/>
         <v-row dense class="position-relative">
             <v-col class="v-col-12 v-col-lg-9">
@@ -146,33 +147,36 @@
                 <v-card class="pa-3 mb-3 elevation-2 position-sticky top-0">
                     <v-row dense>
                         <v-col class="v-col-12">
-                            <label class="zo-label">موجودی دارد؟</label>
+                            <label class="zo-label">موجودی</label>
                             <v-select
                                 hide-details
                                 v-model="form.is_stock"
                                 variant="outlined"
                                 density="compact"
-                                placeholder="موجودی دارد؟"
                                 :items="[{
-                                    'title' : 'بله',
-                                    'value' : true,
+                                    'title' : 'موجود',
+                                    'value' : 'yes',
                                 },
                                 {
-                                    'title' : 'خیر',
-                                    'value' : false,
+                                    'title' : 'محدود',
+                                    'value' : 'limited',
+                                },
+                                {
+                                    'title' : 'ناموجود',
+                                    'value' : 'no',
                                 }]"
                             >
                             </v-select>
                         </v-col>
-                        <v-col class="v-col-12" v-if="form.is_stock">
+                        <v-col class="v-col-12" v-if="form.is_stock == 'limited'">
                             <label class="zo-label">موجودی انبار</label>
                             <v-number-input
                                 v-model="form.stock"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="0"
                                 prepend-inner-icon="mdi-bookshelf"
+                                min="1"
                             ></v-number-input>
                         </v-col>
                         <v-col class="v-col-12">
@@ -182,18 +186,19 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="1"
                                 prepend-inner-icon="mdi-chart-line-variant"
+                                min="1"
                             ></v-number-input>
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">وضعیت</label>
-                            <v-select hide-details
-                                      v-model="form.status"
-                                      variant="outlined"
-                                      density="compact"
-                                      placeholder="وضعیت"
-                                      :items="['پیش نویس', 'منتشر شده', 'آرشیو']"
+                            <v-select
+                                hide-details
+                                  v-model="form.status"
+                                  variant="outlined"
+                                  density="compact"
+                                  placeholder="وضعیت"
+                                  :items="status"
                             >
                             </v-select>
                         </v-col>
@@ -206,18 +211,66 @@
                                 variant="outlined"
                                 density="compact"
                                 placeholder="دسته‌بندی"
-                                :items="['انقلاب کهن', 'ولایت فقیه', 'امام خمینی']"
+                                :items="categories"
                             >
                             </v-select>
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">تصویر شاخص</label>
+                            <v-badge
+                                v-if="fileUploaded"
+                                location="top left"
+                                color="error"
+                                :model-value="true"
+                                class="thumbnail-badge"
+                            >
+                                <img
+                                    :src="thumbnailUrl"
+                                    width="100%"
+                                    height="auto"
+                                    class="mb-4"
+                                    style="border: 1px solid #ddd; border-radius: 4px;"
+                                />
+                                <template #badge>
+                                    <v-btn
+                                        icon
+                                        size="x-small"
+                                        variant="flat"
+                                        color="error"
+                                        @click.stop="removeThumbnail"
+                                        class="delete-btn"
+                                    >
+                                        <v-icon size="small">mdi-close</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-badge>
                             <v-file-upload
+                                v-if="!fileUploaded"
+                                v-model="thumbnail"
                                 density="comfortable"
                                 variant="comfortable"
                                 title="بارگذاری تصویر شاخص"
+                                @change="uploadThumbnail"
+                                :disabled="fileUploading"
+                                accept="image/*"
+                                label="فقط فایل تصویری آپلود کنید"
+                                :rules="[v => !v || v.type.startsWith('image/') || 'فقط فایل تصویری مجاز است']"
                             >
                             </v-file-upload>
+
+                            <!-- نوار پیشرفت -->
+                            <v-progress-linear
+                                v-if="progress > 0 && !fileUploaded"
+                                :model-value="progress"
+                                color="primary"
+                                height="8"
+                                class="mt-3"
+                                striped
+                                rounded
+                                reactive
+                            >
+                            </v-progress-linear>
+
                         </v-col>
                         <v-col class="v-col-12">
                             <v-btn
@@ -226,6 +279,7 @@
                                 color="primary"
                                 :loading="isLoading"
                                 @click="AddBook"
+                                :disabled="btnDisabled"
                             >انتشار کتاب
                             </v-btn>
                         </v-col>
@@ -234,6 +288,11 @@
             </v-col>
         </v-row>
     </AdminLayout>
+    <ShowMessage
+        v-model:show="showMessage"
+        :message="message"
+        :type="messageType"
+    />
 </template>
 
 <script setup>
@@ -244,14 +303,27 @@ import {VFileUpload} from 'vuetify/labs/VFileUpload'
 import {Head, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import FieldNumber from "@/Components/FieldNumber.vue";
+import ShowMessage from "@/Components/ShowMessage.vue";
+// Message handling
+const showMessage = ref(false)
+const message = ref('')
+const messageType = ref('')
 
+// Show message function
+const showToast = (msg, type = 'error') => {
+    message.value = msg
+    messageType.value = type
+    showMessage.value = true
+}
 const props = defineProps({
-    site_url: String
+    site_url: String,
+    status: Object,
+    categories: Object,
 })
 const site_url = props.site_url;
-const book = reactive({
-    description: '',
-});
+const status = props.status;
+const categories = props.categories;
+const btnDisabled = ref(false);
 const isLoading = ref(false);
 const form = useForm({
     'title': '',
@@ -265,22 +337,117 @@ const form = useForm({
     'year_published': '',
     'size': '',
     'edition': '',
-    'is_stock': true,
+    'is_stock': 'yes',
     'stock': null,
     'max_order': null,
     'status': '',
-    'category': '',
+    'category': null,
+    'thumbnail_id': null,
 });
 
 const AddBook = () => {
     form.post(route('admin.books.store'), {
         onStart: () => {
             isLoading.value = true;
+            btnDisabled.value = true;
         },
         onFinish: () => {
             isLoading.value = false;
+            btnDisabled.value = false;
         }
     })
 }
 
+
+const thumbnail = ref(null)
+const thumbnailUrl = ref('')
+const progress = ref(0)
+const fileUploading = ref(false);
+const fileUploaded = ref(false);
+
+const uploadThumbnail = async () => {
+    if (!thumbnail.value) return
+
+    const file = thumbnail.value
+
+    if (!file) return;
+
+    // Check if file is an image
+    if (!file.type.startsWith('image/')) {
+        showToast('لطفاً فقط فایل تصویری آپلود کنید', 'error')
+
+        thumbnail.value = null;
+        return;
+    }
+
+    // Check file size (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        showToast('حجم فایل نباید بیشتر از 5 مگابایت باشد', 'error')
+        thumbnail.value = null;
+        return;
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    progress.value = 0
+
+    try {
+        fileUploading.value = true;
+        btnDisabled.value = true;
+        const response = await axios.post(route('admin.books.upload'), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            onUploadProgress: (e) => {
+                if (e.total) {
+                    progress.value = (e.loaded / e.total) * 100
+                }
+            },
+        })
+        const result = response.data;
+        fileUploading.value = false;
+        fileUploaded.value = true;
+        thumbnailUrl.value = result.data.url
+        form.thumbnail_id = result.data.id
+        progress.value = 0
+        btnDisabled.value = false
+    } catch (err) {
+        fileUploading.value = false;
+        showToast('خطا در آپلود فایل!', 'error')
+        progress.value = 0
+        btnDisabled.value = false
+    }
+}
+
+const removeThumbnail = () => {
+    thumbnail.value = null;
+    thumbnailUrl.value = '';
+    fileUploaded.value = false;
+    form.thumbnail_id = null;
+}
+
 </script>
+
+<style scoped>
+.thumbnail-badge {
+    width: 100%;
+}
+
+.thumbnail-badge :deep(.v-badge__badge) {
+    cursor: pointer;
+    top: 0;
+    right: -1px !important;
+}
+
+.thumbnail-badge :deep(.v-badge__badge .delete-btn) {
+    width: 24px;
+    height: 24px;
+}
+
+.thumbnail-badge :deep(.v-badge__badge .v-btn) {
+    width: 100%;
+    height: 100%;
+}
+</style>

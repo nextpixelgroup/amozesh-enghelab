@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\BookStatusEnum;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -12,12 +14,19 @@ class Book extends Model
         'title',
         'subtitle',
         'slug',
-        'thumbnail',
-        'price',
+        'expert',
         'content',
+        'price',
+        'special_price',
+        'publisher',
+        'year_published',
+        'size',
+        'edition',
+        'is_stock',
         'stock',
         'max_order',
         'status',
+        'thumbnail_id',
     ];
 
     protected $casts = [
@@ -59,5 +68,18 @@ class Book extends Model
         return $this->morphMany(Comment::class, 'commentable')
             ->with('replies.user')
             ->orderBy('created_at', 'desc');
+    }
+
+    public function statusObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $status = BookStatusEnum::fromKey($attributes['status'])->value;
+                return [
+                    'value' => $attributes['status'],
+                    'title' => $status,
+                ];
+            }
+        );
     }
 }
