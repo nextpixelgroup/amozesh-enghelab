@@ -42,7 +42,7 @@
                         <v-col class="v-col-12">
                             <label class="zo-label">خلاصه توضیحات</label>
                             <v-textarea
-                                v-model="form.expert"
+                                v-model="form.summary"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
@@ -341,7 +341,7 @@ const form = useForm({
     'title': '',
     'subtitle': '',
     'slug': '',
-    'expert': '',
+    'summary': '',
     'content': '',
     'price': null,
     'special_price': null,

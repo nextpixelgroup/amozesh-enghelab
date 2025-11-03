@@ -19,7 +19,7 @@ class AdminBookResource extends JsonResource
             'title'          => $this->title,
             'slug'           => $this->slug,
             'subtitle'       => $this->subtitle,
-            'expert'         => $this->expert,
+            'summary'        => $this->summary,
             'content'        => $this->content,
             'publisher'      => $this->publisher,
             'status'         => $this->statusObject,

@@ -14,7 +14,7 @@ class Book extends Model
         'title',
         'subtitle',
         'slug',
-        'expert',
+        'summary',
         'content',
         'price',
         'special_price',

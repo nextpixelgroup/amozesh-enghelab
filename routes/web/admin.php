@@ -28,7 +28,8 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books/store', [BookController::class, 'store'])->name('books.store');
-    Route::get('/books/edit/{book}', [BookController::class, 'edit'])->name('books.edit');
+    Route::get('/books/{book}', [BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
     Route::post('/books/upload', [BookController::class, 'upload'])->name('books.upload');
 
     Route::get('/books/categories', [BookCategoryController::class, 'index'])->name('books.categories.index');
@@ -39,7 +40,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     /********* Courses *********/
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
-    Route::get('/courses/edit/{id}', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::get('/courses/{id}', [CourseController::class, 'edit'])->name('courses.edit');
 
     Route::get('/courses/categories', [CourseCategoryController::class, 'index'])->name('courses.categories.index');
     Route::post('/courses/categories/store', [CourseCategoryController::class, 'store'])->name('courses.categories.store');
@@ -49,7 +50,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     /********* Paths *********/
     Route::get('/paths', [PathController::class, 'index'])->name('paths.index');
     Route::get('/paths/create', [PathController::class, 'create'])->name('paths.create');
-    Route::get('/paths/edit/{id}', [PathController::class, 'edit'])->name('paths.edit');
+    Route::get('/paths/{id}', [PathController::class, 'edit'])->name('paths.edit');
 
     /********* Orders *********/
     Route::get('/orders', [UserController::class, 'index'])->name('orders.index');

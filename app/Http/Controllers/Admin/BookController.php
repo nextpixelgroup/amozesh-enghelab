@@ -31,7 +31,7 @@ class BookController extends Controller
             $query->where(function ($query) use ($request) {
                 $query->where('title', 'like', "%{$request->search}%")
                     ->orWhere('subtitle', 'like', "%{$request->search}%")
-                    ->orWhere('expert', 'like', "%{$request->search}%")
+                    ->orWhere('summary', 'like', "%{$request->search}%")
                     ->orWhere('content', 'like', "%{$request->search}%");
             });
         }
@@ -60,7 +60,7 @@ class BookController extends Controller
                     'title'          => $request->title,
                     'subtitle'       => $request->subtitle,
                     'slug'           => $slug,
-                    'expert'         => $request->expert,
+                    'summary'        => $request->summary,
                     'content'        => $request->input('content'),
                     'thumbnail_id'   => $request->thumbnail_id,
                     'publisher'      => $request->publisher,
@@ -101,7 +101,7 @@ class BookController extends Controller
 
     public function update(Book $book, BookCreateRequest $request)
     {
-
+        dd($request->all());
     }
 
     public function upload(Request $request)

@@ -26,7 +26,7 @@ class BookCreateRequest extends FormRequest
             'title' => 'required|min:2',
             'subtitle' => 'nullable|min:3',
             'slug' => 'nullable',
-            'expert' => 'nullable|min:10',
+            'summary' => 'nullable|min:10',
             'content' => 'nullable|min:10',
             'thumbnail_id' => 'nullable',
             'publisher' => 'nullable',
@@ -56,8 +56,8 @@ class BookCreateRequest extends FormRequest
             'subtitle.unique' => 'این زیرعنوان قبلا ثبت شده است.',
             'subtitle.max' => 'زیرعنوان نمی‌تواند بیشتر از 255 کاراکتر باشد.',
 
-            // Expert messages
-            'expert.min' => 'متن تخصصی باید حداقل 10 کاراکتر باشد.',
+            // summary messages
+            'summary.min' => 'خلاصه توضیحات باید حداقل 10 کاراکتر باشد.',
 
             // Content messages
             'content.min' => 'محتوا باید حداقل 10 کاراکتر باشد.',
@@ -98,7 +98,7 @@ class BookCreateRequest extends FormRequest
             'title' => 'عنوان',
             'subtitle' => 'زیرعنوان',
             'slug' => 'نامک',
-            'expert' => 'متن تخصصی',
+            'summary' => 'خلاصه توضیحات',
             'content' => 'محتوا',
             'thumbnail_id' => 'تصویر شاخص',
             'publisher' => 'ناشر',

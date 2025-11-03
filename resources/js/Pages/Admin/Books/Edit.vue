@@ -55,7 +55,7 @@
                         <v-col class="v-col-12">
                             <label class="zo-label">خلاصه توضیحات</label>
                             <v-textarea
-                                v-model="form.expert"
+                                v-model="form.summary"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
@@ -356,7 +356,7 @@ const form = useForm({
     'title': book.title,
     'subtitle': book.subtitle,
     'slug': book.slug,
-    'expert': book.expert,
+    'summary': book.summary,
     'content': book.content,
     'price': book.price,
     'special_price':  book.special_price,
@@ -385,7 +385,7 @@ const stock_items = [{
     'value' : 'no',
 }];
 const updateBook = () => {
-    form.post(route('admin.books.update', book.id), {
+    form.put(route('admin.books.update', book.id), {
         onStart: () => {
             isLoading.value = true;
             btnDisabled.value = true;
