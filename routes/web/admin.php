@@ -29,6 +29,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books/store', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/edit/{id}', [BookController::class, 'edit'])->name('books.edit');
+    Route::post('/books/upload', [BookController::class, 'upload'])->name('books.upload');
 
     Route::get('/books/categories', [BookCategoryController::class, 'index'])->name('books.categories.index');
     Route::post('/books/categories/store', [BookCategoryController::class, 'store'])->name('books.categories.store');

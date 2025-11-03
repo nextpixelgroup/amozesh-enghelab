@@ -19,11 +19,12 @@ return new class extends Migration
             $table->string('slug')->index()->unique();
             $table->text('expert')->nullable();
             $table->text('content');
-            $table->string('thumbnail')->nullable();
+            $table->foreignId('thumbnail_id')->nullable()->constrained('media')->nullOnDelete();
             $table->string('publisher',100)->nullable();
             $table->decimal('price', 20, 0)->index()->default(0);
             $table->decimal('special_price', 20, 0)->index()->default(0);
-            $table->unsignedInteger('stock')->index()->default(0);
+            $table->boolean('is_stock')->index()->default(true);
+            $table->unsignedInteger('stock')->index()->nullable();
             $table->unsignedInteger('max_order')->index()->default(1);
             $table->string('year_published',30);
             $table->string('edition',50);

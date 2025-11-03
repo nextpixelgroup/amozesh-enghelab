@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('type')->default('general')->comment('Type of category (e.g., course, blog, product)');
             $table->string('icon')->nullable();
-            $table->boolean('is_active')->default(true);
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

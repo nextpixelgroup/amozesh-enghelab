@@ -10,7 +10,7 @@ class Category extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'slug', 'icon', 'is_active', 'description', 'type'];
+    protected $fillable = ['title', 'slug', 'icon', 'description', 'type'];
 
     /**
      * The possible category types.

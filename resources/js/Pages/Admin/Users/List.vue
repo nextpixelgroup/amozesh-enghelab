@@ -187,8 +187,13 @@ const search = () => {
 
 const changePage = async (page) => {
     try {
+        const query = {
+            ...filters.value,  // Keep existing filters
+            page  // Update only the page number
+        };
+
         router.get(route('admin.users.index'),
-            {page},
+            query,
             {
                 preserveState: true,
                 preserveScroll: true,

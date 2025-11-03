@@ -23,33 +23,36 @@
             <v-row dense class="align-center">
                 <v-col class="v-col-lg-3 v-col-12">
                     <v-select hide-details
+                              v-model="filters.status"
                               variant="outlined"
                               density="compact"
                               label="وضعیت انتشار"
-                              :items="['منتشر شده', 'پیش نویس', 'آرشیو']"
+                              :items="status"
+                              clearable
+                              @update:model-value="(val) => val === null && handleClear('status')"
                     >
                     </v-select>
                 </v-col>
-                <v-col class="v-col-lg-3 v-col-12">
-                    <v-select hide-details
-                              variant="outlined"
-                              density="compact"
-                              label="نویسنده"
-                              :items="['علی مظلوم', 'پوریا کاظمی', 'حسین امیریان']"
-                    >
-                    </v-select>
-                </v-col>
-                <v-col class="v-col-lg-5 v-col-12">
+                <v-col class="v-col-lg-8 v-col-12">
                     <v-text-field
+                        v-model="filters.search"
                         hide-details
                         variant="outlined"
                         density="compact"
                         label="جستجو عنوان کتاب"
+                        clearable
+                        @update:model-value="(val) => val === null && handleClear('search')"
                     >
                     </v-text-field>
                 </v-col>
                 <v-col class="v-col-lg-1 v-col-12">
-                    <v-btn block variant="outlined" color="primary">جستجو</v-btn>
+                    <v-btn
+                        block
+                        variant="outlined"
+                        color="primary"
+                        @click="search"
+                        :loading="isLoading"
+                    >جستجو</v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -57,10 +60,9 @@
             <v-table density="compact">
                 <thead>
                 <tr>
-                    <th class="text-center">ردیف</th>
+                    <th class="text-center">شناسه</th>
                     <th class="text-center">تصویر</th>
                     <th class="text-right">عنوان</th>
-                    <th class="text-center">نویسنده</th>
                     <th class="text-center">وضعیت</th>
                     <th class="text-center">قیمت</th>
                     <th class="text-center">موجودی</th>
@@ -70,30 +72,27 @@
                 <tbody>
                 <tr
                     v-for="item in books"
-                    :key="item.name"
+                    :key="item.id"
                 >
-                    <td class="text-center">{{ item.row }}</td>
+                    <td class="text-center">{{ item.id }}</td>
                     <td class="text-center">
-                        <img :src="item.image" :alt="item.title" width="90" height="90">
+                        <img :src="item.thumbnail.url" :alt="item.title" width="90" height="90">
                     </td>
                     <td>
                         <strong class="d-block">{{ item.title }}</strong>
                         <span class="d-lg-block d-sm-none">{{ item.subtitle }}</span>
                     </td>
                     <td class="text-center">
-                        {{ item.author }}
-                    </td>
-                    <td class="text-center">
-                        <span :class="item.status">{{ item.status_name }}</span>
+                        <span :class="'status-'+item.status.value">{{ item.status.title }}</span>
                     </td>
                     <td class="text-center">
                         <div>
-                            <template v-if="item.sale_price">
+                            <template v-if="item.special_price">
                                 <div class="zo-price">
                                     <del>{{ Number(item.price).toLocaleString('fa-IR') }}</del>
                                     <div class="zo-sale">
                                         <strong class="pe-1">
-                                            {{ Number(item.sale_price).toLocaleString('fa-IR') }}
+                                            {{ Number(item.special_price).toLocaleString('fa-IR') }}
                                         </strong>
                                         <small>تومان</small>
                                     </div>
@@ -110,64 +109,97 @@
                     <td class="text-center">
                         {{ item.stock }}
                     </td>
-                    <td>
-                        <div class="d-flex ga-1">
-                            <v-btn icon="mdi-eye" size="small" color="primary"></v-btn>
-                            <v-btn icon="mdi-pencil" size="small" color="secondary"></v-btn>
-                        </div>
+                    <td class="text-center">
+                        <Link :href="route('admin.books.edit', item.id)"><v-btn icon="mdi-eye" size="small" color="primary"></v-btn></Link>
                     </td>
                 </tr>
                 </tbody>
             </v-table>
-            <v-pagination rounded="circle" :length="8"></v-pagination>
+            <v-pagination
+                rounded="circle"
+                v-if="props.books?.meta.last_page > 1"
+                v-model="currentPage"
+                :length="props.books?.meta.last_page"
+                @update:model-value="changePage"
+                class="mt-4"
+            />
         </v-card>
     </AdminLayout>
 </template>
 <script setup>
-import {Head, Link, router} from '@inertiajs/vue3'
-import {ref} from "vue";
+import {Head, Link, router, usePage} from '@inertiajs/vue3'
+import {ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+const props = defineProps({
+    books: Object,
+    status: Object,
+})
+const currentPage = ref(props.books?.meta.current_page)
+const books = ref(props.books.data)
+const status = ref(props.status);
 
-const books = ref([
-    {
-        "id": "1",
-        "row": "1",
-        "image": '/assets/img/books/1.webp',
-        "title": "کتاب اسلام و مسیحیت؛ گفت‌وگوی تمدن‌ها",
-        "subtitle": "کتاب منتظران منجی در ادیان ابراهیمی - بررسی تطبیقی مفهوم نجات و منجی‌باوری",
-        "author": " دکتر امیر علما",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "price": "175000",
-        "sale_price": "159000",
-        "stock": "8"
-    },
-    {
-        "id": "2",
-        "row": "2",
-        "image": '/assets/img/books/2.webp',
-        "title": "کتاب جهان پس از ظهور",
-        "subtitle": "کتاب جهان پس از ظهور - ترسیم چشم‌انداز آخرالزمان در روایات اسلامی",
-        "author": " دکتر مریم عظیمیان",
-        "status": "archive",
-        "status_name": "آرشیو",
-        "price": "245000",
-        "sale_price": "190000",
-        "stock": "9"
-    },
-    {
-        "id": "3",
-        "row": "3",
-        "image": '/assets/img/books/3.webp',
-        "title": "کتاب موعود در آیینه ادیان",
-        "subtitle": "کتاب موعود در آیینه ادیان - تحلیل تاریخی و اعتقادی مهدویت در ادیان مختلف",
-        "author": " دکتر حسین نوابیان",
-        "status": "draft",
-        "status_name": "پیش نویس",
-        "price": "550000",
-        "sale_price": "",
-        "stock": "10"
-    },
-])
+const page = usePage();
+const query = new URLSearchParams(page.url.split('?')[1])
+const filters = ref({
+    status: query.get('status') ?? '',
+    search: query.get('search') ?? '',
+});
+const isLoading = ref(false)
+const search = () => {
+    isLoading.value = true;
+    try {
+        router.get(route('admin.books.index'),
+            {
+                ...filters.value,
+                page: 1 // همیشه به صفحه اول برود
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['books'],
+                onFinish: () => {
+                    isLoading.value = false;
+                }
+            },
+        );
+    } catch (error) {
+        console.error('خطا در دریافت اطلاعات:', error);
+    }
+};
+
+const changePage = async (page) => {
+    try {
+        const query = {
+            ...filters.value,  // Keep existing filters
+            page  // Update only the page number
+        };
+
+        router.get(route('admin.books.index'),
+            query,
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['books'],
+                onSuccess: () => {
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+            }
+        );
+    } catch (error) {
+        console.error('خطا در دریافت اطلاعات:', error);
+    }
+};
+
+const handleClear = (field) => {
+    filters.value[field] = null;
+    search();
+};
+
+watch(() => props.books, (newVal) => {
+    books.value = newVal.data || [];
+    currentPage.value = newVal.meta?.current_page || 1;
+});
 </script>

@@ -30,7 +30,6 @@ class UserController extends Controller
             })
             ->with('roles');
 
-
         // فیلتر بر اساس وضعیت
         if ($request->filled('status')) {
             if($request->status == 'ban'){
@@ -39,7 +38,6 @@ class UserController extends Controller
                         ->orWhereNull('expires_at');
                 });
             }
-
         }
 
         // فیلتر بر اساس نقش

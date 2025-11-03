@@ -455,3 +455,16 @@ if (!function_exists('isMobile')) {
         return (bool)preg_match('/^09[0-9]{9}$/', $mobile);
     }
 }
+
+
+if (!function_exists('log_error')) {
+    function log_error(\Throwable $exception, array $extra = [])
+    {
+        try {
+            return \App\Models\ErrorLog::log($exception, $extra);
+        } catch (\Exception $e) {
+            \Log::error('Failed to log error: ' . $e->getMessage());
+            return null;
+        }
+    }
+}
