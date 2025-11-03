@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'menuItems' => [
                 [
-                    'title' => 'دروس',
+                    'title' => 'دوره‌ها',
                     'icon' => 'mdi-book-open-page-variant',
                     'route' => 'admin.courses.index',
                     'children' => [
