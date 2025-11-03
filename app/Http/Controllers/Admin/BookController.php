@@ -56,7 +56,7 @@ class BookController extends Controller
     {
         //dd($request->all());
         try {
-            DB::transaction(function () use ($request) {
+            $book = DB::transaction(function () use ($request) {
                 $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
                 $slug = makeSlugUnique($slug, Book::class);
                 $args = [
@@ -74,6 +74,7 @@ class BookController extends Controller
                     'max_order'      => $request->max_order,
                     'year_published' => $request->year_published,
                     'edition'        => $request->edition,
+                    'author'        => $request->author,
                     'status'         => $request->status,
                 ];
                 $book = Book::create($args);
@@ -82,6 +83,7 @@ class BookController extends Controller
                         $book->categories()->sync($request->category);
                     }
                 }
+                return $book;
             });
             return redirectMessage('success', 'کتاب با موفقیت ایجاد شد.',redirect:  route('admin.books.edit',$book->id));
         }
