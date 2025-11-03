@@ -20,7 +20,6 @@ class CategorySeeder extends Seeder
                 'type' => 'course',
                 'slug' => 'test-courses',
                 'icon' => 'test-tube',
-                'is_active' => true,
                 'description' => 'این دسته بندی برای دوره‌های تستی در نظر گرفته شده است.'
             ],
             [
@@ -28,7 +27,6 @@ class CategorySeeder extends Seeder
                 'type' => 'course',
                 'slug' => 'test-courses2',
                 'icon' => 'test-tube2',
-                'is_active' => true,
                 'description' => 'این دسته بندی برای دوره‌های تست دو در نظر گرفته شده است.'
             ]
         ];
