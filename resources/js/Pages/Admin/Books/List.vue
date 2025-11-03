@@ -33,7 +33,18 @@
                     >
                     </v-select>
                 </v-col>
-                <v-col class="v-col-lg-8 v-col-12">
+                <v-col class="v-col-lg-3 v-col-12">
+                    <v-text-field
+                        hide-details
+                          variant="outlined"
+                          density="compact"
+                          label="نویسنده"
+                        clearable
+                        @update:model-value="(val) => val === null && handleClear('author')"
+                    >
+                    </v-text-field>
+                </v-col>
+                <v-col class="v-col-lg-5 v-col-12">
                     <v-text-field
                         v-model="filters.search"
                         hide-details
@@ -82,6 +93,9 @@
                     <td>
                         <strong class="d-block">{{ item.title }}</strong>
                         <span class="d-lg-block d-sm-none">{{ item.subtitle }}</span>
+                    </td>
+                    <td>
+                        {{ item.author }}
                     </td>
                     <td class="text-center">
                         <span :class="'status-'+item.status.value">{{ item.status.title }}</span>
