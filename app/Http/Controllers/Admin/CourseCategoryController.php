@@ -23,14 +23,12 @@ class CourseCategoryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255|unique:categories,title',
             'description' => 'nullable|string',
-            'is_active' => 'required|boolean',
         ],[
             'title.required' => 'فیلد عنوان الزامی است.',
             'title.string' => 'فیلد عنوان باید متن باشد.',
             'title.max' => 'فیلد عنوان نباید بیشتر از :max کاراکتر باشد.',
             'title.unique' => 'عنوان در پایگاه داده وجود دارد، عنوان دیگری وارد کنید',
             'description' => 'توضیحات به درستی وارد نشده است.',
-            'is_active.boolean' => 'وضعیت باید فعال یا غیرفعال باشد.'
         ]);
 
         try {
@@ -41,7 +39,6 @@ class CourseCategoryController extends Controller
                 'description' => $validated['description'] ?? null,
                 'slug'        => $slug,
                 'type'        => 'course',
-                'is_active'   => $validated['is_active'],
             ]);
             return redirectMessage('success', 'دسته با موفقیت ایجاد شد.', redirect: route('admin.courses.categories.index'));
         }
@@ -55,13 +52,11 @@ class CourseCategoryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'is_active' => 'required|boolean',
         ],[
             'title.required' => 'فیلد عنوان الزامی است.',
             'title.string' => 'فیلد عنوان باید متن باشد.',
             'title.max' => 'فیلد عنوان نباید بیشتر از :max کاراکتر باشد.',
             'description' => 'توضیحات به درستی وارد نشده است.',
-            'is_active.boolean' => 'وضعیت باید فعال یا غیرفعال باشد.'
         ]);
 
         try {
@@ -76,7 +71,6 @@ class CourseCategoryController extends Controller
                 'title' => $validated['title'],
                 'description' => $validated['description'] ?? null,
                 'slug' => $slug,
-                'is_active' => $validated['is_active'],
             ]);
             return redirectMessage('success', 'دسته با موفقیت به روز رسانی شد.');
         }

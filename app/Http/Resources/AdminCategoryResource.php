@@ -19,7 +19,6 @@ class AdminCategoryResource extends JsonResource
             'title'       => $this->title,
             'description' => $this->description,
             'slug'        => $this->slug,
-            'is_active'   => $this->isActiveObject,
             'created_at'  => $this->createdAtObject,
         ];
     }

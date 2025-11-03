@@ -40,14 +40,4 @@ class Category extends Model
         );
     }
 
-    protected function isActiveObject(): Attribute
-    {
-        return Attribute::make(
-            get: function ($value, $attributes) {
-                $value = $attributes['is_active'];
-                $label = $value ? 'فعال' : 'غیر فعال';
-                return ['value' => $value, 'title' => $label];
-            }
-        );
-    }
 }
