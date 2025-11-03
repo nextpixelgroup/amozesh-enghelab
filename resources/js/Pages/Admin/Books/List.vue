@@ -37,6 +37,7 @@
                 </v-col>
                 <v-col class="v-col-lg-3 v-col-12">
                     <v-text-field
+                        v-model="filters.author"
                         hide-details
                         variant="outlined"
                         density="compact"
@@ -125,12 +126,21 @@
                         </div>
                     </td>
                     <td class="text-center">
-                        {{ item.stock }}
+                        {{ item.stock == null ? 'موجود' : item.stock }}
                     </td>
                     <td class="text-center">
+                        <div class="d-flex ga-1">
                         <Link :href="route('admin.books.edit', item.id)">
-                            <v-btn icon="mdi-eye" size="small" color="primary"></v-btn>
+                            <v-btn icon="mdi-pencil" size="small" color="primary"></v-btn>
                         </Link>
+                        <a
+                            :href="route('web.books.show', item.slug)"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <v-btn icon="mdi-eye" size="small" color="info"></v-btn>
+                        </a>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -164,6 +174,7 @@ const page = usePage();
 const query = new URLSearchParams(page.url.split('?')[1])
 const filters = ref({
     status: query.get('status') ?? '',
+    author: query.get('author') ?? '',
     search: query.get('search') ?? '',
 });
 const isLoading = ref(false)

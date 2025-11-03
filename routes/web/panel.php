@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/contact', function (){
-    return Inertia::render('App/Contact');
+    return Inertia::render('Web/Contact');
 });
 
 Route::name('panel.')->prefix('panel')->group(function () {

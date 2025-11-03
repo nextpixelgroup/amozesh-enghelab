@@ -28,6 +28,7 @@ return new class extends Migration
             $table->unsignedInteger('max_order')->index()->default(1);
             $table->string('year_published',30)->nullable();
             $table->string('edition',50)->nullable();
+            $table->string('size',50)->nullable();
             $table->string('author',100)->index()->nullable();
             $table->enum('status', enumNames(BookStatusEnum::cases()))->index()->default('draft');
             $table->timestamps();

@@ -24,6 +24,11 @@ class Category extends Model
         'general' => 'عمومی'
     ];
 
+    public function books()
+    {
+        return $this->morphedByMany(Book::class, 'categorizable');
+    }
+
     public function courses()
     {
         return $this->morphedByMany(Course::class, 'categorizable');

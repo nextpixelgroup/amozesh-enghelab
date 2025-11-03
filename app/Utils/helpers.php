@@ -266,7 +266,7 @@ if (!function_exists('classPath')) {
     function classPath($className)
     {
         $className = ucfirst($className);
-        return 'App\\Models\\' . $className;
+        return 'Web\\Models\\' . $className;
     }
 }
 

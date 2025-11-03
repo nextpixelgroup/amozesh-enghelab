@@ -240,7 +240,7 @@ const form = useForm({
 });
 
 const viewPage = () => {
-    window.open(route('app.teacher.show',form.slug),'_blank');
+    window.open(route('web.teacher.show',form.slug),'_blank');
 }
 
 const updateUser = () => {

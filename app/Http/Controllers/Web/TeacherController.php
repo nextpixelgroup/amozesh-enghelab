@@ -11,6 +11,6 @@ class TeacherController extends Controller
 {
     public function show(User $teacher)
     {
-        return Inertia::render('App/Teachers/Show', compact('teacher'));
+        return Inertia::render('Web/Teachers/Show', compact('teacher'));
     }
 }

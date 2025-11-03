@@ -24,7 +24,7 @@
                                 density="compact"
                                 variant="outlined"
                                 prepend-inner-icon="mdi-link"
-                                :suffix="site_url+'/books/'"
+                                :suffix="site_url"
                                 dir="ltr"
                             ></v-text-field>
                         </v-col>

@@ -24,6 +24,9 @@ class BookController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        if($request->filled('author')) {
+            $query->whereLike('author', "%{$request->author}%");
+        }
         if($request->filled('search')){
             $query->where(function ($query) use ($request) {
                 $query->where('title', 'like', "%{$request->search}%")
@@ -33,22 +36,16 @@ class BookController extends Controller
             });
         }
 
-        $books = AdminBookResource::collection($query->orderBy('id','desc')->paginate(1));
+        $books = AdminBookResource::collection($query->orderBy('id','desc')->paginate(env('PER_PAGE')));
         $status = enumFormated(BookStatusEnum::cases());
         return Inertia::render('Admin/Books/List', compact('books', 'status'));
     }
 
     public function create()
     {
-        $site_url = env('APP_URL');
+        $site_url = env('APP_URL').'/books/';
         $status = enumFormated(BookStatusEnum::cases());
-        $categories = Category::where('type', 'book')->get()
-        ->map(function ($item) {
-            return [
-                'value' => $item->id,
-                'title' => $item->title
-            ];
-        });
+        $categories = Category::where('type', 'book')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
         return Inertia::render('Admin/Books/Create', compact('site_url', 'status', 'categories'));
     }
 
@@ -93,9 +90,18 @@ class BookController extends Controller
         }
     }
 
-    public function edit()
+    public function edit(Book $book)
     {
-        return Inertia::render('Admin/Books/Edit');
+        $site_url = env('APP_URL').'/books/';
+        $status = enumFormated(BookStatusEnum::cases());
+        $categories = Category::where('type', 'book')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
+        $book = new AdminBookResource($book);
+        return Inertia::render('Admin/Books/Edit', compact('site_url', 'status', 'categories', 'book'));
+    }
+
+    public function update(Book $book, BookCreateRequest $request)
+    {
+
     }
 
     public function upload(Request $request)
