@@ -1,88 +1,3 @@
-<script setup>
-import {Head, router} from '@inertiajs/vue3'
-import {ref} from "vue";
-import AdminLayout from "../../../Layouts/AdminLayout.vue";
-import {route} from "ziggy-js";
-
-const books = ref([
-    {
-        "id": "1",
-        "row": "1",
-        "image": '/assets/img/books/1.webp',
-        "title": "دوره مدیریت فرهنگی جبهه انقلاب",
-        "subtitle": "تبیین منظومه فکری امامین انقلاب در باب فرهنگ",
-        "prof": "دکتر حمید بصیرت منش",
-        "degree": "دکترا فقه و حقوق",
-        "avatar": "/assets/img/prof/2.jpg",
-        "status": "archive",
-        "status_name": "آرشیو",
-        "users": "312",
-        "date": "1404/07/19",
-        "time": "9:42 ب.ظ",
-    },
-    {
-        "id": "2",
-        "row": "2",
-        "image": '/assets/img/books/2.webp',
-        "title": "دوره تحلیل تاریخ معاصر ایران",
-        "subtitle": "نقش استعمار و تجدد در تحولات معاصر ایران",
-        "prof": "دکتر سیدمحمود سادات",
-        "degree": "دکترا علوم اجتماعی",
-        "avatar": "/assets/img/prof/3.jpg",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "users": "93",
-        "date": "1404/09/23",
-        "time": "5:35 ب.ظ",
-    },
-    {
-        "id": "3",
-        "row": "3",
-        "image": '/assets/img/books/3.webp',
-        "title": "دوره تاریخ دفاع مقدس",
-        "subtitle": "تاریخ‌نگاری جنگ ایران و عراق؛ رویکردها و چالش‌ها",
-        "prof": "دکتر محسن سراج",
-        "degree": "دکترا تاریخ معاصر",
-        "avatar": "/assets/img/prof/4.jpg",
-        "status": "draft",
-        "status_name": "پیش نویس",
-        "users": "178",
-        "date": "1404/03/14",
-        "time": "5:35 ب.ظ",
-    },
-    {
-        "id": "4",
-        "row": "4",
-        "image": '/assets/img/books/4.webp',
-        "title": "دوره اندیشه شهید مطهری",
-        "subtitle": "نسبت عقل، دین و تجربه در آثار مطهری",
-        "prof": "دکتر مریم تجار",
-        "degree": "دکترا رسانه و ارتباطات",
-        "avatar": "/assets/img/prof/7.jpg",
-        "status": "draft",
-        "status_name": "پیش نویس",
-        "users": "149",
-        "date": "1404/02/05",
-        "time": "4:25 ب.ظ",
-    },
-    {
-        "id": "5",
-        "row": "5",
-        "image": '/assets/img/books/6.webp',
-        "title": "دوره آموزشی راهبردهای محتوایی راهیان نور",
-        "subtitle": "نقش محتوا در تبیین ارزش‌های دفاع مقدس",
-        "prof": "هادی بابائی فلاح",
-        "degree": "دکترا تاریخ انقلاب",
-        "avatar": "/assets/img/prof/2.jpg",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "users": "179",
-        "date": "1404/10/16",
-        "time": "6:10 ب.ظ",
-    },
-])
-</script>
-
 <template>
     <AdminLayout>
         <Head title="دوره های آموزشی"/>
@@ -211,3 +126,87 @@ const books = ref([
         </v-card>
     </AdminLayout>
 </template>
+<script setup>
+import {Head, router} from '@inertiajs/vue3'
+import {ref} from "vue";
+import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import {route} from "ziggy-js";
+
+const books = ref([
+    {
+        "id": "1",
+        "row": "1",
+        "image": '/assets/img/books/1.webp',
+        "title": "دوره مدیریت فرهنگی جبهه انقلاب",
+        "subtitle": "تبیین منظومه فکری امامین انقلاب در باب فرهنگ",
+        "prof": "دکتر حمید بصیرت منش",
+        "degree": "دکترا فقه و حقوق",
+        "avatar": "/assets/img/prof/2.jpg",
+        "status": "archive",
+        "status_name": "آرشیو",
+        "users": "312",
+        "date": "1404/07/19",
+        "time": "9:42 ب.ظ",
+    },
+    {
+        "id": "2",
+        "row": "2",
+        "image": '/assets/img/books/2.webp',
+        "title": "دوره تحلیل تاریخ معاصر ایران",
+        "subtitle": "نقش استعمار و تجدد در تحولات معاصر ایران",
+        "prof": "دکتر سیدمحمود سادات",
+        "degree": "دکترا علوم اجتماعی",
+        "avatar": "/assets/img/prof/3.jpg",
+        "status": "publish",
+        "status_name": "منتشر شده",
+        "users": "93",
+        "date": "1404/09/23",
+        "time": "5:35 ب.ظ",
+    },
+    {
+        "id": "3",
+        "row": "3",
+        "image": '/assets/img/books/3.webp',
+        "title": "دوره تاریخ دفاع مقدس",
+        "subtitle": "تاریخ‌نگاری جنگ ایران و عراق؛ رویکردها و چالش‌ها",
+        "prof": "دکتر محسن سراج",
+        "degree": "دکترا تاریخ معاصر",
+        "avatar": "/assets/img/prof/4.jpg",
+        "status": "draft",
+        "status_name": "پیش نویس",
+        "users": "178",
+        "date": "1404/03/14",
+        "time": "5:35 ب.ظ",
+    },
+    {
+        "id": "4",
+        "row": "4",
+        "image": '/assets/img/books/4.webp',
+        "title": "دوره اندیشه شهید مطهری",
+        "subtitle": "نسبت عقل، دین و تجربه در آثار مطهری",
+        "prof": "دکتر مریم تجار",
+        "degree": "دکترا رسانه و ارتباطات",
+        "avatar": "/assets/img/prof/7.jpg",
+        "status": "draft",
+        "status_name": "پیش نویس",
+        "users": "149",
+        "date": "1404/02/05",
+        "time": "4:25 ب.ظ",
+    },
+    {
+        "id": "5",
+        "row": "5",
+        "image": '/assets/img/books/6.webp',
+        "title": "دوره آموزشی راهبردهای محتوایی راهیان نور",
+        "subtitle": "نقش محتوا در تبیین ارزش‌های دفاع مقدس",
+        "prof": "هادی بابائی فلاح",
+        "degree": "دکترا تاریخ انقلاب",
+        "avatar": "/assets/img/prof/2.jpg",
+        "status": "publish",
+        "status_name": "منتشر شده",
+        "users": "179",
+        "date": "1404/10/16",
+        "time": "6:10 ب.ظ",
+    },
+])
+</script>
