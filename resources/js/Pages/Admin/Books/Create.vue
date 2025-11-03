@@ -92,7 +92,7 @@
                             >
                             </FieldNumber>
                         </v-col>
-                        <v-col class="v-col-lg-4 v-col-md-6 v-col-12">
+                        <v-col class="v-col-md-6 v-col-12">
                             <label class="zo-label">ناشر</label>
                             <v-text-field
                                 v-model="form.publisher"
@@ -104,7 +104,19 @@
                             >
                             </v-text-field>
                         </v-col>
-                        <v-col class="v-col-lg-4 v-col-md-6 v-col-12">
+                        <v-col class="v-col-md-6 v-col-12">
+                            <label class="zo-label">نویسنده</label>
+                            <v-text-field
+                                v-model="form.author"
+                                hide-details
+                                density="compact"
+                                variant="outlined"
+                                placeholder=""
+                                prepend-inner-icon="mdi-account-circle"
+                            >
+                            </v-text-field>
+                        </v-col>
+                        <v-col class="v-col-md-4 v-col-12">
                             <label class="zo-label">سال انتشار</label>
                             <v-text-field
                                 v-model="form.year_published"
@@ -116,7 +128,7 @@
                             >
                             </v-text-field>
                         </v-col>
-                        <v-col class="v-col-lg-2 v-col-md-6 v-col-12">
+                        <v-col class="v-col-md-4 v-col-12">
                             <label class="zo-label">قطع</label>
                             <v-text-field
                                 v-model="form.size"
@@ -128,22 +140,10 @@
                             >
                             </v-text-field>
                         </v-col>
-                        <v-col class="v-col-lg-2 v-col-md-6 v-col-12">
+                        <v-col class="v-col-md-4 v-col-12">
                             <label class="zo-label">نوبت چاپ</label>
                             <v-text-field
                                 v-model="form.edition"
-                                hide-details
-                                density="compact"
-                                variant="outlined"
-                                placeholder=""
-                                prepend-inner-icon="mdi-printer"
-                            >
-                            </v-text-field>
-                        </v-col>
-                        <v-col class="v-col-12">
-                            <label class="zo-label">نویسنده</label>
-                            <v-text-field
-                                v-model="form.author"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
