@@ -99,7 +99,7 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="انتشارات انقلاب اسلامی"
+                                placeholder=""
                                 prepend-inner-icon="mdi-domain"
                             >
                             </v-text-field>
@@ -111,7 +111,7 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="1404"
+                                placeholder=""
                                 prepend-inner-icon="mdi-calendar"
                             >
                             </v-text-field>
@@ -123,7 +123,7 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="3"
+                                placeholder=""
                                 prepend-inner-icon="mdi-leaf"
                             >
                             </v-text-field>
@@ -135,7 +135,19 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="چهارم"
+                                placeholder=""
+                                prepend-inner-icon="mdi-printer"
+                            >
+                            </v-text-field>
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <label class="zo-label">نویسنده</label>
+                            <v-text-field
+                                v-model="form.author"
+                                hide-details
+                                density="compact"
+                                variant="outlined"
+                                placeholder=""
                                 prepend-inner-icon="mdi-printer"
                             >
                             </v-text-field>
@@ -337,6 +349,7 @@ const form = useForm({
     'year_published': '',
     'size': '',
     'edition': '',
+    'author': '',
     'is_stock': 'yes',
     'stock': null,
     'max_order': null,

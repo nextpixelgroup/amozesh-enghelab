@@ -29,7 +29,8 @@ class AdminBookResource extends JsonResource
             'stock'          => $this->stock,
             'max_order'      => $this->max_order,
             'year_published' => $this->year_published,
-            'edition' => $this->edition,
+            'edition'        => $this->edition,
+            'author'         => $this->author,
             'thumbnail' => [
                 'id'    => $this->thumbnail_id,
                 'url'   => $this->thumbnail->url,

@@ -22,6 +22,7 @@ class Book extends Model
         'year_published',
         'size',
         'edition',
+        'author',
         'is_stock',
         'stock',
         'max_order',
