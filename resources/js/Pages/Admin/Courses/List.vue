@@ -104,7 +104,7 @@
                         </div>
                     </td>
                     <td class="text-center">
-                        <span :class="'status-' + item.status">{{ item.status_name }}</span>
+                        <span :class="'zo-status zo-'+item.status.value">{{ item.status.title }}</span>
                     </td>
                     <td class="text-center">
                         {{ item.users }}

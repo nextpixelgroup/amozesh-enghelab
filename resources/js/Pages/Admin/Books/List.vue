@@ -15,7 +15,9 @@
                     </div>
                 </v-col>
                 <v-col class="v-col-lg-3 v-col-12 text-left">
-                    <Link :href="route('admin.books.create')"><v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن کتاب</v-btn></Link>
+                    <Link :href="route('admin.books.create')">
+                        <v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن کتاب</v-btn>
+                    </Link>
                 </v-col>
             </v-row>
         </div>
@@ -36,9 +38,9 @@
                 <v-col class="v-col-lg-3 v-col-12">
                     <v-text-field
                         hide-details
-                          variant="outlined"
-                          density="compact"
-                          label="نویسنده"
+                        variant="outlined"
+                        density="compact"
+                        label="نویسنده"
                         clearable
                         @update:model-value="(val) => val === null && handleClear('author')"
                     >
@@ -63,7 +65,8 @@
                         color="primary"
                         @click="search"
                         :loading="isLoading"
-                    >جستجو</v-btn>
+                    >جستجو
+                    </v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -98,7 +101,7 @@
                         {{ item.author }}
                     </td>
                     <td class="text-center">
-                        <span :class="'status-'+item.status.value">{{ item.status.title }}</span>
+                        <span :class="'zo-status zo-'+item.status.value">{{ item.status.title }}</span>
                     </td>
                     <td class="text-center">
                         <div>
@@ -125,7 +128,9 @@
                         {{ item.stock }}
                     </td>
                     <td class="text-center">
-                        <Link :href="route('admin.books.edit', item.id)"><v-btn icon="mdi-eye" size="small" color="primary"></v-btn></Link>
+                        <Link :href="route('admin.books.edit', item.id)">
+                            <v-btn icon="mdi-eye" size="small" color="primary"></v-btn>
+                        </Link>
                     </td>
                 </tr>
                 </tbody>
@@ -146,6 +151,7 @@ import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+
 const props = defineProps({
     books: Object,
     status: Object,
