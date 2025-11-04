@@ -3,7 +3,7 @@
         <Head title="کتب"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
-                <v-col class="v-col-lg-9">
+                <v-col class="v-col-lg-9 v-col-12">
                     <div class="zo-info d-lg-flex d-sm-none">
                         <div class="zo-icon elevation-4">
                             <i class="mdi mdi-account-circle"></i>
@@ -76,10 +76,7 @@
             </v-row>
         </v-card>
         <v-card class="pa-3 elevation-2">
-            <v-table
-                density="compact"
-                :loading="isLoading"
-            >
+            <v-table :loading="isLoading">
                 <thead>
                 <tr>
                     <th class="text-center">شناسه</th>
@@ -136,6 +133,7 @@ import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {ref, watch} from "vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+
 const page = usePage();
 const query = new URLSearchParams(page.url.split('?')[1])
 
@@ -150,8 +148,8 @@ const users = ref(props.users.data);
 const roles = ref(props.roles);
 const status = ref([
     {
-        'title' : 'بن شده',
-        'value' : 'ban',
+        'title': 'بن شده',
+        'value': 'ban',
     }
 ]);
 const restrict = ref(props.restrict);

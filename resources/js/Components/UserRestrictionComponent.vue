@@ -52,7 +52,7 @@
         <v-card>
             <v-card-title class="d-flex justify-space-between align-center">
                 <strong>افزودن محدودیت جدید</strong>
-                <v-btn icon flat size="small" @click="showDialog = false" class="v-close">
+                <v-btn icon flat size="small" @click="showDialog = false">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-card-title>
@@ -92,6 +92,7 @@
             <v-card-actions class="justify-center mb-3">
                 <v-btn
                     color="primary"
+                    variant="tonal"
                     type="submit"
                     :loading="isAdding"
                     @click="addRestriction"
