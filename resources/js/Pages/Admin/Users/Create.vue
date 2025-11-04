@@ -109,7 +109,7 @@
                     </v-col>
                     <v-col class="v-col-lg-6 v-col-12">
                         <v-row dense>
-                            <v-col cols="4">
+                            <v-col class="v-col-4">
                                 <v-select
                                     v-model="form.birth_day"
                                     label="روز تولد"
@@ -120,7 +120,7 @@
                                     hide-details
                                 />
                             </v-col>
-                            <v-col cols="4">
+                            <v-col class="v-col-4">
                                 <v-select
                                     v-model="form.birth_month"
                                     label="ماه تولد"
@@ -131,7 +131,7 @@
                                     hide-details
                                 />
                             </v-col>
-                            <v-col cols="4">
+                            <v-col class="v-col-4">
                                 <v-select
                                     v-model="form.birth_year"
                                     label="سال تولد"
@@ -168,10 +168,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col
-                        class="v-col-12"
-                        v-if="['admin', 'content-manager'].includes(form.role)"
-                    >
+                    <v-col class="v-col-12" v-if="['admin', 'content-manager'].includes(form.role)">
                         <v-text-field
                             type="text"
                             v-model="form.username"
@@ -182,10 +179,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col
-                        class="v-col-12"
-                        v-if="['user', 'admin', 'content-manager'].includes(form.role)"
-                    >
+                    <v-col class="v-col-12" v-if="['user', 'admin', 'content-manager'].includes(form.role)">
                         <v-text-field
                             v-model="form.password"
                             variant="outlined"
@@ -197,10 +191,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col
-                        class="v-col-12"
-                        v-if="form.role === 'teacher'"
-                    >
+                    <v-col class="v-col-12" v-if="form.role === 'teacher'">
                         <v-text-field
                             type="text"
                             v-model="form.slug"
