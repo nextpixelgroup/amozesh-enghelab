@@ -34,7 +34,7 @@ onMounted(() => {
 
 const logout = () => {
     isLoading.value = true
-    router.post(route('admin.logout'),{
+    router.post(route('admin.logout'), {
         onFinish: () => {
             isLoading.value = false;
         }
@@ -141,7 +141,7 @@ const logout = () => {
 
         </v-app-bar>
 
-        <v-main>
+        <v-main class="zo-main">
             <v-container fluid>
                 <slot/>
             </v-container>
@@ -151,3 +151,8 @@ const logout = () => {
         <FlashMessage/>
     </v-app>
 </template>
+<style>
+.zo-main {
+    background: rgb(245, 245, 245,.75)
+}
+</style>
