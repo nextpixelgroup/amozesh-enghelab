@@ -29,11 +29,6 @@
                         <template v-slot:item.description="{item}">
                             {{ truncateText(item.description, 60) }}
                         </template>
-                        <template v-slot:item.is_active="{ item }">
-                            <v-chip :color="item.is_active.value ? 'success' : 'error'" dark small>
-                                {{ item.is_active.title }}
-                            </v-chip>
-                        </template>
 
                         <template v-slot:item.actions="{ item }">
                             <div class="d-flex">
@@ -126,7 +121,6 @@ const headers = [
     { title: 'عنوان', key: 'title', sortable: false },
     { title: 'نامک', key: 'slug', sortable: false },
     { title: 'توضیحات', key: 'description', sortable: false },
-    { title: 'وضعیت', key: 'is_active', sortable: false },
     { title: 'عملیات', key: 'actions', sortable: false, align: 'center' }
 ]
 
@@ -136,7 +130,6 @@ const openNewCategoryDialog = () => {
         title: '',
         slug: '',
         description: '',
-        is_active: true
     }
     isEditing.value = false
     showDialog.value = true
@@ -148,7 +141,6 @@ const editItem = (item) => {
         title: item.title,
         slug: item.slug,
         description: item.description,
-        is_active: item.is_active.value ? true : false
     }
     isEditing.value = true
     showDialog.value = true
