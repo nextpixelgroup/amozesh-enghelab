@@ -71,4 +71,10 @@ class AuthController extends Controller
 
     }
 
+    public function profile()
+    {
+        $user = auth()->user();
+        return Inertia::render('Admin/Auth/Profile', compact('user'));
+    }
+
 }

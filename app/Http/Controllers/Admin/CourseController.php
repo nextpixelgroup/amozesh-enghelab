@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CourseCreateRequest;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,8 @@ class CourseController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Courses/Create');
+        $categories = Category::where('type', 'course')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
+        return Inertia::render('Admin/Courses/Create', compact('categories'));
     }
 
     public function store(CourseCreateRequest $request)

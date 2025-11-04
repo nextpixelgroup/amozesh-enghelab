@@ -39,9 +39,8 @@
                     variant="outlined"
                     density="comfortable"
                     label="دسته"
-                >
-                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                </v-select>
+                    :items="categories"
+                />
             </div>
 
             <div>
@@ -151,14 +150,17 @@
 </template>
 
 <script setup>
-import {reactive} from 'vue';
+import {reactive, ref} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
-
 import SeasonComponent from '../../../Components/SeasonComponent.vue';
 import draggable from 'vuedraggable';
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 
-const categories = reactive([{id: 1, name: 'برنامه نویسی'}, {id: 2, name: 'طراحی'}]);
+const props = defineProps({
+    categories: Object
+})
+console.log(props.categories)
+const categories = ref(props.categories);
 const teachers = reactive([{id: 1, name: 'حسین'}, {id: 2, name: 'زهرا'}]);
 
 const course = reactive({

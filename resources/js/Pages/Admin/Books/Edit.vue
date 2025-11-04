@@ -22,11 +22,12 @@
                             <v-text-field
                                 type="text"
                                 v-model="form.slug"
+                                hide-details
+                                density="compact"
                                 variant="outlined"
-                                density="comfortable"
-                                label="نامک"
                                 :suffix="site_url"
                                 dir="ltr"
+                                prepend-inner-icon="mdi-link"
                             >
                                 <template v-slot:append-inner>
                                     <v-btn
@@ -386,6 +387,7 @@ const stock_items = [{
 }];
 const updateBook = () => {
     form.put(route('admin.books.update', book.id), {
+        preserveScroll: true,
         onStart: () => {
             isLoading.value = true;
             btnDisabled.value = true;

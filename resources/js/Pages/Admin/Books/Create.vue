@@ -19,14 +19,15 @@
                         <v-col class="v-col-12">
                             <label class="zo-label">نامک</label>
                             <v-text-field
+                                type="text"
                                 v-model="form.slug"
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                prepend-inner-icon="mdi-link"
                                 :suffix="site_url"
                                 dir="ltr"
-                            ></v-text-field>
+                                prepend-inner-icon="mdi-link"
+                            />
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">زیرعنوان</label>

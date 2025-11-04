@@ -28,8 +28,8 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books/store', [BookController::class, 'store'])->name('books.store');
-    Route::get('/books/{book}', [BookController::class, 'edit'])->name('books.edit');
-    Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
+    Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}/edit', [BookController::class, 'update'])->name('books.update');
     Route::post('/books/upload', [BookController::class, 'upload'])->name('books.upload');
 
     Route::get('/books/categories', [BookCategoryController::class, 'index'])->name('books.categories.index');
@@ -72,9 +72,11 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/supports', [CommentController::class, 'index'])->name('supports.index');
 
     /********* Setting *********/
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.index');
+    Route::get('/settings/menus', [SettingController::class, 'menus'])->name('settings.menu');
 
     /********* Auth *********/
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/test', [TestController::class, 'index']);

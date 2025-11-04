@@ -15,7 +15,7 @@
                     </div>
                 </v-col>
                 <v-col class="v-col-lg-3 v-col-12 text-left">
-                    <v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن دوره</v-btn>
+                    <Link :href="route('admin.courses.create')"><v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن دوره</v-btn></Link>
                 </v-col>
             </v-row>
         </div>
@@ -127,7 +127,7 @@
     </AdminLayout>
 </template>
 <script setup>
-import {Head, router} from '@inertiajs/vue3'
+import {Head, Link, router} from '@inertiajs/vue3'
 import {ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";

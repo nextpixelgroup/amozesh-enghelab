@@ -1,5 +1,5 @@
 <script setup>
-import {router, usePage} from '@inertiajs/vue3'
+import {Link, router, usePage} from '@inertiajs/vue3'
 import {ref, computed, onMounted} from 'vue'
 import FlashMessage from '../Components/FlashMessage.vue'
 import {route} from "ziggy-js";
@@ -12,6 +12,7 @@ const page = usePage()
 const menuItems = computed(() => page.props.menuItems || []);
 
 const confirmRef = ref(null)
+const isLoading = ref(null)
 
 const socialButtons = [
     {src: '/assets/img/soroosh-green.svg', alt: 'Soroosh'},
@@ -30,6 +31,16 @@ onMounted(() => {
         })
     }
 })
+
+const logout = () => {
+    isLoading.value = true
+    router.post(route('admin.logout'),{
+        onFinish: () => {
+            isLoading.value = false;
+        }
+    })
+}
+
 </script>
 
 <template>
@@ -118,10 +129,12 @@ onMounted(() => {
                         <v-icon>mdi-message-processing</v-icon>
                     </v-badge>
                 </v-btn>
-                <v-btn icon>
-                    <v-icon>mdi-account-circle</v-icon>
-                </v-btn>
-                <v-btn icon>
+                <Link :href="route('admin.profile')">
+                    <v-btn icon>
+                        <v-icon>mdi-account-circle</v-icon>
+                    </v-btn>
+                </Link>
+                <v-btn icon @click="logout" :loading="isLoading">
                     <v-icon>mdi-logout</v-icon>
                 </v-btn>
             </div>

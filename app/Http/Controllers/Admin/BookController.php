@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\BookStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookCreateRequest;
+use App\Http\Requests\Admin\BookUpdateRequest;
 use App\Http\Resources\AdminBookResource;
 use App\Models\Book;
 use App\Models\Category;
@@ -71,7 +72,8 @@ class BookController extends Controller
                     'max_order'      => $request->max_order,
                     'year_published' => $request->year_published,
                     'edition'        => $request->edition,
-                    'author'        => $request->author,
+                    'size'           => $request->size,
+                    'author'         => $request->author,
                     'status'         => $request->status,
                 ];
                 $book = Book::create($args);
@@ -99,8 +101,47 @@ class BookController extends Controller
         return Inertia::render('Admin/Books/Edit', compact('site_url', 'status', 'categories', 'book'));
     }
 
-    public function update(Book $book, BookCreateRequest $request)
+    public function update(Book $book, BookUpdateRequest $request)
     {
+        try {
+            DB::transaction(function () use ($request, $book) {
+                $slug = $request->slug;
+                if($book->slug !== $request->slug) {
+                    $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
+                    $slug = makeSlugUnique($slug, Book::class);
+                }
+                $update = $book->update([
+                    'title'          => $request->title,
+                    'subtitle'       => $request->subtitle,
+                    'slug'           => $slug,
+                    'summary'        => $request->summary,
+                    'content'        => $request->input('content'),
+                    'thumbnail_id'   => $request->thumbnail_id,
+                    'publisher'      => $request->publisher,
+                    'price'          => $request->price,
+                    'special_price'  => $request->special_price,
+                    'is_stock'       => in_array($request->is_stock,['limited', 'yes']),
+                    'stock'          => $request->is_stock == 'limited' ? null : $request->stock,
+                    'max_order'      => $request->max_order,
+                    'year_published' => $request->year_published,
+                    'edition'        => $request->edition,
+                    'size'           => $request->size,
+                    'author'         => $request->author,
+                    'status'         => $request->status,
+                ]);
+                if($update){
+                    if ($request->has('category') && is_array($request->category)) {
+                        $book->categories()->sync($request->category);
+                    }
+                }
+                return $update;
+            });
+            return redirectMessage('success', 'کتاب با موفقیت ویرایش شد.');
+        }
+        catch (\Exception $e) {
+            $error = error_log($e);
+            return redirectMessage('error', "خطایی پیش آمد (کدخطا: $error->id)");
+        }
         dd($request->all());
     }
 

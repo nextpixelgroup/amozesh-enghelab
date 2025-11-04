@@ -86,6 +86,11 @@ class UserController extends Controller
                 if($request->password){
                     $password = Hash::make($request->password);
                 }
+                $slug = $request->slug;
+                if($request->role == 'teacher') {
+                    $slug = createSlug($request->slug);
+                    $slug = makeSlugUnique($slug, User::class);
+                }
                 $user = User::create([
                     'firstname'     => $request->firstname,
                     'lastname'      => $request->lastname,
@@ -99,7 +104,7 @@ class UserController extends Controller
                     'company'       => $request->company,
                     'username'      => $request->username,
                     'password'      => $password,
-                    'slug'          => $request->slug,
+                    'slug'          => $slug,
                 ]);
                 if($user){
                     $user->assignRole($request->role);
@@ -135,6 +140,13 @@ class UserController extends Controller
                 $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
                 $birthDate = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
             }
+
+            $slug = $request->slug;
+            if($user->role == 'teacher' && $user->slug !== $request->slug) {
+                $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
+                $slug = makeSlugUnique($slug, User::class);
+            }
+
             $args = [
                 'firstname'     => $request->firstname,
                 'lastname'      => $request->lastname,
@@ -147,7 +159,7 @@ class UserController extends Controller
                 'birth_date'    => $birthDate,
                 'company'       => $request->company,
                 'username'      => $request->username,
-                'slug'          => $request->slug,
+                'slug'          => $slug,
             ];
             if($request->password){
                 $args['password'] = Hash::make($request->password);

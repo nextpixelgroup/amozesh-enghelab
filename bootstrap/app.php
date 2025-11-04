@@ -50,6 +50,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (Throwable $e, Request $request) {
             // اگر درخواست از Inertia است، اجازه بده لاراول به‌صورت پیش‌فرض هندل کند
             if ($request->header('X-Inertia')) {
+                if($e instanceof AccessDeniedHttpException){
+                    return redirectMessage('error', 'شما دسترسی ندارید');
+                }
                 return null; // لاراول خودش redirect/back با errors برمی‌گرداند
             }
             elseif($request->header('Content-Type') == 'application/json') {
