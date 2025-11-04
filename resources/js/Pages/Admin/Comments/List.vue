@@ -19,16 +19,20 @@
         <v-card class="pa-3 mb-3 elevation-2">
             <v-row dense class="align-center">
                 <v-col class="v-col-lg-3 v-col-12">
-                    <v-select hide-details variant="outlined" density="compact" label="وضعیت انتشار"
-                              :items="['موفق', 'بررسی', 'حذف']"></v-select>
+                    <v-select hide-details variant="outlined" density="compact" label="کتاب"
+                              :items="['کتاب موعود در آیینه ادیان', 'کتاب جهان پس از ظهور']"></v-select>
                 </v-col>
                 <v-col class="v-col-lg-3 v-col-12">
-                    <v-select hide-details variant="outlined" density="compact" label="نویسنده"
-                              :items="['علی مظلوم', 'پوریا کاظمی', 'حسین امیریان']"></v-select>
+                    <v-select hide-details variant="outlined" density="compact" label="دوره"
+                              :items="['دوره تاریخ دفاع مقدس', 'دوره تحلیل تاریخ معاصر ایران', 'دوره تحلیل تاریخ معاصر ایران']"></v-select>
                 </v-col>
-                <v-col class="v-col-lg-5 v-col-12">
+                <v-col class="v-col-lg-2 v-col-12">
                     <v-text-field hide-details variant="outlined" density="compact"
-                                  label="جستجو عنوان کتاب"></v-text-field>
+                                  label="جستجو کاربر"></v-text-field>
+                </v-col>
+                <v-col class="v-col-lg-3 v-col-12">
+                    <v-text-field hide-details variant="outlined" density="compact"
+                                  label="جستجو نظر"></v-text-field>
                 </v-col>
                 <v-col class="v-col-lg-1 v-col-12">
                     <v-btn block variant="outlined" color="primary">جستجو</v-btn>
