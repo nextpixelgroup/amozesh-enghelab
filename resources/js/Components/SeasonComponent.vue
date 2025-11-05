@@ -1,91 +1,39 @@
 <template>
-    <div class="zo-header-section mb-5">
-        <v-row class="align-center">
-            <v-col class="v-col-12">
-                <div class="zo-info d-lg-flex d-sm-none">
-                    <div class="zo-icon elevation-4">
-                        <i class="mdi mdi-format-list-text"></i>
-                    </div>
-                    <div class="zo-name">
-                        <strong class="d-block mb-1">افزودن سرفصل</strong>
-                        <span>در این بخش می توانید سرفصل ها و دروس دوره را ایجاد کنید.</span>
-                    </div>
-                </div>
-            </v-col>
-        </v-row>
-    </div>
+    <div class="accordion-item">
+        <div class="accordion-header">
+            <span class="drag-handle">::</span>
+            <v-text-field v-model="localSeason.title" placeholder="عنوان سرفصل" />
+            <input type="checkbox" v-model="localSeason.is_active" /> فعال
+            <v-btn @click="$emit('remove-season')">حذف</v-btn>
+            <v-btn @click="toggleOpen">{{ open ? 'بستن' : 'باز کردن' }}</v-btn>
+        </div>
 
-    <v-card class="pa-3 mb-3 elevation-2">
-        <div class="zo-accordion">
-            <div class="zo-content">
-                <div class="zo-actions">
-                    <v-switch
-                        v-model="localSeason.is_active"
-                        hide-details
-                        color="primary"
-                        class="me-3"
-                    />
-                    <v-btn
-                        icon
-                        variant="text"
-                        @click="$emit('remove-season')"
-                    >
-                        <v-icon>mdi-trash-can</v-icon>
-                    </v-btn>
+        <div v-show="open" class="accordion-body">
+            <v-textarea v-model="localSeason.description" placeholder="توضیحات سرفصل"></v-textarea>
 
-                    <v-btn
-                        icon
-                        variant="text"
-                        @click="toggleOpen"
-                    >
-                        <v-icon>{{ open ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                    </v-btn>
-                </div>
-                <div class="d-flex align-center">
-                    <v-text-field
-                        v-model="localSeason.title"
-                        hide-details
-                        variant="outlined"
-                        placeholder="عنوان سرفصل"
-                        prepend-inner-icon="mdi-text-short"
-                        class="me-3"
-                    />
-                    <span class="zo-drag me-2">::</span>
-                </div>
-            </div>
-
-            <div v-show="open" class="zo-body mt-3">
-                <v-textarea
-                    v-model="localSeason.description"
-                    hide-details
-                    variant="outlined"
-                    placeholder="توضیحات سرفصل"
-                    prepend-inner-icon="mdi-text"
-                ></v-textarea>
-
-                <draggable v-model="localSeason.lessons" item-key="id" handle=".zo-drag">
-                    <template #item="{ element: lesson, index }">
+            <div ref="container" class="lessons-container">
+                <div v-for="(lesson, index) in localSeason.lessons" :key="lesson.id" class="lesson-item">
+                    <div class="drag-handle">☰</div>
+                    <div class="lesson-content">
                         <LessonComponent
                             :lesson="lesson"
                             :index="index"
                             @update-lesson="updateLesson(index, $event)"
                             @remove-lesson="removeLesson(index)"
                         />
-                    </template>
-                </draggable>
-
-                <v-btn type="button" color="primary" class="mt-3" @click="addLesson">
-                    افزودن درس
-                </v-btn>
+                    </div>
+                </div>
             </div>
+
+            <v-btn type="button" @click="addLesson">افزودن درس</v-btn>
         </div>
-    </v-card>
+    </div>
 </template>
 
 <script setup>
-import {ref, reactive, watch} from 'vue';
+import { ref, reactive, watch, nextTick, onMounted } from 'vue';
+import { useSortable } from '@vueuse/integrations/useSortable';
 import LessonComponent from './LessonComponent.vue';
-import draggable from 'vuedraggable';
 
 const props = defineProps({
     season: Object,
@@ -95,11 +43,22 @@ const props = defineProps({
 const emit = defineEmits(['update-season', 'remove-season']);
 
 const open = ref(true);
+const container = ref(null);
 const localSeason = reactive({...props.season});
+
+// Initialize sortable
+const { option } = useSortable(container, localSeason.lessons, {
+  animation: 150,
+  handle: '.drag-handle',
+  onUpdate: () => {
+    // Emit update when order changes
+    emit('update-season', localSeason);
+  },
+});
 
 watch(localSeason, () => {
     emit('update-season', localSeason);
-}, {deep: true});
+}, { deep: true });
 
 function toggleOpen() {
     open.value = !open.value;
@@ -123,13 +82,68 @@ function removeLesson(index) {
     localSeason.lessons.splice(index, 1);
 }
 </script>
+
 <style scoped>
-.zo-actions {
+.accordion-item {
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.accordion-header {
     display: flex;
     align-items: center;
-    position: absolute;
-    top: 10.5px;
-    left: 45px;
-    z-index: 15
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f9fafb;
+    cursor: pointer;
+}
+
+.accordion-body {
+    padding: 1rem;
+    background-color: white;
+}
+
+.lessons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.lesson-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.lesson-item:hover {
+    background-color: #f9fafb;
+}
+
+.drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    cursor: move;
+    color: #9ca3af;
+    user-select: none;
+    padding-top: 0.5rem;
+}
+
+.drag-handle:hover {
+    color: #4b5563;
+}
+
+.lesson-content {
+    flex: 1;
 }
 </style>
