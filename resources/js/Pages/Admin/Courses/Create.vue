@@ -150,8 +150,6 @@
 <script setup>
 import {reactive, ref} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
-import SeasonComponent from '../../../Components/SeasonComponent.vue';
-import draggable from 'vuedraggable';
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
