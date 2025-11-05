@@ -245,7 +245,9 @@ th {
 .tox-notifications-container,
 .tox-bottom-anchorbar,
 .tox-statusbar {
-    display: none !important
+    display: none !important;
+    opacity: 0;
+    visibility: hidden
 }
 
 .tox-tinymce {
