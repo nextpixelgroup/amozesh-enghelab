@@ -128,6 +128,7 @@
                             <v-btn icon="mdi-close" width="25" height="25" color="error"></v-btn>
                         </div>
                         <v-expansion-panel-title>
+                            <v-btn icon="mdi-drag" width="25" height="25" size="small" class="ml-2"></v-btn>
                             سرفصل 1
                         </v-expansion-panel-title>
                         <v-expansion-panel-text>
@@ -163,6 +164,8 @@
                                                 <v-btn icon="mdi-close" width="25" height="25" color="error"></v-btn>
                                             </div>
                                             <v-expansion-panel-title>
+                                                <v-btn icon="mdi-drag" width="25" height="25" size="small"
+                                                       class="ml-2"></v-btn>
                                                 درس 1
                                             </v-expansion-panel-title>
                                             <v-expansion-panel-text>
@@ -267,6 +270,13 @@
                                                     <v-expansion-panels multiple class="mb-3">
                                                         <v-expansion-panel>
                                                             <v-expansion-panel-title>
+                                                                <v-btn icon="mdi-drag"
+                                                                       width="25"
+                                                                       height="25"
+                                                                       size="small"
+                                                                       class="ml-2"
+                                                                >
+                                                                </v-btn>
                                                                 آزمون 1
                                                             </v-expansion-panel-title>
                                                             <v-expansion-panel-text>
@@ -618,7 +628,8 @@ function submitForm() {
 .zo-actions {
     position: absolute;
     top: -4.5px;
-    left: 55px
+    left: 55px;
+    z-index: 15
 }
 
 .zo-actions .zo-switch .v-input {
