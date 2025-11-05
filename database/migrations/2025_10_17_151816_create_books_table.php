@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('thumbnail_id')->nullable()->constrained('media')->nullOnDelete();
             $table->string('publisher',100)->nullable();
             $table->decimal('price', 20, 0)->index()->default(0);
-            $table->decimal('special_price', 20, 0)->index()->default(0);
+            $table->decimal('special_price', 20, 0)->nullable()->index();
             $table->boolean('is_stock')->index()->default(true);
             $table->unsignedInteger('stock')->index()->nullable();
             $table->unsignedInteger('max_order')->index()->default(1);

@@ -20,6 +20,8 @@ Route::name('web.')->group(function () {
         return Inertia::render('Web/Index');
     })->name('home');
 
+
+
     Route::get('/t/{teacher:slug}', [TeacherController::class, 'show'])->name('teacher.show');
     Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 

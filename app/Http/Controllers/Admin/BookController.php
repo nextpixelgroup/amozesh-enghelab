@@ -139,10 +139,9 @@ class BookController extends Controller
             return redirectMessage('success', 'کتاب با موفقیت ویرایش شد.');
         }
         catch (\Exception $e) {
-            $error = error_log($e);
+            $error = log_error($e);
             return redirectMessage('error', "خطایی پیش آمد (کدخطا: $error->id)");
         }
-        dd($request->all());
     }
 
     public function upload(Request $request)
