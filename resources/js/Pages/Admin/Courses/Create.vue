@@ -151,7 +151,7 @@
                                 rows="3"
                             />
                             <v-row dense class="justify-end position-relative mb-3">
-                                <v-col class="v-col-12 pe-12">
+                                <v-col class="v-col-12">
                                     <v-expansion-panels multiple>
                                         <v-expansion-panel>
                                             <div class="zo-actions">
@@ -234,13 +234,23 @@
                                                             </v-file-upload>
                                                         </v-col>
                                                     </v-row>
-                                                    <v-row dense>
+                                                    <v-row dense class="mb-3">
                                                         <v-col class="v-col-12">
                                                             <v-checkbox v-model="checkbox_value"
                                                                         hide-details
                                                                         label="فعال سازی آزمون؟"
                                                             >
                                                             </v-checkbox>
+                                                        </v-col>
+                                                        <v-col class="v-col-12">
+                                                            <v-text-field
+                                                                hide-details
+                                                                variant="outlined"
+                                                                density="comfortable"
+                                                                label="عنوان آزمون"
+                                                                type="text"
+                                                                prepend-inner-icon="mdi-text-short"
+                                                            />
                                                         </v-col>
                                                         <v-col class="v-col-12">
                                                             <v-textarea
@@ -254,8 +264,75 @@
                                                             />
                                                         </v-col>
                                                     </v-row>
-                                                    <v-row dense>
-                                                    </v-row>
+                                                    <v-expansion-panels multiple class="mb-3">
+                                                        <v-expansion-panel>
+                                                            <v-expansion-panel-title>
+                                                                آزمون 1
+                                                            </v-expansion-panel-title>
+                                                            <v-expansion-panel-text>
+                                                                <v-row dense>
+                                                                    <v-col class="v-col-12">
+                                                                        <v-text-field
+                                                                            hide-details
+                                                                            variant="outlined"
+                                                                            density="comfortable"
+                                                                            label="سوال"
+                                                                            type="text"
+                                                                            prepend-inner-icon="mdi-text-short"
+                                                                        />
+                                                                    </v-col>
+                                                                    <v-col class="v-col-12 v-col-lg-3">
+                                                                        <div class="zo-option">
+                                                                            <v-radio value="correct"></v-radio>
+                                                                            <v-text-field
+                                                                                hide-details
+                                                                                variant="outlined"
+                                                                                density="comfortable"
+                                                                                label="گزینه 1"
+                                                                                type="text"
+                                                                            />
+                                                                        </div>
+                                                                    </v-col>
+                                                                    <v-col class="v-col-12 v-col-lg-3">
+                                                                        <div class="zo-option">
+                                                                            <v-radio value="correct"></v-radio>
+                                                                            <v-text-field
+                                                                                hide-details
+                                                                                variant="outlined"
+                                                                                density="comfortable"
+                                                                                label="گزینه 2"
+                                                                                type="text"
+                                                                            />
+                                                                        </div>
+                                                                    </v-col>
+                                                                    <v-col class="v-col-12 v-col-lg-3">
+                                                                        <div class="zo-option">
+                                                                            <v-radio value="correct"></v-radio>
+                                                                            <v-text-field
+                                                                                hide-details
+                                                                                variant="outlined"
+                                                                                density="comfortable"
+                                                                                label="گزینه 3"
+                                                                                type="text"
+                                                                            />
+                                                                        </div>
+                                                                    </v-col>
+                                                                    <v-col class="v-col-12 v-col-lg-3">
+                                                                        <div class="zo-option">
+                                                                            <v-radio value="correct"></v-radio>
+                                                                            <v-text-field
+                                                                                hide-details
+                                                                                variant="outlined"
+                                                                                density="comfortable"
+                                                                                label="گزینه 4"
+                                                                                type="text"
+                                                                            />
+                                                                        </div>
+                                                                    </v-col>
+                                                                </v-row>
+                                                            </v-expansion-panel-text>
+                                                        </v-expansion-panel>
+                                                    </v-expansion-panels>
                                                     <div class="zo-add text-end">
                                                         <v-btn icon="mdi-plus"
                                                                width="25"
@@ -279,9 +356,133 @@
                 <div class="text-left">
                     <v-btn color="primary">افزودن سرفصل</v-btn>
                 </div>
+                <div class="zo-header-section mb-5">
+                    <v-row class="align-center">
+                        <v-col class="v-col-lg-9">
+                            <div class="zo-info d-lg-flex d-sm-none">
+                                <div class="zo-icon elevation-4">
+                                    <i class="mdi mdi-note-text-outline"></i>
+                                </div>
+                                <div class="zo-name">
+                                    <strong class="d-block mb-1">افزودن آزمون</strong>
+                                    <span>در این بخش می توانید آزمون دوره را ایجاد کنید.</span>
+                                </div>
+                            </div>
+                        </v-col>
+                    </v-row>
+                </div>
+                <v-card class="pa-3 mb-3 elevation-2">
+                    <v-row dense class="mb-3">
+                        <v-col class="v-col-12">
+                            <v-checkbox v-model="checkbox_value"
+                                        hide-details
+                                        label="فعال سازی آزمون؟"
+                            >
+                            </v-checkbox>
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <v-text-field
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="عنوان آزمون"
+                                type="text"
+                                prepend-inner-icon="mdi-text-short"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <v-textarea
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                type="text"
+                                label="توضیحات آزمون"
+                                rows="2"
+                                prepend-inner-icon="mdi-text"
+                            />
+                        </v-col>
+                    </v-row>
+                    <v-expansion-panels multiple class="mb-3">
+                        <v-expansion-panel>
+                            <v-expansion-panel-title>
+                                آزمون 1
+                            </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <v-row dense>
+                                    <v-col class="v-col-12">
+                                        <v-text-field
+                                            hide-details
+                                            variant="outlined"
+                                            density="comfortable"
+                                            label="سوال"
+                                            type="text"
+                                            prepend-inner-icon="mdi-text-short"
+                                        />
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio value="correct"></v-radio>
+                                            <v-text-field
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 1"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio value="correct"></v-radio>
+                                            <v-text-field
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 2"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio value="correct"></v-radio>
+                                            <v-text-field
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 3"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio value="correct"></v-radio>
+                                            <v-text-field
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 4"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                    <div class="zo-add text-end">
+                        <v-btn icon="mdi-plus"
+                               width="25"
+                               height="25"
+                               color="primary"
+                        >
+                        </v-btn>
+                    </div>
+                </v-card>
             </v-col>
             <v-col class="v-col-12 v-col-lg-3">
-                <v-card class="pa-3 mb-3 elevation-2">
+                <v-card class="pa-3 mb-3 elevation-2  position-sticky top-0">
                     <v-select
                         v-model="course.must_complete_quizzes"
                         hide-details
@@ -416,17 +617,25 @@ function submitForm() {
 
 .zo-actions {
     position: absolute;
-    top: -5px;
-    left: -50px
-}
-
-.zo-actions .zo-switch {
-    transform: rotate(90deg);
+    top: -4.5px;
+    left: 55px
 }
 
 .zo-actions .zo-switch .v-input {
     display: flex;
     justify-content: center;
     align-items: center
+}
+
+.zo-option {
+    position: relative
+}
+
+.zo-option .v-radio {
+    position: absolute;
+    top: 2.5px;
+    left: 5px;
+    background: rgb(255, 255, 255);
+    z-index: 15
 }
 </style>

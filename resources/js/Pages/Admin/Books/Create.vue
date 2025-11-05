@@ -206,11 +206,11 @@
                             <label class="zo-label">وضعیت</label>
                             <v-select
                                 hide-details
-                                  v-model="form.status"
-                                  variant="outlined"
-                                  density="compact"
-                                  placeholder="وضعیت"
-                                  :items="status"
+                                v-model="form.status"
+                                variant="outlined"
+                                density="compact"
+                                placeholder="وضعیت"
+                                :items="status"
                             >
                             </v-select>
                         </v-col>
