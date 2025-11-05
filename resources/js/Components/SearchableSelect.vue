@@ -1,7 +1,8 @@
 <template>
-    <v-container class="pa-4">
+    <v-card class="pa-3 mb-3 elevation-2">
         <v-autocomplete
             v-model="search"
+            variant="outlined"
             :items="filteredItems"
             :label="label"
             clearable
@@ -11,51 +12,31 @@
             return-object
             item-title="title"
             item-value="value"
-            class="mb-4"
             ref="searchInput"
             autocomplete="off"
             @keydown.enter.prevent="clearSearch"
+            prepend-inner-icon="mdi-play-box-multiple"
         >
             <template v-slot:item="{ props, item }">
-                <v-list-item
-                    v-bind="props"
-                    :title="item.raw.title"
-                    @click="clearSearch"
-                />
+                <v-list-item v-bind="props" :title="item.raw.title" @click="clearSearch"/>
             </template>
         </v-autocomplete>
-
-        <v-sheet class="mt-3 pa-3" elevation="1" rounded>
-            <div ref="chipsContainer" class="chips-container">
-                <div
-                    v-for="item in modelValue"
-                    :key="item.value"
-                    class="chip"
-                >
-                    <v-icon class="drag-handle">mdi-drag-vertical</v-icon>
-                    <div class="chip-content">
-                        {{ item.title }}
-                    </div>
-                    <v-btn
-                        icon
-                        size="x-small"
-                        variant="text"
-                        @click="removeChip(item)"
-                        class="close-btn"
-                    >
-                        <v-icon size="small">mdi-close</v-icon>
-                    </v-btn>
+        <div ref="chipsContainer" class="zo-chips-section">
+            <div v-for="item in modelValue" :key="item.value" class="zo-chip">
+                <v-icon class="zo-drag">mdi-drag-vertical</v-icon>
+                <div class="zo-content">
+                    {{ item.title }}
                 </div>
-                <div v-if="!modelValue.length" class="text-caption text-medium-emphasis text-center py-4">
-                    {{ emptyMessage }}
-                </div>
+                <v-btn icon size="x-small" color="error" @click="removeChip(item)">
+                    <v-icon size="small">mdi-close</v-icon>
+                </v-btn>
             </div>
-        </v-sheet>
-    </v-container>
+        </div>
+    </v-card>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import {ref, computed, onMounted, onBeforeUnmount, nextTick} from 'vue'
 import Sortable from 'sortablejs'
 
 // Props
@@ -125,7 +106,7 @@ const initSortable = () => {
 
     sortable = new Sortable(chipsContainer.value, {
         animation: 150,
-        handle: '.drag-handle',
+        handle: '.zo-drag',
         ghostClass: 'ghost',
         direction: 'vertical',
         invertSwap: true,
@@ -156,52 +137,48 @@ onBeforeUnmount(() => sortable?.destroy())
 </script>
 
 <style scoped>
-.chips-container {
+.zo-chips-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 100px;
-    padding: 8px;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    direction: rtl;
-    user-select: none;
+    margin: 15px auto 0;
 }
 
-.chips-container.dragging {
+.zo-chips-section.dragging {
     cursor: grabbing;
 }
 
-.chip {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: grab;
-    user-select: none;
-    position: relative;
+.zo-chips-section .zo-chip {
+    width: 100%;
+    min-height: 50px;
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    min-height: 48px;
-    direction: rtl;
+    margin: 2.5px 0;
+    padding: 10px 15px;
+    position: relative;
+    bacground: rgb(245, 245, 245);
+    border: 1px solid rgb(225, 225, 225);
+    border-radius: .25rem;
 }
 
-.chip:hover {
-    background: #f5f5f5;
+.zo-chips-section .zo-chip:hover {
+    background: rgb(225, 225, 225)
 }
 
-.drag-handle {
-    cursor: grab;
-    opacity: 0.7;
-    margin-right: 8px;
-    margin-left: 4px;
-    color: #666;
-    transition: all 0.2s ease;
+.zo-chips-section .zo-chip .zo-content {
+    flex-grow: 1;
+    margin: 0 10px 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+}
+
+.zo-chips-section .zo-chip .zo-drag {
     flex-shrink: 0;
+    margin: 0 10px 0 0;
+    opacity: 0.75;
+    cursor: grab
 }
 
 .drag-handle:hover {
@@ -214,13 +191,5 @@ onBeforeUnmount(() => sortable?.destroy())
     background: #e3f2fd;
     border: 2px dashed #2196f3;
     box-shadow: 0 2px 6px rgba(33, 150, 243, 0.2);
-}
-
-.chip-content {
-    flex-grow: 1;
-    margin-right: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 </style>

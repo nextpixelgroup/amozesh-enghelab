@@ -50,6 +50,9 @@ const vuetify = createVuetify({
         VSelect: {
             menuIcon: 'mdi-chevron-down'
         },
+        VAutocomplete: {
+            menuIcon: 'mdi-chevron-down'
+        }
     },
     rtl: true,
     locale: {

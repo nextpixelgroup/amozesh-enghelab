@@ -1,6 +1,6 @@
 <template>
     <AdminLayout>
-        <Head title="دوره های آموزشی"/>
+        <Head title="دوره‌های آموزشی"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -9,13 +9,15 @@
                             <i class="mdi mdi-laptop"></i>
                         </div>
                         <div class="zo-name">
-                            <strong class="d-block mb-1">دوره های آموزشی</strong>
-                            <span>کتب تاریخی مهدویت و انقلاب اسلامی ایران</span>
+                            <strong class="d-block mb-1">دوره‌های آموزشی</strong>
+                            <span>دوره‌های آموزشی تاریخی مهدویت و انقلاب اسلامی ایران</span>
                         </div>
                     </div>
                 </v-col>
                 <v-col class="v-col-lg-3 v-col-12 text-left">
-                    <Link :href="route('admin.courses.create')"><v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن دوره</v-btn></Link>
+                    <Link :href="route('admin.courses.create')">
+                        <v-btn prepend-icon="$plus" class="zo-add" color="primary">افزودن دوره</v-btn>
+                    </Link>
                 </v-col>
             </v-row>
         </div>

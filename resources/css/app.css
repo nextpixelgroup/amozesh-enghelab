@@ -241,3 +241,12 @@ th {
     padding: 0;
     border-radius: 50%;
 }
+
+.tox-notifications-container {
+    display: none !important
+}
+
+.tox-tinymce {
+    border: 1px solid #ababab;
+    border-radius: 4px
+}
