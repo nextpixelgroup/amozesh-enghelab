@@ -1,7 +1,6 @@
 <template>
     <div class="accordion-item">
         <div class="accordion-header">
-            <span class="drag-handle">::</span>
             <v-text-field v-model="localLesson.title" placeholder="عنوان درس" />
             <input type="checkbox" v-model="localLesson.is_active" /> فعال
             <v-btn @click="$emit('remove-lesson')">حذف</v-btn>
