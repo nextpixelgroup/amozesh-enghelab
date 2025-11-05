@@ -7,6 +7,7 @@
                         <v-col class="v-col-12">
                             <v-text-field
                                 v-model="course.title"
+                                hide-details
                                 variant="outlined"
                                 density="comfortable"
                                 label="عنوان دوره"
@@ -19,6 +20,7 @@
                             <v-text-field
                                 type="text"
                                 v-model="course.slug"
+                                hide-details
                                 variant="outlined"
                                 density="comfortable"
                                 label="نامک"
@@ -42,6 +44,7 @@
                         <v-col class="v-col-12 v-col-lg-6">
                             <v-autocomplete
                                 v-model="course.category"
+                                hide-details
                                 variant="outlined"
                                 density="comfortable"
                                 label="دسته‌بندی‌"
@@ -54,6 +57,7 @@
                         <v-col class="v-col-12 v-col-lg-6">
                             <v-autocomplete
                                 v-model="course.teacher"
+                                hide-details
                                 variant="outlined"
                                 density="comfortable"
                                 label="مدرس"
@@ -67,13 +71,13 @@
                                 api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
                                 v-model="course.description"
                                 :init="{
-                        height: 400,
-                        menubar: true,
-                        language: 'fa',
-                        plugins: 'link image media table code lists',
-                        images_upload_url: '/upload/image',
-                        file_picker_types: 'image media',
-                    }"
+                                    height: 400,
+                                    menubar: true,
+                                    language: 'fa',
+                                    plugins: 'link image media table code lists',
+                                    images_upload_url: '/upload/image',
+                                    file_picker_types: 'image media',
+                                }"
                             />
                         </v-col>
                     </v-row>
@@ -99,21 +103,6 @@
                     label="جستجوی پیش نیازها..."
                     empty-message="هیچ پیش‌نیازی انتخاب نشده است."
                 />
-                <v-card class="pa-3 mb-3 elevation-2">
-
-                    <!-- سرفصل‌ها -->
-                    <draggable v-model="course.seasons" item-key="id" handle=".drag-handle" class="list-group">
-                        <template #item="{ element: season, index }">
-                            <SeasonComponent
-                                :season="season"
-                                :index="index"
-                                @update-season="updateSeason(index, $event)"
-                                @remove-season="removeSeason(index)"
-                            />
-                        </template>
-                    </draggable>
-                </v-card>
-
                 <v-btn type="button" @click="addSeason">افزودن سرفصل جدید</v-btn>
             </v-col>
             <v-col class="v-col-12 v-col-lg-3">
@@ -121,22 +110,24 @@
                     <v-file-upload density="comfortable" variant="comfortable"></v-file-upload>
                     <v-select
                         v-model="course.must_complete_quizzes"
+                        hide-details
                         :items="[
-                        { title: 'خیر', value: 0 },
-                        { title: 'بله', value: 1 }
-                      ]"
+                            { title: 'خیر', value: 0 },
+                            { title: 'بله', value: 1 }
+                          ]"
                         label="ضروری بودن آزمون ها"
                         outlined
-                        dense
+                        class="mb-3"
                         variant="outlined"
                         density="comfortable"
                     />
                     <v-select
                         v-model="course.status"
+                        hide-details
                         :items="status"
                         label="وضعیت"
                         outlined
-                        dense
+                        class="mb-3"
                         variant="outlined"
                         density="comfortable"
                     />

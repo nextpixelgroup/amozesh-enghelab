@@ -2,12 +2,12 @@
     <v-card class="pa-3 mb-3 elevation-2">
         <v-autocomplete
             v-model="search"
+            hide-details
+            hide-no-data
+            clearable
             variant="outlined"
             :items="filteredItems"
             :label="label"
-            clearable
-            hide-no-data
-            hide-details
             @update:model-value="onSelect"
             return-object
             item-title="title"
@@ -141,7 +141,7 @@ onBeforeUnmount(() => sortable?.destroy())
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin: 15px auto 0;
+    margin: 0 auto
 }
 
 .zo-chips-section.dragging {
