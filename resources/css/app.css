@@ -242,11 +242,13 @@ th {
     border-radius: 50%;
 }
 
-.tox-notifications-container {
+.tox-notifications-container,
+.tox-bottom-anchorbar,
+.tox-statusbar {
     display: none !important
 }
 
 .tox-tinymce {
-    border: 1px solid #ababab;
-    border-radius: 4px
+    border: 1px solid #ababab !important;
+    border-radius: 4px !important
 }
