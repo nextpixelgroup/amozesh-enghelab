@@ -415,6 +415,7 @@
                     <v-expansion-panels multiple class="mb-3">
                         <v-expansion-panel>
                             <v-expansion-panel-title>
+                                <v-btn icon="mdi-drag" width="25" height="25" size="small" class="ml-2"></v-btn>
                                 آزمون 1
                             </v-expansion-panel-title>
                             <v-expansion-panel-text>
