@@ -77,7 +77,7 @@
                     prepend-inner-icon="mdi-text"
                     hide-details
                 ></v-textarea>
-                <v-text-field
+                <v-number-input
                     v-if="newRestriction.type === 'temporary_ban'"
                     v-model.number="newRestriction.days"
                     variant="outlined"
@@ -87,7 +87,7 @@
                     class="mb-3"
                     prepend-inner-icon="mdi-calendar-today"
                     hide-details
-                ></v-text-field>
+                ></v-number-input>
             </v-card-text>
             <v-card-actions class="justify-center mb-3">
                 <v-btn

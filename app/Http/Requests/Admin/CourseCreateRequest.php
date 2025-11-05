@@ -30,8 +30,6 @@ class CourseCreateRequest extends FormRequest
             'teacher'               => ['required', 'exists:users,id', new TeacherRole],
             "description"           => 'nullable',
             "requirements"          => 'nullable',
-            'published_at'          => 'required|date',
-            "price"                 => 'required|numeric|min:0',
             "must_complete_quizzes" => 'required|boolean',
             "status"                => 'required|in:'.implode(',', enumNames(CourseStatusEnum::cases())),
             'seasons'               => 'required|array|min:1',

@@ -53,6 +53,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 if($e instanceof AccessDeniedHttpException){
                     return redirectMessage('error', 'شما دسترسی ندارید');
                 }
+                elseif ($e instanceof MethodNotAllowedHttpException){
+                    return redirectMessage('error', 'متد ارسالی در سرور وجود ندارد');
+                }
                 return null; // لاراول خودش redirect/back با errors برمی‌گرداند
             }
             elseif($request->header('Content-Type') == 'application/json') {
@@ -75,7 +78,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 }
                 elseif ($e instanceof RouteNotFoundException) {
                     return sendJson('error', 'چنین درخواستی یافت نشد. (1003)', []);
-                } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+                } elseif ($e instanceof MethodNotAllowedHttpException) {
                     return sendJson('error', 'دسترسی به این متد امکان پذیر نمی باشد.');
                 }
                 elseif ($e instanceof  ThrottleRequestsException){

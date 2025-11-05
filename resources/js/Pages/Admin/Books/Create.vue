@@ -87,7 +87,6 @@
                                 hide-details
                                 density="compact"
                                 variant="outlined"
-                                placeholder="250.000"
                                 prepend-inner-icon="mdi-tag-multiple"
                                 rightHint="تومان"
                             >

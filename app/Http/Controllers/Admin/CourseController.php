@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\CourseStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CourseCreateRequest;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\Quiz;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Verta;
@@ -38,11 +40,18 @@ class CourseController extends Controller
     public function create()
     {
         $categories = Category::where('type', 'course')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
-        return Inertia::render('Admin/Courses/Create', compact('categories'));
+        $teachers = User::query()
+            ->whereHas('roles', function($query) {
+                $query->where('name', 'teacher');
+            })
+            ->with('roles')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->firstname . ' ' . $item->lastname]);
+        $status = enumFormated(CourseStatusEnum::cases());
+        return Inertia::render('Admin/Courses/Create', compact('categories', 'teachers', 'status'));
     }
 
     public function store(CourseCreateRequest $request)
     {
+        dd($request->all());
         return DB::transaction(function () use ($request) {
             try {
                 // Create course
@@ -57,6 +66,26 @@ class CourseController extends Controller
                 return sendJson(status:'error',message: $e->getMessage());
             }
         });
+    }
+
+    public function edit()
+    {
+        return inertia()->render('Admin/Courses/Edit');
+    }
+
+    public function search()
+    {
+        $query = [
+            [
+                'id' => 1,
+                'title' => 'تست',
+            ],
+            [
+                'id' => 2,
+                'title' => 'تست دو',
+            ]
+        ];
+        return $query;
     }
 
     private function storeCourse($request)

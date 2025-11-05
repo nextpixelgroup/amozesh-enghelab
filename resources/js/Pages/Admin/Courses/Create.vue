@@ -1,6 +1,5 @@
 <template>
     <AdminLayout>
-        <form @submit.prevent="submitForm">
             <div>
                 <v-text-field
                     v-model="course.title"
@@ -34,28 +33,27 @@
             </v-text-field>
 
             <div>
-                <v-select
+                <v-autocomplete
                     v-model="course.category"
                     variant="outlined"
                     density="comfortable"
                     label="دسته"
                     :items="categories"
+                    multiple
+                    clearable
                 />
             </div>
 
             <div>
-                <v-select
+                <v-autocomplete
                     v-model="course.teacher"
 
                     variant="outlined"
                     density="comfortable"
                     label="مدرس"
-                >
-                    <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">{{
-                            teacher.name
-                        }}
-                    </option>
-                </v-select>
+                    :items="teachers"
+                    clearable
+                />
             </div>
 
             <div>
@@ -79,22 +77,11 @@
             </div>
 
             <div>
-                <v-textarea
+                <SearchableSelect
                     v-model="course.requirements"
-                    variant="outlined"
-                    density="comfortable"
-                    label="پیش‌نیازها"
-                ></v-textarea>
-            </div>
-
-            <div>
-                <v-date-input
-                    v-model="course.published_at"
-                    type="text"
-                    placeholder="تاریخ شمسی"
-                    variant="outlined"
-                    density="comfortable"
-                    label="تاریخ انتشار"
+                    :items="courseItems"
+                    label="جستجوی پیش نیازها..."
+                    empty-message="هیچ پیش‌نیازی انتخاب نشده است."
                 />
             </div>
 
@@ -111,24 +98,21 @@
                     class="mt-2"
                     variant="outlined"
                     density="comfortable"
-                ></v-select>
+                />
             </div>
 
             <div>
                 <v-label>وضعیت</v-label>
                 <v-select
-                    v-model="course.must_complete_quizzes"
-                    :items="[
-                        { text: 'در انتظار', value: 'pending' },
-                        { text: 'فعال', value: 'active' }
-                      ]"
+                    v-model="course.status"
+                    :items="status"
                     label="وضعیت"
                     outlined
                     dense
                     class="mt-2"
                     variant="outlined"
                     density="comfortable"
-                ></v-select>
+                />
             </div>
 
             <!-- سرفصل‌ها -->
@@ -144,8 +128,7 @@
             </draggable>
 
             <v-btn type="button" @click="addSeason">افزودن سرفصل جدید</v-btn>
-            <v-btn type="submit">ذخیره دوره</v-btn>
-        </form>
+            <v-btn type="submit" :loading="isLoading" :disabled="isLoading" @click="submitForm">ذخیره دوره</v-btn>
     </AdminLayout>
 </template>
 
@@ -155,13 +138,27 @@ import Editor from '@tinymce/tinymce-vue'
 import SeasonComponent from '../../../Components/SeasonComponent.vue';
 import draggable from 'vuedraggable';
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import {router} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+import SearchableSelect from "@/Components/SearchableSelect.vue";
 
 const props = defineProps({
-    categories: Object
+    categories: Object,
+    teachers: Object,
+    status: Object
 })
-console.log(props.categories)
+const isLoading = ref(false);
 const categories = ref(props.categories);
-const teachers = reactive([{id: 1, name: 'حسین'}, {id: 2, name: 'زهرا'}]);
+const teachers = ref(props.teachers);
+const status = ref(props.status);
+const selectedCourses = ref();
+
+const courseItems = [
+    { value: 1, title: 'انقلاب اسلامی ایران — دکتر منوچهر محمدی' },
+    { value: 2, title: 'تحلیل انقلاب اسلامی ایران — دکتر محسن حمیدزاده' },
+    { value: 3, title: 'ریشه‌های انقلاب ایران — نیکی آر. کدی' },
+    // ...
+]
 
 const course = reactive({
     title: '',
@@ -169,9 +166,8 @@ const course = reactive({
     category: null,
     teacher: null,
     description: '',
-    requirements: '',
-    published_at: '',
-    must_complete_quizzes: false,
+    requirements: [],
+    must_complete_quizzes: null,
     status: 'pending',
     seasons: []
 });
@@ -195,7 +191,17 @@ function removeSeason(index) {
 }
 
 function submitForm() {
-    console.log('اطلاعات دوره:', course);
-    // اینجا می‌تونی با Inertia.post بفرستی
+    router.post(route('admin.courses.store'),course, {
+        preserveScroll: true,
+        onStart: () => {
+            isLoading.value = true
+        },
+        onSuccess: () => {
+
+        },
+        onFinish: () => {
+            isLoading.value = false
+        }
+    })
 }
 </script>
