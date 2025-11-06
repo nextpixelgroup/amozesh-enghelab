@@ -117,22 +117,38 @@
                         </v-col>
                     </v-row>
                 </div>
-                <v-expansion-panels multiple class="mb-3">
-                    <v-expansion-panel>
+                <v-expansion-panels multiple class="mb-3" ref="seasonsContainer">
+                    <v-expansion-panel
+                        v-for="(season, sIndex) in course.seasons"
+                        :key="season.id"
+                    >
                         <div class="zo-actions">
                             <div class="zo-switch">
-                                <v-switch v-model="switch_value" color="success"></v-switch>
+                                <v-switch v-model="season.is_active" color="success"></v-switch>
                             </div>
                         </div>
                         <div class="zo-close">
-                            <v-btn icon="mdi-close" width="25" height="25" color="error"></v-btn>
+                            <v-btn
+                                icon="mdi-close"
+                                width="25"
+                                height="25"
+                                color="error"
+                                @click="removeSeason(sIndex)"
+                            ></v-btn>
                         </div>
                         <v-expansion-panel-title>
-                            <v-btn icon="mdi-drag" width="25" height="25" size="small" class="ml-2"></v-btn>
-                            سرفصل 1
+                            <v-btn
+                                icon="mdi-drag"
+                                width="25"
+                                height="25"
+                                size="small"
+                                class="ml-2 season-drag-handle"
+                            ></v-btn>
+                            {{ season.title || `سرفصل ${sIndex + 1}` }}
                         </v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-text-field
+                                v-model="season.title"
                                 hide-details
                                 variant="outlined"
                                 density="comfortable"
@@ -142,6 +158,7 @@
                                 prepend-inner-icon="mdi-text-short"
                             />
                             <v-textarea
+                                v-model="season.description"
                                 hide-details
                                 variant="outlined"
                                 density="comfortable"
@@ -153,26 +170,36 @@
                             />
                             <v-row dense class="justify-end position-relative mb-3">
                                 <v-col class="v-col-12">
-                                    <v-expansion-panels multiple>
-                                        <v-expansion-panel>
+                                    <v-expansion-panels multiple :ref="el => lessonsContainers[sIndex] = el">
+                                        <v-expansion-panel
+                                            v-for="(lesson, lIndex) in season.lessons"
+                                            :key="lesson.id"
+                                        >
                                             <div class="zo-actions">
                                                 <div class="zo-switch">
-                                                    <v-switch v-model="switch_value" color="success"></v-switch>
+                                                    <v-switch v-model="lesson.is_active" color="success"></v-switch>
                                                 </div>
                                             </div>
                                             <div class="zo-close">
-                                                <v-btn icon="mdi-close" width="25" height="25" color="error"></v-btn>
+                                                <v-btn icon="mdi-close" width="25" height="25" color="error"
+                                                       @click="removeLesson(sIndex, lIndex)"></v-btn>
                                             </div>
                                             <v-expansion-panel-title>
-                                                <v-btn icon="mdi-drag" width="25" height="25" size="small"
-                                                       class="ml-2"></v-btn>
-                                                درس 1
+                                                <v-btn
+                                                    icon="mdi-drag"
+                                                    width="25"
+                                                    height="25"
+                                                    size="small"
+                                                    class="ml-2 lesson-drag-handle"
+                                                ></v-btn>
+                                                {{ lesson.title || `درس ${lIndex + 1}` }}
                                             </v-expansion-panel-title>
                                             <v-expansion-panel-text>
                                                 <v-card flat>
                                                     <v-row dense class="position-relative">
                                                         <v-col class="v-col-lg-9 v-col-12">
                                                             <v-text-field
+                                                                v-model="lesson.title"
                                                                 hide-details
                                                                 variant="outlined"
                                                                 density="comfortable"
@@ -182,17 +209,20 @@
                                                             />
                                                         </v-col>
                                                         <v-col class="v-col-lg-3 v-col-12">
-                                                            <v-text-field
+                                                            <v-number-input
+                                                                v-model="lesson.duration"
                                                                 hide-details
                                                                 variant="outlined"
                                                                 density="comfortable"
                                                                 label="زمان ویدیو"
                                                                 type="text"
                                                                 prepend-inner-icon="mdi-clock-time-eight-outline"
+                                                                min="1"
                                                             />
                                                         </v-col>
                                                         <v-col class="v-col-12">
                                                             <v-textarea
+                                                                v-model="lesson.description"
                                                                 hide-details
                                                                 variant="outlined"
                                                                 density="comfortable"
@@ -204,6 +234,7 @@
                                                         </v-col>
                                                         <v-col class="v-col-12">
                                                             <v-text-field
+                                                                v-model="lesson.video_url"
                                                                 type="text"
                                                                 hide-details
                                                                 variant="outlined"
@@ -227,6 +258,7 @@
                                                         </v-col>
                                                         <v-col class="v-col-12">
                                                             <v-file-upload
+                                                                v-model="lesson.poster_id"
                                                                 density="compact"
                                                                 variant="compact"
                                                                 title="بارگذاری تصویر ویدیو"
@@ -239,13 +271,14 @@
                                                     </v-row>
                                                     <v-row dense class="mb-3">
                                                         <v-col class="v-col-12">
-                                                            <v-checkbox v-model="checkbox_value"
-                                                                        hide-details
-                                                                        label="فعال سازی آزمون؟"
+                                                            <v-checkbox
+                                                                v-model="lesson.has_exam"
+                                                                hide-details
+                                                                label="فعال سازی آزمون؟"
                                                             >
                                                             </v-checkbox>
                                                         </v-col>
-                                                        <v-col class="v-col-12">
+                                                        <v-col class="v-col-12" v-if="lesson.has_exam">
                                                             <v-text-field
                                                                 hide-details
                                                                 variant="outlined"
@@ -255,7 +288,7 @@
                                                                 prepend-inner-icon="mdi-text-short"
                                                             />
                                                         </v-col>
-                                                        <v-col class="v-col-12">
+                                                        <v-col class="v-col-12" v-if="lesson.has_exam">
                                                             <v-textarea
                                                                 hide-details
                                                                 variant="outlined"
@@ -267,8 +300,11 @@
                                                             />
                                                         </v-col>
                                                     </v-row>
-                                                    <v-expansion-panels multiple class="mb-3">
-                                                        <v-expansion-panel>
+                                                    <v-expansion-panels multiple class="mb-3" v-if="lesson.has_exam">
+                                                        <v-expansion-panel
+                                                            v-for="(quiz, qIndex) in lesson.quizzes"
+                                                            :key="quiz.id"
+                                                        >
                                                             <v-expansion-panel-title>
                                                                 <v-btn icon="mdi-drag"
                                                                        width="25"
@@ -277,8 +313,23 @@
                                                                        class="ml-2"
                                                                 >
                                                                 </v-btn>
-                                                                آزمون 1
+                                                                {{ quiz.title || `آزمون ${qIndex + 1}` }}
                                                             </v-expansion-panel-title>
+                                                            <div class="zo-actions">
+                                                                <div class="zo-switch">
+                                                                    <v-switch v-model="quiz.is_active"
+                                                                              color="success"></v-switch>
+                                                                </div>
+                                                            </div>
+                                                            <div class="zo-close">
+                                                                <v-btn
+                                                                    icon="mdi-close"
+                                                                    width="25"
+                                                                    height="25"
+                                                                    color="error"
+                                                                    @click="removeQuiz(sIndex)"
+                                                                ></v-btn>
+                                                            </div>
                                                             <v-expansion-panel-text>
                                                                 <v-row dense>
                                                                     <v-col class="v-col-12">
@@ -344,11 +395,12 @@
                                                         </v-expansion-panel>
                                                     </v-expansion-panels>
                                                     <div class="zo-add text-end">
-                                                        <v-btn icon="mdi-plus"
-                                                               width="25"
-                                                               height="25"
-                                                               color="primary"
+                                                        <v-btn
+                                                            v-if="lesson.has_exam"
+                                                            color="primary"
+                                                            @click="addQuiz(sIndex, lIndex)"
                                                         >
+                                                            افزودن آزمون
                                                         </v-btn>
                                                     </div>
                                                 </v-card>
@@ -358,13 +410,18 @@
                                 </v-col>
                             </v-row>
                             <div class="text-left">
-                                <v-btn color="primary">افزودن درس</v-btn>
+                                <v-btn
+                                    color="primary"
+                                    @click="addLesson(sIndex)"
+                                >
+                                    افزودن درس
+                                </v-btn>
                             </div>
                         </v-expansion-panel-text>
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <div class="text-left">
-                    <v-btn color="primary">افزودن سرفصل</v-btn>
+                    <v-btn color="primary" @click="addSeason">افزودن سرفصل</v-btn>
                 </div>
                 <div class="zo-header-section mb-5">
                     <v-row class="align-center">
@@ -541,13 +598,14 @@
 </template>
 
 <script setup>
-import {reactive, ref} from 'vue';
+import {nextTick, reactive, ref, useTemplateRef, watch} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import SearchableSelect from "@/Components/SearchableSelect.vue";
 import {VFileUpload} from 'vuetify/labs/VFileUpload'
+import {useSortable} from "@vueuse/integrations/useSortable";
 
 const switch_value = ref(true);
 const checkbox_value = ref(true);
@@ -579,8 +637,65 @@ const course = reactive({
     requirements: [],
     must_complete_quizzes: null,
     status: 'pending',
-    seasons: []
+    seasons: [
+        {
+            id: Date.now(),
+            title: '',
+            description: '',
+            is_active: true,
+            lessons: [
+                {
+                    id: Date.now(),
+                    title: '',
+                    description: '',
+                    duration: null,
+                    video_url: '',
+                    is_active: true,
+                    has_exam: false,
+                    quizzes: [
+                        {
+                            title: '',
+                            description: '',
+                            is_active: true,
+                            time_limit: true,
+                            questions: [
+                                {
+                                    text : '',
+                                    options : [
+                                        {
+                                            text: '',
+                                            is_correct: false
+                                        },
+                                        {
+                                            text: '',
+                                            is_correct: false
+                                        },
+                                        {
+                                            text: '',
+                                            is_correct: false
+                                        },
+                                        {
+                                            text: '',
+                                            is_correct: false
+                                        },
+                                    ]
+                                }
+                            ]
+                        },
+                    ]
+                }
+            ]
+        }
+    ]
 });
+
+/********************************Seasons********************************/
+const seasonsContainer = useTemplateRef('seasonsContainer')
+
+useSortable(seasonsContainer, course.seasons, {
+    animation: 150,
+    handle: '.season-drag-handle',
+})
 
 function addSeason() {
     course.seasons.push({
@@ -592,13 +707,62 @@ function addSeason() {
     });
 }
 
-function updateSeason(index, updatedSeason) {
-    course.seasons[index] = updatedSeason;
-}
-
 function removeSeason(index) {
     course.seasons.splice(index, 1);
 }
+
+
+/********************************Lessons********************************/
+const lessonsContainers = ref([])
+watch(
+    () => course.seasons.map(s => s.lessons.length),
+    () => {
+        nextTick(() => {
+            lessonsContainers.value.forEach((container, index) => {
+                if (!container) return
+                useSortable(container, course.seasons[index].lessons, {
+                    animation: 150,
+                    handle: '.lesson-drag-handle',
+                })
+            })
+        })
+    },
+    {deep: true}
+)
+
+function addLesson(sIndex) {
+    course.seasons[sIndex].lessons.push({
+        id: Date.now(),
+        title: '',
+        description: '',
+        duration: null,
+        video_url: '',
+        is_active: true,
+        has_exam: false,
+        quizzes: [],
+    });
+}
+
+function removeLesson(sIndex, lIndex) {
+    course.seasons[sIndex].lessons.splice(lIndex, 1);
+}
+
+
+/********************************quizzes********************************/
+function addQuiz(sIndex, lIndex) {
+    course.seasons[sIndex].lessons[lIndex].quizzes.push({
+        id: Date.now(),
+        question: '',
+        answer: '',
+        is_active: true,
+    });
+}
+
+function removeQuiz(sIndex, lIndex, qIndex) {
+    course.seasons[sIndex].lessons[lIndex].quizzes.splice(qIndex, 1);
+}
+
+/******************************** ********************************/
 
 function submitForm() {
     router.post(route('admin.courses.store'), course, {
@@ -619,11 +783,13 @@ function submitForm() {
 .zo-close {
     position: absolute;
     top: -10px;
-    right: -10px
+    right: -10px;
+    z-index: 2;
 }
 
 .zo-close button {
-    font-size: .75rem
+    font-size: .75rem;
+    cursor: pointer;
 }
 
 .zo-actions {

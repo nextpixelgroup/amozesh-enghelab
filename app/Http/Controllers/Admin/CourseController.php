@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Quiz;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Verta;
@@ -49,7 +50,7 @@ class CourseController extends Controller
         return Inertia::render('Admin/Courses/Create', compact('categories', 'teachers', 'status'));
     }
 
-    public function store(CourseCreateRequest $request)
+    public function store(Request $request)
     {
         dd($request->all());
         return DB::transaction(function () use ($request) {

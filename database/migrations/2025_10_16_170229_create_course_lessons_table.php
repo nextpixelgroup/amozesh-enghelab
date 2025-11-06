@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('season_id')->constrained('course_seasons')->cascadeOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('video_url')->nullable();
-            $table->integer('duration')->default(0); // in seconds
+            $table->foreignId('video_id')->constrained('media')->nullable();
+            $table->foreignId('poster_id')->constrained('media')->nullable();
+            $table->integer('duration')->default(0);
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

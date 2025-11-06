@@ -1,5 +1,13 @@
 <template>
     <div ref="videoContainer" class="video-container">
+        <!-- Overlay Play Button -->
+        <div
+            v-if="!playing"
+            class="overlay-play"
+            @click="playing = true"
+        >
+            <v-icon size="72" color="white">mdi-play-circle-outline</v-icon>
+        </div>
         <video
             ref="video"
             class="video-player"
@@ -29,12 +37,23 @@
             <a :href="videoSrc" download class="control-btn" title="دانلود ویدیو">
                 <v-icon color="white">mdi-download</v-icon>
             </a>
-            <!-- Play/Pause Button -->
+
+            <!-- Play/Pause -->
             <button @click="playing = !playing" class="control-btn">
                 <v-icon color="white">
                     {{ playing ? 'mdi-pause' : 'mdi-play' }}
                 </v-icon>
             </button>
+            <!-- Back 10s -->
+            <button @click="skip(-10)" class="control-btn">
+                <v-icon color="white">mdi-rewind-10</v-icon>
+            </button>
+            <!-- Forward 10s -->
+            <button @click="skip(10)" class="control-btn">
+                <v-icon color="white">mdi-fast-forward-10</v-icon>
+            </button>
+
+
             <div class="volume-control">
                 <v-icon color="white" size="20">mdi-volume-high</v-icon>
                 <input
@@ -83,6 +102,10 @@
                         class="progress-played"
                         :style="{ width: progressPercentage + '%' }"
                     ></div>
+                    <div
+                        class="progress-thumb"
+                        :style="{ left: progressPercentage + '%' }"
+                    ></div>
                     <input
                         type="range"
                         v-model="currentTime"
@@ -101,7 +124,7 @@
 
 <script setup>
 import {useFullscreen, useMediaControls} from '@vueuse/core'
-import { ref, onMounted, computed } from 'vue'
+import {ref, onMounted, computed, onBeforeUnmount} from 'vue'
 
 const video = ref(null)
 const isBuffering = ref(false)
@@ -173,10 +196,53 @@ const onProgressBarClick = (e) => {
     isBuffering.value = true
 }
 
+const seekStep = 10 // مقدار جا‌به‌جایی ثانیه‌ها
+
+const handleKey = (e) => {
+    if (!video.value) return
+
+    switch (e.key) {
+        case ' ': // Space
+            e.preventDefault()
+            playing.value = !playing.value
+            break
+
+        case 'ArrowLeft':
+            video.value.currentTime = Math.max(0, video.value.currentTime - seekStep)
+            break
+
+        case 'ArrowRight':
+            video.value.currentTime = Math.min(duration.value, video.value.currentTime + seekStep)
+            break
+
+        case 'ArrowUp':
+            volume.value = Math.min(1, volume.value + 0.05)
+            break
+
+        case 'ArrowDown':
+            volume.value = Math.max(0, volume.value - 0.05)
+            break
+    }
+}
+
+const skip = (seconds) => {
+    if (!video.value) return
+    video.value.currentTime = Math.min(
+        Math.max(0, video.value.currentTime + seconds),
+        duration.value
+    )
+}
+
 // Set initial volume and start time
 onMounted(() => {
     volume.value = 1
     currentTime.value = 0
+    window.addEventListener('keydown', handleKey)
+})
+
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleKey)
 })
 </script>
 
@@ -248,7 +314,7 @@ onMounted(() => {
 .progress-bar {
     position: relative;
     width: 100%;
-    height: 4px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 2px;
     cursor: pointer;
@@ -276,6 +342,25 @@ onMounted(() => {
     pointer-events: none;
     transition: width 0.1s linear;
     z-index: 2;
+}
+
+/* ✅ دایره‌ی سر نوار */
+.progress-thumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 14px;
+    background: #fff;
+    border: 0px solid #4CAF50;
+    border-radius: 50%;
+    z-index: 5;
+    pointer-events: none;
+    transition: transform 0.1s ease;
+}
+
+.progress-bar:hover .progress-thumb {
+    transform: translate(-50%, -50%) scale(1.1);
 }
 
 .progress-slider {
@@ -348,5 +433,24 @@ onMounted(() => {
     background: #4CAF50 !important;
     color: white !important;
     font-weight: bold;
+}
+.overlay-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.35);
+    padding: 40px;
+    border-radius: 50%;
+    transition: 0.25s ease;
+}
+
+.overlay-play:hover {
+    background: rgba(0,0,0,0.55);
 }
 </style>

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 class Course extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'description', 'requirements', 'thumbnail', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at'
+        'title', 'slug', 'description', 'thumbnail_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at'
     ];
 
     protected $casts = [
@@ -78,6 +78,23 @@ class Course extends Model
     public function quizzes()
     {
         return $this->morphMany(Quiz::class, 'quizzable');
+    }
+
+    public function requirements()
+    {
+        return $this->belongsToMany(Course::class, 'course_requirements', 'course_id', 'requirement_id')
+            ->using(CourseRequirement::class)
+            ->withTimestamps();
+    }
+
+    /**
+     * The courses that require this course.
+     */
+    public function requiredBy()
+    {
+        return $this->belongsToMany(Course::class, 'course_requirements', 'requirement_id', 'course_id')
+            ->using(CourseRequirement::class)
+            ->withTimestamps();
     }
 
     public function getEnrolledStudentsCountAttribute()

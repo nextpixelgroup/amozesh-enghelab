@@ -8,8 +8,7 @@ class CourseLesson extends Model
 {
 
     protected $fillable = [
-        'season_id', 'title', 'description', 'video_url',
-        'duration', 'order', 'is_published'
+        'season_id', 'title', 'description', 'video_id', 'poster_id', 'duration', 'order', 'is_published'
     ];
 
     protected $casts = [
