@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PathController;
 use App\Http\Controllers\Admin\RestrictionController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\TestController;
@@ -30,8 +31,6 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::post('/books/store', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
     Route::put('/books/{book}/update', [BookController::class, 'update'])->name('books.update');
-    Route::post('/books/upload', [BookController::class, 'upload'])->name('books.upload');
-
     Route::get('/books/categories', [BookCategoryController::class, 'index'])->name('books.categories.index');
     Route::post('/books/categories/store', [BookCategoryController::class, 'store'])->name('books.categories.store');
     Route::put('/books/categories/{category}/update', [BookCategoryController::class, 'update'])->name('books.categories.update');
@@ -80,6 +79,10 @@ Route::name('admin.')->prefix('admin')->group(function () {
     /********* Setting *********/
     Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.index');
     Route::get('/settings/menus', [SettingController::class, 'menus'])->name('settings.menu');
+
+    Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');
+    Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.books.image');
+
 
     /********* Auth *********/
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');

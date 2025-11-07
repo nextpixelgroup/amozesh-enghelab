@@ -231,59 +231,13 @@
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">تصویر شاخص</label>
-                            <v-badge
-                                v-if="fileUploaded"
-                                location="top left"
-                                color="error"
-                                :model-value="true"
-                                class="thumbnail-badge"
-                            >
-                                <img
-                                    :src="thumbnailUrl"
-                                    width="100%"
-                                    height="auto"
-                                    class="mb-4"
-                                    style="border: 1px solid #ddd; border-radius: 4px;"
-                                />
-                                <template #badge>
-                                    <v-btn
-                                        icon
-                                        size="x-small"
-                                        variant="flat"
-                                        color="error"
-                                        @click.stop="removeThumbnail"
-                                        class="delete-btn"
-                                    >
-                                        <v-icon size="small">mdi-close</v-icon>
-                                    </v-btn>
-                                </template>
-                            </v-badge>
-                            <v-file-upload
-                                v-if="!fileUploaded"
-                                v-model="thumbnail"
-                                density="comfortable"
-                                variant="comfortable"
-                                title="بارگذاری تصویر شاخص"
-                                @change="uploadThumbnail"
-                                :disabled="fileUploading"
-                                accept="image/*"
+                            <ThumbnailUploader
+                                v-model:model-value="form.thumbnail_id"
+                                :initialUrl="book.thumbnail.url"
+                                upload-route="admin.upload.books.image"
                                 label="فقط فایل تصویری آپلود کنید"
-                                :rules="[v => !v || v.type.startsWith('image/') || 'فقط فایل تصویری مجاز است']"
-                            >
-                            </v-file-upload>
-
-                            <!-- نوار پیشرفت -->
-                            <v-progress-linear
-                                v-if="progress > 0 && !fileUploaded"
-                                :model-value="progress"
-                                color="primary"
-                                height="8"
-                                class="mt-3"
-                                striped
-                                rounded
-                                reactive
-                            >
-                            </v-progress-linear>
+                                accept="image/*"
+                            />
 
                         </v-col>
                         <v-col class="v-col-12">
@@ -302,34 +256,17 @@
             </v-col>
         </v-row>
     </AdminLayout>
-    <ShowMessage
-        v-model:show="showMessage"
-        :message="message"
-        :type="messageType"
-    />
 </template>
 
 <script setup>
-import {reactive, ref} from 'vue';
+import {ref} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
-import {VFileUpload} from 'vuetify/labs/VFileUpload'
 import {Head, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import FieldNumber from "@/Components/FieldNumber.vue";
-import ShowMessage from "@/Components/ShowMessage.vue";
-import {filter} from "vuedraggable/dist/vuedraggable.common.js";
-// Message handling
-const showMessage = ref(false)
-const message = ref('')
-const messageType = ref('')
+import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
 
-// Show message function
-const showToast = (msg, type = 'error') => {
-    message.value = msg
-    messageType.value = type
-    showMessage.value = true
-}
 const props = defineProps({
     site_url: String,
     status: Object,
@@ -398,76 +335,6 @@ const updateBook = () => {
     })
 }
 
-
-const thumbnail = ref(null)
-const thumbnailUrl = ref(book.thumbnail.url)
-const progress = ref(0)
-const fileUploading = ref(false);
-const fileUploaded = ref(book.thumbnail.id ?? true);
-
-const uploadThumbnail = async () => {
-    if (!thumbnail.value) return
-
-    const file = thumbnail.value
-
-    if (!file) return;
-
-    // Check if file is an image
-    if (!file.type.startsWith('image/')) {
-        showToast('لطفاً فقط فایل تصویری آپلود کنید', 'error')
-
-        thumbnail.value = null;
-        return;
-    }
-
-    // Check file size (5MB max)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
-        showToast('حجم فایل نباید بیشتر از 5 مگابایت باشد', 'error')
-        thumbnail.value = null;
-        return;
-    }
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    progress.value = 0
-
-    try {
-        fileUploading.value = true;
-        btnDisabled.value = true;
-        const response = await axios.post(route('admin.books.upload'), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            onUploadProgress: (e) => {
-                if (e.total) {
-                    progress.value = (e.loaded / e.total) * 100
-                }
-            },
-        })
-        const result = response.data;
-        fileUploading.value = false;
-        fileUploaded.value = true;
-        thumbnailUrl.value = result.data.url
-        form.thumbnail_id = result.data.id
-        progress.value = 0
-        btnDisabled.value = false
-    } catch (err) {
-        fileUploading.value = false;
-        showToast('خطا در آپلود فایل!', 'error')
-        progress.value = 0
-        btnDisabled.value = false
-    }
-}
-
-const removeThumbnail = () => {
-    thumbnail.value = null;
-    thumbnailUrl.value = '';
-    fileUploaded.value = false;
-    form.thumbnail_id = null;
-}
-
 const openSlug = () => {
     if (form.slug) {
         const fullUrl = `${site_url}${form.slug}`;
@@ -476,25 +343,3 @@ const openSlug = () => {
 };
 
 </script>
-
-<style scoped>
-.thumbnail-badge {
-    width: 100%;
-}
-
-.thumbnail-badge :deep(.v-badge__badge) {
-    cursor: pointer;
-    top: 0;
-    right: -1px !important;
-}
-
-.thumbnail-badge :deep(.v-badge__badge .delete-btn) {
-    width: 24px;
-    height: 24px;
-}
-
-.thumbnail-badge :deep(.v-badge__badge .v-btn) {
-    width: 100%;
-    height: 100%;
-}
-</style>

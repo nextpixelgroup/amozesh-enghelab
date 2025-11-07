@@ -114,13 +114,8 @@ const logout = () => {
         </v-navigation-drawer>
 
         <v-app-bar color="white" elevation="2" density="comfortable" class="d-flex justify-space-between px-3 mb-3">
-
-
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-
             <v-toolbar-title class="text-h6 font-weight-bold">
-
             </v-toolbar-title>
 
             <div class="d-flex align-center">
@@ -148,6 +143,9 @@ const logout = () => {
         </v-main>
 
         <!-- Global Flash Message -->
+        <div class="text-center text-caption text-grey py-2">
+            طراحی و پیاده‌سازی توسط <a href="https://nextpixel.ir" target="_blank">نکست پیکسل</a>
+        </div>
         <FlashMessage/>
     </v-app>
 </template>

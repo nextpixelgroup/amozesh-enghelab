@@ -47,7 +47,19 @@ class CourseController extends Controller
             })
             ->with('roles')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->firstname . ' ' . $item->lastname]);
         $status = enumFormated(CourseStatusEnum::cases());
-        return Inertia::render('Admin/Courses/Create', compact('categories', 'teachers', 'status'));
+        $courses = Course::query()->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
+        $courses = [
+            [
+                'value' => 1,
+                'title' => 'دوره انقلاب اسلامی'
+            ],
+            [
+                'value' => 2,
+                'title' => 'دوره هجرت'
+            ]
+        ];
+        $video_upload_slug = env('VIDEO_UPLOAD_SLUG');
+        return Inertia::render('Admin/Courses/Create', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug'));
     }
 
     public function store(Request $request)

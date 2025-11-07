@@ -28,33 +28,36 @@ class AuthController extends Controller
     }
 
 
-    public function store(AuthLoginRequest $request): RedirectResponse
+    public function store(AuthLoginRequest $request)
     {
         try {
-            $credentials = $request->only('username', 'password');
 
             $user = User::where('username', $request->username)->first();
-            if ($user && !Hash::check($request->password, $user->password)) {
-                throw ValidationException::withMessages([
-                    'username' => 'نام کاربری یا رمز عبور نادرست است.',
-                ]);
+            if($user) {
+                if (!Hash::check($request->password, $user->password)) {
+                    throw ValidationException::withMessages([
+                        'username' => 'نام کاربری یا رمز عبور نادرست است.',
+                    ]);
+                }
+
+                if ($user->isRestricted()) {
+                    return back()->withErrors(['mobile' => 'حساب کاربری شما مسدود شده است.'])->onlyInput('mobile');
+                }
+
+                if (!collect(User::assessToAdmin())->contains($user->roles->first()->name)) {
+
+                    (new Restriction)->banUser(auth()->user()->id, 'تلاش برای ورود به پنل مدیریت');
+                    return back()->withErrors([
+                        'mobile' => 'شما مجوز دسترسی به پنل مدیریت را ندارید.',
+                    ])->onlyInput('mobile');
+                }
+                Auth::login($user, true);
+                return redirectMessage('success', 'با موفقیت وارد شدید', redirect: route('admin.courses.index'));
+            }
+            else{
+                return redirectMessage('error', 'نام کاربری یا رمز عبور نادرست است.');
             }
 
-            if ($user->isRestricted()) {
-                return back()->withErrors(['mobile' => 'حساب کاربری شما مسدود شده است.'])->onlyInput('mobile');
-            }
-
-            if (!collect(User::assessToAdmin())->contains($user->roles->first()->name)) {
-
-                (new Restriction)->banUser(auth()->user()->id, 'تلاش برای ورود به پنل مدیریت');
-                return back()->withErrors([
-                    'mobile' => 'شما مجوز دسترسی به پنل مدیریت را ندارید.',
-                ])->onlyInput('mobile');
-            }
-
-            Auth::login($user, true);
-
-            return redirectMessage('success', 'با موفقیت وارد شدید', redirect: route('admin.courses.index'));
         } catch (Exception $error) {
             /* return back()->withErrors([
                  'username' => $error->getMessage(),

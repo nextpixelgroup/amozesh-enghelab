@@ -98,7 +98,7 @@
                 </div>
                 <SearchableSelect
                     v-model="course.requirements"
-                    :items="courseItems"
+                    :items="courseRequirements"
                     label="جستجوی پیش نیازها..."
                     empty-message="هیچ پیش‌نیازی انتخاب نشده است."
                 />
@@ -240,7 +240,7 @@
                                                                 variant="outlined"
                                                                 density="comfortable"
                                                                 label="لینک ویدیو"
-                                                                suffix="https://video.amozesh.enghelab.test/courses/1/"
+                                                                :suffix="video_upload_slug"
                                                                 dir="ltr"
                                                                 prepend-inner-icon="mdi-link"
                                                             >
@@ -248,8 +248,9 @@
                                                                     <v-btn
                                                                         icon
                                                                         variant="text"
-                                                                        @click=""
+                                                                        @click="showVideo(lesson.video_url)"
                                                                         title="مشاهده"
+                                                                        :disabled="!lesson.video_url"
                                                                     >
                                                                         <v-icon>mdi-open-in-new</v-icon>
                                                                     </v-btn>
@@ -257,28 +258,25 @@
                                                             </v-text-field>
                                                         </v-col>
                                                         <v-col class="v-col-12">
-                                                            <v-file-upload
-                                                                v-model="lesson.poster_id"
-                                                                density="compact"
-                                                                variant="compact"
-                                                                title="بارگذاری تصویر ویدیو"
+                                                            <ThumbnailUploader
+                                                                v-model:model-value="lesson.poster_id"
+                                                                upload-route="admin.books.upload"
+                                                                title="آپلود تصویر ویدیو"
+                                                                label="تصویر ویدیو را اینجا رها کنید"
                                                                 accept="image/*"
-                                                                label="فقط فایل تصویری آپلود کنید"
-                                                                :rules="[v => !v || v.type.startsWith('image/') || 'فقط فایل تصویری مجاز است']"
-                                                            >
-                                                            </v-file-upload>
+                                                            />
                                                         </v-col>
                                                     </v-row>
                                                     <v-row dense class="mb-3">
                                                         <v-col class="v-col-12">
                                                             <v-checkbox
-                                                                v-model="lesson.has_exam"
+                                                                v-model="lesson.has_quiz"
                                                                 hide-details
                                                                 label="فعال سازی آزمون؟"
                                                             >
                                                             </v-checkbox>
                                                         </v-col>
-                                                        <v-col class="v-col-12" v-if="lesson.has_exam">
+                                                        <v-col class="v-col-12" v-if="lesson.has_quiz">
                                                             <v-text-field
                                                                 hide-details
                                                                 variant="outlined"
@@ -288,7 +286,7 @@
                                                                 prepend-inner-icon="mdi-text-short"
                                                             />
                                                         </v-col>
-                                                        <v-col class="v-col-12" v-if="lesson.has_exam">
+                                                        <v-col class="v-col-12" v-if="lesson.has_quiz">
                                                             <v-textarea
                                                                 hide-details
                                                                 variant="outlined"
@@ -300,109 +298,135 @@
                                                             />
                                                         </v-col>
                                                     </v-row>
-                                                    <v-expansion-panels multiple class="mb-3" v-if="lesson.has_exam">
-                                                        <v-expansion-panel
-                                                            v-for="(quiz, qIndex) in lesson.quizzes"
-                                                            :key="quiz.id"
+                                                    <v-expansion-panel-text v-if="lesson.has_quiz">
+                                                        <v-expansion-panels
+                                                            multiple
+                                                            class="mb-3 questions-container"
+                                                            :ref="el => {
+                                                                if (!questionsContainers[sIndex]) questionsContainers[sIndex] = [];
+                                                                questionsContainers[sIndex][lIndex] = el;
+                                                            }"
                                                         >
-                                                            <v-expansion-panel-title>
-                                                                <v-btn icon="mdi-drag"
-                                                                       width="25"
-                                                                       height="25"
-                                                                       size="small"
-                                                                       class="ml-2"
-                                                                >
-                                                                </v-btn>
-                                                                {{ quiz.title || `آزمون ${qIndex + 1}` }}
-                                                            </v-expansion-panel-title>
-                                                            <div class="zo-actions">
-                                                                <div class="zo-switch">
-                                                                    <v-switch v-model="quiz.is_active"
-                                                                              color="success"></v-switch>
+                                                            <v-expansion-panel
+                                                                v-for="(question, quIndex) in lesson.quiz.questions"
+                                                                :key="question.id"
+                                                            >
+                                                                <v-expansion-panel-title>
+                                                                    <v-btn icon="mdi-drag"
+                                                                           width="25"
+                                                                           height="25"
+                                                                           size="small"
+                                                                           class="ml-2 question-drag-handle"
+                                                                    >
+                                                                    </v-btn>
+                                                                    {{`سوال ${quIndex + 1}`}}
+                                                                </v-expansion-panel-title>
+                                                                <div class="zo-actions">
+                                                                    <div class="zo-switch">
+                                                                        <v-switch v-model="question.is_active"
+                                                                                  color="success"></v-switch>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="zo-close">
-                                                                <v-btn
-                                                                    icon="mdi-close"
-                                                                    width="25"
-                                                                    height="25"
-                                                                    color="error"
-                                                                    @click="removeQuiz(sIndex)"
-                                                                ></v-btn>
-                                                            </div>
-                                                            <v-expansion-panel-text>
-                                                                <v-row dense>
-                                                                    <v-col class="v-col-12">
-                                                                        <v-text-field
-                                                                            hide-details
-                                                                            variant="outlined"
-                                                                            density="comfortable"
-                                                                            label="سوال"
-                                                                            type="text"
-                                                                            prepend-inner-icon="mdi-text-short"
-                                                                        />
-                                                                    </v-col>
-                                                                    <v-col class="v-col-12 v-col-lg-3">
-                                                                        <div class="zo-option">
-                                                                            <v-radio value="correct"></v-radio>
+                                                                <div class="zo-close">
+                                                                    <v-btn
+                                                                        icon="mdi-close"
+                                                                        width="25"
+                                                                        height="25"
+                                                                        color="error"
+                                                                        @click="removeQuestion(sIndex, lIndex, quIndex)"
+                                                                    ></v-btn>
+                                                                </div>
+                                                                <v-expansion-panel-text>
+                                                                    <v-row dense>
+                                                                        <v-col class="v-col-12">
                                                                             <v-text-field
+                                                                                v-model="question.text"
                                                                                 hide-details
                                                                                 variant="outlined"
                                                                                 density="comfortable"
-                                                                                label="گزینه 1"
+                                                                                label="سوال"
                                                                                 type="text"
+                                                                                prepend-inner-icon="mdi-text-short"
                                                                             />
-                                                                        </div>
-                                                                    </v-col>
-                                                                    <v-col class="v-col-12 v-col-lg-3">
-                                                                        <div class="zo-option">
-                                                                            <v-radio value="correct"></v-radio>
-                                                                            <v-text-field
-                                                                                hide-details
-                                                                                variant="outlined"
-                                                                                density="comfortable"
-                                                                                label="گزینه 2"
-                                                                                type="text"
-                                                                            />
-                                                                        </div>
-                                                                    </v-col>
-                                                                    <v-col class="v-col-12 v-col-lg-3">
-                                                                        <div class="zo-option">
-                                                                            <v-radio value="correct"></v-radio>
-                                                                            <v-text-field
-                                                                                hide-details
-                                                                                variant="outlined"
-                                                                                density="comfortable"
-                                                                                label="گزینه 3"
-                                                                                type="text"
-                                                                            />
-                                                                        </div>
-                                                                    </v-col>
-                                                                    <v-col class="v-col-12 v-col-lg-3">
-                                                                        <div class="zo-option">
-                                                                            <v-radio value="correct"></v-radio>
-                                                                            <v-text-field
-                                                                                hide-details
-                                                                                variant="outlined"
-                                                                                density="comfortable"
-                                                                                label="گزینه 4"
-                                                                                type="text"
-                                                                            />
-                                                                        </div>
-                                                                    </v-col>
-                                                                </v-row>
-                                                            </v-expansion-panel-text>
-                                                        </v-expansion-panel>
-                                                    </v-expansion-panels>
-                                                    <div class="zo-add text-end">
-                                                        <v-btn
-                                                            v-if="lesson.has_exam"
-                                                            color="primary"
-                                                            @click="addQuiz(sIndex, lIndex)"
-                                                        >
-                                                            افزودن آزمون
-                                                        </v-btn>
-                                                    </div>
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option1.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option1')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option1.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 1"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option2.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option2')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option2.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 2"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option3.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option3')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option3.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 3"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option4.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option4')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option4.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 4"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                    </v-row>
+                                                                </v-expansion-panel-text>
+                                                            </v-expansion-panel>
+                                                        </v-expansion-panels>
+                                                        <div class="zo-add text-end">
+                                                            <v-btn
+                                                                width="25"
+                                                                height="25"
+                                                                color="primary"
+                                                                @click="addQuestion(sIndex, lIndex)"
+                                                                icon="mdi mdi-plus"
+                                                            />
+                                                        </div>
+                                                    </v-expansion-panel-text>
                                                 </v-card>
                                             </v-expansion-panel-text>
                                         </v-expansion-panel>
@@ -431,8 +455,8 @@
                                     <i class="mdi mdi-note-text-outline"></i>
                                 </div>
                                 <div class="zo-name">
-                                    <strong class="d-block mb-1">افزودن آزمون</strong>
-                                    <span>در این بخش می توانید آزمون دوره را ایجاد کنید.</span>
+                                    <strong class="d-block mb-1">افزودن آزمون پایان دوره</strong>
+                                    <span>در این بخش آزمون پایان دوره را ایجاد کنید</span>
                                 </div>
                             </div>
                         </v-col>
@@ -441,14 +465,15 @@
                 <v-card class="pa-3 mb-3 elevation-2">
                     <v-row dense class="mb-3">
                         <v-col class="v-col-12">
-                            <v-checkbox v-model="checkbox_value"
+                            <v-checkbox v-model="course.quiz.has_quiz"
                                         hide-details
-                                        label="فعال سازی آزمون؟"
+                                        label="فعال سازی آزمون پایان دوره؟"
                             >
                             </v-checkbox>
                         </v-col>
-                        <v-col class="v-col-12">
+                        <v-col class="v-col-12" v-if="course.quiz.has_quiz">
                             <v-text-field
+                                v-model="course.quiz.text"
                                 hide-details
                                 variant="outlined"
                                 density="comfortable"
@@ -457,8 +482,9 @@
                                 prepend-inner-icon="mdi-text-short"
                             />
                         </v-col>
-                        <v-col class="v-col-12">
+                        <v-col class="v-col-12" v-if="course.quiz.has_quiz">
                             <v-textarea
+                                v-model="course.quiz.description"
                                 hide-details
                                 variant="outlined"
                                 density="comfortable"
@@ -469,16 +495,41 @@
                             />
                         </v-col>
                     </v-row>
-                    <v-expansion-panels multiple class="mb-3">
-                        <v-expansion-panel>
+                    <v-expansion-panels multiple class="mb-3" v-show="course.quiz.has_quiz" ref="finalQuizContainers">
+                        <v-expansion-panel
+                            v-for="(question, qIndex) in course.quiz.questions"
+                            :key="question.id">
                             <v-expansion-panel-title>
-                                <v-btn icon="mdi-drag" width="25" height="25" size="small" class="ml-2"></v-btn>
-                                آزمون 1
+                                <v-btn
+                                    icon="mdi-drag"
+                                    width="25"
+                                    height="25"
+                                    size="small"
+                                    class="ml-2 final-quiz-drag-handle"
+                                />
+                                {{`سوال ${qIndex + 1}`}}
                             </v-expansion-panel-title>
+                            <div class="zo-actions">
+                                <div class="zo-switch">
+                                    <v-switch v-model="question.is_active"
+                                              color="success"></v-switch>
+                                </div>
+                            </div>
+                            <div class="zo-close">
+                                <v-btn
+                                    icon="mdi-close"
+                                    width="25"
+                                    height="25"
+                                    color="error"
+                                    @click="removeFinalQuizQuestions(qIndex)"
+                                ></v-btn>
+                            </div>
                             <v-expansion-panel-text>
+
                                 <v-row dense>
                                     <v-col class="v-col-12">
                                         <v-text-field
+                                            v-model="question.text"
                                             hide-details
                                             variant="outlined"
                                             density="comfortable"
@@ -489,7 +540,10 @@
                                     </v-col>
                                     <v-col class="v-col-12 v-col-lg-3">
                                         <div class="zo-option">
-                                            <v-radio value="correct"></v-radio>
+                                            <v-radio
+                                                v-model="question.option1.is_correct"
+                                                @change="selectCorrectOption(question, 'option1')"
+                                            />
                                             <v-text-field
                                                 hide-details
                                                 variant="outlined"
@@ -501,7 +555,10 @@
                                     </v-col>
                                     <v-col class="v-col-12 v-col-lg-3">
                                         <div class="zo-option">
-                                            <v-radio value="correct"></v-radio>
+                                            <v-radio
+                                                v-model="question.option2.is_correct"
+                                                @change="selectCorrectOption(question, 'option2')"
+                                            />
                                             <v-text-field
                                                 hide-details
                                                 variant="outlined"
@@ -513,7 +570,10 @@
                                     </v-col>
                                     <v-col class="v-col-12 v-col-lg-3">
                                         <div class="zo-option">
-                                            <v-radio value="correct"></v-radio>
+                                            <v-radio
+                                                v-model="question.option3.is_correct"
+                                                @change="selectCorrectOption(question, 'option3')"
+                                            />
                                             <v-text-field
                                                 hide-details
                                                 variant="outlined"
@@ -525,7 +585,10 @@
                                     </v-col>
                                     <v-col class="v-col-12 v-col-lg-3">
                                         <div class="zo-option">
-                                            <v-radio value="correct"></v-radio>
+                                            <v-radio
+                                                v-model="question.option4.is_correct"
+                                                @change="selectCorrectOption(question, 'option4')"
+                                            />
                                             <v-text-field
                                                 hide-details
                                                 variant="outlined"
@@ -539,11 +602,12 @@
                             </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
-                    <div class="zo-add text-end">
+                    <div class="zo-add text-end" v-if="course.quiz.has_quiz">
                         <v-btn icon="mdi-plus"
                                width="25"
                                height="25"
                                color="primary"
+                               @click="addFinalQuizQuestions"
                         >
                         </v-btn>
                     </div>
@@ -574,13 +638,13 @@
                         variant="outlined"
                         density="comfortable"
                     />
-                    <v-file-upload
-                        density="comfortable"
-                        variant="comfortable"
-                        title="بارگذاری تصویر شاخص"
-                        class="mb-3"
-                    >
-                    </v-file-upload>
+                    <ThumbnailUploader
+                        v-model:model-value="course.thumbnail_id"
+                        upload-route="admin.books.upload"
+                        title="آپلود تصویر شاخص دوره"
+                        label="تصویر شاخص دوره را اینجا رها کنید"
+                        accept="image/*"
+                    />
                     <v-btn block
                            size="large"
                            color="primary"
@@ -604,30 +668,29 @@ import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import SearchableSelect from "@/Components/SearchableSelect.vue";
-import {VFileUpload} from 'vuetify/labs/VFileUpload'
 import {useSortable} from "@vueuse/integrations/useSortable";
-
-const switch_value = ref(true);
-const checkbox_value = ref(true);
+import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
 
 const props = defineProps({
     categories: Object,
     teachers: Object,
-    status: Object
+    status: Object,
+    courses: Object,
+    video_upload_slug: String,
 })
 const isLoading = ref(false);
 const categories = ref(props.categories);
 const teachers = ref(props.teachers);
 const status = ref(props.status);
-const selectedCourses = ref();
-
-const courseItems = [
-    {value: 1, title: 'انقلاب اسلامی ایران — دکتر منوچهر محمدی'},
-    {value: 2, title: 'تحلیل انقلاب اسلامی ایران — دکتر محسن حمیدزاده'},
-    {value: 3, title: 'ریشه‌های انقلاب ایران — نیکی آر. کدی'},
-    // ...
-]
-
+const courses = ref(props.courses);
+const video_upload_slug = ref(props.video_upload_slug);
+const courseRequirements = courses;
+const showVideo = (slug) => {
+    if (slug) {
+        window.open(`${video_upload_slug.value}${slug}`, '_blank');
+    }
+}
+/*************************Course*************************/
 const course = reactive({
     title: '',
     slug: '',
@@ -637,59 +700,67 @@ const course = reactive({
     requirements: [],
     must_complete_quizzes: null,
     status: 'pending',
+    thumbnail_id : null,
     seasons: [
         {
-            id: Date.now(),
+            id: crypto.randomUUID(),
             title: '',
             description: '',
             is_active: true,
             lessons: [
                 {
-                    id: Date.now(),
+                    id: crypto.randomUUID(),
                     title: '',
                     description: '',
                     duration: null,
                     video_url: '',
+                    poster_id: null,
                     is_active: true,
-                    has_exam: false,
-                    quizzes: [
-                        {
-                            title: '',
-                            description: '',
-                            is_active: true,
-                            time_limit: true,
-                            questions: [
-                                {
-                                    text : '',
-                                    options : [
-                                        {
-                                            text: '',
-                                            is_correct: false
-                                        },
-                                        {
-                                            text: '',
-                                            is_correct: false
-                                        },
-                                        {
-                                            text: '',
-                                            is_correct: false
-                                        },
-                                        {
-                                            text: '',
-                                            is_correct: false
-                                        },
-                                    ]
-                                }
-                            ]
-                        },
-                    ]
+                    has_quiz: false,
+                    quiz: {
+                        id: crypto.randomUUID(),
+                        title: '',
+                        description: '',
+                        is_active: true,
+                        questions: [
+                            {
+                                id: crypto.randomUUID(),
+                                text: '',
+                                is_active: true,
+                                option1 : {text: '', is_correct: false},
+                                option2 : {text: '', is_correct: false},
+                                option3 : {text: '', is_correct: false},
+                                option4 : {text: '', is_correct: false},
+                            }
+                        ]
+                    }
                 }
             ]
         }
-    ]
+    ],
+    quiz : {
+        id: crypto.randomUUID(),
+        has_quiz: false,
+        title: '',
+        description: '',
+        is_active: true,
+        questions: [
+            {
+                id: crypto.randomUUID(),
+                text: '',
+                is_active: true,
+                option1 : {text: '', is_correct: false},
+                option2 : {text: '', is_correct: false},
+                option3 : {text: '', is_correct: false},
+                option4 : {text: '', is_correct: false},
+            }
+        ]
+    }
 });
 
 /********************************Seasons********************************/
+
+
 const seasonsContainer = useTemplateRef('seasonsContainer')
 
 useSortable(seasonsContainer, course.seasons, {
@@ -699,18 +770,43 @@ useSortable(seasonsContainer, course.seasons, {
 
 function addSeason() {
     course.seasons.push({
-        id: Date.now(),
+        id: crypto.randomUUID(),
         title: '',
         description: '',
         is_active: true,
-        lessons: []
+        lessons: [{
+            id: crypto.randomUUID(),
+            title: '',
+            description: '',
+            duration: null,
+            video_url: '',
+            poster_id: null,
+            is_active: true,
+            has_quiz: false,
+            quiz: {
+                id: crypto.randomUUID(),
+                title: '',
+                description: '',
+                is_active: true,
+                questions: [
+                    {
+                        id: crypto.randomUUID(),
+                        text: '',
+                        is_active: true,
+                        option1 : {text: '', is_correct: false},
+                        option2 : {text: '', is_correct: false},
+                        option3 : {text: '', is_correct: false},
+                        option4 : {text: '', is_correct: false},
+                    }
+                ]
+            }
+        }]
     });
 }
 
 function removeSeason(index) {
     course.seasons.splice(index, 1);
 }
-
 
 /********************************Lessons********************************/
 const lessonsContainers = ref([])
@@ -732,14 +828,26 @@ watch(
 
 function addLesson(sIndex) {
     course.seasons[sIndex].lessons.push({
-        id: Date.now(),
+        id: crypto.randomUUID(),
         title: '',
         description: '',
         duration: null,
         video_url: '',
         is_active: true,
-        has_exam: false,
-        quizzes: [],
+        has_quiz: false,
+        quiz: {
+            questions: [
+                {
+                    id: crypto.randomUUID(),
+                    text: '',
+                    is_active: true,
+                    option1 : {text: '', is_correct: false},
+                    option2 : {text: '', is_correct: false},
+                    option3 : {text: '', is_correct: false},
+                    option4 : {text: '', is_correct: false},
+                }
+            ]
+        },
     });
 }
 
@@ -747,23 +855,87 @@ function removeLesson(sIndex, lIndex) {
     course.seasons[sIndex].lessons.splice(lIndex, 1);
 }
 
+/********************************questions********************************/
+const questionsContainers = ref([])
+watch(
+    // تابعی که وابستگی‌ها رو برمی‌گردونه: طول سوال ‌های هر درس در هر فصل
+    () => course.seasons.map(s => s.lessons.map(l => l.quiz?.questions?.length ?? 0)),
+    () => {
+        nextTick(() => {
+            // برای هر فصل
+            questionsContainers.value.forEach((seasonArr, sIndex) => {
+                if (!seasonArr || !course.seasons[sIndex]) return;
+                // برای هر درس در آن فصل
+                seasonArr.forEach((containerComponent, lIndex) => {
+                    const lesson = course.seasons[sIndex].lessons[lIndex];
+                    if (!containerComponent || !lesson || !lesson.quiz || !lesson.quiz.questions) return;
+                    // containerComponent ممکن است یک کامپوننت Vuetify باشه؛ useSortable روی خود المان ریشهٔ DOM آن کار می‌کند.
+                    // اگر containerComponent.$el وجود داشت از آن استفاده کن؛ در غیر اینصورت خود containerComponent را پاس کن.
+                    const targetEl = containerComponent?.$el ?? containerComponent;
+                    try {
+                        useSortable(targetEl, lesson.quiz.questions, {
+                            handle: '.question-drag-handle',
+                            animation: 150,
+                        });
+                    } catch (e) {
+                        // اگر قبلاً sortable ست شده بود ممکنه خطا بده — ایمن نادیده می‌گیریم
+                        // console.warn('useSortable question init failed', e)
+                    }
+                })
+            })
+        })
+    },
+    { deep: true }
+)
 
-/********************************quizzes********************************/
-function addQuiz(sIndex, lIndex) {
-    course.seasons[sIndex].lessons[lIndex].quizzes.push({
-        id: Date.now(),
-        question: '',
-        answer: '',
+function addQuestion(sIndex, lIndex) {
+    course.seasons[sIndex].lessons[lIndex].quiz.questions.push({
+        id: crypto.randomUUID(),
+        text: '',
         is_active: true,
+        option1 : {text: '', is_correct: false},
+        option2 : {text: '', is_correct: false},
+        option3 : {text: '', is_correct: false},
+        option4 : {text: '', is_correct: false},
+    });
+}
+function selectCorrectOption(question, optionKey) {
+    question.option1.is_correct = false;
+    question.option2.is_correct = false;
+    question.option3.is_correct = false;
+    question.option4.is_correct = false;
+
+    question[optionKey].is_correct = true;
+}
+function removeQuestion(sIndex, lIndex, quIndex) {
+    console.log(sIndex, lIndex, quIndex)
+    console.log(course.seasons[sIndex].lessons[lIndex].quiz)
+    course.seasons[sIndex].lessons[lIndex].quiz.questions.splice(quIndex, 1);
+}
+
+/********************************final quiz********************************/
+const finalQuizContainers = useTemplateRef('finalQuizContainers')
+
+useSortable(finalQuizContainers, course.quiz.questions, {
+    animation: 150,
+    handle: '.final-quiz-drag-handle',
+})
+function addFinalQuizQuestions() {
+    console.log(course.quiz.questions)
+    course.quiz.questions.push({
+        id: crypto.randomUUID(),
+        text: '',
+        is_active: true,
+        option1 : {text: '', is_correct: false},
+        option2 : {text: '', is_correct: false},
+        option3 : {text: '', is_correct: false},
+        option4 : {text: '', is_correct: false},
     });
 }
 
-function removeQuiz(sIndex, lIndex, qIndex) {
-    course.seasons[sIndex].lessons[lIndex].quizzes.splice(qIndex, 1);
+function removeFinalQuizQuestions(index) {
+    course.quiz.questions.splice(index, 1);
 }
-
-/******************************** ********************************/
-
 function submitForm() {
     router.post(route('admin.courses.store'), course, {
         preserveScroll: true,
@@ -815,5 +987,24 @@ function submitForm() {
     left: 5px;
     background: rgb(255, 255, 255);
     z-index: 15
+}
+ .thumbnail-badge {
+     width: 100%;
+ }
+
+.thumbnail-badge :deep(.v-badge__badge) {
+    cursor: pointer;
+    top: 0;
+    right: -1px !important;
+}
+
+.thumbnail-badge :deep(.v-badge__badge .delete-btn) {
+    width: 24px;
+    height: 24px;
+}
+
+.thumbnail-badge :deep(.v-badge__badge .v-btn) {
+    width: 100%;
+    height: 100%;
 }
 </style>

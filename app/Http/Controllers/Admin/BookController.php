@@ -144,23 +144,4 @@ class BookController extends Controller
         }
     }
 
-    public function upload(Request $request)
-    {
-        $request->validate([
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
-        ]);
-
-        $file = $request->file('file');
-        $media = Media::uploadFile($file, 'image', 'uploads/images/books');
-
-        if (!$media) {
-            return responseJSon('error', ' خطا در آپلود فایل');
-        }
-
-        return responseJSon('success', 'فایل با موفقیت آپلود شد', [
-            'path'    => $media->path,
-            'url'     => $media->url,
-            'id'      => $media->id,
-        ]);
-    }
 }

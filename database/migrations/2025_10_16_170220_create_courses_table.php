@@ -26,6 +26,7 @@ return new class extends Migration
             $table->enum('status', enumNames(CourseStatusEnum::cases()))->default('draft');
             $table->dateTime('published_at')->index();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
