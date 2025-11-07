@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum QuestionTypeEnum: string
 {
-    case multiple_option = 'چند گزینه‌ای';
-    case true_false = 'درست و غلط';
-    case short_answer = 'پاسخ کوتاه';
+    case multipleOption = 'چند گزینه‌ای';
+    case trueFalse = 'درست و غلط';
+    case shortAnswer = 'پاسخ کوتاه';
 
     public static function fromKey(string $key): ?self
     {
