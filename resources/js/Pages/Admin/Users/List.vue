@@ -107,7 +107,7 @@
                         {{ item.email ?? '-' }}
                     </td>
                     <td class="text-center">
-                        <span :class="`status-${item.status.value}`">{{ item.status.title }}</span>
+                        <span :class="`zo-status status-${item.status.value}`">{{ item.status.title }}</span>
                     </td>
                     <td class="text-center">
                         <Link :href="route('admin.users.edit', item.id)">
