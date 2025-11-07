@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PathController;
 use App\Http\Controllers\Admin\RestrictionController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SupportController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BookCategoryController;
@@ -74,14 +75,14 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
 
     /********* supports *********/
-    Route::get('/supports', [CommentController::class, 'index'])->name('supports.index');
+    Route::get('/supports', [SupportController::class, 'index'])->name('supports.index');
 
     /********* Setting *********/
     Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.index');
     Route::get('/settings/menus', [SettingController::class, 'menus'])->name('settings.menu');
 
     Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');
-    Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.books.image');
+    Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.courses.image');
 
 
     /********* Auth *********/

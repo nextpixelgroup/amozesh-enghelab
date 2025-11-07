@@ -260,7 +260,7 @@
                                                         <v-col class="v-col-12">
                                                             <ThumbnailUploader
                                                                 v-model:model-value="lesson.poster_id"
-                                                                upload-route="admin.books.upload"
+                                                                upload-route="admin.upload.courses.image"
                                                                 title="آپلود تصویر ویدیو"
                                                                 label="تصویر ویدیو را اینجا رها کنید"
                                                                 accept="image/*"
@@ -640,7 +640,7 @@
                     />
                     <ThumbnailUploader
                         v-model:model-value="course.thumbnail_id"
-                        upload-route="admin.books.upload"
+                        upload-route="admin.upload.courses.image"
                         title="آپلود تصویر شاخص دوره"
                         label="تصویر شاخص دوره را اینجا رها کنید"
                         accept="image/*"
