@@ -54,11 +54,6 @@ class HandleInertiaRequests extends Middleware
                             'route' => 'admin.courses.index'
                         ],
                         [
-                            'title' => 'ایجاد دوره جدید',
-                            'icon' => 'mdi-plus-circle',
-                            'route' => 'admin.courses.create'
-                        ],
-                        [
                             'title' => 'دسته‌بندی‌ها',
                             'icon' => 'mdi-shape',
                             'route' => 'admin.courses.categories.index'

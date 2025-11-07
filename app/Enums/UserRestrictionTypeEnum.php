@@ -5,7 +5,7 @@ namespace App\Enums;
 enum UserRestrictionTypeEnum: string
 {
     case ban = 'مسدود';
-    case temporary_ban = 'موقت';
+    case temporaryBan = 'موقت';
 
     public static function fromKey(string $key): ?self
     {
