@@ -319,7 +319,7 @@
                                                                            class="ml-2 question-drag-handle"
                                                                     >
                                                                     </v-btn>
-                                                                    {{`سوال ${quIndex + 1}`}}
+                                                                    {{ `سوال ${quIndex + 1}` }}
                                                                 </v-expansion-panel-title>
                                                                 <div class="zo-actions">
                                                                     <div class="zo-switch">
@@ -456,14 +456,14 @@
                                 </div>
                                 <div class="zo-name">
                                     <strong class="d-block mb-1">افزودن آزمون پایان دوره</strong>
-                                    <span>در این بخش آزمون پایان دوره را ایجاد کنید</span>
+                                    <span>در این بخش آزمون پایان دوره را ایجاد کنید.</span>
                                 </div>
                             </div>
                         </v-col>
                     </v-row>
                 </div>
                 <v-card class="pa-3 mb-3 elevation-2">
-                    <v-row dense class="mb-3">
+                    <v-row dense>
                         <v-col class="v-col-12">
                             <v-checkbox v-model="course.quiz.has_quiz"
                                         hide-details
@@ -495,7 +495,7 @@
                             />
                         </v-col>
                     </v-row>
-                    <v-expansion-panels multiple class="mb-3" v-show="course.quiz.has_quiz" ref="finalQuizContainers">
+                    <v-expansion-panels multiple class="my-3" v-show="course.quiz.has_quiz" ref="finalQuizContainers">
                         <v-expansion-panel
                             v-for="(question, qIndex) in course.quiz.questions"
                             :key="question.id">
@@ -507,7 +507,7 @@
                                     size="small"
                                     class="ml-2 final-quiz-drag-handle"
                                 />
-                                {{`سوال ${qIndex + 1}`}}
+                                {{ `سوال ${qIndex + 1}` }}
                             </v-expansion-panel-title>
                             <div class="zo-actions">
                                 <div class="zo-switch">
@@ -652,6 +652,7 @@
                            :loading="isLoading"
                            :disabled="isLoading"
                            @click="submitForm"
+                           class="mt-3"
                     >
                         ذخیره دوره
                     </v-btn>
@@ -700,7 +701,7 @@ const course = reactive({
     requirements: [],
     must_complete_quizzes: null,
     status: 'pending',
-    thumbnail_id : null,
+    thumbnail_id: null,
     seasons: [
         {
             id: crypto.randomUUID(),
@@ -727,10 +728,10 @@ const course = reactive({
                                 id: crypto.randomUUID(),
                                 text: '',
                                 is_active: true,
-                                option1 : {text: '', is_correct: false},
-                                option2 : {text: '', is_correct: false},
-                                option3 : {text: '', is_correct: false},
-                                option4 : {text: '', is_correct: false},
+                                option1: {text: '', is_correct: false},
+                                option2: {text: '', is_correct: false},
+                                option3: {text: '', is_correct: false},
+                                option4: {text: '', is_correct: false},
                             }
                         ]
                     }
@@ -738,7 +739,7 @@ const course = reactive({
             ]
         }
     ],
-    quiz : {
+    quiz: {
         id: crypto.randomUUID(),
         has_quiz: false,
         title: '',
@@ -749,10 +750,10 @@ const course = reactive({
                 id: crypto.randomUUID(),
                 text: '',
                 is_active: true,
-                option1 : {text: '', is_correct: false},
-                option2 : {text: '', is_correct: false},
-                option3 : {text: '', is_correct: false},
-                option4 : {text: '', is_correct: false},
+                option1: {text: '', is_correct: false},
+                option2: {text: '', is_correct: false},
+                option3: {text: '', is_correct: false},
+                option4: {text: '', is_correct: false},
             }
         ]
     }
@@ -793,10 +794,10 @@ function addSeason() {
                         id: crypto.randomUUID(),
                         text: '',
                         is_active: true,
-                        option1 : {text: '', is_correct: false},
-                        option2 : {text: '', is_correct: false},
-                        option3 : {text: '', is_correct: false},
-                        option4 : {text: '', is_correct: false},
+                        option1: {text: '', is_correct: false},
+                        option2: {text: '', is_correct: false},
+                        option3: {text: '', is_correct: false},
+                        option4: {text: '', is_correct: false},
                     }
                 ]
             }
@@ -841,10 +842,10 @@ function addLesson(sIndex) {
                     id: crypto.randomUUID(),
                     text: '',
                     is_active: true,
-                    option1 : {text: '', is_correct: false},
-                    option2 : {text: '', is_correct: false},
-                    option3 : {text: '', is_correct: false},
-                    option4 : {text: '', is_correct: false},
+                    option1: {text: '', is_correct: false},
+                    option2: {text: '', is_correct: false},
+                    option3: {text: '', is_correct: false},
+                    option4: {text: '', is_correct: false},
                 }
             ]
         },
@@ -885,7 +886,7 @@ watch(
             })
         })
     },
-    { deep: true }
+    {deep: true}
 )
 
 function addQuestion(sIndex, lIndex) {
@@ -893,12 +894,13 @@ function addQuestion(sIndex, lIndex) {
         id: crypto.randomUUID(),
         text: '',
         is_active: true,
-        option1 : {text: '', is_correct: false},
-        option2 : {text: '', is_correct: false},
-        option3 : {text: '', is_correct: false},
-        option4 : {text: '', is_correct: false},
+        option1: {text: '', is_correct: false},
+        option2: {text: '', is_correct: false},
+        option3: {text: '', is_correct: false},
+        option4: {text: '', is_correct: false},
     });
 }
+
 function selectCorrectOption(question, optionKey) {
     question.option1.is_correct = false;
     question.option2.is_correct = false;
@@ -907,6 +909,7 @@ function selectCorrectOption(question, optionKey) {
 
     question[optionKey].is_correct = true;
 }
+
 function removeQuestion(sIndex, lIndex, quIndex) {
     console.log(sIndex, lIndex, quIndex)
     console.log(course.seasons[sIndex].lessons[lIndex].quiz)
@@ -920,22 +923,24 @@ useSortable(finalQuizContainers, course.quiz.questions, {
     animation: 150,
     handle: '.final-quiz-drag-handle',
 })
+
 function addFinalQuizQuestions() {
     console.log(course.quiz.questions)
     course.quiz.questions.push({
         id: crypto.randomUUID(),
         text: '',
         is_active: true,
-        option1 : {text: '', is_correct: false},
-        option2 : {text: '', is_correct: false},
-        option3 : {text: '', is_correct: false},
-        option4 : {text: '', is_correct: false},
+        option1: {text: '', is_correct: false},
+        option2: {text: '', is_correct: false},
+        option3: {text: '', is_correct: false},
+        option4: {text: '', is_correct: false},
     });
 }
 
 function removeFinalQuizQuestions(index) {
     course.quiz.questions.splice(index, 1);
 }
+
 function submitForm() {
     router.post(route('admin.courses.store'), course, {
         preserveScroll: true,
@@ -966,12 +971,13 @@ function submitForm() {
 
 .zo-actions {
     position: absolute;
-    top: -4.5px;
+    top: 12.5px;
     left: 55px;
     z-index: 15
 }
 
 .zo-actions .zo-switch .v-input {
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center
@@ -988,9 +994,10 @@ function submitForm() {
     background: rgb(255, 255, 255);
     z-index: 15
 }
- .thumbnail-badge {
-     width: 100%;
- }
+
+.thumbnail-badge {
+    width: 100%;
+}
 
 .thumbnail-badge :deep(.v-badge__badge) {
     cursor: pointer;

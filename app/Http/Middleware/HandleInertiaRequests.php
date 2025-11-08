@@ -84,22 +84,22 @@ class HandleInertiaRequests extends Middleware
                 ],
                 [
                     'title' => 'مسیرها',
-                    'icon' => 'mdi-routes',
+                    'icon' => 'mdi-multicast',
                     'route' => 'admin.paths.index'
                 ],
                 [
-                    'title' => 'سفارشات',
+                    'title' => 'سفارش‌ها',
                     'icon' => 'mdi-cart',
                     'route' => 'admin.orders.index'
                 ],
                 [
-                    'title' => 'نظرات',
-                    'icon' => 'mdi-comment',
+                    'title' => 'نظرها',
+                    'icon' => 'mdi-forum',
                     'route' => 'admin.comments.index'
                 ],
                 [
                     'title' => 'پیام ها',
-                    'icon' => 'mdi-message',
+                    'icon' => 'mdi-message-text-fast',
                     'route' => 'admin.supports.index'
                 ],
                 [
