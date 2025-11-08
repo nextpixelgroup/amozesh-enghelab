@@ -214,7 +214,7 @@
                                                                 hide-details
                                                                 variant="outlined"
                                                                 density="comfortable"
-                                                                label="زمان ویدیو"
+                                                                label="زمان ویدیو (دقیقه)"
                                                                 type="text"
                                                                 prepend-inner-icon="mdi-clock-time-eight-outline"
                                                                 min="1"
@@ -278,6 +278,7 @@
                                                         </v-col>
                                                         <v-col class="v-col-12" v-if="lesson.has_quiz">
                                                             <v-text-field
+                                                                v-model="lesson.quiz.title"
                                                                 hide-details
                                                                 variant="outlined"
                                                                 density="comfortable"
@@ -288,6 +289,7 @@
                                                         </v-col>
                                                         <v-col class="v-col-12" v-if="lesson.has_quiz">
                                                             <v-textarea
+                                                                v-model="lesson.quiz.description"
                                                                 hide-details
                                                                 variant="outlined"
                                                                 density="comfortable"
@@ -340,7 +342,7 @@
                                                                     <v-row dense>
                                                                         <v-col class="v-col-12">
                                                                             <v-text-field
-                                                                                v-model="question.text"
+                                                                                v-model="question.question"
                                                                                 hide-details
                                                                                 variant="outlined"
                                                                                 density="comfortable"
@@ -473,7 +475,7 @@
                         </v-col>
                         <v-col class="v-col-12" v-if="course.quiz.has_quiz">
                             <v-text-field
-                                v-model="course.quiz.text"
+                                v-model="course.quiz.title"
                                 hide-details
                                 variant="outlined"
                                 density="comfortable"
@@ -529,7 +531,7 @@
                                 <v-row dense>
                                     <v-col class="v-col-12">
                                         <v-text-field
-                                            v-model="question.text"
+                                            v-model="question.question"
                                             hide-details
                                             variant="outlined"
                                             density="comfortable"
@@ -545,6 +547,7 @@
                                                 @change="selectCorrectOption(question, 'option1')"
                                             />
                                             <v-text-field
+                                                v-model="question.option1.text"
                                                 hide-details
                                                 variant="outlined"
                                                 density="comfortable"
@@ -560,6 +563,7 @@
                                                 @change="selectCorrectOption(question, 'option2')"
                                             />
                                             <v-text-field
+                                                v-model="question.option2.text"
                                                 hide-details
                                                 variant="outlined"
                                                 density="comfortable"
@@ -575,6 +579,7 @@
                                                 @change="selectCorrectOption(question, 'option3')"
                                             />
                                             <v-text-field
+                                                v-model="question.option3.text"
                                                 hide-details
                                                 variant="outlined"
                                                 density="comfortable"
@@ -590,6 +595,7 @@
                                                 @change="selectCorrectOption(question, 'option4')"
                                             />
                                             <v-text-field
+                                                v-model="question.option4.text"
                                                 hide-details
                                                 variant="outlined"
                                                 density="comfortable"

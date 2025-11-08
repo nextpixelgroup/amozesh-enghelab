@@ -32,6 +32,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::post('/books/store', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
     Route::put('/books/{book}/update', [BookController::class, 'update'])->name('books.update');
+
     Route::get('/books/categories', [BookCategoryController::class, 'index'])->name('books.categories.index');
     Route::post('/books/categories/store', [BookCategoryController::class, 'store'])->name('books.categories.store');
     Route::put('/books/categories/{category}/update', [BookCategoryController::class, 'update'])->name('books.categories.update');
@@ -59,7 +60,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::delete('/paths/{path}/destroy', [PathController::class, 'destroy'])->name('paths.destroy');
 
     /********* Orders *********/
-    Route::get('/orders', [UserController::class, 'index'])->name('orders.index');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
     /********* Users *********/
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

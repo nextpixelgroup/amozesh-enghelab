@@ -81,7 +81,6 @@ class CourseCategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        sleep(3);
         try {
             $category->delete();
             return redirectMessage('success', 'دسته با موفقیت حذف شد.');

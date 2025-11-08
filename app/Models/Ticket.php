@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
     protected $fillable = [
         'user_id',
-        'title',
+        //'title',
         'subject',
         'message',
         /*'status',
@@ -55,5 +56,27 @@ class Ticket extends Model
     {
         $this->update(['status' => 'open']);
     }*/
+
+    protected function readAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['read_at'];
+                $label = verta()->instance($value)->format('Y/m/d H:i');
+                return ['value' => $value, 'title' => $label];
+            }
+        );
+    }
+
+    protected function createdAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['created_at'];
+                $label = verta()->instance($value)->format('Y/m/d H:i');
+                return ['value' => $value, 'title' => $label];
+            }
+        );
+    }
 
 }

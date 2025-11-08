@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AdminTicketResource;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -10,9 +12,11 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $tickets = Ticket::query()->with('user')->orderBy('id', 'desc')->paginate(config('app.per_page'));
+        $tickets = AdminTicketResource::collection($tickets);
+        return inertia('Admin/Supports/Index', compact('tickets'));
     }
 
     /**

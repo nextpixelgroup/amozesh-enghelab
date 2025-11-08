@@ -24,32 +24,45 @@ class CourseCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'                 => 'required|min:3|max:100',
-            "slug"                  => 'nullable|regex:/^[\p{L}\p{M}0-9]+(?:-[\p{L}\p{M}0-9]+)*$/u|min:3|max:100',
-            "category"              => 'nullable|exists:categories,id',
-            'teacher'               => ['required', 'exists:users,id', new TeacherRole],
-            "description"           => 'nullable',
-            "requirements"          => 'nullable',
-            "must_complete_quizzes" => 'required|boolean',
-            "status"                => 'required|in:'.implode(',', enumNames(CourseStatusEnum::cases())),
-            'seasons'               => 'required|array|min:1',
-            'seasons.*.title'       => 'required|string|min:3|max:255',
-            'seasons.*.description' => 'nullable|string',
-            'seasons.*.is_active'   => 'required|boolean',
-            'seasons.*.lessons'     => 'required|array|min:1',
-            'seasons.*.lessons.*.title'       => 'required|string|min:3|max:255',
-            'seasons.*.lessons.*.description' => 'nullable|string',
-            'seasons.*.lessons.*.is_active'   => 'required|boolean',
-            'seasons.*.lessons.*.quiz'        => 'nullable|array',
-            'seasons.*.lessons.*.quiz.title'  => 'required_with:seasons.*.lessons.*.quiz|string|min:3|max:255',
-            'seasons.*.lessons.*.quiz.description' => 'nullable|string',
-            'seasons.*.lessons.*.quiz.is_active'   => 'required_with:seasons.*.lessons.*.quiz|boolean',
-            'seasons.*.lessons.*.quiz.questions'   => 'required_with:seasons.*.lessons.*.quiz|array|min:1',
-            'seasons.*.lessons.*.quiz.questions.*.question'    => 'required|string|min:3',
-            'seasons.*.lessons.*.quiz.questions.*.type'        => 'required|in:true_false,multiple_option,descriptive',
-            'seasons.*.lessons.*.quiz.questions.*.explanation' => 'nullable|string',
-            'seasons.*.lessons.*.quiz.questions.*.options'     => 'required_if:seasons.*.lessons.*.quiz.questions.*.type,true_false,multiple_option|array|min:2',
-            'seasons.*.lessons.*.quiz.questions.*.options.*.option'      => 'required|string',
+            'title'                                                     => 'required|min:3|max:100',
+            "category"                                                  => 'nullable|exists:categories,id',
+            'teacher'                                                   => ['required', 'exists:users,id', new TeacherRole],
+            "description"                                               => 'nullable',
+            "requirements"                                              => 'nullable',
+            "must_complete_quizzes"                                     => 'required|boolean',
+            "status"                                                    => 'required|in:'.implode(',', enumNames(CourseStatusEnum::cases())),
+            'seasons'                                                   => 'required|array|min:1',
+            'seasons.*.title'                                           => 'required|string|min:3|max:255',
+            'seasons.*.description'                                     => 'nullable|string',
+            'seasons.*.is_active'                                       => 'required|boolean',
+            'seasons.*.lessons'                                         => 'required|array|min:1',
+            'seasons.*.lessons.*.title'                                 => 'required|string|min:3|max:255',
+            'seasons.*.lessons.*.description'                           => 'nullable|string',
+            'seasons.*.lessons.*.is_active'                             => 'required|boolean',
+            'seasons.*.lessons.*.quiz'                                  => 'nullable|array',
+            'seasons.*.lessons.*.quiz.title' => [
+                'nullable',
+                'string',
+                'min:3',
+                'max:255',
+                'required_if:seasons.*.lessons.*.has_quiz,true'
+            ],
+            'seasons.*.lessons.*.quiz.description'                      => 'nullable|string',
+            'seasons.*.lessons.*.quiz.is_active'                        => [
+                'boolean',
+                'required_if:seasons.*.lessons.*.has_quiz,true'
+            ],
+            'seasons.*.lessons.*.quiz.questions'                        => 'required_with:seasons.*.lessons.*.quiz|array|min:1',
+            'seasons.*.lessons.*.quiz.questions.*.question'             => [
+                'nullable',
+                'string',
+                'min:3',
+                'required_if:seasons.*.lessons.*.has_quiz,true'
+            ],
+            //'seasons.*.lessons.*.quiz.questions.*.type'                 => 'required|in:true_false,multiple_option,descriptive',
+            'seasons.*.lessons.*.quiz.questions.*.explanation'          => 'nullable|string',
+            'seasons.*.lessons.*.quiz.questions.*.options'              => 'required_if:seasons.*.lessons.*.quiz.questions.*.type,true_false,multiple_option|array|min:2',
+            'seasons.*.lessons.*.quiz.questions.*.options.*.option'     => 'required|string',
             'seasons.*.lessons.*.quiz.questions.*.options.*.is_correct' => 'required|boolean',
             //"image"                 => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
@@ -68,7 +81,7 @@ class CourseCreateRequest extends FormRequest
             'title.min' => 'عنوان دوره باید حداقل ۳ کاراکتر باشد.',
             'title.max' => 'عنوان دوره نمی‌تواند بیشتر از ۱۰۰ کاراکتر باشد.',
             'slug.unique' => 'این آدرس قبلا استفاده شده است.',
-            'slug.regex' => 'فرمت آدرس معتبر نیست. فقط از حروف، اعداد و خط تیره استفاده کنید.',
+            //'slug.regex' => 'فرمت آدرس معتبر نیست. فقط از حروف، اعداد و خط تیره استفاده کنید.',
             'teacher.required' => 'انتخاب مدرس الزامی است.',
             'teacher.exists' => 'مدرس انتخاب شده معتبر نیست.',
             'published_at.required' => 'تاریخ انتشار الزامی است.',
@@ -103,7 +116,8 @@ class CourseCreateRequest extends FormRequest
 
             // Quiz
             'seasons.*.lessons.*.quiz.array' => 'آزمون باید به صورت آرایه ارسال شود.',
-            'seasons.*.lessons.*.quiz.title.required_with' => 'عنوان آزمون الزامی است.',
+            'seasons.*.lessons.*.quiz.title.required_if' => 'عنوان آزمون الزامی است.',
+
             'seasons.*.lessons.*.quiz.title.min' => 'عنوان آزمون باید حداقل ۳ کاراکتر باشد.',
             'seasons.*.lessons.*.quiz.title.max' => 'عنوان آزمون نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
             'seasons.*.lessons.*.quiz.is_active.required_with' => 'وضعیت فعال/غیرفعال کردن آزمون الزامی است.',
@@ -113,9 +127,9 @@ class CourseCreateRequest extends FormRequest
             'seasons.*.lessons.*.quiz.questions.min' => 'حداقل یک سوال برای آزمون الزامی است.',
 
             // Questions
-            'seasons.*.lessons.*.quiz.questions.*.question.required' => 'متن سوال الزامی است.',
+            'seasons.*.lessons.*.quiz.questions.*.question.required_if' => 'متن سوال الزامی است.',
             'seasons.*.lessons.*.quiz.questions.*.question.min' => 'متن سوال باید حداقل ۳ کاراکتر باشد.',
-            'seasons.*.lessons.*.quiz.questions.*.type.required' => 'نوع سوال الزامی است.',
+            //'seasons.*.lessons.*.quiz.questions.*.type.required' => 'نوع سوال الزامی است.',
             'seasons.*.lessons.*.quiz.questions.*.type.in' => 'نوع سوال معتبر نیست.',
 
             // Options

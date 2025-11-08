@@ -123,5 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'per_page' => env('PER_PAGE', 10)
+    'per_page' => env('PER_PAGE', 10),
+
+    'video_upload_slug' => env('VIDEO_UPLOAD_SLUG', 'https://dl.enghelab.ir/uploads/videos/courses/'),
 ];
