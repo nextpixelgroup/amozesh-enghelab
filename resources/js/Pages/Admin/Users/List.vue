@@ -55,7 +55,7 @@
                         hide-details
                         variant="outlined"
                         density="compact"
-                        label="مقدار را وارد نمایید"
+                        label="جستجو کاربر"
                         clearable
                         @update:model-value="(val) => val === null && handleClear('search')"
 
