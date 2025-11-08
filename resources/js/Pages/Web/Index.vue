@@ -1,10 +1,10 @@
 <script>
 import { Head } from '@inertiajs/vue3'
 import {defineComponent} from "vue";
-import AppLayout from "../../Layouts/AppLayout.vue";
+import WebLayout from "../../Layouts/WebLayout.vue";
 
 export default defineComponent({
-    components: {AppLayout, Head}
+    components: {AppLayout: WebLayout, Head}
 })
 
 

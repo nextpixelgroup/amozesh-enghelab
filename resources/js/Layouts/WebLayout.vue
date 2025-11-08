@@ -1,4 +1,4 @@
-<!-- resources/js/Layouts/AppLayout.vue -->
+<!-- resources/js/Layouts/WebLayout.vue -->
 <script setup>
 import { Link } from '@inertiajs/vue3'
 import { ref } from 'vue'
