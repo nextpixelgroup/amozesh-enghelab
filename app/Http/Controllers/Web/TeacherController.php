@@ -9,8 +9,13 @@ use Inertia\Inertia;
 
 class TeacherController extends Controller
 {
+    public function index()
+    {
+        return inertia('Web/Teachers/Index');
+    }
+
     public function show(User $teacher)
     {
-        return Inertia::render('Web/Teachers/Show', compact('teacher'));
+        return inertia('Web/Teachers/Show', compact('teacher'));
     }
 }

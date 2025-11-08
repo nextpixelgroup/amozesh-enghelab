@@ -9,6 +9,16 @@ use Inertia\Inertia;
 
 class BookController extends Controller
 {
+
+    public function index()
+    {
+        return inertia('Web/Books/Index');
+    }
+
+    public function archives()
+    {
+        return inertia('Web/Books/Archives');
+    }
     public function show(Book $book)
     {
         return Inertia::render('Web/Books/Show', compact('book'));
