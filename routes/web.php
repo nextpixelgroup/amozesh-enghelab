@@ -18,11 +18,6 @@ if(env('APP_ENV') === 'production') {
 
 Route::name('web.')->group(function () {
 
-    Route::get('/', function () {
-        return Inertia::render('Web/Index');
-    })->name('home');
-
-
 
 
     Route::get('/', [IndexController::class, 'index'])->name('index');
