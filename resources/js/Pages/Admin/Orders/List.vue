@@ -1,3 +1,9 @@
+<template>
+    <AdminLayout>
+        <Head title="Courses" />
+        <h1>Orders</h1>
+    </AdminLayout>
+</template>
 <script>
 import { Head } from '@inertiajs/vue3'
 import {defineComponent} from "vue";
@@ -9,11 +15,3 @@ export default defineComponent({
 
 
 </script>
-
-<template>
-    <AdminLayout>
-        <Head title="Courses" />
-        <h1>Courses</h1>
-        <p>Hello, Courses to your first Inertia app!</p>
-    </AdminLayout>
-</template>

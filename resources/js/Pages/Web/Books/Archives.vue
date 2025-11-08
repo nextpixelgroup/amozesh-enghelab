@@ -1,8 +1,10 @@
 <template>
-    <WebLayout title="ContactUs">
-        <h1>Contact Us</h1>
+    <WebLayout>
+        <h1>Archives</h1>
     </WebLayout>
 </template>
+
 <script setup>
+
 import WebLayout from "@/Layouts/WebLayout.vue";
 </script>

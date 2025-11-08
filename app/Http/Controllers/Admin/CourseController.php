@@ -11,6 +11,7 @@ use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Verta;
 
@@ -62,9 +63,8 @@ class CourseController extends Controller
         return Inertia::render('Admin/Courses/Create', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug'));
     }
 
-    public function store(Request $request)
+    public function store(CourseCreateRequest $request)
     {
-        dd($request->all());
         return DB::transaction(function () use ($request) {
             try {
                 // Create course
@@ -73,10 +73,10 @@ class CourseController extends Controller
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processSeasons($course, $request->seasons);
 
-                return sendJson(message: 'دوره با موفقیت ایجاد شد.');
+                return redirectMessage('success', 'دوره با موفقیت ایجاد شد.');
             }
             catch (\Exception $e) {
-                return sendJson(status:'error',message: $e->getMessage());
+                return redirectMessage('error',$e->getMessage());
             }
         });
     }
@@ -103,22 +103,26 @@ class CourseController extends Controller
 
     private function storeCourse($request)
     {
-        $slug = $request->slug ?? \Illuminate\Support\Str::slug($request->title);
+        $slug = $request->slug ?? $request->title;
 
-        return Course::create([
+        $course = Course::create([
+            'user_id'      => auth()->user()->id,
             'title'        => $request->title,
             'slug'         => $this->makeSlugUnique($slug),
-            'teacher_id'   => $request->teacher,
-            'category_id'  => $request->category,
-            'price'        => 0,
-            'status'       => $request->status,
             'description'  => $request->description,
-            'requirements' => $request->requirements,
+            'thumbnail_id' => $request->thumbnail_id,
+            'teacher_id'   => $request->teacher,
+            'price'        => 0,
+            'rate'         => null,
+            'must_complete_quizzes' => $request->must_complete_quizzes,
+            'status'       => $request->status,
             'published_at' => $request->published_at
                 ? verta()->parse($request->published_at)->datetime()
                 : now(),
-            'must_complete_quizzes' => $request->must_complete_quizzes,
         ]);
+        $course->requirements()->sync($request->requirements);
+        $course->categories()->sync($request->category);
+        return $course;
     }
 
     private function processSeasons($course, $seasons)
@@ -139,9 +143,24 @@ class CourseController extends Controller
     private function processLessons($season, $lessons)
     {
         foreach ($lessons as $lessonData) {
+            $video_id = null;
+            if($lessonData['video_url']){
+                $url = config('app.video_upload_slug').$lessonData['video_url'];
+                $response = Http::head($url);
+                if (!$response->successful()) {
+                    return redirectMessage('error', 'چنین ویدیویی یافت نشد');
+                }
+                else{
+                    $video_id = 'باید url رو یه کاری بکنیم که ذخیره بشه تو media';
+                }
+            }
+            if($lessonData['poster_id'] == null){
+
+            }
             $lesson = $season->lessons()->create([
                 'title'       => $lessonData['title'],
                 'description' => $lessonData['description'] ?? null,
+                'video_id'    => $video_id,
                 'is_active'   => $lessonData['is_active'] ?? true,
             ]);
 

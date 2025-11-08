@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Course extends Model
 {
@@ -26,9 +27,9 @@ class Course extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function category()
+    public function categories(): MorphToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->morphToMany(Category::class, 'categorizable');
     }
 
     public function seasons()
@@ -57,10 +58,6 @@ class Course extends Model
             ->orderBy('created_at', 'desc');
     }
 
-    public function categories()
-    {
-        return $this->morphToMany(Category::class, 'categorizable');
-    }
 
     public function students()
     {
@@ -82,9 +79,8 @@ class Course extends Model
 
     public function requirements()
     {
-        return $this->belongsToMany(Course::class, 'course_requirements', 'course_id', 'requirement_id')
-            ->using(CourseRequirement::class)
-            ->withTimestamps();
+        return $this->belongsToMany(Course::class, 'course_requirements', 'course_id', 'requirement_id');
+
     }
 
     /**

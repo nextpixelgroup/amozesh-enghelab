@@ -1,6 +1,6 @@
 <template>
-    <WebLayout title="ContactUs">
-        <h1>Contact Us</h1>
+    <WebLayout title="ThankYou">
+        <h1>Thank you</h1>
     </WebLayout>
 </template>
 <script setup>
