@@ -30,6 +30,17 @@ class CourseController extends Controller
         if($request->filled('teacher')){
             $query->where('teacher_id', $request->teacher);
         }
+        if($request->filled('category')){
+            $query->whereHas('categories', function ($query) use($request) {
+                $query->where('id', $request->category);
+            });
+        }
+        if($request->filled('search')){
+            $query->where(function ($query) use ($request) {
+                $query->where('title', 'like', "%{$request->search}%");
+                    //->orWhere('description', 'like', "%{$request->search}%");
+            });
+        }
         $courses = AdminCourseResource::collection($query->orderBy('id', 'desc')->paginate(config('app.per_page')));
         $status = enumFormated(CourseStatusEnum::cases());
         $teachers = User::whereHas('roles', function ($query) {
@@ -40,7 +51,13 @@ class CourseController extends Controller
                 'value' => (string)$teacher->id,
             ];
         });
-        return Inertia::render('Admin/Courses/List', compact('courses', 'status', 'teachers'));
+        $categories = Category::where('type', 'course')->get()->map(function ($category) {
+            return [
+                'title' => $category->title,
+                'value' => (String)$category->id,
+            ];
+        });
+        return Inertia::render('Admin/Courses/List', compact('courses', 'status', 'teachers', 'categories'));
     }
 
     public function create()

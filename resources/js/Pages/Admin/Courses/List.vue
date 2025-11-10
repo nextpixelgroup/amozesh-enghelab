@@ -56,7 +56,7 @@
                         variant="outlined"
                         density="compact"
                         label="دسته‌بندی‌ها"
-                        :items="['انقلاب اسلامی', 'امام خامنه ای', 'امام خمینی']"
+                        :items="categories"
                         clearable
                         @update:model-value="(val) => val === null && handleClear('category')"
                     >
@@ -69,6 +69,8 @@
                         variant="outlined"
                         density="compact"
                         label="جستجو عنوان دوره"
+                        clearable
+                        @update:model-value="(val) => val === null && handleClear('category')"
                     >
                     </v-text-field>
                 </v-col>
@@ -163,12 +165,13 @@ const props = defineProps({
     courses: Object,
     status: Object,
     teachers: Object,
+    categories: Object,
 })
 const currentPage = ref(props.courses?.meta.current_page)
 const courses = computed( () => props.courses.data);
 const status = ref(props.status)
 const teachers = ref(props.teachers)
-console.log(teachers.value)
+const categories = ref(props.categories)
 const isLoading = ref(false)
 const page = usePage();
 const query = new URLSearchParams(page.url.split('?')[1])
