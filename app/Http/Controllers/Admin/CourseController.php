@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\CourseStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CourseCreateRequest;
+use App\Http\Resources\AdminCourseDetailsResource;
 use App\Http\Resources\AdminCourseResource;
 use App\Models\Category;
 use App\Models\Course;
@@ -84,7 +85,9 @@ class CourseController extends Controller
 
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processSeasons($course, $request->seasons);
-                $this->finalQuiz($course, $request->quiz);
+                if(isset($course->quiz['has_quiz']) && $course->quiz['has_quiz'] == true) {
+                    $this->finalQuiz($course, $request->quiz);
+                }
 
                 return redirectMessage('success', 'دوره با موفقیت ایجاد شد.',redirect: route('admin.courses.edit',$course->id));
             }
@@ -94,7 +97,7 @@ class CourseController extends Controller
         });
     }
 
-    public function edit()
+    public function edit(Course $course)
     {
         $categories = Category::where('type', 'course')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
         $teachers = User::query()
@@ -106,7 +109,8 @@ class CourseController extends Controller
         $courses = Course::query()->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
 
         $video_upload_slug = video_upload_path();
-        return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug'));
+        $course = new AdminCourseDetailsResource($course);
+        return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug', 'course'));
     }
 
     public function search()
@@ -127,7 +131,7 @@ class CourseController extends Controller
     private function storeCourse($request)
     {
         $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
-        $slug = makeSlugUnique($slug, Category::class);
+        $slug = makeSlugUnique($slug, Course::class);
 
         $course = Course::create([
             'user_id'      => auth()->user()->id,

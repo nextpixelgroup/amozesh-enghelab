@@ -20,14 +20,23 @@ class AdminCourseResource extends JsonResource
                 'id'    => $this->thumbnail_id ?? null,
                 'url'   => $this->thumbnail?->url,
             ],
-            'title'     => $this->title,
+            'title'       => $this->title,
+            'slug'        => $this->slug,
+            'categories'  => $this->categories->map(function ($category) {
+                return [
+                    'value' => $category->id,
+                    'title' => $category->title,
+                ];
+            }),
+            'must_complete_quizzes' => $this->must_complete_quizzes,
             'description' => $this->description,
-            'status' => $this->statusObject,
-            'member' => $this->students()->count(),
+            'status'      => $this->statusObject,
+            'member'      => $this->students()->count(),
             'published_at' => $this->publishedAtObject,
             'created_at' => $this->createdAtObject,
             'updated_at' => $this->updatedAtObject,
             'teacher'   => [
+                'id' => $this->teacher?->id,
                 'firstname' => $this->teacher?->firstname,
                 'lastname'  => $this->teacher?->lastname,
                 'fullname'  => $this->teacher?->firstname.' '.$this->teacher?->lastname,

@@ -260,6 +260,7 @@
                                                         <v-col class="v-col-12">
                                                             <ThumbnailUploader
                                                                 v-model:model-value="lesson.poster_id"
+                                                                :initialUrl="lesson.poster.url"
                                                                 upload-route="admin.upload.courses.image"
                                                                 title="آپلود تصویر ویدیو"
                                                                 label="تصویر ویدیو را اینجا رها کنید"
@@ -531,7 +532,7 @@
                                 <v-row dense>
                                     <v-col class="v-col-12">
                                         <v-text-field
-                                            v-model="question.question"
+                                            v-model="question.text"
                                             hide-details
                                             variant="outlined"
                                             density="comfortable"
@@ -646,6 +647,7 @@
                     />
                     <ThumbnailUploader
                         v-model:model-value="course.thumbnail_id"
+                        :initialUrl="data.thumbnail.url"
                         upload-route="admin.upload.courses.image"
                         title="آپلود تصویر شاخص دوره"
                         label="تصویر شاخص دوره را اینجا رها کنید"
@@ -660,7 +662,7 @@
                            @click="submitForm"
                            class="mt-3"
                     >
-                        ذخیره دوره
+                        ویرایش دوره
                     </v-btn>
                 </v-card>
             </v-col>
@@ -684,13 +686,16 @@ const props = defineProps({
     status: Object,
     courses: Object,
     video_upload_slug: String,
+    course: Object,
 })
 const isLoading = ref(false);
 const categories = ref(props.categories);
 const teachers = ref(props.teachers);
 const status = ref(props.status);
 const courses = ref(props.courses);
+const data = ref(props.course.data);
 const video_upload_slug = ref(props.video_upload_slug);
+console.log(data.value)
 const courseRequirements = courses;
 const showVideo = (slug) => {
     if (slug) {
@@ -699,70 +704,17 @@ const showVideo = (slug) => {
 }
 /*************************Course*************************/
 const course = reactive({
-    title: '',
-    slug: '',
-    category: null,
-    teacher: null,
-    description: '',
-    requirements: [],
-    must_complete_quizzes: null,
-    status: 'pending',
-    thumbnail_id: null,
-    seasons: [
-        {
-            id: crypto.randomUUID(),
-            title: '',
-            description: '',
-            is_active: true,
-            lessons: [
-                {
-                    id: crypto.randomUUID(),
-                    title: '',
-                    description: '',
-                    duration: null,
-                    video_url: '',
-                    poster_id: null,
-                    is_active: true,
-                    has_quiz: false,
-                    quiz: {
-                        id: crypto.randomUUID(),
-                        title: '',
-                        description: '',
-                        is_active: true,
-                        questions: [
-                            {
-                                id: crypto.randomUUID(),
-                                text: '',
-                                is_active: true,
-                                option1: {text: '', is_correct: false},
-                                option2: {text: '', is_correct: false},
-                                option3: {text: '', is_correct: false},
-                                option4: {text: '', is_correct: false},
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    ],
-    quiz: {
-        id: crypto.randomUUID(),
-        has_quiz: false,
-        title: '',
-        description: '',
-        is_active: true,
-        questions: [
-            {
-                id: crypto.randomUUID(),
-                text: '',
-                is_active: true,
-                option1: {text: '', is_correct: false},
-                option2: {text: '', is_correct: false},
-                option3: {text: '', is_correct: false},
-                option4: {text: '', is_correct: false},
-            }
-        ]
-    }
+    title: data.value.title,
+    slug: data.value.slug,
+    category: data.value.categories,
+    teacher: data.value.teacher.id,
+    description: data.value.description,
+    requirements: data.value.requirements,
+    must_complete_quizzes: data.value.must_complete_quizzes ? 1 : 0,
+    status: data.value.status,
+    thumbnail_id: data.value.thumbnail.id,
+    seasons: data.value.seasons,
+    quiz: data.value.quiz
 });
 
 /********************************Seasons********************************/

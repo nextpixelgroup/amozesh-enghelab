@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('question_text');
             $table->enum('type', enumNames(QuestionTypeEnum::cases()));
             $table->integer('order')->default(0);
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }
