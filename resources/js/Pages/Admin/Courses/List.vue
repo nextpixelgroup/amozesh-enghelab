@@ -80,12 +80,13 @@
                         variant="outlined"
                         color="primary"
                         @click="search"
-                        :loading="isLoading">جستجو</v-btn>
+                        :loading="isLoading">جستجو
+                    </v-btn>
                 </v-col>
             </v-row>
         </v-card>
         <v-card class="pa-3 elevation-2">
-            <v-table density="compact">
+            <v-table>
                 <thead>
                 <tr>
                     <th class="text-center">شناسه</th>
@@ -105,7 +106,8 @@
                 >
                     <td class="text-center">{{ item.id }}</td>
                     <td class="text-center">
-                        <img :src="item.thumbnail.url ?? '/assets/img/default_image.png'" :alt="item.title" width="90" height="90">
+                        <img :src="item.thumbnail.url ?? '/assets/img/default_image.png'" :alt="item.title" width="90"
+                             height="90">
                     </td>
                     <td>
                         <strong class="d-block">{{ item.title }}</strong>
@@ -137,8 +139,12 @@
                     </td>
                     <td>
                         <div class="d-flex ga-1">
-                            <Link :href="route('admin.courses.edit',item.id)"><v-btn icon="mdi-pencil" size="small" color="primary"></v-btn></Link>
-                            <a :href="route('web.courses.show',item.id)" target="_blank"><v-btn icon="mdi-eye" size="small" color="info"></v-btn></a>
+                            <Link :href="route('admin.courses.edit',item.id)">
+                                <v-btn icon="mdi-pencil" size="small" color="primary"></v-btn>
+                            </Link>
+                            <a :href="route('web.courses.show',item.id)" target="_blank">
+                                <v-btn icon="mdi-eye" size="small" color="info"></v-btn>
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -168,7 +174,7 @@ const props = defineProps({
     categories: Object,
 })
 const currentPage = ref(props.courses?.meta.current_page)
-const courses = computed( () => props.courses.data);
+const courses = computed(() => props.courses.data);
 const status = ref(props.status)
 const teachers = ref(props.teachers)
 const categories = ref(props.categories)
@@ -176,10 +182,10 @@ const isLoading = ref(false)
 const page = usePage();
 const query = new URLSearchParams(page.url.split('?')[1])
 const filters = ref({
-    status:   query.get('status') ?? '',
-    teacher:  query.get('teacher') ?? '',
+    status: query.get('status') ?? '',
+    teacher: query.get('teacher') ?? '',
     category: query.get('category') ?? '',
-    search:   query.get('search') ?? '',
+    search: query.get('search') ?? '',
 });
 const search = () => {
     isLoading.value = true;

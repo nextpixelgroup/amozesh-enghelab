@@ -14,7 +14,7 @@
         </div>
         <v-card class="pa-3 mb-3 elevation-2">
             <v-row dense class="align-center">
-                <v-col class="v-col-lg-2 v-col-12">
+                <v-col class="v-col-lg-3 v-col-12">
                     <v-select
                         v-model="filters.type"
                         hide-details
@@ -27,7 +27,7 @@
                     >
                     </v-select>
                 </v-col>
-                <v-col class="v-col-lg-6 v-col-12">
+                <v-col class="v-col-lg-8 v-col-12">
                     <v-text-field
                         v-model="filters.search"
                         hide-details
@@ -46,7 +46,8 @@
                         color="primary"
                         @click="search"
                         :loading="isLoadingBtn"
-                    >جستجو</v-btn>
+                    >جستجو
+                    </v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -144,6 +145,7 @@ import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {computed, ref, watch} from "vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+
 const props = defineProps({
     tickets: Object
 })
@@ -197,6 +199,7 @@ const handleClear = (field) => {
     filters.value[field] = null;
     search();
 };
+
 function openDialog(item) {
     message.value = item.message
     dialog.value = true
@@ -208,7 +211,7 @@ const archive = async (item) => {
     if (confirm) {
         try {
             isLoading.value = true
-            router.put(route('admin.tickets.archive', item.id), {},{
+            router.put(route('admin.tickets.archive', item.id), {}, {
                 preserveScroll: true,
                 preserveState: true,
                 onStart: () => {

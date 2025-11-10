@@ -527,7 +527,6 @@
                                 ></v-btn>
                             </div>
                             <v-expansion-panel-text>
-
                                 <v-row dense>
                                     <v-col class="v-col-12">
                                         <v-text-field
@@ -999,6 +998,10 @@ function submitForm() {
     left: 5px;
     background: rgb(255, 255, 255);
     z-index: 15
+}
+
+.v-card {
+    overflow: visible
 }
 
 .thumbnail-badge {
