@@ -85,8 +85,9 @@ class CourseCategoryController extends Controller
             $category->delete();
             return redirectMessage('success', 'دسته با موفقیت حذف شد.');
         }
-        catch (\Exception $exception){
-            return redirectMessage('error', $exception->getMessage());
+        catch (\Exception $e){
+            $error = log_error($e);
+            return redirectMessage('error', "خطایی پیش آمد (کدخطا: $error)");
         }
     }
 }

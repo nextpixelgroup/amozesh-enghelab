@@ -468,3 +468,23 @@ if (!function_exists('log_error')) {
         }
     }
 }
+
+if (!function_exists('formatFileSize')) {
+    function formatFileSize($kilobytes, $precision = 2)
+    {
+        if ($kilobytes >= 1048576) { // If size is 1 GB or more
+            return round($kilobytes / 1048576, $precision) . ' GB';
+        } elseif ($kilobytes >= 1024) { // If size is 1 MB or more
+            return round($kilobytes / 1024, $precision) . ' MB';
+        } else {
+            return $kilobytes . ' KB';
+        }
+    }
+}
+
+
+function video_upload_path()
+{
+    $http = env('FTP_SSL') ? 'https://' : 'http://';
+    return $http.env('FTP_DOMAIN').'/'.env('COURSE_VIDEO_UPLOAD_SLUG');
+}

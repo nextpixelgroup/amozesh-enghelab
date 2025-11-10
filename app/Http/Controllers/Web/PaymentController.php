@@ -9,16 +9,21 @@ class PaymentController extends Controller
 {
     public function cart()
     {
-        return inertia('Web/Cart');
+        return inertia('Web/Payment/Cart');
     }
 
     public function checkout()
     {
-        return inertia('Web/Checkout');
+        return inertia('Web/Payment/Checkout');
+    }
+
+    public function pay()
+    {
+        return inertia('Web/Payment/Pay');
     }
 
     public function thankYou()
     {
-        return inertia('Web/thankYou');
+        return inertia('Web/Payment/thankYou');
     }
 }

@@ -9,45 +9,42 @@ use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        $tickets = Ticket::query()->with('user')->orderBy('id', 'desc')->paginate(config('app.per_page'));
-        $tickets = AdminTicketResource::collection($tickets);
-        return inertia('Admin/Supports/Index', compact('tickets'));
+        $query = Ticket::query()->with('user');
+        if($request->filled('type')){
+            if($request->type == 'read'){
+                $query->whereNotNull('read_at');
+            }
+
+        }
+        else{
+            $query->whereNull('read_at');
+        }
+        if($request->filled('search')){
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where(function($query) use ($search) {
+                    $query->where('firstname', 'like', "%{$search}%")
+                        ->orWhere('lastname', 'like', "%{$search}%")
+                        ->orWhere('mobile', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            });
+        }
+        $tickets = AdminTicketResource::collection($query->orderBy('id', 'desc')->paginate(config('app.per_page')));
+        return inertia('Admin/Tickets/Index', compact('tickets'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function archive(Ticket $ticket)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        try {
+            $update = $ticket->update(['read_at' => now()]);
+            return redirectMessage('success', 'با موفقیت آرشیو شد');
+        }
+        catch (\Exception $e) {
+            $error = log_error($e);
+            return redirectMessage('error', "خطایی پیش آمد (کدخطا: $error->id)");
+        }
     }
 }

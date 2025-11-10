@@ -187,8 +187,9 @@ const deleteCategory = async (item) => {
     const confirm = await $confirm('آیا از حذف این دسته اطمینان دارید؟');
     if (confirm) {
         try {
-            router.delete(route('admin.books.categories.destroy', item.id), {
+            await router.delete(route('admin.books.categories.destroy', item.id), {
                 preserveScroll: true,
+                preserveState: true,
                 onStart: () => {
                     loadingItems.value = {...loadingItems.value, [item.id]: true}
                 },

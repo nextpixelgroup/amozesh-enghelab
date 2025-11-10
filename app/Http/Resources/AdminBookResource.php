@@ -34,7 +34,7 @@ class AdminBookResource extends JsonResource
             'size'           => $this->size,
             'thumbnail' => [
                 'id'    => $this->thumbnail_id ?? null,
-                'url'   => $this->thumbnail?->url,
+                'url'   => $this->thumbnail?->url ?? null,
             ],
             'categories' => $this->categories
         ];

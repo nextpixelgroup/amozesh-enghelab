@@ -2,19 +2,26 @@
 
 namespace App\Models;
 
+use App\Enums\CourseStatusEnum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Course extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'description', 'thumbnail_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at'
+        'user_id', 'title', 'slug', 'description', 'thumbnail_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at'
     ];
 
     protected $casts = [
         'must_complete_quizzes' => 'boolean',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function thumbnail()
     {
@@ -24,7 +31,7 @@ class Course extends Model
     // Relationships
     public function teacher()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'teacher_id');
     }
 
     public function categories(): MorphToMany
@@ -120,5 +127,51 @@ class Course extends Model
             return 'رایگان';
         }
         return number_format($this->price) . ' تومان';
+    }
+
+    public function statusObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $status = CourseStatusEnum::fromKey($attributes['status'])->value;
+                return [
+                    'value' => $attributes['status'],
+                    'title' => $status,
+                ];
+            }
+        );
+    }
+
+    protected function publishedAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['published_at'] ?? '';
+                $title = verta()->instance($value)->format('Y/m/d H:i');
+                return ['value' => $value, 'title' => $title];
+            }
+        );
+    }
+
+    protected function createdAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['created_at'] ?? '';
+                $title = verta()->instance($value)->format('Y/m/d H:i');
+                return ['value' => $value, 'title' => $title];
+            }
+        );
+    }
+
+    protected function updatedAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['updated_at'] ?? '';
+                $title = verta()->instance($value)->format('Y/m/d H:i');
+                return ['value' => $value, 'title' => $title];
+            }
+        );
     }
 }

@@ -61,7 +61,7 @@ class Media extends Model
                 'size'      => $file->getSize(),
             ]);
         } catch (\Exception $e) {
-            \Log::error('File upload failed: ' . $e->getMessage());
+            log_error($e);
             return null;
         }
     }

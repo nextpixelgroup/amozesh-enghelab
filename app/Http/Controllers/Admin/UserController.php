@@ -105,8 +105,19 @@ class UserController extends Controller
                     'username'      => $request->username,
                     'password'      => $password,
                     'slug'          => $slug,
+                    'avatar'        => null,
                 ]);
                 if($user){
+                    $user->teacherDetails()->create([
+                        'image_id' => null,
+                        'academic_title' => $request->academic_title,
+                        'teaching' => $request->teaching,
+                        'job_title' => $request->teaching,
+                        'degree' => $request->degree,
+                        'history' => $request->history,
+                        'skills' => $request->skills,
+                        'bio' => $request->bio,
+                    ]);
                     $user->assignRole($request->role);
                 }
             });

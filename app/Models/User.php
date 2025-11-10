@@ -37,6 +37,7 @@ class User extends Authenticatable
         'address',
         'company',
         'password',
+        'avatar_id',
     ];
 
 
@@ -94,11 +95,25 @@ class User extends Authenticatable
         return $this->hasMany(Educational::class);
     }
 
+    public function teacherDetails()
+    {
+        return $this->hasOne(TeacherDetail::class, 'user_id');
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
+
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
 
+    public function avatar()
+    {
+        return $this->belongsTo(Media::class, 'avatar_id');
+    }
     public function ticketReplies(): HasMany
     {
         return $this->hasMany(TicketReply::class);

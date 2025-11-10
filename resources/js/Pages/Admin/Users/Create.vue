@@ -191,7 +191,52 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col class="v-col-12" v-if="form.role === 'teacher'">
+                    <v-col class="v-col-3" v-if="form.role === 'teacher'">
+                        <v-text-field
+                            v-model="form.academic_title"
+                            type="text"
+                            variant="outlined"
+                            density="comfortable"
+                            label="عنوان علمی یا تخصصی"
+                        />
+                    </v-col>
+                    <v-col class="v-col-3" v-if="form.role === 'teacher'">
+                        <v-text-field
+                            type="text"
+                            variant="outlined"
+                            density="comfortable"
+                            label="عنوان شغلی"
+                            v-model="form.job_title"
+                        />
+                    </v-col>
+                    <v-col class="v-col-3" v-if="form.role === 'teacher'">
+                        <v-text-field
+                            type="text"
+                            variant="outlined"
+                            density="comfortable"
+                            label="مدرک تحصیلی"
+                            v-model="form.degree"
+                        />
+                    </v-col>
+                    <v-col class="v-col-3" v-if="form.role === 'teacher'">
+                        <v-text-field
+                            type="text"
+                            variant="outlined"
+                            density="comfortable"
+                            label="سوابق تدریس"
+                            v-model="form.history"
+                        />
+                    </v-col>
+                    <v-col class="v-col-3" v-if="form.role === 'teacher'">
+                        <v-text-field
+                            type="text"
+                            variant="outlined"
+                            density="comfortable"
+                            label="مهارت ها و تخصص"
+                            v-model="form.skills"
+                        />
+                    </v-col>
+                    <v-col class="v-col-9" v-if="form.role === 'teacher'">
                         <v-text-field
                             type="text"
                             v-model="form.slug"
@@ -202,6 +247,15 @@
                             dir="ltr"
                             prepend-inner-icon="mdi-link"
                             hide-details
+                        />
+                    </v-col>
+                    <v-col class="v-col-12" v-if="form.role === 'teacher'">
+                        <v-textarea
+                            type="text"
+                            variant="outlined"
+                            density="comfortable"
+                            label="بیوگرافی"
+                            v-model="form.bio"
                         />
                     </v-col>
                     <v-col class="v-col-12 text-left">
@@ -259,6 +313,14 @@ const form = useForm({
     'username': '',
     'password': '',
     'slug': '',
+    'academic_title': '',
+    'image': '',
+    'teaching': '',
+    'job_title': '',
+    'degree': '',
+    'history': '',
+    'skills': '',
+    'bio': '',
 });
 
 const addUser = () => {

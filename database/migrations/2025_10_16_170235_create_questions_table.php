@@ -17,8 +17,6 @@ return new class extends Migration
             $table->foreignId('quiz_id')->constrained()->cascadeOnDelete();
             $table->text('question_text');
             $table->enum('type', enumNames(QuestionTypeEnum::cases()));
-            $table->integer('points')->default(1);
-            $table->text('explanation')->nullable();
             $table->integer('order')->default(0);
             $table->timestamps();
         });

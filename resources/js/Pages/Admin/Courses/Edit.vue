@@ -1,456 +1,1023 @@
 <template>
-    <div ref="videoContainer" class="video-container">
-        <!-- Overlay Play Button -->
-        <div
-            v-if="!playing"
-            class="overlay-play"
-            @click="playing = true"
-        >
-            <v-icon size="72" color="white">mdi-play-circle-outline</v-icon>
-        </div>
-        <video
-            ref="video"
-            class="video-player"
-            @click="playing = !playing"
-            @waiting="isBuffering = true"
-            @playing="isBuffering = false"
-            @canplay="isBuffering = false"
-        ></video>
-
-        <!-- Loading Overlay -->
-        <div v-if="isBuffering" class="loading-overlay">
-            <v-progress-circular
-                indeterminate
-                color="primary"
-                size="64"
-            />
-        </div>
-
-        <div class="video-controls">
-            <!-- Fullscreen Button -->
-            <button @click="toggleFullscreen" class="control-btn">
-                <v-icon color="white">
-                    {{ isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}
-                </v-icon>
-            </button>
-            <!-- Download Button -->
-            <a :href="videoSrc" download class="control-btn" title="دانلود ویدیو">
-                <v-icon color="white">mdi-download</v-icon>
-            </a>
-
-            <!-- Play/Pause -->
-            <button @click="playing = !playing" class="control-btn">
-                <v-icon color="white">
-                    {{ playing ? 'mdi-pause' : 'mdi-play' }}
-                </v-icon>
-            </button>
-            <!-- Back 10s -->
-            <button @click="skip(-10)" class="control-btn">
-                <v-icon color="white">mdi-rewind-10</v-icon>
-            </button>
-            <!-- Forward 10s -->
-            <button @click="skip(10)" class="control-btn">
-                <v-icon color="white">mdi-fast-forward-10</v-icon>
-            </button>
-
-
-            <div class="volume-control">
-                <v-icon color="white" size="20">mdi-volume-high</v-icon>
-                <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    v-model="volume"
-                    class="volume-slider"
+    <AdminLayout>
+        <v-row dense class="position-relative">
+            <v-col class="v-col-12 v-col-lg-9">
+                <v-card class="pa-3 mb-3 elevation-2">
+                    <v-row dense class="position-relative">
+                        <v-col class="v-col-12">
+                            <v-text-field
+                                v-model="course.title"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="عنوان دوره"
+                                type="text"
+                                prepend-inner-icon="mdi-text-short"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <v-text-field
+                                type="text"
+                                v-model="course.slug"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="نامک"
+                                suffix="https://amozesh.enghelab.test/courses/"
+                                dir="ltr"
+                                prepend-inner-icon="mdi-link"
+                            >
+                                <template v-slot:append>
+                                    <v-btn
+                                        icon
+                                        variant="text"
+                                        :disabled="!course.slug"
+                                        @click=""
+                                        title="مشاهده"
+                                    >
+                                        <v-icon>mdi-open-in-new</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-text-field>
+                        </v-col>
+                        <v-col class="v-col-12 v-col-lg-6">
+                            <v-autocomplete
+                                v-model="course.category"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="دسته‌بندی‌"
+                                :items="categories"
+                                multiple
+                                clearable
+                                prepend-inner-icon="mdi-format-list-group-plus"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12 v-col-lg-6">
+                            <v-autocomplete
+                                v-model="course.teacher"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="مدرس"
+                                :items="teachers"
+                                clearable
+                                prepend-inner-icon="mdi-human-male-board"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <Editor
+                                api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
+                                v-model="course.description"
+                                :init="{
+                                    height: 400,
+                                    menubar: true,
+                                    language: 'fa',
+                                    plugins: 'link image media table code lists',
+                                    images_upload_url: '/upload/image',
+                                    file_picker_types: 'image media',
+                                }"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-card>
+                <div class="zo-header-section mb-5">
+                    <v-row class="align-center">
+                        <v-col class="v-col-12">
+                            <div class="zo-info d-lg-flex d-sm-none">
+                                <div class="zo-icon elevation-4">
+                                    <i class="mdi mdi-play-box-multiple"></i>
+                                </div>
+                                <div class="zo-name">
+                                    <strong class="d-block mb-1">افزودن پیش نیاز</strong>
+                                    <span>در این بخش می توانید پیش نیاز دوره را براساس دوره های پیشین ایجاد کنید.</span>
+                                </div>
+                            </div>
+                        </v-col>
+                    </v-row>
+                </div>
+                <SearchableSelect
+                    v-model="course.requirements"
+                    :items="courseRequirements"
+                    label="جستجوی پیش نیازها..."
+                    empty-message="هیچ پیش‌نیازی انتخاب نشده است."
                 />
-            </div>
-
-            <!-- Playback Speed -->
-            <v-menu location="top" offset="6">
-                <template #activator="{ props }">
-                    <button v-bind="props" class="control-btn">
-                        <v-icon color="white">mdi-speedometer</v-icon>
-                    </button>
-                </template>
-
-                <v-list class="speed-menu">
-                    <v-list-item
-                        v-for="speed in speeds"
-                        :key="speed"
-                        @click="rate = speed"
-                        :class="{ active: rate === speed }"
-                        class="speed-item"
+                <div class="zo-header-section mb-5">
+                    <v-row class="align-center">
+                        <v-col class="v-col-lg-9">
+                            <div class="zo-info d-lg-flex d-sm-none">
+                                <div class="zo-icon elevation-4">
+                                    <i class="mdi mdi-book-open-page-variant"></i>
+                                </div>
+                                <div class="zo-name">
+                                    <strong class="d-block mb-1">افزودن سرفصل</strong>
+                                    <span>در این بخش می توانید سرفصل های دوره + دروس را ایجاد کنید.</span>
+                                </div>
+                            </div>
+                        </v-col>
+                    </v-row>
+                </div>
+                <v-expansion-panels multiple class="mb-3" ref="seasonsContainer">
+                    <v-expansion-panel
+                        v-for="(season, sIndex) in course.seasons"
+                        :key="season.id"
                     >
-                        <v-list-item-title>{{ speed }}x</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-            <!-- Progress Bar -->
-            <div class="progress-container">
-                <div class="progress-bar" @click="onProgressBarClick">
-                    <div
-                        v-for="(range, index) in bufferedRanges"
-                        :key="index"
-                        class="progress-buffered"
-                        :style="{
-        width: range.width + '%',
-        left: range.left + '%'
-    }"
-                    ></div>
-                    <div
-                        class="progress-played"
-                        :style="{ width: progressPercentage + '%' }"
-                    ></div>
-                    <div
-                        class="progress-thumb"
-                        :style="{ left: progressPercentage + '%' }"
-                    ></div>
-                    <input
-                        type="range"
-                        v-model="currentTime"
-                        :max="duration"
-                        @input="onSeek"
-                        class="progress-slider"
+                        <div class="zo-actions">
+                            <div class="zo-switch">
+                                <v-switch v-model="season.is_active" color="success"></v-switch>
+                            </div>
+                        </div>
+                        <div class="zo-close">
+                            <v-btn
+                                icon="mdi-close"
+                                width="25"
+                                height="25"
+                                color="error"
+                                @click="removeSeason(sIndex)"
+                            ></v-btn>
+                        </div>
+                        <v-expansion-panel-title>
+                            <v-btn
+                                icon="mdi-drag"
+                                width="25"
+                                height="25"
+                                size="small"
+                                class="ml-2 season-drag-handle"
+                            ></v-btn>
+                            {{ season.title || `سرفصل ${sIndex + 1}` }}
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                            <v-text-field
+                                v-model="season.title"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="عنوان سرفصل"
+                                type="text"
+                                class="mb-3"
+                                prepend-inner-icon="mdi-text-short"
+                            />
+                            <v-textarea
+                                v-model="season.description"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                type="text"
+                                label="توضیحات سرفصل"
+                                class="mb-3"
+                                prepend-inner-icon="mdi-text"
+                                rows="3"
+                            />
+                            <v-row dense class="justify-end position-relative mb-3">
+                                <v-col class="v-col-12">
+                                    <v-expansion-panels multiple :ref="el => lessonsContainers[sIndex] = el">
+                                        <v-expansion-panel
+                                            v-for="(lesson, lIndex) in season.lessons"
+                                            :key="lesson.id"
+                                        >
+                                            <div class="zo-actions">
+                                                <div class="zo-switch">
+                                                    <v-switch v-model="lesson.is_active" color="success"></v-switch>
+                                                </div>
+                                            </div>
+                                            <div class="zo-close">
+                                                <v-btn icon="mdi-close" width="25" height="25" color="error"
+                                                       @click="removeLesson(sIndex, lIndex)"></v-btn>
+                                            </div>
+                                            <v-expansion-panel-title>
+                                                <v-btn
+                                                    icon="mdi-drag"
+                                                    width="25"
+                                                    height="25"
+                                                    size="small"
+                                                    class="ml-2 lesson-drag-handle"
+                                                ></v-btn>
+                                                {{ lesson.title || `درس ${lIndex + 1}` }}
+                                            </v-expansion-panel-title>
+                                            <v-expansion-panel-text>
+                                                <v-card flat>
+                                                    <v-row dense class="position-relative">
+                                                        <v-col class="v-col-lg-9 v-col-12">
+                                                            <v-text-field
+                                                                v-model="lesson.title"
+                                                                hide-details
+                                                                variant="outlined"
+                                                                density="comfortable"
+                                                                label="عنوان درس"
+                                                                type="text"
+                                                                prepend-inner-icon="mdi-text-short"
+                                                            />
+                                                        </v-col>
+                                                        <v-col class="v-col-lg-3 v-col-12">
+                                                            <v-number-input
+                                                                v-model="lesson.duration"
+                                                                hide-details
+                                                                variant="outlined"
+                                                                density="comfortable"
+                                                                label="زمان ویدیو (دقیقه)"
+                                                                type="text"
+                                                                prepend-inner-icon="mdi-clock-time-eight-outline"
+                                                                min="1"
+                                                            />
+                                                        </v-col>
+                                                        <v-col class="v-col-12">
+                                                            <v-textarea
+                                                                v-model="lesson.description"
+                                                                hide-details
+                                                                variant="outlined"
+                                                                density="comfortable"
+                                                                type="text"
+                                                                label="توضیحات درس"
+                                                                rows="2"
+                                                                prepend-inner-icon="mdi-text"
+                                                            />
+                                                        </v-col>
+                                                        <v-col class="v-col-12">
+                                                            <v-text-field
+                                                                v-model="lesson.video_url"
+                                                                type="text"
+                                                                hide-details
+                                                                variant="outlined"
+                                                                density="comfortable"
+                                                                label="لینک ویدیو"
+                                                                :suffix="video_upload_slug"
+                                                                dir="ltr"
+                                                                prepend-inner-icon="mdi-link"
+                                                            >
+                                                                <template v-slot:append>
+                                                                    <v-btn
+                                                                        icon
+                                                                        variant="text"
+                                                                        @click="showVideo(lesson.video_url)"
+                                                                        title="مشاهده"
+                                                                        :disabled="!lesson.video_url"
+                                                                    >
+                                                                        <v-icon>mdi-open-in-new</v-icon>
+                                                                    </v-btn>
+                                                                </template>
+                                                            </v-text-field>
+                                                        </v-col>
+                                                        <v-col class="v-col-12">
+                                                            <ThumbnailUploader
+                                                                v-model:model-value="lesson.poster_id"
+                                                                upload-route="admin.upload.courses.image"
+                                                                title="آپلود تصویر ویدیو"
+                                                                label="تصویر ویدیو را اینجا رها کنید"
+                                                                accept="image/*"
+                                                            />
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row dense class="mb-3">
+                                                        <v-col class="v-col-12">
+                                                            <v-checkbox
+                                                                v-model="lesson.has_quiz"
+                                                                hide-details
+                                                                label="فعال سازی آزمون؟"
+                                                            >
+                                                            </v-checkbox>
+                                                        </v-col>
+                                                        <v-col class="v-col-12" v-if="lesson.has_quiz">
+                                                            <v-text-field
+                                                                v-model="lesson.quiz.title"
+                                                                hide-details
+                                                                variant="outlined"
+                                                                density="comfortable"
+                                                                label="عنوان آزمون"
+                                                                type="text"
+                                                                prepend-inner-icon="mdi-text-short"
+                                                            />
+                                                        </v-col>
+                                                        <v-col class="v-col-12" v-if="lesson.has_quiz">
+                                                            <v-textarea
+                                                                v-model="lesson.quiz.description"
+                                                                hide-details
+                                                                variant="outlined"
+                                                                density="comfortable"
+                                                                type="text"
+                                                                label="توضیحات آزمون"
+                                                                rows="2"
+                                                                prepend-inner-icon="mdi-text"
+                                                            />
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-expansion-panel-text v-if="lesson.has_quiz">
+                                                        <v-expansion-panels
+                                                            multiple
+                                                            class="mb-3 questions-container"
+                                                            :ref="el => {
+                                                                if (!questionsContainers[sIndex]) questionsContainers[sIndex] = [];
+                                                                questionsContainers[sIndex][lIndex] = el;
+                                                            }"
+                                                        >
+                                                            <v-expansion-panel
+                                                                v-for="(question, quIndex) in lesson.quiz.questions"
+                                                                :key="question.id"
+                                                            >
+                                                                <v-expansion-panel-title>
+                                                                    <v-btn icon="mdi-drag"
+                                                                           width="25"
+                                                                           height="25"
+                                                                           size="small"
+                                                                           class="ml-2 question-drag-handle"
+                                                                    >
+                                                                    </v-btn>
+                                                                    {{ `سوال ${quIndex + 1}` }}
+                                                                </v-expansion-panel-title>
+                                                                <div class="zo-actions">
+                                                                    <div class="zo-switch">
+                                                                        <v-switch v-model="question.is_active"
+                                                                                  color="success"></v-switch>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="zo-close">
+                                                                    <v-btn
+                                                                        icon="mdi-close"
+                                                                        width="25"
+                                                                        height="25"
+                                                                        color="error"
+                                                                        @click="removeQuestion(sIndex, lIndex, quIndex)"
+                                                                    ></v-btn>
+                                                                </div>
+                                                                <v-expansion-panel-text>
+                                                                    <v-row dense>
+                                                                        <v-col class="v-col-12">
+                                                                            <v-text-field
+                                                                                v-model="question.question"
+                                                                                hide-details
+                                                                                variant="outlined"
+                                                                                density="comfortable"
+                                                                                label="سوال"
+                                                                                type="text"
+                                                                                prepend-inner-icon="mdi-text-short"
+                                                                            />
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option1.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option1')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option1.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 1"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option2.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option2')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option2.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 2"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option3.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option3')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option3.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 3"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                            <div class="zo-option">
+                                                                                <v-radio
+                                                                                    v-model="question.option4.is_correct"
+                                                                                    @change="selectCorrectOption(question, 'option4')"
+                                                                                />
+                                                                                <v-text-field
+                                                                                    v-model="question.option4.text"
+                                                                                    hide-details
+                                                                                    variant="outlined"
+                                                                                    density="comfortable"
+                                                                                    label="گزینه 4"
+                                                                                    type="text"
+                                                                                />
+                                                                            </div>
+                                                                        </v-col>
+                                                                    </v-row>
+                                                                </v-expansion-panel-text>
+                                                            </v-expansion-panel>
+                                                        </v-expansion-panels>
+                                                        <div class="zo-add text-end">
+                                                            <v-btn
+                                                                width="25"
+                                                                height="25"
+                                                                color="primary"
+                                                                @click="addQuestion(sIndex, lIndex)"
+                                                                icon="mdi mdi-plus"
+                                                            />
+                                                        </div>
+                                                    </v-expansion-panel-text>
+                                                </v-card>
+                                            </v-expansion-panel-text>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                            <div class="text-left">
+                                <v-btn
+                                    color="primary"
+                                    @click="addLesson(sIndex)"
+                                >
+                                    افزودن درس
+                                </v-btn>
+                            </div>
+                        </v-expansion-panel-text>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <div class="text-left">
+                    <v-btn color="primary" @click="addSeason">افزودن سرفصل</v-btn>
+                </div>
+                <div class="zo-header-section mb-5">
+                    <v-row class="align-center">
+                        <v-col class="v-col-lg-9">
+                            <div class="zo-info d-lg-flex d-sm-none">
+                                <div class="zo-icon elevation-4">
+                                    <i class="mdi mdi-note-text-outline"></i>
+                                </div>
+                                <div class="zo-name">
+                                    <strong class="d-block mb-1">افزودن آزمون پایان دوره</strong>
+                                    <span>در این بخش آزمون پایان دوره را ایجاد کنید.</span>
+                                </div>
+                            </div>
+                        </v-col>
+                    </v-row>
+                </div>
+                <v-card class="pa-3 mb-3 elevation-2">
+                    <v-row dense>
+                        <v-col class="v-col-12">
+                            <v-checkbox v-model="course.quiz.has_quiz"
+                                        hide-details
+                                        label="فعال سازی آزمون پایان دوره؟"
+                            >
+                            </v-checkbox>
+                        </v-col>
+                        <v-col class="v-col-12" v-if="course.quiz.has_quiz">
+                            <v-text-field
+                                v-model="course.quiz.title"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="عنوان آزمون"
+                                type="text"
+                                prepend-inner-icon="mdi-text-short"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12" v-if="course.quiz.has_quiz">
+                            <v-textarea
+                                v-model="course.quiz.description"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                type="text"
+                                label="توضیحات آزمون"
+                                rows="2"
+                                prepend-inner-icon="mdi-text"
+                            />
+                        </v-col>
+                    </v-row>
+                    <v-expansion-panels multiple class="my-3" v-show="course.quiz.has_quiz" ref="finalQuizContainers">
+                        <v-expansion-panel
+                            v-for="(question, qIndex) in course.quiz.questions"
+                            :key="question.id">
+                            <v-expansion-panel-title>
+                                <v-btn
+                                    icon="mdi-drag"
+                                    width="25"
+                                    height="25"
+                                    size="small"
+                                    class="ml-2 final-quiz-drag-handle"
+                                />
+                                {{ `سوال ${qIndex + 1}` }}
+                            </v-expansion-panel-title>
+                            <div class="zo-actions">
+                                <div class="zo-switch">
+                                    <v-switch v-model="question.is_active"
+                                              color="success"></v-switch>
+                                </div>
+                            </div>
+                            <div class="zo-close">
+                                <v-btn
+                                    icon="mdi-close"
+                                    width="25"
+                                    height="25"
+                                    color="error"
+                                    @click="removeFinalQuizQuestions(qIndex)"
+                                ></v-btn>
+                            </div>
+                            <v-expansion-panel-text>
+
+                                <v-row dense>
+                                    <v-col class="v-col-12">
+                                        <v-text-field
+                                            v-model="question.question"
+                                            hide-details
+                                            variant="outlined"
+                                            density="comfortable"
+                                            label="سوال"
+                                            type="text"
+                                            prepend-inner-icon="mdi-text-short"
+                                        />
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio
+                                                v-model="question.option1.is_correct"
+                                                @change="selectCorrectOption(question, 'option1')"
+                                            />
+                                            <v-text-field
+                                                v-model="question.option1.text"
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 1"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio
+                                                v-model="question.option2.is_correct"
+                                                @change="selectCorrectOption(question, 'option2')"
+                                            />
+                                            <v-text-field
+                                                v-model="question.option2.text"
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 2"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio
+                                                v-model="question.option3.is_correct"
+                                                @change="selectCorrectOption(question, 'option3')"
+                                            />
+                                            <v-text-field
+                                                v-model="question.option3.text"
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 3"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                    <v-col class="v-col-12 v-col-lg-3">
+                                        <div class="zo-option">
+                                            <v-radio
+                                                v-model="question.option4.is_correct"
+                                                @change="selectCorrectOption(question, 'option4')"
+                                            />
+                                            <v-text-field
+                                                v-model="question.option4.text"
+                                                hide-details
+                                                variant="outlined"
+                                                density="comfortable"
+                                                label="گزینه 4"
+                                                type="text"
+                                            />
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                    <div class="zo-add text-end" v-if="course.quiz.has_quiz">
+                        <v-btn icon="mdi-plus"
+                               width="25"
+                               height="25"
+                               color="primary"
+                               @click="addFinalQuizQuestions"
+                        >
+                        </v-btn>
+                    </div>
+                </v-card>
+            </v-col>
+            <v-col class="v-col-12 v-col-lg-3">
+                <v-card class="pa-3 mb-3 elevation-2  position-sticky top-0">
+                    <v-select
+                        v-model="course.must_complete_quizzes"
+                        hide-details
+                        :items="[
+                            { title: 'خیر', value: 0 },
+                            { title: 'بله', value: 1 }
+                          ]"
+                        label="ضروری بودن آزمون ها"
+                        outlined
+                        class="mb-3"
+                        variant="outlined"
+                        density="comfortable"
                     />
-                </div>
-                <div class="time-display">
-                    {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
-                </div>
-            </div>
-        </div>
-    </div>
+                    <v-select
+                        v-model="course.status"
+                        hide-details
+                        :items="status"
+                        label="وضعیت"
+                        outlined
+                        class="mb-3"
+                        variant="outlined"
+                        density="comfortable"
+                    />
+                    <ThumbnailUploader
+                        v-model:model-value="course.thumbnail_id"
+                        upload-route="admin.upload.courses.image"
+                        title="آپلود تصویر شاخص دوره"
+                        label="تصویر شاخص دوره را اینجا رها کنید"
+                        accept="image/*"
+                    />
+                    <v-btn block
+                           size="large"
+                           color="primary"
+                           type="submit"
+                           :loading="isLoading"
+                           :disabled="isLoading"
+                           @click="submitForm"
+                           class="mt-3"
+                    >
+                        ذخیره دوره
+                    </v-btn>
+                </v-card>
+            </v-col>
+        </v-row>
+    </AdminLayout>
 </template>
 
 <script setup>
-import {useFullscreen, useMediaControls} from '@vueuse/core'
-import {ref, onMounted, computed, onBeforeUnmount} from 'vue'
+import {nextTick, reactive, ref, useTemplateRef, watch} from 'vue';
+import Editor from '@tinymce/tinymce-vue'
+import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import {router} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+import SearchableSelect from "@/Components/SearchableSelect.vue";
+import {useSortable} from "@vueuse/integrations/useSortable";
+import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
 
-const video = ref(null)
-const isBuffering = ref(false)
-const videoSrc = 'https://dl.enghelab.ir/uploads/videos/test.mp4'
-
-const {
-    playing,
-    currentTime,
-    duration,
-    volume,
-    buffered,
-    rate
-} = useMediaControls(video, {
-    src: videoSrc,
+const props = defineProps({
+    categories: Object,
+    teachers: Object,
+    status: Object,
+    courses: Object,
+    video_upload_slug: String,
 })
-const videoContainer = ref(null) // کانتینر کل پلیر
-
-const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(videoContainer)
-const speeds = [1, 1.5, 2, 3]
-const bufferedRanges = computed(() => {
-    if (!buffered.value || !buffered.value.length || duration.value === 0) return []
-
-    return buffered.value.map(range => ({
-        left: (range.start / duration.value) * 100,
-        width: ((range.end - range.start) / duration.value) * 100
-    }))
-})
-
-// Calculate progress percentage
-const progressPercentage = computed(() => {
-    return duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0
-})
-
-// Calculate buffered style
-const bufferedStyle = computed(() => {
-    if (!video.value || !buffered.value || buffered.value.length === 0) return 'width: 0%'
-
-    // Get the last buffered range (most likely the one we're currently playing)
-    const lastRange = buffered.value.length - 1
-    const bufferedEnd = buffered.value.end(lastRange)
-    const bufferedPercent = (bufferedEnd / duration.value) * 100
-
-    return `width: ${bufferedPercent}%`
-})
-
-// Format time (MM:SS)
-const formatTime = (time) => {
-    const minutes = Math.floor(time / 60)
-    const seconds = Math.floor(time % 60)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-}
-
-// Handle seeking
-const onSeek = (e) => {
-    if (video.value) {
-        video.value.currentTime = parseFloat(e.target.value)
+const isLoading = ref(false);
+const categories = ref(props.categories);
+const teachers = ref(props.teachers);
+const status = ref(props.status);
+const courses = ref(props.courses);
+const video_upload_slug = ref(props.video_upload_slug);
+const courseRequirements = courses;
+const showVideo = (slug) => {
+    if (slug) {
+        window.open(`${video_upload_slug.value}${slug}`, '_blank');
     }
 }
-
-// Handle click on progress bar
-const onProgressBarClick = (e) => {
-    const progressBar = e.currentTarget
-    const clickPosition = (e.clientX - progressBar.getBoundingClientRect().left) / progressBar.offsetWidth
-    const newTime = clickPosition * duration.value
-    currentTime.value = newTime
-    if (video.value) {
-        video.value.currentTime = newTime
+/*************************Course*************************/
+const course = reactive({
+    title: '',
+    slug: '',
+    category: null,
+    teacher: null,
+    description: '',
+    requirements: [],
+    must_complete_quizzes: null,
+    status: 'pending',
+    thumbnail_id: null,
+    seasons: [
+        {
+            id: crypto.randomUUID(),
+            title: '',
+            description: '',
+            is_active: true,
+            lessons: [
+                {
+                    id: crypto.randomUUID(),
+                    title: '',
+                    description: '',
+                    duration: null,
+                    video_url: '',
+                    poster_id: null,
+                    is_active: true,
+                    has_quiz: false,
+                    quiz: {
+                        id: crypto.randomUUID(),
+                        title: '',
+                        description: '',
+                        is_active: true,
+                        questions: [
+                            {
+                                id: crypto.randomUUID(),
+                                text: '',
+                                is_active: true,
+                                option1: {text: '', is_correct: false},
+                                option2: {text: '', is_correct: false},
+                                option3: {text: '', is_correct: false},
+                                option4: {text: '', is_correct: false},
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    quiz: {
+        id: crypto.randomUUID(),
+        has_quiz: false,
+        title: '',
+        description: '',
+        is_active: true,
+        questions: [
+            {
+                id: crypto.randomUUID(),
+                text: '',
+                is_active: true,
+                option1: {text: '', is_correct: false},
+                option2: {text: '', is_correct: false},
+                option3: {text: '', is_correct: false},
+                option4: {text: '', is_correct: false},
+            }
+        ]
     }
-    isBuffering.value = true
-}
+});
 
-const seekStep = 10 // مقدار جا‌به‌جایی ثانیه‌ها
+/********************************Seasons********************************/
 
-const handleKey = (e) => {
-    if (!video.value) return
 
-    switch (e.key) {
-        case ' ': // Space
-            e.preventDefault()
-            playing.value = !playing.value
-            break
+const seasonsContainer = useTemplateRef('seasonsContainer')
 
-        case 'ArrowLeft':
-            video.value.currentTime = Math.max(0, video.value.currentTime - seekStep)
-            break
-
-        case 'ArrowRight':
-            video.value.currentTime = Math.min(duration.value, video.value.currentTime + seekStep)
-            break
-
-        case 'ArrowUp':
-            volume.value = Math.min(1, volume.value + 0.05)
-            break
-
-        case 'ArrowDown':
-            volume.value = Math.max(0, volume.value - 0.05)
-            break
-    }
-}
-
-const skip = (seconds) => {
-    if (!video.value) return
-    video.value.currentTime = Math.min(
-        Math.max(0, video.value.currentTime + seconds),
-        duration.value
-    )
-}
-
-// Set initial volume and start time
-onMounted(() => {
-    volume.value = 1
-    currentTime.value = 0
-    window.addEventListener('keydown', handleKey)
+useSortable(seasonsContainer, course.seasons, {
+    animation: 150,
+    handle: '.season-drag-handle',
 })
 
+function addSeason() {
+    course.seasons.push({
+        id: crypto.randomUUID(),
+        title: '',
+        description: '',
+        is_active: true,
+        lessons: [{
+            id: crypto.randomUUID(),
+            title: '',
+            description: '',
+            duration: null,
+            video_url: '',
+            poster_id: null,
+            is_active: true,
+            has_quiz: false,
+            quiz: {
+                id: crypto.randomUUID(),
+                title: '',
+                description: '',
+                is_active: true,
+                questions: [
+                    {
+                        id: crypto.randomUUID(),
+                        text: '',
+                        is_active: true,
+                        option1: {text: '', is_correct: false},
+                        option2: {text: '', is_correct: false},
+                        option3: {text: '', is_correct: false},
+                        option4: {text: '', is_correct: false},
+                    }
+                ]
+            }
+        }]
+    });
+}
 
-onBeforeUnmount(() => {
-    window.removeEventListener('keydown', handleKey)
+function removeSeason(index) {
+    course.seasons.splice(index, 1);
+}
+
+/********************************Lessons********************************/
+const lessonsContainers = ref([])
+watch(
+    () => course.seasons.map(s => s.lessons.length),
+    () => {
+        nextTick(() => {
+            lessonsContainers.value.forEach((container, index) => {
+                if (!container) return
+                useSortable(container, course.seasons[index].lessons, {
+                    animation: 150,
+                    handle: '.lesson-drag-handle',
+                })
+            })
+        })
+    },
+    {deep: true}
+)
+
+function addLesson(sIndex) {
+    course.seasons[sIndex].lessons.push({
+        id: crypto.randomUUID(),
+        title: '',
+        description: '',
+        duration: null,
+        video_url: '',
+        is_active: true,
+        has_quiz: false,
+        quiz: {
+            questions: [
+                {
+                    id: crypto.randomUUID(),
+                    text: '',
+                    is_active: true,
+                    option1: {text: '', is_correct: false},
+                    option2: {text: '', is_correct: false},
+                    option3: {text: '', is_correct: false},
+                    option4: {text: '', is_correct: false},
+                }
+            ]
+        },
+    });
+}
+
+function removeLesson(sIndex, lIndex) {
+    course.seasons[sIndex].lessons.splice(lIndex, 1);
+}
+
+/********************************questions********************************/
+const questionsContainers = ref([])
+watch(
+    // تابعی که وابستگی‌ها رو برمی‌گردونه: طول سوال ‌های هر درس در هر فصل
+    () => course.seasons.map(s => s.lessons.map(l => l.quiz?.questions?.length ?? 0)),
+    () => {
+        nextTick(() => {
+            // برای هر فصل
+            questionsContainers.value.forEach((seasonArr, sIndex) => {
+                if (!seasonArr || !course.seasons[sIndex]) return;
+                // برای هر درس در آن فصل
+                seasonArr.forEach((containerComponent, lIndex) => {
+                    const lesson = course.seasons[sIndex].lessons[lIndex];
+                    if (!containerComponent || !lesson || !lesson.quiz || !lesson.quiz.questions) return;
+                    // containerComponent ممکن است یک کامپوننت Vuetify باشه؛ useSortable روی خود المان ریشهٔ DOM آن کار می‌کند.
+                    // اگر containerComponent.$el وجود داشت از آن استفاده کن؛ در غیر اینصورت خود containerComponent را پاس کن.
+                    const targetEl = containerComponent?.$el ?? containerComponent;
+                    try {
+                        useSortable(targetEl, lesson.quiz.questions, {
+                            handle: '.question-drag-handle',
+                            animation: 150,
+                        });
+                    } catch (e) {
+                        // اگر قبلاً sortable ست شده بود ممکنه خطا بده — ایمن نادیده می‌گیریم
+                        // console.warn('useSortable question init failed', e)
+                    }
+                })
+            })
+        })
+    },
+    {deep: true}
+)
+
+function addQuestion(sIndex, lIndex) {
+    course.seasons[sIndex].lessons[lIndex].quiz.questions.push({
+        id: crypto.randomUUID(),
+        text: '',
+        is_active: true,
+        option1: {text: '', is_correct: false},
+        option2: {text: '', is_correct: false},
+        option3: {text: '', is_correct: false},
+        option4: {text: '', is_correct: false},
+    });
+}
+
+function selectCorrectOption(question, optionKey) {
+    question.option1.is_correct = false;
+    question.option2.is_correct = false;
+    question.option3.is_correct = false;
+    question.option4.is_correct = false;
+
+    question[optionKey].is_correct = true;
+}
+
+function removeQuestion(sIndex, lIndex, quIndex) {
+    console.log(sIndex, lIndex, quIndex)
+    console.log(course.seasons[sIndex].lessons[lIndex].quiz)
+    course.seasons[sIndex].lessons[lIndex].quiz.questions.splice(quIndex, 1);
+}
+
+/********************************final quiz********************************/
+const finalQuizContainers = useTemplateRef('finalQuizContainers')
+
+useSortable(finalQuizContainers, course.quiz.questions, {
+    animation: 150,
+    handle: '.final-quiz-drag-handle',
 })
+
+function addFinalQuizQuestions() {
+    console.log(course.quiz.questions)
+    course.quiz.questions.push({
+        id: crypto.randomUUID(),
+        text: '',
+        is_active: true,
+        option1: {text: '', is_correct: false},
+        option2: {text: '', is_correct: false},
+        option3: {text: '', is_correct: false},
+        option4: {text: '', is_correct: false},
+    });
+}
+
+function removeFinalQuizQuestions(index) {
+    course.quiz.questions.splice(index, 1);
+}
+
+function submitForm() {
+    router.post(route('admin.courses.store'), course, {
+        preserveScroll: true,
+        onStart: () => {
+            isLoading.value = true
+        },
+        onSuccess: () => {
+
+        },
+        onFinish: () => {
+            isLoading.value = false
+        }
+    })
+}
 </script>
-
 <style scoped>
-.video-container {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    background: #000;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.video-player {
-    width: 100%;
-    display: block;
-    cursor: pointer;
-    aspect-ratio: 16 / 9; /* Maintain aspect ratio */
-}
-
-.loading-overlay {
+.zo-close {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 10;
-}
-
-.video-controls {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    gap: 10px;
-    position: relative;
+    top: -10px;
+    right: -10px;
     z-index: 2;
 }
 
-.control-btn {
-    background: none;
-    border: none;
-    color: white;
+.zo-close button {
+    font-size: .75rem;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
+}
+
+.zo-actions {
+    position: absolute;
+    top: 12.5px;
+    left: 55px;
+    z-index: 15
+}
+
+.zo-actions .zo-switch .v-input {
+    height: 30px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    z-index: 3;
+    align-items: center
 }
 
-.control-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+.zo-option {
+    position: relative
 }
 
-.progress-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.zo-option .v-radio {
+    position: absolute;
+    top: 2.5px;
+    left: 5px;
+    background: rgb(255, 255, 255);
+    z-index: 15
 }
 
-.progress-bar {
-    position: relative;
+.thumbnail-badge {
     width: 100%;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 2px;
+}
+
+.thumbnail-badge :deep(.v-badge__badge) {
     cursor: pointer;
-    overflow: hidden;
-}
-
-.progress-buffered {
-    position: absolute;
     top: 0;
-    left: 0;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-    pointer-events: none;
-    transition: width 0.2s ease;
+    right: -1px !important;
 }
 
-.progress-played {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: #4CAF50;
-    border-radius: 2px;
-    pointer-events: none;
-    transition: width 0.1s linear;
-    z-index: 2;
+.thumbnail-badge :deep(.v-badge__badge .delete-btn) {
+    width: 24px;
+    height: 24px;
 }
 
-/* ✅ دایره‌ی سر نوار */
-.progress-thumb {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    height: 14px;
-    background: #fff;
-    border: 0px solid #4CAF50;
-    border-radius: 50%;
-    z-index: 5;
-    pointer-events: none;
-    transition: transform 0.1s ease;
-}
-
-.progress-bar:hover .progress-thumb {
-    transform: translate(-50%, -50%) scale(1.1);
-}
-
-.progress-slider {
-    position: relative;
+.thumbnail-badge :deep(.v-badge__badge .v-btn) {
     width: 100%;
     height: 100%;
-    margin: 0;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 3;
-}
-
-.progress-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #fff;
-    cursor: pointer;
-    position: relative;
-    z-index: 4;
-}
-
-.progress-slider::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #fff;
-    cursor: pointer;
-    border: none;
-    position: relative;
-    z-index: 4;
-}
-
-.time-display {
-    color: white;
-    font-size: 0.8rem;
-    opacity: 0.8;
-    white-space: nowrap;
-}
-
-.volume-control {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 120px;
-}
-
-.volume-slider {
-    width: 80px;
-    cursor: pointer;
-}
-
-.speed-menu {
-    min-width: 90px;
-    background: rgba(30, 30, 30, 0.95);
-    backdrop-filter: blur(6px);
-}
-
-.speed-item {
-    color: #eee;
-    cursor: pointer;
-}
-
-.speed-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.speed-item.active {
-    background: #4CAF50 !important;
-    color: white !important;
-    font-weight: bold;
-}
-.overlay-play {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 20;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.35);
-    padding: 40px;
-    border-radius: 50%;
-    transition: 0.25s ease;
-}
-
-.overlay-play:hover {
-    background: rgba(0,0,0,0.55);
 }
 </style>

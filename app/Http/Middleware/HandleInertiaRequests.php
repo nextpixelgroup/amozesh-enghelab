@@ -100,7 +100,7 @@ class HandleInertiaRequests extends Middleware
                 [
                     'title' => 'پیام ها',
                     'icon' => 'mdi-message-text-fast',
-                    'route' => 'admin.supports.index'
+                    'route' => 'admin.tickets.index'
                 ],
                 [
                     'title' => 'تنظیمات',

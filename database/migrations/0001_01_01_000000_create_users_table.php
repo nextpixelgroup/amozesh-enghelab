@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('company')->nullable(); // سازمان یا شرکت محل فعالیت
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->foreignId('avatar_id')->nullable()->constrained('media');
             $table->rememberToken();
             $table->timestamps();
         });

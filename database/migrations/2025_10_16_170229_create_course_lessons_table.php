@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->foreignId('video_id')->constrained('media')->nullable();
-            $table->foreignId('poster_id')->constrained('media')->nullable();
+            $table->foreignId('poster_id')->nullable()->constrained('media');
             $table->integer('duration')->default(0);
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);

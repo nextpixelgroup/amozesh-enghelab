@@ -45,6 +45,7 @@ Route::name('web.')->group(function () {
 
     Route::get('/cart', [PaymentController::class, 'cart'])->name('payment.cart');
     Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
+    Route::get('/pay', [PaymentController::class, 'pay'])->name('payment.pay');
     Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('payment.thankYou');
 
 

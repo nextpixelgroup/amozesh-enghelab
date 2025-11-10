@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Quiz extends Model
 {
     protected $fillable = [
-        'lesson_id', 'title', 'description', 'time_limit', 'is_active'
+        'course_id', 'lesson_id', 'title', 'description', 'time_limit', 'is_active'
     ];
 
     protected $casts = [
@@ -24,10 +24,10 @@ class Quiz extends Model
         return $this->hasMany(Question::class);
     }
 
-    public function userAttempts()
+    /*public function userAttempts()
     {
         return $this->hasMany(QuizAttempt::class);
-    }
+    }*/
 
     public function getMaxScoreAttribute()
     {

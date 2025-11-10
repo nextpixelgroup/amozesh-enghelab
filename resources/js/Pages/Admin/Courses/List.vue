@@ -68,7 +68,7 @@
             <v-table density="compact">
                 <thead>
                 <tr>
-                    <th class="text-center">ردیف</th>
+                    <th class="text-center">شناسه</th>
                     <th class="text-center">تصویر</th>
                     <th class="text-right">عنوان</th>
                     <th class="text-center">مدرس</th>
@@ -80,12 +80,12 @@
                 </thead>
                 <tbody>
                 <tr
-                    v-for="item in books"
-                    :key="item.name"
+                    v-for="item in courses"
+                    :key="item.id"
                 >
-                    <td class="text-center">{{ item.row }}</td>
+                    <td class="text-center">{{ item.id }}</td>
                     <td class="text-center">
-                        <img :src="item.image" :alt="item.title" width="90" height="90">
+                        <img :src="item.thumbnail.url" :alt="item.title" width="90" height="90">
                     </td>
                     <td>
                         <strong class="d-block">{{ item.title }}</strong>
@@ -95,13 +95,13 @@
                         <div class="d-flex align-items-center ga-3">
                             <v-avatar>
                                 <v-img
-                                    :alt="item.prof"
+                                    :alt="item.title"
                                     :src="item.avatar"
                                 ></v-img>
                             </v-avatar>
                             <div>
-                                <strong class="d-block">{{ item.prof }}</strong>
-                                <small>{{ item.degree }}</small>
+                                <strong class="d-block">{{ item.teacher?.fullname }}</strong>
+                                <small>{{ item.teacher?.degree }}</small>
                             </div>
                         </div>
                     </td>
@@ -109,16 +109,16 @@
                         <span :class="'zo-status zo-'+item.status.value">{{ item.status.title }}</span>
                     </td>
                     <td class="text-center">
-                        {{ item.users }}
+                        {{ item.member }}
                     </td>
                     <td>
-                        <span class="d-block">{{ item.date }}</span>
-                        <small>{{ item.time }}</small>
+                        <span class="d-block">{{ item.published_at.title.split(' ')[0] }}</span>
+                        <small>{{ item.published_at.title.split(' ')[1] }}</small>
                     </td>
                     <td>
                         <div class="d-flex ga-1">
-                            <v-btn icon="mdi-eye" size="small" color="primary"></v-btn>
-                            <v-btn icon="mdi-pencil" size="small" color="secondary"></v-btn>
+                            <Link :href="route('admin.courses.edit',item.id)"><v-btn icon="mdi-pencil" size="small" color="primary"></v-btn></Link>
+                            <a :href="route('web.courses.show',item.id)" target="_blank"><v-btn icon="mdi-eye" size="small" color="info"></v-btn></a>
                         </div>
                     </td>
                 </tr>
@@ -134,81 +134,9 @@ import {ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
 
-const books = ref([
-    {
-        "id": "1",
-        "row": "1",
-        "image": '/assets/img/books/1.webp',
-        "title": "دوره مدیریت فرهنگی جبهه انقلاب",
-        "subtitle": "تبیین منظومه فکری امامین انقلاب در باب فرهنگ",
-        "prof": "دکتر حمید بصیرت منش",
-        "degree": "دکترا فقه و حقوق",
-        "avatar": "/assets/img/prof/2.jpg",
-        "status": "archive",
-        "status_name": "آرشیو",
-        "users": "312",
-        "date": "1404/07/19",
-        "time": "9:42 ب.ظ",
-    },
-    {
-        "id": "2",
-        "row": "2",
-        "image": '/assets/img/books/2.webp',
-        "title": "دوره تحلیل تاریخ معاصر ایران",
-        "subtitle": "نقش استعمار و تجدد در تحولات معاصر ایران",
-        "prof": "دکتر سیدمحمود سادات",
-        "degree": "دکترا علوم اجتماعی",
-        "avatar": "/assets/img/prof/3.jpg",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "users": "93",
-        "date": "1404/09/23",
-        "time": "5:35 ب.ظ",
-    },
-    {
-        "id": "3",
-        "row": "3",
-        "image": '/assets/img/books/3.webp',
-        "title": "دوره تاریخ دفاع مقدس",
-        "subtitle": "تاریخ‌نگاری جنگ ایران و عراق؛ رویکردها و چالش‌ها",
-        "prof": "دکتر محسن سراج",
-        "degree": "دکترا تاریخ معاصر",
-        "avatar": "/assets/img/prof/4.jpg",
-        "status": "draft",
-        "status_name": "پیش نویس",
-        "users": "178",
-        "date": "1404/03/14",
-        "time": "5:35 ب.ظ",
-    },
-    {
-        "id": "4",
-        "row": "4",
-        "image": '/assets/img/books/4.webp',
-        "title": "دوره اندیشه شهید مطهری",
-        "subtitle": "نسبت عقل، دین و تجربه در آثار مطهری",
-        "prof": "دکتر مریم تجار",
-        "degree": "دکترا رسانه و ارتباطات",
-        "avatar": "/assets/img/prof/7.jpg",
-        "status": "draft",
-        "status_name": "پیش نویس",
-        "users": "149",
-        "date": "1404/02/05",
-        "time": "4:25 ب.ظ",
-    },
-    {
-        "id": "5",
-        "row": "5",
-        "image": '/assets/img/books/6.webp',
-        "title": "دوره آموزشی راهبردهای محتوایی راهیان نور",
-        "subtitle": "نقش محتوا در تبیین ارزش‌های دفاع مقدس",
-        "prof": "هادی بابائی فلاح",
-        "degree": "دکترا تاریخ انقلاب",
-        "avatar": "/assets/img/prof/2.jpg",
-        "status": "publish",
-        "status_name": "منتشر شده",
-        "users": "179",
-        "date": "1404/10/16",
-        "time": "6:10 ب.ظ",
-    },
-])
+const props = defineProps({
+    courses: Object
+})
+const courses = props.courses.data;
+console.log(courses)
 </script>
