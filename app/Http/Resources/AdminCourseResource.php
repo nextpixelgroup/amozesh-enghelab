@@ -30,7 +30,7 @@ class AdminCourseResource extends JsonResource
             'teacher'   => [
                 'firstname' => $this->teacher?->firstname,
                 'lastname'  => $this->teacher?->lastname,
-                'fullname'  => $this->teacher?->lastname.' '.$this->teacher?->firstname,
+                'fullname'  => $this->teacher?->firstname.' '.$this->teacher?->lastname,
                 'degree'    => $this->teacher?->teacherDetails?->degree,
                 'academic_title' => $this->teacher?->teacherDetails?->academic_title,
                 'teaching' => $this->teacher?->teacherDetails?->teaching,

@@ -19,30 +19,28 @@ use Verta;
 
 class CourseController extends Controller
 {
-    /**
-     * Make sure the generated slug is unique
-     *
-     * @param string $slug
-     * @param int $count
-     * @return string
-     */
-    private function makeSlugUnique(string $slug, int $count = 0): string
-    {
-        $newSlug = $count === 0 ? $slug : $slug . '-' . $count;
 
-        if (Course::where('slug', $newSlug)->exists()) {
-            return $this->makeSlugUnique($slug, $count + 1);
+    public function index(Request $request)
+    {
+
+        $query = Course::with(['teacher' => function($query) {$query->with('teacherDetails');}]);
+        if($request->filled('status')){
+            $query->where('status', $request->status);
         }
-
-        return $newSlug;
-    }
-    public function index()
-    {
-        $query = Course::with(['teacher' => function($query) {
-            $query->with('teacherDetails');
-        }])->orderBy('id', 'desc')->paginate(config('app.per_page'));
-        $courses = AdminCourseResource::collection($query);
-        return Inertia::render('Admin/Courses/List', compact('courses'));
+        if($request->filled('teacher')){
+            $query->where('teacher_id', $request->teacher);
+        }
+        $courses = AdminCourseResource::collection($query->orderBy('id', 'desc')->paginate(config('app.per_page')));
+        $status = enumFormated(CourseStatusEnum::cases());
+        $teachers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'teacher');
+        })->get()->map(function ($teacher) {
+            return [
+                'title' => $teacher->firstname.' '.$teacher->lastname,
+                'value' => (string)$teacher->id,
+            ];
+        });
+        return Inertia::render('Admin/Courses/List', compact('courses', 'status', 'teachers'));
     }
 
     public function create()
@@ -101,12 +99,13 @@ class CourseController extends Controller
 
     private function storeCourse($request)
     {
-        $slug = $request->slug ?? $request->title;
+        $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
+        $slug = makeSlugUnique($slug, Category::class);
 
         $course = Course::create([
             'user_id'      => auth()->user()->id,
             'title'        => $request->title,
-            'slug'         => $this->makeSlugUnique($slug),
+            'slug'         => $slug,
             'description'  => $request->description,
             'thumbnail_id' => $request->thumbnail_id,
             'teacher_id'   => $request->teacher,
