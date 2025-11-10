@@ -42,7 +42,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('/courses/store', [CourseController::class, 'store'])->name('courses.store');
-    Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
     Route::get('/courses/search', [CourseController::class, 'search'])->name('courses.a');
     Route::put('/courses/{path}/update', [CourseController::class, 'update'])->name('courses.update');
 

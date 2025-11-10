@@ -1,5 +1,6 @@
 <!-- resources/js/Layouts/WebLayout.vue -->
 <script setup>
+import '@/../css/web.css';
 import {Link} from '@inertiajs/vue3'
 import {ref} from 'vue'
 

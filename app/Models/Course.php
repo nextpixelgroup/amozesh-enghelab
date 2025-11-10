@@ -79,9 +79,9 @@ class Course extends Model
     }
 
 
-    public function quizzes()
+    public function quiz()
     {
-        return $this->morphMany(Quiz::class, 'quizzable');
+        return $this->hasOne(Quiz::class);
     }
 
     public function requirements()

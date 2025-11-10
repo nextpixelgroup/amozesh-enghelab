@@ -31,6 +31,16 @@ class CourseLesson extends Model
         return $this->season->course();
     }
 
+    public function video()
+    {
+        return $this->belongsTo(Media::class, 'video_id');
+    }
+
+    public function poster()
+    {
+        return $this->belongsTo(Media::class, 'poster_id');
+    }
+
     public function getIsUnlockedAttribute()
     {
         // Check if previous lessons are completed

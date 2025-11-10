@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\CourseStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CourseCreateRequest;
+use App\Http\Resources\AdminCourseDetailsResource;
 use App\Http\Resources\AdminCourseResource;
 use App\Models\Category;
 use App\Models\Course;
@@ -19,30 +20,45 @@ use Verta;
 
 class CourseController extends Controller
 {
-    /**
-     * Make sure the generated slug is unique
-     *
-     * @param string $slug
-     * @param int $count
-     * @return string
-     */
-    private function makeSlugUnique(string $slug, int $count = 0): string
-    {
-        $newSlug = $count === 0 ? $slug : $slug . '-' . $count;
 
-        if (Course::where('slug', $newSlug)->exists()) {
-            return $this->makeSlugUnique($slug, $count + 1);
+    public function index(Request $request)
+    {
+
+        $query = Course::with(['teacher' => function($query) {$query->with('teacherDetails');}]);
+        if($request->filled('status')){
+            $query->where('status', $request->status);
         }
-
-        return $newSlug;
-    }
-    public function index()
-    {
-        $query = Course::with(['teacher' => function($query) {
-            $query->with('teacherDetails');
-        }])->orderBy('id', 'desc')->paginate(config('app.per_page'));
-        $courses = AdminCourseResource::collection($query);
-        return Inertia::render('Admin/Courses/List', compact('courses'));
+        if($request->filled('teacher')){
+            $query->where('teacher_id', $request->teacher);
+        }
+        if($request->filled('category')){
+            $query->whereHas('categories', function ($query) use($request) {
+                $query->where('id', $request->category);
+            });
+        }
+        if($request->filled('search')){
+            $query->where(function ($query) use ($request) {
+                $query->where('title', 'like', "%{$request->search}%");
+                    //->orWhere('description', 'like', "%{$request->search}%");
+            });
+        }
+        $courses = AdminCourseResource::collection($query->orderBy('id', 'desc')->paginate(config('app.per_page')));
+        $status = enumFormated(CourseStatusEnum::cases());
+        $teachers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'teacher');
+        })->get()->map(function ($teacher) {
+            return [
+                'title' => $teacher->firstname.' '.$teacher->lastname,
+                'value' => (string)$teacher->id,
+            ];
+        });
+        $categories = Category::where('type', 'course')->get()->map(function ($category) {
+            return [
+                'title' => $category->title,
+                'value' => (String)$category->id,
+            ];
+        });
+        return Inertia::render('Admin/Courses/List', compact('courses', 'status', 'teachers', 'categories'));
     }
 
     public function create()
@@ -69,7 +85,9 @@ class CourseController extends Controller
 
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processSeasons($course, $request->seasons);
-                $this->finalQuiz($course, $request->quiz);
+                if(isset($course->quiz['has_quiz']) && $course->quiz['has_quiz'] == true) {
+                    $this->finalQuiz($course, $request->quiz);
+                }
 
                 return redirectMessage('success', 'دوره با موفقیت ایجاد شد.',redirect: route('admin.courses.edit',$course->id));
             }
@@ -79,9 +97,20 @@ class CourseController extends Controller
         });
     }
 
-    public function edit()
+    public function edit(Course $course)
     {
-        return inertia()->render('Admin/Courses/Edit');
+        $categories = Category::where('type', 'course')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
+        $teachers = User::query()
+            ->whereHas('roles', function($query) {
+                $query->where('name', 'teacher');
+            })
+            ->with('roles')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->firstname . ' ' . $item->lastname]);
+        $status = enumFormated(CourseStatusEnum::cases());
+        $courses = Course::query()->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
+
+        $video_upload_slug = video_upload_path();
+        $course = new AdminCourseDetailsResource($course);
+        return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug', 'course'));
     }
 
     public function search()
@@ -101,12 +130,13 @@ class CourseController extends Controller
 
     private function storeCourse($request)
     {
-        $slug = $request->slug ?? $request->title;
+        $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
+        $slug = makeSlugUnique($slug, Course::class);
 
         $course = Course::create([
             'user_id'      => auth()->user()->id,
             'title'        => $request->title,
-            'slug'         => $this->makeSlugUnique($slug),
+            'slug'         => $slug,
             'description'  => $request->description,
             'thumbnail_id' => $request->thumbnail_id,
             'teacher_id'   => $request->teacher,
