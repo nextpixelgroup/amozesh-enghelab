@@ -11,7 +11,7 @@ const isMenuOpen = ref(false)
         <header>
             <div class="zo-header-section">
                 <v-container>
-                    <v-row dense class="align-center">
+                    <v-row class="align-center">
                         <v-col class="v-col-lg-3 v-col-12">
                             <a href="#">
                                 <img src="assets/img/site/logo-header.svg" alt="" class="img-fluid">
@@ -46,9 +46,9 @@ const isMenuOpen = ref(false)
 
         <footer>
             <div class="zo-footer-section">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-5 col-12">
+                <v-container>
+                    <v-row>
+                        <v-col class="v-col-lg-5 v-col-12">
                             <div class="zo-about">
                                 <img src="assets/img/site/logo-footer.svg" alt="" class="img-fluid">
                                 <p>
@@ -56,8 +56,8 @@ const isMenuOpen = ref(false)
                                     برنامه‌ها و دوره‌های برگزار شده در این مجموعه است در این قسمت قرار می‌گیرد.
                                 </p>
                             </div>
-                        </div>
-                        <div class="col-lg-5 col-12">
+                        </v-col>
+                        <v-col class="v-col-lg-5 v-col-12">
                             <div class="zo-menus">
                                 <div class="zo-menu">
                                     <span>دوره‌ها و فروشگاه</span>
@@ -84,8 +84,8 @@ const isMenuOpen = ref(false)
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-2 col-12">
+                        </v-col>
+                        <v-col class="v-col-lg-2 v-col-12">
                             <div class="zo-social">
                                 <ul>
                                     <li>
@@ -100,9 +100,9 @@ const isMenuOpen = ref(false)
                                     </li>
                                 </ul>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </v-col>
+                    </v-row>
+                </v-container>
             </div>
             <div class="zo-copyright-section">
                 تمامی حقوق برای خانه انقلاب اسلامی محفوظ می‌باشد. ۱۴۰۴
