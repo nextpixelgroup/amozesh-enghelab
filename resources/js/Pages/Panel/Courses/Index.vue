@@ -1,8 +1,5 @@
 <template>
-    <PanelLayout>
-        aaa
-    </PanelLayout>
+    aaa
 </template>
 <script setup lang="ts">
-import PanelLayout from "@/Layouts/PanelLayout.vue";
 </script>

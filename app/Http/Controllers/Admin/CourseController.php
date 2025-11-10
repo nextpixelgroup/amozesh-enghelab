@@ -96,7 +96,17 @@ class CourseController extends Controller
 
     public function edit()
     {
-        return inertia()->render('Admin/Courses/Edit');
+        $categories = Category::where('type', 'course')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
+        $teachers = User::query()
+            ->whereHas('roles', function($query) {
+                $query->where('name', 'teacher');
+            })
+            ->with('roles')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->firstname . ' ' . $item->lastname]);
+        $status = enumFormated(CourseStatusEnum::cases());
+        $courses = Course::query()->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
+
+        $video_upload_slug = video_upload_path();
+        return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug'));
     }
 
     public function search()
