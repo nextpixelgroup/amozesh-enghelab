@@ -113,21 +113,6 @@ class CourseController extends Controller
         return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug', 'course'));
     }
 
-    public function search()
-    {
-        $query = [
-            [
-                'id' => 1,
-                'title' => 'تست',
-            ],
-            [
-                'id' => 2,
-                'title' => 'تست دو',
-            ]
-        ];
-        return $query;
-    }
-
     private function storeCourse($request)
     {
         $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);

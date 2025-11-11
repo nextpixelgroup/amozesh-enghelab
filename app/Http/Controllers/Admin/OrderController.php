@@ -12,4 +12,9 @@ class OrderController extends Controller
     {
         return Inertia::render('Admin/Orders/List');
     }
+
+    public function edit()
+    {
+        return Inertia::render('Admin/Orders/Edit');
+    }
 }

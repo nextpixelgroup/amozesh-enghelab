@@ -43,7 +43,6 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
         Route::post('/courses/store', [CourseController::class, 'store'])->name('courses.store');
         Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
-        Route::get('/courses/search', [CourseController::class, 'search'])->name('courses.a');
         Route::put('/courses/{path}/update', [CourseController::class, 'update'])->name('courses.update');
 
         Route::get('/courses/categories', [CourseCategoryController::class, 'index'])->name('courses.categories.index');
@@ -58,6 +57,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
         /********* Orders *********/
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
 
         /********* Users *********/
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
