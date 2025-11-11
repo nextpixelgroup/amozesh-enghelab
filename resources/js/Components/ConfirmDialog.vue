@@ -1,13 +1,36 @@
 <template>
-    <v-dialog v-model="visible" persistent max-width="400">
-        <v-card>
-            <v-card-title class="text-h6">{{ title }}</v-card-title>
-            <v-card-text>
+    <v-dialog v-model="visible" persistent max-width="420">
+        <v-card class="pa-4 rounded-lg elevation-6">
+            <v-card-title class="text-h6 font-weight-bold pb-2 d-flex justify-center">
+                {{ title }}
+            </v-card-title>
+
+            <v-divider class="mb-4"></v-divider>
+
+            <v-card-text class="text-body-2 text-center text-grey-darken-2 px-6">
                 {{ message }}
             </v-card-text>
-            <v-card-actions class="justify-center">
-                <v-btn color="grey" variant="text" @click="cancel">لغو</v-btn>
-                <v-btn :color="confirmColor" variant="flat" @click="confirm">تأیید</v-btn>
+
+            <v-card-actions class="mt-4 d-flex justify-center gap-3">
+                <v-btn
+                    color="grey-darken-1"
+                    variant="outlined"
+                    rounded="lg"
+                    class="px-6"
+                    @click="cancel"
+                >
+                    لغو
+                </v-btn>
+
+                <v-btn
+                    :color="confirmColor"
+                    variant="flat"
+                    rounded="lg"
+                    class="px-6 text-white"
+                    @click="confirm"
+                >
+                    تأیید
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -44,6 +67,5 @@ function cancel() {
     resolver?.(false)
 }
 
-// برای استفاده global export می‌کنیم
 defineExpose({open})
 </script>

@@ -1,12 +1,3 @@
-<!-- resources/js/Layouts/WebLayout.vue -->
-<script setup>
-import '@/../css/web.css';
-import {Link} from '@inertiajs/vue3'
-import {ref} from 'vue'
-
-const isMenuOpen = ref(false)
-</script>
-
 <template>
     <div>
         <header>
@@ -111,7 +102,11 @@ const isMenuOpen = ref(false)
         </footer>
     </div>
 </template>
+<script setup>
+import '@/../css/web.css';
+import {Link} from '@inertiajs/vue3'
+import {ref} from 'vue'
 
-<style scoped>
-/* Add any custom styles here */
-</style>
+const isMenuOpen = ref(false)
+</script>
+

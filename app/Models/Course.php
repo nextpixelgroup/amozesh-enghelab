@@ -18,6 +18,11 @@ class Course extends Model
         'must_complete_quizzes' => 'boolean',
     ];
 
+    public function paths()
+    {
+        return $this->belongsToMany(Path::class, 'path_items', 'course_id', 'path_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -53,10 +53,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
         /********* Paths *********/
         Route::get('/paths', [PathController::class, 'index'])->name('paths.index');
-        Route::get('/paths/create', [PathController::class, 'create'])->name('paths.create');
         Route::post('/paths/store', [PathController::class, 'store'])->name('paths.store');
-        Route::get('/paths/{path}/edit', [PathController::class, 'edit'])->name('paths.edit');
-        Route::put('/paths/{path}/update', [PathController::class, 'update'])->name('paths.update');
         Route::delete('/paths/{path}/destroy', [PathController::class, 'destroy'])->name('paths.destroy');
 
         /********* Orders *********/

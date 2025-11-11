@@ -1,15 +1,16 @@
 <template>
     <v-snackbar
         v-model="snackbar"
-        :color="snackColor"
+        :color="props.type"
         location="bottom"
         :timeout="timeout"
-        :class="snackColor"
+        :class="props.type"
         content-class="snackbar-content"
     >
         <div class="d-flex align-center message-content">
-            <v-icon v-if="snackColor === 'success'" class="me-2" size="large">mdi-check-circle</v-icon>
-            <v-icon v-else-if="snackColor === 'error'" class="me-2" size="large">mdi-alert-circle</v-icon>
+
+            <v-icon v-if="props.type === 'success'" class="me-2" size="large">mdi-check-circle</v-icon>
+            <v-icon v-else-if="props.type === 'error'" class="me-2" size="large">mdi-alert-circle</v-icon>
             <v-icon v-else class="me-2" size="large">mdi-information</v-icon>
             {{ message }}
         </div>
@@ -53,7 +54,6 @@ const props = defineProps({
 })
 
 const snackbar = ref(false)
-const snackColor = ref(props.type)
 
 // Watch for changes in props
 watch(() => props.show, (newVal) => {
