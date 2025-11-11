@@ -22,8 +22,7 @@
                     <v-select hide-details
                               variant="outlined"
                               density="compact"
-                              label="وضعیت انتشار"
-                              :items="status"
+                              label="وضعیت"
                               clearable
                     >
                     </v-select>
@@ -33,7 +32,7 @@
                         hide-details
                         variant="outlined"
                         density="compact"
-                        label="نویسنده"
+                        label="نام و نام خانوادگی"
                         clearable
                     >
                     </v-text-field>
@@ -43,7 +42,7 @@
                         hide-details
                         variant="outlined"
                         density="compact"
-                        label="جستجو عنوان کتاب"
+                        label="شماره سفارش"
                         clearable
                     >
                     </v-text-field>
