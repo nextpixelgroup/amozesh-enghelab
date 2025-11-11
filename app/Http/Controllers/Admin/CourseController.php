@@ -85,7 +85,7 @@ class CourseController extends Controller
 
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processSeasons($course, $request->seasons);
-                if(isset($course->quiz['has_quiz']) && $course->quiz['has_quiz'] == true) {
+                if(isset($request->quiz['has_quiz']) && $request->quiz['has_quiz'] == true) {
                     $this->finalQuiz($course, $request->quiz);
                 }
 
@@ -244,7 +244,7 @@ class CourseController extends Controller
             $question = $quiz->questions()->create([
                 'question_text' => $questionData['question'],
                 'type'          => $questionData['type'] ?? 'multipleOption',
-                'explanation'   => $questionData['explanation'] ?? null,
+                'is_active'     => $questionData['is_active'] ?? null,
                 'order'         => $order
             ]);
             $order++;

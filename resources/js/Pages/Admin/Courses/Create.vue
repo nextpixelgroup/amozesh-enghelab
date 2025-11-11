@@ -839,6 +839,7 @@ function addLesson(sIndex) {
         description: '',
         duration: null,
         video_url: '',
+        poster_id: null,
         is_active: true,
         has_quiz: false,
         quiz: {
