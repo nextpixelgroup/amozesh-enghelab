@@ -1,49 +1,3 @@
-<script setup>
-import '@/../css/admin.css';
-import {Link, router, usePage} from '@inertiajs/vue3'
-import {ref, computed, onMounted} from 'vue'
-import FlashMessage from '../Components/FlashMessage.vue'
-import {route} from "ziggy-js";
-import {isActive, navigate} from "../utils/helpers.js";
-import ConfirmDialog from "@/Components/ConfirmDialog.vue";
-
-const drawer = ref(true)
-const page = usePage()
-
-const menuItems = computed(() => page.props.menuItems || []);
-
-const confirmRef = ref(null)
-const isLoading = ref(null)
-
-const socialButtons = [
-    {src: '/assets/img/soroosh-green.svg', alt: 'Soroosh'},
-    {src: '/assets/img/bale-green.svg', alt: 'Bale'},
-    {src: '/assets/img/eitaa-green.svg', alt: 'Eitaa'},
-    {src: '/assets/img/aparat-green.svg', alt: 'Aparat'},
-]
-
-onMounted(() => {
-    window.$confirm = async (message, options = {}) => {
-        return await confirmRef.value.open({
-            msg: message,
-            ttl: options.title || 'تأیید عملیات',
-            color: options.color || 'red',
-            socialButtons
-        })
-    }
-})
-
-const logout = () => {
-    isLoading.value = true
-    router.post(route('admin.logout'), {
-        onFinish: () => {
-            isLoading.value = false;
-        }
-    })
-}
-
-</script>
-
 <template>
     <v-app>
         <ConfirmDialog ref="confirmRef"/>
@@ -121,7 +75,7 @@ const logout = () => {
 
             <div class="d-flex align-center">
                 <v-btn icon>
-                    <v-badge color="secondary" content="9">
+                    <v-badge color="secondary" :content="ticketCount">
                         <v-icon>mdi-message-processing</v-icon>
                     </v-badge>
                 </v-btn>
@@ -150,6 +104,52 @@ const logout = () => {
         <FlashMessage/>
     </v-app>
 </template>
+<script setup>
+import '@/../css/admin.css';
+import {Link, router, usePage} from '@inertiajs/vue3'
+import {ref, computed, onMounted} from 'vue'
+import FlashMessage from '../Components/FlashMessage.vue'
+import {route} from "ziggy-js";
+import {isActive, navigate} from "../utils/helpers.js";
+import ConfirmDialog from "@/Components/ConfirmDialog.vue";
+
+const drawer = ref(true)
+const page = usePage()
+
+const menuItems = computed(() => page.props.menuItems || []);
+const ticketCount = computed(() => page.props.ticketCount || 0);
+
+const confirmRef = ref(null)
+const isLoading = ref(null)
+
+const socialButtons = [
+    {src: '/assets/img/soroosh-green.svg', alt: 'Soroosh'},
+    {src: '/assets/img/bale-green.svg', alt: 'Bale'},
+    {src: '/assets/img/eitaa-green.svg', alt: 'Eitaa'},
+    {src: '/assets/img/aparat-green.svg', alt: 'Aparat'},
+]
+
+onMounted(() => {
+    window.$confirm = async (message, options = {}) => {
+        return await confirmRef.value.open({
+            msg: message,
+            ttl: options.title || 'تأیید عملیات',
+            color: options.color || 'red',
+            socialButtons
+        })
+    }
+})
+
+const logout = () => {
+    isLoading.value = true
+    router.post(route('admin.logout'), {
+        onFinish: () => {
+            isLoading.value = false;
+        }
+    })
+}
+
+</script>
 <style>
 .zo-main {
     background: rgb(245, 245, 245,.75)

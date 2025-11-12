@@ -13,17 +13,14 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->index()->constrained()->cascadeOnDelete();
             //$table->string('title'); // عنوان تیکت
             $table->string('subject'); // موضوع تیکت
             $table->text('message'); // متن پیام
             $table->dateTime('read_at')->nullable()->index();
-            //$table->enum('status', ['open', 'in_progress', 'closed'])->default('open');
-            //$table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+            //$table->enum('status', ['open', 'in_progress', 'closed'])->default('open')->index();
+            //$table->enum('priority', ['low', 'medium', 'high'])->default('medium')->index();
             $table->timestamps();
-
-            // ایندکس‌ها
-            $table->index(['user_id'/*, 'status', 'priority'*/]);
         });
     }
 

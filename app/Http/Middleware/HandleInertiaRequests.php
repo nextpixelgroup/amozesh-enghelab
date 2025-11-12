@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -108,6 +109,7 @@ class HandleInertiaRequests extends Middleware
                     'route' => 'admin.settings.index'
                 ],
             ],
+            'ticketCount' => Ticket::where('read_at', null)->count(),
         ];
     }
 }
