@@ -117,7 +117,7 @@
                         </v-col>
                     </v-row>
                 </div>
-                <v-expansion-panels multiple class="mb-3" ref="seasonsContainer">
+                <v-expansion-panels multiple class="mb-3" ref="seasonsContainer" v-model="seasonActivePanel">
                     <v-expansion-panel
                         v-for="(season, sIndex) in course.seasons"
                         :key="season.id"
@@ -170,7 +170,7 @@
                             />
                             <v-row dense class="justify-end position-relative mb-3">
                                 <v-col class="v-col-12">
-                                    <v-expansion-panels multiple :ref="el => lessonsContainers[sIndex] = el">
+                                    <v-expansion-panels multiple :ref="el => lessonsContainers[sIndex] = el" v-model="lessonActivePanel">
                                         <v-expansion-panel
                                             v-for="(lesson, lIndex) in season.lessons"
                                             :key="lesson.id"
@@ -343,7 +343,7 @@
                                                                     <v-row dense>
                                                                         <v-col class="v-col-12">
                                                                             <v-text-field
-                                                                                v-model="question.question"
+                                                                                v-model="question.text"
                                                                                 hide-details
                                                                                 variant="outlined"
                                                                                 density="comfortable"
@@ -671,7 +671,7 @@
 </template>
 
 <script setup>
-import {nextTick, reactive, ref, useTemplateRef, watch} from 'vue';
+import {nextTick, reactive, ref, useTemplateRef, watch, onMounted} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {router} from "@inertiajs/vue3";
@@ -688,6 +688,8 @@ const props = defineProps({
     video_upload_slug: String,
     course: Object,
 })
+const seasonActivePanel = ref(false);
+const lessonActivePanel = ref(false);
 const isLoading = ref(false);
 const categories = ref(props.categories);
 const teachers = ref(props.teachers);
@@ -769,7 +771,7 @@ function removeSeason(index) {
 
 /********************************Lessons********************************/
 const lessonsContainers = ref([])
-watch(
+/*watch(
     () => course.seasons.map(s => s.lessons.length),
     () => {
         nextTick(() => {
@@ -783,7 +785,27 @@ watch(
         })
     },
     {deep: true}
-)
+)*/
+
+watch(seasonActivePanel, (newVal) => {
+    console.log(newVal)
+    nextTick(() => {
+        newVal.forEach(panelIndex => {
+            const container = lessonsContainers.value[panelIndex];
+            console.log(container)
+            if (!container) return;
+
+            // اگر قبلاً sortable نشد، فعال کن
+            if (!container._sortable) {
+                useSortable(container, course.seasons[panelIndex].lessons, {
+                    animation: 150,
+                    handle: '.lesson-drag-handle',
+                });
+                container._sortable = true; // علامت زده شد که فعال شد
+            }
+        });
+    });
+}, { deep: true });
 
 function addLesson(sIndex) {
     course.seasons[sIndex].lessons.push({
@@ -816,7 +838,7 @@ function removeLesson(sIndex, lIndex) {
 
 /********************************questions********************************/
 const questionsContainers = ref([])
-watch(
+/*watch(
     // تابعی که وابستگی‌ها رو برمی‌گردونه: طول سوال ‌های هر درس در هر فصل
     () => course.seasons.map(s => s.lessons.map(l => l.quiz?.questions?.length ?? 0)),
     () => {
@@ -845,7 +867,37 @@ watch(
         })
     },
     {deep: true}
-)
+)*/
+watch(lessonActivePanel, (newVal) => {
+    console.log('Active seasons changed:', newVal);
+
+    nextTick(() => {
+        newVal.forEach(seasonIndex => {
+            const season = course.seasons[seasonIndex];
+            const seasonQuestionsContainers = questionsContainers.value[seasonIndex];
+
+            if (!season || !seasonQuestionsContainers) return;
+
+            // برای هر درس در فصل بازشده
+            seasonQuestionsContainers.forEach((containerComponent, lessonIndex) => {
+                const lesson = season.lessons[lessonIndex];
+                if (!lesson?.quiz?.questions || !containerComponent) return;
+
+                const targetEl = containerComponent?.$el ?? containerComponent;
+
+                // اگر قبلاً sortable فعال نشده، فعال کن
+                if (!targetEl._sortable) {
+                    useSortable(targetEl, lesson.quiz.questions, {
+                        animation: 150,
+                        handle: '.question-drag-handle',
+                    });
+                    targetEl._sortable = true;
+                    console.log(`Sortable activated for questions of lesson ${lessonIndex} in season ${seasonIndex}`);
+                }
+            });
+        });
+    });
+}, { deep: true });
 
 function addQuestion(sIndex, lIndex) {
     course.seasons[sIndex].lessons[lIndex].quiz.questions.push({

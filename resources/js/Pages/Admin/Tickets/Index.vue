@@ -61,6 +61,7 @@
                     <th class="text-center">شماره موبایل</th>
                     <th class="text-center">پست الکترونیک</th>
                     <th class="text-center">تاریخ ارسال</th>
+                    <th class="text-center">وضعیت</th>
                     <th class="text-center">عملیات</th>
                 </tr>
                 </thead>
@@ -85,6 +86,10 @@
                     <td>
                         <span class="d-block">{{ item.created_at.title.split(' ')[0] }}</span>
                         <small>{{ item.created_at.title.split(' ')[1] }}</small>
+                    </td>
+                    <td class="text-center">
+                        <span v-if="item.read_at.value" class="'zo-status zo-archive'">آرشیو</span>
+                        <span v-else :class="'zo-status zo-unread'">خوانده نشده</span>
                     </td>
                     <td>
                         <div class="d-flex justify-center ga-1">
