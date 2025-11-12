@@ -1,7 +1,7 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <Head title="Courses"/>
     <AdminLayout>
-        <Head title="مسیرهای آموزشی"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -11,7 +11,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">مسیرهای آموزشی</strong>
-                            <span>مسیرهای آموزشی را در این قسمت می‌توانید مدیریت کنید</span>
+                            <span>در این بخش می توانید مسیرهای آموزشی را مدیریت کنید.</span>
                         </div>
                     </div>
                 </v-col>
@@ -165,6 +165,8 @@ import {nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
 import {useSortable} from "@vueuse/integrations/useSortable";
 import {route} from "ziggy-js";
 import ShowMessage from "@/Components/ShowMessage.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('مسیرهای آموزشی');
 
 const props = defineProps({
     paths: Object,

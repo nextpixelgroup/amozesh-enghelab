@@ -74,11 +74,13 @@
             </v-toolbar-title>
 
             <div class="d-flex align-center">
-                <v-btn icon>
-                    <v-badge color="secondary" :content="ticketCount">
-                        <v-icon>mdi-message-processing</v-icon>
-                    </v-badge>
-                </v-btn>
+                <Link :href="route('admin.tickets.index')">
+                    <v-btn icon>
+                        <v-badge color="secondary" :content="ticketCount">
+                            <v-icon>mdi-message-processing</v-icon>
+                        </v-badge>
+                    </v-btn>
+                </Link>
                 <Link :href="route('admin.profile')">
                     <v-btn icon>
                         <v-icon>mdi-account-circle</v-icon>

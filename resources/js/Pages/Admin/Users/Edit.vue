@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="ویرایش کاربر"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -228,6 +228,8 @@ import {defineComponent, ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
 import UserRestrictionComponent from "@/Components/UserRestrictionComponent.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('ویرایش کاربر');
 
 defineComponent({
     components: {AdminLayout, Head}

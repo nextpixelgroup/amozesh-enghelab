@@ -62,12 +62,7 @@ class HandleInertiaRequests extends Middleware
                     ]
                 ],
                 [
-                    'title' => 'کاربران',
-                    'icon' => 'mdi-account-group',
-                    'route' => 'admin.users.index'
-                ],
-                [
-                    'title' => 'کتاب‌ها',
+                    'title' => 'کتب',
                     'icon' => 'mdi-book',
                     'route' => 'admin.books.index',
                     'children' => [
@@ -102,6 +97,11 @@ class HandleInertiaRequests extends Middleware
                     'title' => 'پیام ها',
                     'icon' => 'mdi-message-text-fast',
                     'route' => 'admin.tickets.index'
+                ],
+                [
+                    'title' => 'کاربران',
+                    'icon' => 'mdi-account-group',
+                    'route' => 'admin.users.index'
                 ],
                 [
                     'title' => 'تنظیمات',

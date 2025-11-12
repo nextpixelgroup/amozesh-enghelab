@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="نظرها"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">نظرها</strong>
-                            <span>نمایش نظرات کاربران در خصوص دوره‌ها و کتب</span>
+                            <span>در این بخش می توانید نظرات کتب و دوره ها را مدیریت کنید.</span>
                         </div>
                     </div>
                 </v-col>
@@ -111,6 +111,8 @@
 import {Head} from '@inertiajs/vue3'
 import {ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('نظرات');
 
 const dialog = ref(false)
 

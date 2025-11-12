@@ -1,7 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-
-        <Head title="افزودن کتاب"/>
         <v-row dense class="position-relative">
             <v-col class="v-col-12 v-col-lg-9">
                 <v-card class="pa-3 mb-3 elevation-2">
@@ -266,7 +265,9 @@ import {route} from "ziggy-js";
 import FieldNumber from "@/Components/FieldNumber.vue";
 import ShowMessage from "@/Components/ShowMessage.vue";
 import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
 
+const {adminPageTitle} = usePageTitle('افزودن کتاب');
 
 const props = defineProps({
     site_url: String,

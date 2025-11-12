@@ -1,6 +1,6 @@
 <template>
     <AdminLayout>
-        <Head title="ایجاد کاربر"/>
+        <Head :title="adminPageTitle"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -273,6 +273,8 @@ import {Form, Head, useForm, usePage} from '@inertiajs/vue3'
 import {defineComponent, ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('ایجاد کاربر');
 
 defineComponent({
     components: {AdminLayout, Head}

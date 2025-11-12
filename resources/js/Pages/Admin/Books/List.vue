@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="کتب"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">لیست کتب</strong>
-                            <span>تمامی کتب در این بخش قابل مشاهده است</span>
+                            <span>در این بخش می توانید کتب را مدیریت کنید.</span>
                         </div>
                     </div>
                 </v-col>
@@ -161,7 +161,8 @@ import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
-
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('کتب');
 const props = defineProps({
     books: Object,
     status: Object,

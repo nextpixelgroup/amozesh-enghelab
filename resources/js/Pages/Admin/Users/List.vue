@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="کتب"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9 v-col-12">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">لیست کاربران</strong>
-                            <span>این بخش تمامی کاربران قابل مشاهده می‌باشند</span>
+                            <span>در این بخش می توانید کاربران را مدیریت کنید.</span>
                         </div>
                     </div>
                 </v-col>
@@ -133,6 +133,8 @@ import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {ref, watch} from "vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('کاربران');
 
 const page = usePage();
 const query = new URLSearchParams(page.url.split('?')[1])

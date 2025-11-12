@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="Courses"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-12">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">لیست سفارش‌ها</strong>
-                            <span>تمامی سفارش‌ها در این بخش قابل مشاهده است</span>
+                            <span>در این بخش می توانید سفارشات را مدیریت کنید.</span>
                         </div>
                     </div>
                 </v-col>
@@ -106,14 +106,10 @@
 
     </AdminLayout>
 </template>
-<script>
+<script setup>
 import {Head} from '@inertiajs/vue3'
 import {defineComponent} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
-
-export default defineComponent({
-    components: {AdminLayout, Head}
-})
-
-
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('سفارشات');
 </script>

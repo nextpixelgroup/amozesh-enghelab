@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="مدیریت دسته‌بندی‌ها"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">لیست دسته‌بندی‌ها</strong>
-                            <span>در این بخش می توانید لیست دسته‌بندی‌ کتب را مشاهده کنید.</span>
+                            <span>در این بخش می توانید دسته بندی های کتب را مدیریت کنید.</span>
                         </div>
                     </div>
                 </v-col>
@@ -98,6 +98,8 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import CategoryDialog from '@/Components/CategoryDialog.vue'
 import {route} from "ziggy-js";
 import {truncateText} from "@/utils/helpers.js";
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('دسته بندی کتب');
 
 // Props
 const props = defineProps({

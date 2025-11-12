@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="دوره‌های آموزشی"/>
         <div class="zo-header-section mb-5">
             <div class="zo-info d-lg-flex d-sm-none">
                 <div class="zo-icon elevation-4">
@@ -8,7 +8,7 @@
                 </div>
                 <div class="zo-name">
                     <strong class="d-block mb-1">پیام‌ها</strong>
-                    <span>در این بخش می توانید پیام‌های کاربران را مشاهده کنید.</span>
+                    <span>در این بخش می توانید پیام ها را مدیریت کنید.</span>
                 </div>
             </div>
         </div>
@@ -150,6 +150,8 @@ import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {computed, ref, watch} from "vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('پیام ها');
 
 const props = defineProps({
     tickets: Object

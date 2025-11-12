@@ -1,6 +1,6 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
-        <Head title="دوره‌های آموزشی"/>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
                 <v-col class="v-col-lg-9">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">دوره‌های آموزشی</strong>
-                            <span>دوره‌های آموزشی تاریخی مهدویت و انقلاب اسلامی ایران</span>
+                            <span>در این بخش می توانید دوره‌های آموزشی را مدیریت کنید.</span>
                         </div>
                     </div>
                 </v-col>
@@ -166,7 +166,8 @@ import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import {computed, ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
-
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('دوره‌های آموزشی');
 const props = defineProps({
     courses: Object,
     status: Object,

@@ -1,4 +1,5 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
         <v-row dense class="position-relative">
             <v-col class="v-col-12 v-col-lg-9">
@@ -674,12 +675,13 @@
 import {nextTick, reactive, ref, useTemplateRef, watch, onMounted} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
-import {router} from "@inertiajs/vue3";
+import {Head, router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import SearchableSelect from "@/Components/SearchableSelect.vue";
 import {useSortable} from "@vueuse/integrations/useSortable";
 import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
-
+import usePageTitle from "@/Composables/usePageTitle.js";
+const {adminPageTitle} = usePageTitle('ویرایش دوره');
 const props = defineProps({
     categories: Object,
     teachers: Object,
