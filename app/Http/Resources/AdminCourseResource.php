@@ -47,6 +47,10 @@ class AdminCourseResource extends JsonResource
                 'history' => $this->teacher?->teacherDetails?->history,
                 'skills' => $this->teacher?->teacherDetails?->skills,
                 'bio' => $this->teacher?->teacherDetails?->bio,
+                'avatar' => [
+                    'id' => $this->teacher?->avatar_id,
+                    'url' => $this->teacher?->avatar?->url,
+                ],
             ],
         ];
     }

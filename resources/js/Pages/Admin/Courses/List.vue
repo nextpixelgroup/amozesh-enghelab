@@ -118,7 +118,7 @@
                             <v-avatar>
                                 <v-img
                                     :alt="item.title"
-                                    :src="item.avatar"
+                                    :src="item.teacher?.avatar.url"
                                 ></v-img>
                             </v-avatar>
                             <div>
@@ -176,6 +176,7 @@ const props = defineProps({
 })
 const currentPage = ref(props.courses?.meta.current_page)
 const courses = computed(() => props.courses.data);
+console.log(courses)
 const status = ref(props.status)
 const teachers = ref(props.teachers)
 const categories = ref(props.categories)
