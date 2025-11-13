@@ -94,11 +94,17 @@ th {
     display: block;
     margin: auto;
     padding: 3.5px 15px;
-    border-radius: 300px
+    border-radius: 300px;
+    box-shadow: 0 1.5px 15px rgba(0, 0, 0, .15)
 }
 
 .zo-publish {
     background: rgba(5, 105, 60);
+    color: rgb(255, 255, 255)
+}
+
+.zo-pending {
+    background: rgba(105, 60, 5);
     color: rgb(255, 255, 255)
 }
 
@@ -123,8 +129,8 @@ th {
 }
 
 .zo-suspended {
-    background: rgba(0, 0, 0, .15);
-    color: rgb(45, 45, 45);
+    background: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
 }
 
 .status-temporary_ban {

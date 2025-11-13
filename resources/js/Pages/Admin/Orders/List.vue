@@ -6,7 +6,7 @@
                 <v-col class="v-col-12">
                     <div class="zo-info d-lg-flex d-sm-none">
                         <div class="zo-icon elevation-4">
-                            <i class="mdi mdi-book-open-page-variant"></i>
+                            <i class="mdi mdi-cart"></i>
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">لیست سفارش‌ها</strong>

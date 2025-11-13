@@ -75,14 +75,14 @@
 
             <div class="d-flex align-center">
                 <Link :href="route('admin.tickets.index')">
-                    <v-btn icon>
+                    <v-btn icon color="black">
                         <v-badge color="secondary" :content="ticketCount">
                             <v-icon>mdi-message-processing</v-icon>
                         </v-badge>
                     </v-btn>
                 </Link>
                 <Link :href="route('admin.profile')">
-                    <v-btn icon>
+                    <v-btn icon color="black">
                         <v-icon>mdi-account-circle</v-icon>
                     </v-btn>
                 </Link>
@@ -154,6 +154,6 @@ const logout = () => {
 </script>
 <style>
 .zo-main {
-    background: rgb(245, 245, 245,.75)
+    background: rgb(245, 245, 245, .75)
 }
 </style>
