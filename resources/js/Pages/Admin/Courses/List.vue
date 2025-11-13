@@ -106,24 +106,24 @@
                 >
                     <td class="text-center">{{ item.id }}</td>
                     <td class="text-center">
-                        <img :src="item.thumbnail.url ?? '/assets/img/default_image.png'" :alt="item.title" width="90"
-                             height="90">
+                        <img :src="item.thumbnail.url ?? '/assets/img/default.svg'" :alt="item.title" width="90"
+                             height="90" class="d-block my-1">
                     </td>
                     <td>
                         <strong class="d-block">{{ item.title }}</strong>
                         <span class="d-lg-block d-sm-none">{{ item.subtitle }}</span>
                     </td>
                     <td>
-                        <div class="d-flex align-items-center ga-3">
+                        <div class="d-flex align-center ga-3">
                             <v-avatar>
                                 <v-img
                                     :alt="item.title"
-                                    :src="item.teacher?.avatar.url"
+                                    :src="item.teacher?.avatar.url ?? '/assets/img/default-teacher.svg'"
                                 ></v-img>
                             </v-avatar>
                             <div>
                                 <strong class="d-block">{{ item.teacher?.fullname }}</strong>
-                                <small>{{ item.teacher?.degree }}</small>
+                                <small v-if="item.teacher?.degree">{{ item.teacher?.degree }}</small>
                             </div>
                         </div>
                     </td>
@@ -133,17 +133,17 @@
                     <td class="text-center">
                         {{ item.member }}
                     </td>
-                    <td>
-                        <span class="d-block">{{ item.published_at.title.split(' ')[0] }}</span>
-                        <small>{{ item.published_at.title.split(' ')[1] }}</small>
+                    <td class="text-center">
+                        <span>{{ item.published_at.title.split(' ')[0] }} - </span>
+                        <span>{{ item.published_at.title.split(' ')[1] }}</span>
                     </td>
-                    <td>
-                        <div class="d-flex ga-1">
+                    <td class="text-center">
+                        <div class="d-flex justify-center ga-1">
                             <Link :href="route('admin.courses.edit',item.id)">
                                 <v-btn icon="mdi-pencil" size="small" color="primary"></v-btn>
                             </Link>
                             <a :href="route('web.courses.show',item.id)" target="_blank">
-                                <v-btn icon="mdi-eye" size="small" color="info"></v-btn>
+                                <v-btn icon="mdi-eye" size="small" color="secondary"></v-btn>
                             </a>
                         </div>
                     </td>
@@ -167,6 +167,7 @@ import {computed, ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
 import usePageTitle from "@/Composables/usePageTitle.js";
+
 const {adminPageTitle} = usePageTitle('دوره‌های آموزشی');
 const props = defineProps({
     courses: Object,
