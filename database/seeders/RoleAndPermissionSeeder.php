@@ -40,7 +40,7 @@ class RoleAndPermissionSeeder extends Seeder
         $contentManager = Role::create(['name' => 'content-manager']);
         $teacher = Role::create(['name' => 'teacher']);
         $user = Role::create(['name' => 'user']);
-        $organization = Role::create(['name' => 'organization']);
+        $institution = Role::create(['name' => 'institution']);
 
         // اختصاص دسترسی‌ها به نقش‌ها
         // 1. سوپر ادمین - دسترسی به همه چیز

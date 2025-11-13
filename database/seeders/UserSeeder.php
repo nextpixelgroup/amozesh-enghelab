@@ -27,15 +27,6 @@ class UserSeeder extends Seeder
         $startDate = fake()->dateTimeBetween('-10 years', '-1 year');
         $isCurrentlyStudying = fake()->boolean(30); // 30% شانس در حال تحصیل بودن
 
-        $user->educationals()->create([
-            'institution' => fake()->company() . ' University',
-            'field_of_study' => fake()->jobTitle() . ' Engineering',
-            'degree' => fake()->randomElement($degrees),
-            'start_date' => $startDate,
-            'end_date' => $isCurrentlyStudying ? null : fake()->dateTimeBetween($startDate, 'now'),
-            'is_currently_studying' => $isCurrentlyStudying,
-            'description' => fake()->sentence(),
-        ]);
         $user->assignRole('super-admin');
 
         $user = User::create([

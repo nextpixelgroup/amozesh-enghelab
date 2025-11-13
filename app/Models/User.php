@@ -38,6 +38,8 @@ class User extends Authenticatable
         'company',
         'password',
         'avatar_id',
+        'tel',
+        'institution_id',
     ];
 
 
@@ -67,6 +69,10 @@ class User extends Authenticatable
     public static function allRoles(){
         return collect([
             [
+                'title' => 'کاربر',
+                'value' => 'user',
+            ],
+            [
                 'title' => 'مدیر',
                 'value' => 'admin',
             ],
@@ -79,8 +85,8 @@ class User extends Authenticatable
                 'value' => 'teacher',
             ],
             [
-                'title' => 'کاربر',
-                'value' => 'user',
+                'title' => 'موسسه و دانشگاه',
+                'value' => 'institution',
             ]
         ]);
     }

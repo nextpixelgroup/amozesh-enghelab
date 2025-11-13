@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\DegreeEnum;
 use App\Enums\GenderEnum;
 use App\Enums\UserRestrictionTypeEnum;
 use App\Http\Controllers\Controller;
@@ -65,12 +66,21 @@ class UserController extends Controller
     public function create()
     {
         $roles = User::allRoles();
+        $institutions = User::whereHas('roles', function($query) {
+            $query->where('name', 'institution');
+        })->with('roles')->get()->map(function ($institution) {
+            return [
+                'value' => $institution->id,
+                'title' => $institution->firstname,
+            ];
+        });
         $gender = enumFormated(GenderEnum::cases());
         $years = years();
         $months = months();
         $days = days();
         $site_url = env('APP_URL');
-        return Inertia::render('Admin/Users/Create', compact('roles', 'gender', 'years', 'months', 'days', 'site_url'));
+        $degree = enumFormated(DegreeEnum::cases());
+        return Inertia::render('Admin/Users/Create', compact('roles', 'gender', 'years', 'months', 'days', 'site_url', 'institutions', 'degree'));
     }
 
     public function store(UserCreateRequest $request)
@@ -97,6 +107,7 @@ class UserController extends Controller
                     'gender'        => $request->gender,
                     'national_code' => $request->national_code,
                     'mobile'        => $request->mobile,
+                    'tel'        => $request->tel,
                     'email'         => $request->email,
                     'address'       => $request->address,
                     'postal_code'   => $request->postal_code,
@@ -118,6 +129,26 @@ class UserController extends Controller
                         'skills' => $request->skills,
                         'bio' => $request->bio,
                     ]);
+                    if(isset($request->educations) && count($request->educations)){
+                        foreach ($request->educations as $education){
+                            $birthDate = null;
+                            if($request->birth_day && $request->birth_month && $request->birth_year){
+                                $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
+                                $start = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
+                            }
+                            $user->educationals()->create([
+                                'institution' => $education->institution,
+                                'city' => $request->city,
+                                'field_of_study' => $request->field_of_study,
+                                'degree' => $request->degree,
+                                'start_date' => $request->start_date,
+                                'end_date' => $request->end_date,
+                                'is_studying' => $request->is_studying,
+                                'description' => $request->description,
+                            ]);
+                        }
+                    }
+
                     $user->assignRole($request->role);
                 }
             });

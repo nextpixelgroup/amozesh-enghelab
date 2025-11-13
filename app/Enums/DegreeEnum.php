@@ -4,6 +4,7 @@ namespace App\Enums;
 
 enum DegreeEnum: string
 {
+    case pre_diploma = 'زیردیپلم';
     case diploma = 'دیپلم';
     case associate = 'کاردانی';
     case bachelor = 'کارشناسی';

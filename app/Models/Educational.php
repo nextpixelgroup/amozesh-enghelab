@@ -10,19 +10,20 @@ class Educational extends Model
 {
     protected $fillable = [
         'user_id',
-        'institution', // نام موسسه یا دانشگاه
+        'university', // نام موسسه یا دانشگاه
         'field_of_study', // رشته تحصیلی
         'degree',
         'start_date',
         'end_date',
-        'is_currently_studying', // درحال تحصیل
+        'city',
+        'is_studying', // درحال تحصیل
         'description' // توضیحات
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
-        'is_currently_studying' => 'boolean',
+        'is_studying' => 'boolean',
     ];
 
     public function user(): BelongsTo

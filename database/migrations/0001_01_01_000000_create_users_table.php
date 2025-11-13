@@ -15,10 +15,11 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('firstname')->index();
-            $table->string('lastname')->index();
+            $table->string('lastname')->nullable()->index();
             $table->string('username')->nullable();
             $table->string('slug',100)->nullable()->unique()->index();
             $table->string('mobile', 11)->nullable()->index();
+            $table->string('tel', 20)->nullable();
             $table->string('email')->nullable()->index();
             $table->date('birth_date')->nullable();
             $table->enum('gender', enumNames(GenderEnum::cases()))->index()->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('company')->nullable(); // سازمان یا شرکت محل فعالیت
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->foreignId('institution_id')->nullable()->index()->constrained('users');
             $table->rememberToken();
             $table->timestamps();
         });
