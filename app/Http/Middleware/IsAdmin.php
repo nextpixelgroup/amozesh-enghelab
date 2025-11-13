@@ -37,7 +37,6 @@ class IsAdmin
                 return redirectMessage('error',message: $message, redirect: route('admin.login'));
             }
         }
-
         return $next($request);
     }
 }

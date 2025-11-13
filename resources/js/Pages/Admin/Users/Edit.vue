@@ -270,7 +270,7 @@
                             :initialUrl="user.teacherDetails.image.url"
                             upload-route="admin.upload.books.image"
                             label="فقط فایل تصویری آپلود کنید"
-                            title="بارگذاری آواتار"
+                            title="بارگذاری تصویر پس‌زمینه"
                             accept="image/*"
                         />
                     </v-col>

@@ -261,7 +261,7 @@
                                                         <v-col class="v-col-12">
                                                             <ThumbnailUploader
                                                                 v-model:model-value="lesson.poster_id"
-                                                                :initialUrl="lesson.poster.url"
+                                                                :initialUrl="lesson?.poster?.url"
                                                                 upload-route="admin.upload.courses.image"
                                                                 title="آپلود تصویر ویدیو"
                                                                 label="تصویر ویدیو را اینجا رها کنید"
@@ -710,12 +710,12 @@ const showVideo = (slug) => {
 const course = reactive({
     title: data.value.title,
     slug: data.value.slug,
-    category: data.value.categories,
+    category: data.value.categories.map(category => category.value),
     teacher: data.value.teacher.id,
     description: data.value.description,
     requirements: data.value.requirements,
     must_complete_quizzes: data.value.must_complete_quizzes ? 1 : 0,
-    status: data.value.status,
+    status: data.value.status.value,
     thumbnail_id: data.value.thumbnail.id,
     seasons: data.value.seasons,
     quiz: data.value.quiz
@@ -954,7 +954,7 @@ function removeFinalQuizQuestions(index) {
 }
 
 function submitForm() {
-    router.post(route('admin.courses.store'), course, {
+    router.put(route('admin.courses.update',data.value.id), course, {
         preserveScroll: true,
         onStart: () => {
             isLoading.value = true
