@@ -23,10 +23,6 @@ class UserSeeder extends Seeder
             'email' => 'hosseinhezareh2@gmail.com',
         ]);
 
-        $degrees = enumNames(DegreeEnum::cases());
-        $startDate = fake()->dateTimeBetween('-10 years', '-1 year');
-        $isCurrentlyStudying = fake()->boolean(30); // 30% شانس در حال تحصیل بودن
-
         $user->assignRole('super-admin');
 
         $user = User::create([
