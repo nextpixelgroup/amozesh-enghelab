@@ -102,49 +102,55 @@ class UserController extends Controller
                     $slug = makeSlugUnique($slug, User::class);
                 }
                 $user = User::create([
-                    'firstname'     => $request->firstname,
-                    'lastname'      => $request->lastname,
-                    'gender'        => $request->gender,
-                    'national_code' => $request->national_code,
-                    'mobile'        => $request->mobile,
-                    'tel'        => $request->tel,
-                    'email'         => $request->email,
-                    'address'       => $request->address,
-                    'postal_code'   => $request->postal_code,
-                    'birth_date'    => $birthDate,
-                    'company'       => $request->company,
-                    'username'      => $request->username,
-                    'password'      => $password,
-                    'slug'          => $slug,
-                    'avatar'        => null,
+                    'firstname'      => $request->firstname,
+                    'lastname'       => $request->lastname,
+                    'gender'         => $request->gender,
+                    'national_code'  => $request->national_code,
+                    'mobile'         => $request->mobile,
+                    'tel'            => $request->tel,
+                    'email'          => $request->email,
+                    'address'        => $request->address,
+                    'postal_code'    => $request->postal_code,
+                    'birth_date'     => $birthDate,
+                    'company'        => $request->company,
+                    'username'       => $request->username,
+                    'institution_id' => $request->institution_id,
+                    'password'       => $password,
+                    'slug'           => $slug,
+                    'avatar_id'      => $request->avatar_id,
                 ]);
                 if($user){
                     $user->teacherDetails()->create([
-                        'image_id' => null,
+                        'image_id' => $request->image_id,
                         'academic_title' => $request->academic_title,
-                        'teaching' => $request->teaching,
-                        'job_title' => $request->teaching,
+                        'job_title' => $request->job_title,
                         'degree' => $request->degree,
                         'history' => $request->history,
+                        'teaching' => $request->teaching,
                         'skills' => $request->skills,
                         'bio' => $request->bio,
                     ]);
                     if(isset($request->educations) && count($request->educations)){
                         foreach ($request->educations as $education){
-                            $birthDate = null;
-                            if($request->birth_day && $request->birth_month && $request->birth_year){
-                                $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
-                                $start = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
+                            $start_date = null;
+                            $end_date = null;
+                            if($education['start_month'] && $education['start_year']){
+                                $jalali = "{$education['start_year']}-{$education['start_month']}-01";
+                                $start_date = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
+                            }
+                            if($education['end_month'] && $education['end_month']){
+                                $jalali = "{$education['end_year']}-{$education['end_month']}-01";
+                                $end_date = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
                             }
                             $user->educationals()->create([
-                                'institution' => $education->institution,
-                                'city' => $request->city,
-                                'field_of_study' => $request->field_of_study,
-                                'degree' => $request->degree,
-                                'start_date' => $request->start_date,
-                                'end_date' => $request->end_date,
-                                'is_studying' => $request->is_studying,
-                                'description' => $request->description,
+                                'university'     => $education['university'],
+                                'city'           => $education['city'],
+                                'field_of_study' => $education['field_of_study'],
+                                'degree'         => $education['degree'],
+                                'start_date'     => $start_date,
+                                'end_date'       => $end_date,
+                                'is_studying'    => $education['is_studying'],
+                                'description'    => $education['description'],
                             ]);
                         }
                     }
@@ -170,46 +176,126 @@ class UserController extends Controller
         $site_url = env('APP_URL');
         $restrictions = RestrictionResource::collection($user->restrictions()->latest()->get());
         $restrictionTypes = enumFormated(UserRestrictionTypeEnum::cases());
+        $institutions = User::whereHas('roles', function($query) {
+            $query->where('name', 'institution');
+        })->with('roles')->get()->map(function ($institution) {
+            return [
+                'value' => $institution->id,
+                'title' => $institution->firstname,
+            ];
+        });
+        $degree = enumFormated(DegreeEnum::cases());
         $user = new UserResource($user);
-        return Inertia::render('Admin/Users/Edit', compact('roles', 'gender', 'years', 'months', 'days', 'user', 'site_url', 'restrictions', 'restrictionTypes'));
+        return Inertia::render('Admin/Users/Edit', compact('roles', 'gender', 'years', 'months', 'days', 'user', 'site_url', 'restrictions', 'restrictionTypes', 'institutions', 'degree'));
     }
 
     public function update(User $user, UserUpdateRequest $request)
     {
         try {
-            $birthDate = null;
-            if($request->birth_day && $request->birth_month && $request->birth_year){
-                $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
-                $birthDate = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
-            }
+            DB::transaction(function () use ($user, $request) {
+                $birthDate = null;
+                if($request->birth_day && $request->birth_month && $request->birth_year){
+                    $jalali = "$request->birth_year-$request->birth_month-$request->birth_day";
+                    $birthDate = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
+                }
 
-            $slug = $request->slug;
-            if($user->role == 'teacher' && $user->slug !== $request->slug) {
-                $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
-                $slug = makeSlugUnique($slug, User::class);
-            }
+                $slug = $request->slug;
+                if($user->role == 'teacher' && $user->slug !== $request->slug) {
+                    $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
+                    $slug = makeSlugUnique($slug, User::class);
+                }
 
-            $args = [
-                'firstname'     => $request->firstname,
-                'lastname'      => $request->lastname,
-                'gender'        => $request->gender,
-                'national_code' => $request->national_code,
-                'mobile'        => $request->mobile,
-                'email'         => $request->email,
-                'address'       => $request->address,
-                'postal_code'   => $request->postal_code,
-                'birth_date'    => $birthDate,
-                'company'       => $request->company,
-                'username'      => $request->username,
-                'slug'          => $slug,
-            ];
-            if($request->password){
-                $args['password'] = Hash::make($request->password);
-            }
-            $update = $user->update($args);
-            if($update){
-                $user->syncRoles($request->role);
-            }
+                $args = [
+                    'firstname'      => $request->firstname,
+                    'lastname'       => $request->lastname,
+                    'gender'         => $request->gender,
+                    'national_code'  => $request->national_code,
+                    'mobile'         => $request->mobile,
+                    'tel'            => $request->tel,
+                    'email'          => $request->email,
+                    'address'        => $request->address,
+                    'postal_code'    => $request->postal_code,
+                    'birth_date'     => $birthDate,
+                    'company'        => $request->company,
+                    'username'       => $request->username,
+                    'institution_id' => $request->institution_id,
+                    'slug'           => $slug,
+                    'avatar_id'      => $request->avatar_id,
+                ];
+                if($request->password){
+                    $args['password'] = Hash::make($request->password);
+                }
+                $update = $user->update($args);
+                if($update){
+                    $user->syncRoles($request->role);
+                    if($request->role == 'teacher' && $user->teacherDetails()->exists()){
+                        $user->teacherDetails()->update([
+                            'image_id' => $request->image_id,
+                            'academic_title' => $request->academic_title,
+                            'job_title' => $request->job_title,
+                            'degree' => $request->degree,
+                            'history' => $request->history,
+                            'teaching' => $request->teaching,
+                            'skills' => $request->skills,
+                            'bio' => $request->bio,
+                        ]);
+                    }
+                    else{
+                        $user->teacherDetails()->create([
+                            'image_id' => $request->image_id,
+                            'academic_title' => $request->academic_title,
+                            'job_title' => $request->job_title,
+                            'degree' => $request->degree,
+                            'history' => $request->history,
+                            'teaching' => $request->teaching,
+                            'skills' => $request->skills,
+                            'bio' => $request->bio,
+                        ]);
+                    }
+
+                    if(isset($request->educations) && count($request->educations)){
+                        foreach ($request->educations as $education) {
+                            $start_date = null;
+                            $end_date = null;
+                            if ($education['start_month'] && $education['start_year']) {
+                                $jalali = "{$education['start_year']}-{$education['start_month']}-01";
+                                $start_date = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
+                            }
+                            if ($education['end_month'] && $education['end_month']) {
+                                $jalali = "{$education['end_year']}-{$education['end_month']}-01";
+                                $end_date = Verta::parse($jalali)->toCarbon()->format('Y-m-d');
+                            }
+                            if ($education['id'] == null) {
+                                $user->educationals()->create([
+                                    'university' => $education['university'],
+                                    'city' => $education['city'],
+                                    'field_of_study' => $education['field_of_study'],
+                                    'degree' => $education['degree'],
+                                    'start_date' => $start_date,
+                                    'end_date' => $end_date,
+                                    'is_studying' => $education['is_studying'],
+                                    'description' => $education['description'],
+                                ]);
+                            } else {
+                                $user->educationals()->where('id', $education['id'])->update([
+                                    'university' => $education['university'],
+                                    'city' => $education['city'],
+                                    'field_of_study' => $education['field_of_study'],
+                                    'degree' => $education['degree'],
+                                    'start_date' => $start_date,
+                                    'end_date' => $end_date,
+                                    'is_studying' => $education['is_studying'],
+                                    'description' => $education['description'],
+                                ]);
+                            }
+                        }
+                    }
+                    else{
+                        $user->educationals()->delete();
+                    }
+
+                }
+            });
             return redirectMessage('success', 'کاربر با موفقیت ویرایش شد.');
 
         }

@@ -1,5 +1,4 @@
 <template>
-
     <ShowMessage
         v-model:show="isError"
         :message="errorMessage"
@@ -102,6 +101,7 @@ const emit = defineEmits([
 
 const thumbnail = ref(null);
 const thumbnailUrl = ref(props.initialUrl);
+
 const progress = ref(0);
 const fileUploading = ref(false);
 const fileUploaded = ref(!!props.initialUrl);

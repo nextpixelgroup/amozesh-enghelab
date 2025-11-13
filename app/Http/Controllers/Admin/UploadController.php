@@ -47,4 +47,24 @@ class UploadController extends Controller
             'id'      => $media->id,
         ]);
     }
+
+    public function userImage(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'], // 5MB
+        ]);
+
+        $file = $request->file('file');
+        $media = Media::uploadFile($file, 'image', 'uploads/images/users');
+
+        if (!$media) {
+            return responseJSon('error', ' خطا در آپلود فایل');
+        }
+
+        return responseJSon('success', 'فایل با موفقیت آپلود شد', [
+            'path'    => $media->path,
+            'url'     => $media->url,
+            'id'      => $media->id,
+        ]);
+    }
 }
