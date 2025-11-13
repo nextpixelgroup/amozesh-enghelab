@@ -98,8 +98,8 @@ th {
 }
 
 .zo-publish {
-    background: rgba(5, 105, 60, .15);
-    color: rgb(5, 105, 60)
+    background: rgba(5, 105, 60);
+    color: rgb(255, 255, 255)
 }
 
 .zo-draft {
