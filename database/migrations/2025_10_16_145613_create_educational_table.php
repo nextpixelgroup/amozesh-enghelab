@@ -15,11 +15,11 @@ return new class extends Migration
         Schema::create('educationals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('institution_id')->index()->constrained('users'); // نام موسسه یا دانشگاه
-            $table->string('city',30); // شهر
-            $table->string('field_of_study'); // رشته تحصیلی
-            $table->enum('degree', enumNames(DegreeEnum::cases())); // مقطع تحصیلی
-            $table->date('start_date'); // تاریخ شروع
+            $table->string('university')->nullable(); // نام موسسه یا دانشگاه
+            $table->string('city',30)->nullable(); // شهر
+            $table->string('field_of_study')->nullable(); // رشته تحصیلی
+            $table->enum('degree', enumNames(DegreeEnum::cases()))->nullable(); // مقطع تحصیلی
+            $table->date('start_date')->nullable(); // تاریخ شروع
             $table->date('end_date')->nullable(); // تاریخ پایان (اختیاری)
             $table->boolean('is_studying')->default(false); // در حال تحصیل
             $table->text('description')->nullable(); // توضیحات اضافی

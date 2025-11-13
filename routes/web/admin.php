@@ -82,6 +82,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
         Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');
         Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.courses.image');
+        Route::post('upload/users/image', [UploadController::class, 'userImage'])->name('upload.users.image');
 
 
         /********* Auth *********/

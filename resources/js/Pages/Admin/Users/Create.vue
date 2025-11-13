@@ -255,6 +255,24 @@
                         />
                     </v-col>
 
+                    <v-col class="v-col-12" v-if="['user', 'institution', 'teacher'].includes(form.role)">
+                        <ThumbnailUploader
+                            v-model:model-value="form.avatar_id"
+                            upload-route="admin.upload.users.image"
+                            label="فقط فایل تصویری آپلود کنید"
+                            title="بارگذاری آواتار"
+                            accept="image/*"
+                        />
+                    </v-col>
+                    <v-col class="v-col-12" v-if="form.role === 'teacher'">
+                        <ThumbnailUploader
+                            v-model:model-value="form.image_id"
+                            upload-route="admin.upload.users.image"
+                            label="فقط فایل تصویری آپلود کنید"
+                            title="بارگذاری تصویر پس‌زمینه"
+                            accept="image/*"
+                        />
+                    </v-col>
                     <v-col class="v-col-8" v-if="form.role === 'teacher'">
                         <v-text-field
                             type="text"
@@ -301,7 +319,16 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col class="v-col-6" v-if="form.role === 'teacher'">
+                    <v-col class="v-col-4" v-if="form.role === 'teacher'">
+                        <v-text-field
+                            v-model="form.teaching"
+                            label="زمینه تدریس"
+                            variant="outlined"
+                            density="comfortable"
+                            prepend-inner-icon="mdi-book-open-variant"
+                        />
+                    </v-col>
+                    <v-col class="v-col-4" v-if="form.role === 'teacher'">
                         <v-text-field
                             type="text"
                             variant="outlined"
@@ -312,7 +339,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col class="v-col-6" v-if="form.role === 'teacher'">
+                    <v-col class="v-col-4" v-if="form.role === 'teacher'">
                         <v-text-field
                             type="text"
                             variant="outlined"
@@ -500,6 +527,7 @@ import {defineComponent, ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
 
 const {adminPageTitle} = usePageTitle('ایجاد کاربر');
 
@@ -524,7 +552,6 @@ const years = ref(props.years);
 const months = ref(props.months);
 const days = ref(props.days);
 const degree = ref(props.degree);
-
 const isLoading = ref(false);
 const showPassword = ref(false);
 
@@ -546,6 +573,7 @@ const form = useForm({
     'username': '',
     'password': '',
     'slug': '',
+    'institution_id': '',
     'academic_title': '',
     'image': '',
     'teaching': '',
@@ -554,6 +582,8 @@ const form = useForm({
     'history': '',
     'skills': '',
     'bio': '',
+    'avatar_id': '',
+    'image_id': '',
     'educations' : []
 });
 
@@ -573,9 +603,7 @@ const addEducation = () => {
     });
 };
 const removeEducation = (index) => {
-    if (form.educations.length > 1) {
-        form.educations.splice(index, 1);
-    }
+    form.educations.splice(index, 1);
 };
 
 // Initialize with one empty education if empty
