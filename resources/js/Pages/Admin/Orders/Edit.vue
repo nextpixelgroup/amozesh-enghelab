@@ -131,6 +131,15 @@
                         </div>
                     </div>
                 </v-col>
+                <v-col class="v-col">
+                    <div class="d-flex align-center ga-3">
+                        <i class="mdi mdi-map-marker-radius"></i>
+                        <div>
+                            <small class="d-block">کد پستی</small>
+                            <strong>09216897159</strong>
+                        </div>
+                    </div>
+                </v-col>
                 <v-col class="v-col-12">
                 </v-col>
                 <v-col class="v-col-lg-4 v-col-12">
@@ -139,15 +148,6 @@
                         <div>
                             <small class="d-block">آدرس</small>
                             <strong>خراسان رضوی - مشهد - راهنمایی 23 پلاک 17</strong>
-                        </div>
-                    </div>
-                </v-col>
-                <v-col class="v-col-lg-2 v-col-12">
-                    <div class="d-flex align-center ga-3">
-                        <i class="mdi mdi-map-marker-radius"></i>
-                        <div>
-                            <small class="d-block">کد پستی</small>
-                            <strong>09216897159</strong>
                         </div>
                     </div>
                 </v-col>
