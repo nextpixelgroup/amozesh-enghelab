@@ -115,7 +115,7 @@
                 </v-col>
                 <v-col class="v-col">
                     <div class="d-flex align-center ga-3">
-                        <i class="mdi mdi-cellphone-settings"></i>
+                        <i class="mdi mdi-airplane-takeoff"></i>
                         <div>
                             <small class="d-block">نوع ارسال</small>
                             <strong>پست پیشتاز</strong>
