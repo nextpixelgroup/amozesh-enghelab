@@ -145,7 +145,8 @@
                                 size="small"
                                 class="ml-2 season-drag-handle"
                             ></v-btn>
-                            {{ season.title || `سرفصل ${sIndex + 1}` }}
+                            {{ `سرفصل ${sIndex + 1}${season.title ? ` - ${season.title}` : ''}` }}
+
                         </v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-text-field
@@ -171,10 +172,14 @@
                             />
                             <v-row dense class="justify-end position-relative mb-3">
                                 <v-col class="v-col-12">
-                                    <v-expansion-panels multiple :ref="el => lessonsContainers[sIndex] = el" v-model="lessonActivePanel">
+                                    <v-expansion-panels
+                                        multiple
+                                        :ref="el => lessonsContainers[sIndex] = el"
+                                        v-model="lessonActivePanels[sIndex]"
+                                    >
                                         <v-expansion-panel
                                             v-for="(lesson, lIndex) in season.lessons"
-                                            :key="lesson.id"
+                                            :key="`lesson-${season.id}-${lesson.id}`"
                                         >
                                             <div class="zo-actions">
                                                 <div class="zo-switch">
@@ -193,7 +198,7 @@
                                                     size="small"
                                                     class="ml-2 lesson-drag-handle"
                                                 ></v-btn>
-                                                {{ lesson.title || `درس ${lIndex + 1}` }}
+                                                {{ `درس ${lIndex + 1}${lesson.title ? ` - ${lesson.title}` : ''}` }}
                                             </v-expansion-panel-title>
                                             <v-expansion-panel-text>
                                                 <v-card flat>
@@ -218,7 +223,7 @@
                                                                 label="زمان ویدیو (دقیقه)"
                                                                 type="text"
                                                                 prepend-inner-icon="mdi-clock-time-eight-outline"
-                                                                min="1"
+                                                                :min="1"
                                                             />
                                                         </v-col>
                                                         <v-col class="v-col-12">
@@ -323,7 +328,7 @@
                                                                            class="ml-2 question-drag-handle"
                                                                     >
                                                                     </v-btn>
-                                                                    {{ `سوال ${quIndex + 1}` }}
+                                                                    {{ `سوال ${quIndex + 1}${question.text ? ` - ${question.text}` : ''}` }}
                                                                 </v-expansion-panel-title>
                                                                 <div class="zo-actions">
                                                                     <div class="zo-switch">
@@ -469,13 +474,13 @@
                 <v-card class="pa-3 mb-3 elevation-2">
                     <v-row dense>
                         <v-col class="v-col-12">
-                            <v-checkbox v-model="course.quiz.has_quiz"
+                            <v-checkbox v-model="course.quiz.is_active"
                                         hide-details
                                         label="فعال سازی آزمون پایان دوره؟"
                             >
                             </v-checkbox>
                         </v-col>
-                        <v-col class="v-col-12" v-if="course.quiz.has_quiz">
+                        <v-col class="v-col-12" v-if="course.quiz.is_active">
                             <v-text-field
                                 v-model="course.quiz.title"
                                 hide-details
@@ -486,7 +491,7 @@
                                 prepend-inner-icon="mdi-text-short"
                             />
                         </v-col>
-                        <v-col class="v-col-12" v-if="course.quiz.has_quiz">
+                        <v-col class="v-col-12" v-if="course.quiz.is_active">
                             <v-textarea
                                 v-model="course.quiz.description"
                                 hide-details
@@ -499,7 +504,7 @@
                             />
                         </v-col>
                     </v-row>
-                    <v-expansion-panels multiple class="my-3" v-show="course.quiz.has_quiz" ref="finalQuizContainers">
+                    <v-expansion-panels multiple class="my-3" v-show="course.quiz.is_active" ref="finalQuizContainers">
                         <v-expansion-panel
                             v-for="(question, qIndex) in course.quiz.questions"
                             :key="question.id">
@@ -511,7 +516,7 @@
                                     size="small"
                                     class="ml-2 final-quiz-drag-handle"
                                 />
-                                {{ `سوال ${qIndex + 1}` }}
+                                {{ `سوال ${qIndex + 1}${question.text ? ` - ${question.text}` : ''}` }}
                             </v-expansion-panel-title>
                             <div class="zo-actions">
                                 <div class="zo-switch">
@@ -610,7 +615,7 @@
                             </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
-                    <div class="zo-add text-end" v-if="course.quiz.has_quiz">
+                    <div class="zo-add text-end" v-if="course.quiz.is_active">
                         <v-btn icon="mdi-plus"
                                width="25"
                                height="25"
@@ -690,8 +695,7 @@ const props = defineProps({
     video_upload_slug: String,
     course: Object,
 })
-const seasonActivePanel = ref(false);
-const lessonActivePanel = ref(false);
+
 const isLoading = ref(false);
 const categories = ref(props.categories);
 const teachers = ref(props.teachers);
@@ -699,7 +703,7 @@ const status = ref(props.status);
 const courses = ref(props.courses);
 const data = ref(props.course.data);
 const video_upload_slug = ref(props.video_upload_slug);
-console.log(data.value)
+//console.log(data.value)
 const courseRequirements = courses;
 const showVideo = (slug) => {
     if (slug) {
@@ -772,43 +776,6 @@ function removeSeason(index) {
 }
 
 /********************************Lessons********************************/
-const lessonsContainers = ref([])
-/*watch(
-    () => course.seasons.map(s => s.lessons.length),
-    () => {
-        nextTick(() => {
-            lessonsContainers.value.forEach((container, index) => {
-                if (!container) return
-                useSortable(container, course.seasons[index].lessons, {
-                    animation: 150,
-                    handle: '.lesson-drag-handle',
-                })
-            })
-        })
-    },
-    {deep: true}
-)*/
-
-watch(seasonActivePanel, (newVal) => {
-    console.log(newVal)
-    nextTick(() => {
-        newVal.forEach(panelIndex => {
-            const container = lessonsContainers.value[panelIndex];
-            console.log(container)
-            if (!container) return;
-
-            // اگر قبلاً sortable نشد، فعال کن
-            if (!container._sortable) {
-                useSortable(container, course.seasons[panelIndex].lessons, {
-                    animation: 150,
-                    handle: '.lesson-drag-handle',
-                });
-                container._sortable = true; // علامت زده شد که فعال شد
-            }
-        });
-    });
-}, { deep: true });
-
 function addLesson(sIndex) {
     course.seasons[sIndex].lessons.push({
         id: crypto.randomUUID(),
@@ -818,6 +785,7 @@ function addLesson(sIndex) {
         video_url: '',
         is_active: true,
         has_quiz: false,
+        poster_id: null,
         quiz: {
             questions: [
                 {
@@ -839,67 +807,7 @@ function removeLesson(sIndex, lIndex) {
 }
 
 /********************************questions********************************/
-const questionsContainers = ref([])
-/*watch(
-    // تابعی که وابستگی‌ها رو برمی‌گردونه: طول سوال ‌های هر درس در هر فصل
-    () => course.seasons.map(s => s.lessons.map(l => l.quiz?.questions?.length ?? 0)),
-    () => {
-        nextTick(() => {
-            // برای هر فصل
-            questionsContainers.value.forEach((seasonArr, sIndex) => {
-                if (!seasonArr || !course.seasons[sIndex]) return;
-                // برای هر درس در آن فصل
-                seasonArr.forEach((containerComponent, lIndex) => {
-                    const lesson = course.seasons[sIndex].lessons[lIndex];
-                    if (!containerComponent || !lesson || !lesson.quiz || !lesson.quiz.questions) return;
-                    // containerComponent ممکن است یک کامپوننت Vuetify باشه؛ useSortable روی خود المان ریشهٔ DOM آن کار می‌کند.
-                    // اگر containerComponent.$el وجود داشت از آن استفاده کن؛ در غیر اینصورت خود containerComponent را پاس کن.
-                    const targetEl = containerComponent?.$el ?? containerComponent;
-                    try {
-                        useSortable(targetEl, lesson.quiz.questions, {
-                            handle: '.question-drag-handle',
-                            animation: 150,
-                        });
-                    } catch (e) {
-                        // اگر قبلاً sortable ست شده بود ممکنه خطا بده — ایمن نادیده می‌گیریم
-                        // console.warn('useSortable question init failed', e)
-                    }
-                })
-            })
-        })
-    },
-    {deep: true}
-)*/
-watch(lessonActivePanel, (newVal) => {
-    console.log('Active seasons changed:', newVal);
 
-    nextTick(() => {
-        newVal.forEach(seasonIndex => {
-            const season = course.seasons[seasonIndex];
-            const seasonQuestionsContainers = questionsContainers.value[seasonIndex];
-
-            if (!season || !seasonQuestionsContainers) return;
-
-            // برای هر درس در فصل بازشده
-            seasonQuestionsContainers.forEach((containerComponent, lessonIndex) => {
-                const lesson = season.lessons[lessonIndex];
-                if (!lesson?.quiz?.questions || !containerComponent) return;
-
-                const targetEl = containerComponent?.$el ?? containerComponent;
-
-                // اگر قبلاً sortable فعال نشده، فعال کن
-                if (!targetEl._sortable) {
-                    useSortable(targetEl, lesson.quiz.questions, {
-                        animation: 150,
-                        handle: '.question-drag-handle',
-                    });
-                    targetEl._sortable = true;
-                    console.log(`Sortable activated for questions of lesson ${lessonIndex} in season ${seasonIndex}`);
-                }
-            });
-        });
-    });
-}, { deep: true });
 
 function addQuestion(sIndex, lIndex) {
     course.seasons[sIndex].lessons[lIndex].quiz.questions.push({
@@ -923,21 +831,12 @@ function selectCorrectOption(question, optionKey) {
 }
 
 function removeQuestion(sIndex, lIndex, quIndex) {
-    console.log(sIndex, lIndex, quIndex)
-    console.log(course.seasons[sIndex].lessons[lIndex].quiz)
     course.seasons[sIndex].lessons[lIndex].quiz.questions.splice(quIndex, 1);
 }
 
 /********************************final quiz********************************/
-const finalQuizContainers = useTemplateRef('finalQuizContainers')
-
-useSortable(finalQuizContainers, course.quiz.questions, {
-    animation: 150,
-    handle: '.final-quiz-drag-handle',
-})
 
 function addFinalQuizQuestions() {
-    console.log(course.quiz.questions)
     course.quiz.questions.push({
         id: crypto.randomUUID(),
         text: '',
@@ -952,6 +851,95 @@ function addFinalQuizQuestions() {
 function removeFinalQuizQuestions(index) {
     course.quiz.questions.splice(index, 1);
 }
+
+/*********************** Sortable ****************************/
+const seasonActivePanel = ref(false);
+
+
+const lessonsContainers = ref([])
+
+const seasonActive = ref(null)
+
+watch(seasonActivePanel, (newVal) => {
+    nextTick(() => {
+        newVal.forEach(panelIndex => {
+            console.log('season:'+panelIndex);
+            const container = lessonsContainers.value[panelIndex];
+            if (!container) return;
+
+            seasonActive.value = panelIndex;
+            // اگر قبلاً sortable نشد، فعال کن
+            if (!container._sortable) {
+                useSortable(container, course.seasons[panelIndex].lessons, {
+                    animation: 150,
+                    handle: '.lesson-drag-handle',
+                });
+                container._sortable = true; // علامت زده شد که فعال شد
+            }
+        });
+    });
+}, { deep: true });
+
+
+const questionsContainers = ref(
+    course.seasons.map(season =>
+        Array(season.lessons.length).fill(null)
+    )
+);
+
+const lessonActivePanels = ref(
+    course.seasons.map(() => []) // هر فصل یک آرایه خالی برای ذخیره ایندکس درس‌های فعال
+);
+watch(lessonActivePanels, (newActiveLessonIndicesPerSeason) => { // نام متغیر را تغییر دادم برای وضوح بیشتر
+    console.log('Active lessons panels changed:', newActiveLessonIndicesPerSeason);
+
+    nextTick(() => {
+        // برای هر فصل
+        newActiveLessonIndicesPerSeason.forEach((activeLessonIndicesForThisSeason, seasonIndex) => {
+            // اگر فصل معتبر نیست، از حلقه خارج شو
+            if (!course.seasons[seasonIndex]) return;
+
+            // برای هر درس در فصل
+            course.seasons[seasonIndex].lessons.forEach((lesson, lessonIndex) => {
+                // بررسی می‌کنیم که آیا پنل درس فعلی باز است یا خیر
+                const isCurrentLessonPanelActive = activeLessonIndicesForThisSeason.includes(lessonIndex);
+
+                // اگر درس فعال نیست یا قسمت سوالاتش وجود نداره، ادامه نده
+                if (!isCurrentLessonPanelActive || !lesson?.quiz?.questions) {
+                    return;
+                }
+
+                console.log(`فعال‌سازی sortable برای فصل ${seasonIndex + 1} - درس ${lessonIndex + 1}`);
+
+                const containerComponent = questionsContainers.value[seasonIndex]?.[lessonIndex];
+                if (!containerComponent) {
+                    console.warn(`کانتینر سوالات برای فصل ${seasonIndex + 1} - درس ${lessonIndex + 1} یافت نشد`);
+                    return;
+                }
+
+                const targetEl = containerComponent.$el || containerComponent;
+
+                // اگر قبلاً sortable نشده، آن را فعال کن
+                if (!targetEl._sortable) {
+                    useSortable(targetEl, lesson.quiz.questions, {
+                        animation: 150,
+                        handle: '.question-drag-handle',
+                    });
+                    targetEl._sortable = true;
+                    console.log(`Sortable فعال شد برای سوالات فصل ${seasonIndex + 1} - درس ${lessonIndex + 1}`);
+                }
+            });
+        });
+    });
+}, { deep: true });
+
+
+const finalQuizContainers = useTemplateRef('finalQuizContainers')
+
+useSortable(finalQuizContainers, course.quiz.questions, {
+    animation: 150,
+    handle: '.final-quiz-drag-handle',
+})
 
 function submitForm() {
     router.put(route('admin.courses.update',data.value.id), course, {

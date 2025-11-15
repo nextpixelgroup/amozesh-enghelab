@@ -107,7 +107,6 @@
     </v-app>
 </template>
 <script setup>
-import '@/../css/admin.css';
 import {Link, router, usePage} from '@inertiajs/vue3'
 import {ref, computed, onMounted} from 'vue'
 import FlashMessage from '../Components/FlashMessage.vue'

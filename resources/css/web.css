@@ -1,35 +1,6 @@
-/*
-@font-face {
-    font-family: 'Estedad';
-    src: url('/assets/fonts/Estedad-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
 
-@font-face {
-    font-family: 'Estedad';
-    src: url('/assets/fonts/Estedad-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Estedad';
-    src: url('/assets/fonts/Estedad-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Estedad';
-    src: url('/assets/fonts/Estedad-Black.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
-}
+/* Import fonts */
+@import './fonts.css';
 
 :root {
     --Primary: rgb(5, 105, 60);
@@ -40,7 +11,7 @@
 
 body {
     direction: rtl;
-    font-family: 'Estedad-Regular';
+    font-family: 'Estedad';
     font-size: .875rem;
     line-height: 1.45;
     background: rgb(255, 255, 255);
@@ -530,4 +501,3 @@ figure {
     font-size: .95rem;
 }
 
-*/

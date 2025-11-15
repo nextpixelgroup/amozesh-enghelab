@@ -8,12 +8,7 @@ class CourseLesson extends Model
 {
 
     protected $fillable = [
-        'season_id', 'title', 'description', 'video_id', 'poster_id', 'duration', 'order', 'is_published'
-    ];
-
-    protected $casts = [
-        'is_free' => 'boolean',
-        'is_published' => 'boolean',
+        'season_id', 'title', 'description', 'video_id', 'poster_id', 'duration', 'order', 'is_active'
     ];
 
     public function season()

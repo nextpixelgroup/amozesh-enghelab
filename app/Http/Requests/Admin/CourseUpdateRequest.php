@@ -137,6 +137,7 @@ class CourseUpdateRequest extends FormRequest
             'seasons.*.lessons.*.quiz.questions.*.question.min' => 'متن سوال باید حداقل ۳ کاراکتر باشد.',
             //'seasons.*.lessons.*.quiz.questions.*.type.required' => 'نوع سوال الزامی است.',
             'seasons.*.lessons.*.quiz.questions.*.type.in' => 'نوع سوال معتبر نیست.',
+            'seasons.*.lessons.*.quiz.questions.*.text.min' => 'حداقل کاراکتر متن سوال :min می‌باشد.',
 
             // Options
             'seasons.*.lessons.*.quiz.questions.*.options.required_if' => 'برای سوالات چندگزینه‌ای و صحیح/غلط گزینه‌ها الزامی هستند.',

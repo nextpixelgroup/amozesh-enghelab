@@ -59,13 +59,13 @@ class AdminCourseDetailsResource extends JsonResource
                     'id' => $season->id,
                     'title' => $season->title,
                     'description' => $season->description,
-                    'is_active' => $season->is_active,
+                    'is_active' => $season->is_active ? true : false,
                     'lessons' => $season->lessons ? $season->lessons->map(function ($lesson) {
                         return [
                             'id' => $lesson->id,
                             'title' => $lesson->title,
                             'description' => $lesson->description,
-                            'is_active' => $lesson->is_active,
+                            'is_active' => $lesson->is_active ? true : false,
                             'video_url' => $lesson->video?->file_name,
                             'poster_id' => $lesson->poster_id,
                             'poster' => [
@@ -79,12 +79,12 @@ class AdminCourseDetailsResource extends JsonResource
                                 'has_quiz' => $lesson->quiz ? true : false,
                                 'title' => $lesson->quiz?->title ?? '',
                                 'description' => $lesson->quiz?->description ?? '',
-                                'is_active' =>  $lesson->quiz?->is_active ?? false,
+                                'is_active' =>  $lesson->quiz?->is_active ? true : false,
                                 'questions' => $lesson->quiz?->questions ? $lesson->quiz->questions->map(function ($question) {
                                     return [
                                         'id' => $question->id,
                                         'text' => $question->question_text,
-                                        'is_active' => true,
+                                        'is_active' => $question->is_active ? true : false,
                                         'option1' => ['text' => $question->options[0]->option_text, 'is_correct' => $question->options[0]->is_correct],
                                         'option2' => ['text' => $question->options[1]->option_text, 'is_correct' => $question->options[1]->is_correct],
                                         'option3' => ['text' => $question->options[2]->option_text, 'is_correct' => $question->options[2]->is_correct],
@@ -116,7 +116,7 @@ class AdminCourseDetailsResource extends JsonResource
                     return [
                         'id' => $question->id,
                         'text' => $question->question_text,
-                        'is_active' => true,
+                        'is_active' => $question->is_active ? true : false,
                         'option1' => ['text' => $question->options[0]->option_text, 'is_correct' => $question->options[0]->is_correct],
                         'option2' => ['text' => $question->options[1]->option_text, 'is_correct' => $question->options[1]->is_correct],
                         'option3' => ['text' => $question->options[2]->option_text, 'is_correct' => $question->options[2]->is_correct],
