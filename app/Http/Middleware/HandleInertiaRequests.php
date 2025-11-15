@@ -55,8 +55,13 @@ class HandleInertiaRequests extends Middleware
                             'route' => 'admin.courses.index'
                         ],
                         [
+                            'title' => 'ایجاد دوره',
+                            'icon'  => 'mdi-file-plus',
+                            'route' => 'admin.courses.create'
+                        ],
+                        [
                             'title' => 'دسته‌بندی‌ها',
-                            'icon' => 'mdi-shape',
+                            'icon' => 'mdi-format-list-group-plus',
                             'route' => 'admin.courses.categories.index'
                         ],
                     ]
@@ -72,8 +77,13 @@ class HandleInertiaRequests extends Middleware
                             'route' => 'admin.books.index'
                         ],
                         [
+                            'title' => 'ایجاد کتاب',
+                            'icon'  => 'mdi-file-plus',
+                            'route' => 'admin.books.create'
+                        ],
+                        [
                             'title' => 'دسته‌بندی‌ها',
-                            'icon' => 'mdi-shape',
+                            'icon' => 'mdi-format-list-group-plus',
                             'route' => 'admin.books.categories.index'
                         ],
                     ]
