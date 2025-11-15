@@ -42,15 +42,10 @@
                             </v-text-field>
                         </v-col>
                         <v-col class="v-col-12 v-col-lg-6">
-                            <v-autocomplete
+                            <MultipleSelector
                                 v-model="course.category"
-                                hide-details
-                                variant="outlined"
-                                density="comfortable"
-                                label="دسته‌بندی‌"
                                 :items="categories"
-                                multiple
-                                clearable
+                                label="دسته‌بندی‌"
                                 prepend-inner-icon="mdi-format-list-group-plus"
                             />
                         </v-col>
@@ -640,6 +635,7 @@
                         class="mb-3"
                         variant="outlined"
                         density="comfortable"
+                        prepend-inner-icon="mdi mdi-alert"
                     />
                     <v-select
                         v-model="course.status"
@@ -650,6 +646,7 @@
                         class="mb-3"
                         variant="outlined"
                         density="comfortable"
+                        prepend-inner-icon="mdi mdi-flag-outline"
                     />
                     <ThumbnailUploader
                         v-model:model-value="course.thumbnail_id"
@@ -677,7 +674,8 @@
 </template>
 
 <script setup>
-import {nextTick, reactive, ref, useTemplateRef, watch, onMounted} from 'vue';
+import {nextTick, reactive, ref, useTemplateRef, watch, onMounted, computed} from 'vue';
+import MultipleSelector from '@/Components/MultipleSelector.vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {Head, router} from "@inertiajs/vue3";
@@ -697,6 +695,16 @@ const props = defineProps({
 })
 
 const isLoading = ref(false);
+// Sort categories to show selected items first
+const sortedCategories = computed(() => {
+    if (!props.categories) return [];
+    return [...props.categories].sort((a, b) => {
+        const aSelected = course.category?.includes(a.value) ? -1 : 1;
+        const bSelected = course.category?.includes(b.value) ? -1 : 1;
+        return aSelected - bSelected;
+    });
+});
+
 const categories = ref(props.categories);
 const teachers = ref(props.teachers);
 const status = ref(props.status);

@@ -106,7 +106,11 @@ class BookController extends Controller
         try {
             DB::transaction(function () use ($request, $book) {
                 $slug = $request->slug;
-                if($book->slug !== $request->slug) {
+
+                if(empty($request->slug)){
+                    $slug = $book->slug;
+                }
+                elseif($book->slug !== $request->slug) {
                     $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
                     $slug = makeSlugUnique($slug, Book::class);
                 }

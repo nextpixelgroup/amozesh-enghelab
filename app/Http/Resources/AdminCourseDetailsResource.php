@@ -80,7 +80,7 @@ class AdminCourseDetailsResource extends JsonResource
                                 'title' => $lesson->quiz?->title ?? '',
                                 'description' => $lesson->quiz?->description ?? '',
                                 'is_active' =>  $lesson->quiz?->is_active ? true : false,
-                                'questions' => $lesson->quiz?->questions ? $lesson->quiz->questions->map(function ($question) {
+                                'questions' => $lesson->quiz?->questions ? $lesson->quiz?->questions->sortBy('order')->values()->map(function ($question) {
                                     return [
                                         'id' => $question->id,
                                         'text' => $question->question_text,
@@ -112,7 +112,7 @@ class AdminCourseDetailsResource extends JsonResource
                 'title' => $this->quiz?->title ?? '',
                 'description' => $this->quiz?->description ?? '',
                 'is_active' =>  $this->quiz?->is_active ?? false,
-                'questions' => $this->quiz?->questions ? $this->quiz->questions->map(function ($question) {
+                'questions' => $this->quiz?->questions ? $this->quiz->questions->sortBy('order')->values()->map(function ($question) {
                     return [
                         'id' => $question->id,
                         'text' => $question->question_text,

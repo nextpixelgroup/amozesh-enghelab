@@ -42,15 +42,10 @@
                             </v-text-field>
                         </v-col>
                         <v-col class="v-col-12 v-col-lg-6">
-                            <v-autocomplete
+                            <MultipleSelector
                                 v-model="course.category"
-                                hide-details
-                                variant="outlined"
-                                density="comfortable"
-                                label="دسته‌بندی‌"
                                 :items="categories"
-                                multiple
-                                clearable
+                                label="دسته‌بندی‌"
                                 prepend-inner-icon="mdi-format-list-group-plus"
                             />
                         </v-col>
@@ -633,6 +628,7 @@
                         class="mb-3"
                         variant="outlined"
                         density="comfortable"
+                        prepend-inner-icon="mdi mdi-alert"
                     />
                     <v-select
                         v-model="course.status"
@@ -643,6 +639,7 @@
                         class="mb-3"
                         variant="outlined"
                         density="comfortable"
+                        prepend-inner-icon="mdi mdi-flag-outline"
                     />
                     <ThumbnailUploader
                         v-model:model-value="course.thumbnail_id"
@@ -678,6 +675,7 @@ import SearchableSelect from "@/Components/SearchableSelect.vue";
 import {useSortable} from "@vueuse/integrations/useSortable";
 import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import MultipleSelector from "@/Components/MultipleSelector.vue";
 const {adminPageTitle} = usePageTitle('ایجاد دوره');
 const props = defineProps({
     categories: Object,

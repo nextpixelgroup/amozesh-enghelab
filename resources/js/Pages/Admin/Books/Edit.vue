@@ -178,6 +178,7 @@
                                 variant="outlined"
                                 density="compact"
                                 :items="stock_items"
+                                prepend-inner-icon="mdi mdi-warehouse"
                             >
                             </v-select>
                         </v-col>
@@ -212,21 +213,17 @@
                                 density="compact"
                                 placeholder="وضعیت"
                                 :items="status"
+                                prepend-inner-icon="mdi mdi-flag-outline"
                             >
                             </v-select>
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">دسته‌بندی</label>
-                            <v-select
+                            <MultipleSelector
                                 v-model="form.category"
-                                hide-details
-                                multiple
-                                variant="outlined"
-                                density="compact"
-                                placeholder="دسته‌بندی"
                                 :items="categories"
-                            >
-                            </v-select>
+                                prepend-inner-icon="mdi-format-list-group-plus"
+                            />
                         </v-col>
                         <v-col class="v-col-12">
                             <label class="zo-label">تصویر شاخص</label>
@@ -266,6 +263,7 @@ import {route} from "ziggy-js";
 import FieldNumber from "@/Components/FieldNumber.vue";
 import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import MultipleSelector from "@/Components/MultipleSelector.vue";
 const {adminPageTitle} = usePageTitle('ویرایش کتاب');
 
 const props = defineProps({
@@ -329,11 +327,14 @@ const updateBook = () => {
             isLoading.value = true;
             btnDisabled.value = true;
         },
+        onSuccess: (response) => {
+            form.slug = props.book.data.slug;
+        },
         onFinish: () => {
             isLoading.value = false;
             btnDisabled.value = false;
         }
-    })
+    });
 }
 
 const openSlug = () => {
