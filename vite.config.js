@@ -13,7 +13,12 @@ export default defineConfig(({ ssrBuild }) => ({
     },
     plugins: [
         laravel({
-            input: 'resources/js/app.js',
+
+            input: [
+                'resources/js/app.js',
+                'resources/css/web.css',
+                'resources/css/admin.css',
+            ],
             ssr: 'resources/js/ssr.js',
             refresh: true,
         }),
