@@ -8,7 +8,8 @@
     <!-- اگر فایل آپلود شده است -->
     <div v-if="fileUploaded" class="thumbnail-box">
 
-        <div class="thumbnail-image">
+        <div class="thumbnail-image"
+             v-if="!isRemoving">
             <v-badge
                 location="top left"
                 color="error"
@@ -23,6 +24,7 @@
                 />
                 <template #badge>
                     <v-btn
+                        v-if="!isRemoving"
                         icon
                         size="x-small"
                         variant="flat"
@@ -36,7 +38,7 @@
             </v-badge>
         </div>
         <div class="thumbnail-text">
-           {{thumbnailText}}
+            {{ thumbnailText }}
         </div>
 
         <!-- دیالوگ بزرگ برای تصویر -->
@@ -58,22 +60,18 @@
                         class="w-100 h-100"
                         cover
                     >
-                        <template v-slot:placeholder>
-                            <v-row
-                                class="fill-height ma-0"
-                                align="center"
-                                justify="center"
-                            >
-                                <v-progress-circular
-                                    indeterminate
-                                    color="primary"
-                                ></v-progress-circular>
-                            </v-row>
-                        </template>
                     </v-img>
                 </v-card-text>
             </v-card>
         </v-dialog>
+
+        <v-progress-circular v-if="isRemoving"
+            indeterminate
+            color="primary"
+            size="48"
+            width="3"
+            class="my-4"
+        ></v-progress-circular>
     </div>
 
     <!-- اگر فایل هنوز آپلود نشده است -->
@@ -105,24 +103,25 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { route } from 'ziggy-js';
+import {ref, watch} from 'vue';
+import {route} from 'ziggy-js';
 import {VFileUpload} from 'vuetify/labs/VFileUpload'
 import ShowMessage from "@/Components/ShowMessage.vue";
+import {router} from "@inertiajs/vue3";
 
 const dialog = ref(false);
-
+const isRemoving = ref(false);
 const props = defineProps({
     modelValue: [String, Number, null],
-    uploadRoute: { type: String, required: true, default: '' },
-    title: { type: String, default: 'بارگذاری تصویر' },
-    label: { type: String, default: 'فایل را اینجا رها کنید یا کلیک کنید' },
-    accept: { type: String, default: 'image/*' },
-    maxSize: { type: Number, default: 5 * 1024 * 1024 },
-    initialUrl: { type: String, default: '' },
-    thumbnailText: { type: String, default: 'برای تغییر تصویر، ابتدا حذف کنید' }
+    uploadRoute: {type: String, required: true, default: ''},
+    title: {type: String, default: 'بارگذاری تصویر'},
+    label: {type: String, default: 'فایل را اینجا رها کنید یا کلیک کنید'},
+    accept: {type: String, default: 'image/*'},
+    maxSize: {type: Number, default: 5 * 1024 * 1024},
+    initialUrl: {type: String, default: ''},
+    thumbnailText: {type: String, default: 'برای تغییر تصویر، ابتدا حذف کنید'}
 });
-
+const thumbnailText = ref(props.thumbnailText);
 const emit = defineEmits([
     'update:modelValue',
     'uploaded',
@@ -152,7 +151,9 @@ const showError = (message) => {
     errorMessage.value = message;
     isError.value = true;
     console.error('Upload Error:', message);
-    setTimeout(() => { isError.value = false; }, 5000);
+    setTimeout(() => {
+        isError.value = false;
+    }, 5000);
 };
 
 const uploadThumbnail = async () => {
@@ -167,7 +168,7 @@ const uploadThumbnail = async () => {
     }
 
     if (file.size > props.maxSize) {
-        showError(`حجم فایل نباید بیشتر از ${props.maxSize / (1024*1024)} مگابایت باشد`);
+        showError(`حجم فایل نباید بیشتر از ${props.maxSize / (1024 * 1024)} مگابایت باشد`);
         thumbnail.value = null;
         return;
     }
@@ -180,7 +181,7 @@ const uploadThumbnail = async () => {
 
     try {
         const response = await axios.post(route(props.uploadRoute), formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+            headers: {'Content-Type': 'multipart/form-data'},
             onUploadProgress: (e) => {
                 if (e.total) progress.value = Math.round((e.loaded / e.total) * 100);
             },
@@ -192,7 +193,7 @@ const uploadThumbnail = async () => {
         progress.value = 0;
 
         emit('update:modelValue', result.data.id);
-        emit('uploaded', { url: result.data.url, id: result.data.id, file });
+        emit('uploaded', {url: result.data.url, id: result.data.id, file});
     } catch (error) {
         const errorMessage = error.response?.data?.message || 'خطا در آپلود فایل!';
         showError(errorMessage);
@@ -201,13 +202,28 @@ const uploadThumbnail = async () => {
     }
 };
 
-const removeThumbnail = () => {
-    const removedUrl = thumbnailUrl.value;
-    thumbnail.value = null;
-    thumbnailUrl.value = '';
-    fileUploaded.value = false;
-    emit('update:modelValue', null);
-    emit('removed', removedUrl);
+const removeThumbnail = async () => {
+
+    isRemoving.value = true;
+    thumbnailText.value = 'درحال حذف لطفا منتظر بمانید...';
+    const response = await axios.delete(route('admin.media.destroy', props.modelValue), [], {
+        headers: {'Content-Type': 'multipart/form-data'},
+    });
+    if (response.status === 200) {
+        if (response.data.status == 'success') {
+            thumbnail.value = null;
+            thumbnailUrl.value = '';
+            fileUploaded.value = false;
+            emit('update:modelValue', null);
+            emit('removed', thumbnailUrl.value);
+            isRemoving.value = false;
+            thumbnailText.value = 'برای تغییر تصویر، ابتدا حذف کنید'
+        }
+        else {
+            showError(response.data.message);
+        }
+    }
+
 };
 
 watch(() => props.modelValue, (newVal) => {
@@ -215,7 +231,7 @@ watch(() => props.modelValue, (newVal) => {
         thumbnailUrl.value = '';
         fileUploaded.value = false;
     }
-}, { immediate: true });
+}, {immediate: true});
 </script>
 
 <style scoped>
@@ -228,7 +244,6 @@ watch(() => props.modelValue, (newVal) => {
     padding: 10px 15px;
     border-radius: 8px;
     width: 100%;
-    cursor: pointer;
     transition: 0.2s;
 }
 
@@ -248,6 +263,7 @@ watch(() => props.modelValue, (newVal) => {
     display: flex;
     align-items: center;
     margin-right: auto;
+    cursor: pointer;
 }
 
 /* Custom styles for file upload */

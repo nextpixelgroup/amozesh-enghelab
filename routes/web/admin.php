@@ -80,10 +80,12 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.index');
         Route::get('/settings/menus', [SettingController::class, 'menus'])->name('settings.menu');
 
+        /********* media & upload *********/
         Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');
         Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.courses.image');
         Route::post('upload/users/image', [UploadController::class, 'userImage'])->name('upload.users.image');
 
+        Route::delete('media/{media}', [UploadController::class, 'destroy'])->name('media.destroy');
 
         /********* Auth *********/
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');

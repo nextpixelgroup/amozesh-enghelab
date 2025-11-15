@@ -67,4 +67,10 @@ class UploadController extends Controller
             'id'      => $media->id,
         ]);
     }
+
+    public function destroy(Media $media)
+    {
+        sleep(2);
+        return responseJSon('success', 'با موفقیت حذف شد');
+    }
 }
