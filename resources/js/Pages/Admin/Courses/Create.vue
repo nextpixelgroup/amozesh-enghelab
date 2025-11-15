@@ -254,7 +254,7 @@
                                                             </v-text-field>
                                                         </v-col>
                                                         <v-col class="v-col-12">
-                                                            <ThumbnailUploader
+                                                            <ImageUploader
                                                                 v-model:model-value="lesson.poster_id"
                                                                 upload-route="admin.upload.courses.image"
                                                                 title="آپلود تصویر ویدیو"
@@ -641,7 +641,7 @@
                         density="comfortable"
                         prepend-inner-icon="mdi mdi-flag-outline"
                     />
-                    <ThumbnailUploader
+                    <ImageUploader
                         v-model:model-value="course.thumbnail_id"
                         upload-route="admin.upload.courses.image"
                         title="آپلود تصویر شاخص دوره"
@@ -673,7 +673,7 @@ import {Head, router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import SearchableSelect from "@/Components/SearchableSelect.vue";
 import {useSortable} from "@vueuse/integrations/useSortable";
-import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
+import ImageUploader from "@/Components/ImageUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import MultipleSelector from "@/Components/MultipleSelector.vue";
 const {adminPageTitle} = usePageTitle('ایجاد دوره');

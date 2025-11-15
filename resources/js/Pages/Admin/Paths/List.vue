@@ -43,12 +43,12 @@
                         <v-btn
                             icon
                             color="error"
-                            variant="text"
+                            variant="flat"
                             size="small"
-                            class="path-delete-btn"
+                            class="path-delete-btn ml-2"
                             @click.stop="removePath(pathIndex, path.id)"
                         >
-                            <v-icon size="small">mdi-trash-can-outline</v-icon>
+                            <v-icon size="small">mdi-close</v-icon>
                         </v-btn>
                     </div>
                 </v-expansion-panel-title>
@@ -103,8 +103,9 @@
                                 <v-btn
                                     icon="mdi-close"
                                     color="error"
-                                    variant="text"
+                                    variant="flat"
                                     size="small"
+                                    class="path-delete-btn"
                                     @click="removeCourse(path, course)"
                                 ></v-btn>
                             </v-card-text>
@@ -361,18 +362,11 @@ watch(activePanel, (newVal) => {
 }
 
 .path-delete-btn {
-    opacity: 0.5;
-    transition: opacity 0.2s, transform 0.2s;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
 }
 
-.path-delete-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-.v-expansion-panel:hover .path-delete-btn {
-    opacity: 0.7;
-}
 
 /* Make sure the delete button is properly aligned */
 .v-expansion-panel-title {

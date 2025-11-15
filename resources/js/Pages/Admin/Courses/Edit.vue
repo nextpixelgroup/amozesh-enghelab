@@ -259,7 +259,7 @@
                                                             </v-text-field>
                                                         </v-col>
                                                         <v-col class="v-col-12">
-                                                            <ThumbnailUploader
+                                                            <ImageUploader
                                                                 v-model:model-value="lesson.poster_id"
                                                                 :initialUrl="lesson?.poster?.url"
                                                                 upload-route="admin.upload.courses.image"
@@ -648,7 +648,7 @@
                         density="comfortable"
                         prepend-inner-icon="mdi mdi-flag-outline"
                     />
-                    <ThumbnailUploader
+                    <ImageUploader
                         v-model:model-value="course.thumbnail_id"
                         :initialUrl="data.thumbnail.url"
                         upload-route="admin.upload.courses.image"
@@ -682,7 +682,7 @@ import {Head, router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import SearchableSelect from "@/Components/SearchableSelect.vue";
 import {useSortable} from "@vueuse/integrations/useSortable";
-import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
+import ImageUploader from "@/Components/ImageUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 const {adminPageTitle} = usePageTitle('ویرایش دوره');
 const props = defineProps({

@@ -256,7 +256,7 @@
                     </v-col>
 
                     <v-col class="v-col-12" v-if="['user', 'institution', 'teacher'].includes(form.role)">
-                        <ThumbnailUploader
+                        <ImageUploader
                             v-model:model-value="form.avatar_id"
                             upload-route="admin.upload.users.image"
                             label="فقط فایل تصویری آپلود کنید"
@@ -265,7 +265,7 @@
                         />
                     </v-col>
                     <v-col class="v-col-12" v-if="form.role === 'teacher'">
-                        <ThumbnailUploader
+                        <ImageUploader
                             v-model:model-value="form.image_id"
                             upload-route="admin.upload.users.image"
                             label="فقط فایل تصویری آپلود کنید"
@@ -527,7 +527,7 @@ import {defineComponent, ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
 import usePageTitle from "@/Composables/usePageTitle.js";
-import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
+import ImageUploader from "@/Components/ImageUploader.vue";
 
 const {adminPageTitle} = usePageTitle('ایجاد کاربر');
 

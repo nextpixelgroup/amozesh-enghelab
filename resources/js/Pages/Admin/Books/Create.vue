@@ -226,7 +226,7 @@
                         <v-col class="v-col-12">
                             <label class="zo-label">تصویر شاخص</label>
 
-                            <ThumbnailUploader
+                            <ImageUploader
                                 v-model:model-value="form.thumbnail_id"
                                 upload-route="admin.upload.books.image"
                                 label="فقط فایل تصویری آپلود کنید"
@@ -261,7 +261,7 @@ import {Head, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import FieldNumber from "@/Components/FieldNumber.vue";
 import ShowMessage from "@/Components/ShowMessage.vue";
-import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
+import ImageUploader from "@/Components/ImageUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import MultipleSelector from "@/Components/MultipleSelector.vue";
 

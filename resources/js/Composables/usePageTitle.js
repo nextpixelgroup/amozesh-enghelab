@@ -1,10 +1,20 @@
 import { computed } from 'vue'
 
 export default function usePageTitle(title = '') {
-    const appName = 'پنل مدیریت'
+    const adminTitle = 'پنل مدیریت'
     const adminPageTitle = computed(() =>
-        title ? `${appName} | ${title}` : appName
+        title ? `${adminTitle} | ${title}` : adminTitle
     )
 
-    return { adminPageTitle }
+    const webTitle = 'انقلاب'
+    const webPageTitle = computed(() =>
+        title ? `${webTitle} | ${title}` : webTitle
+    )
+
+    const panelTitle = 'پنل کاربری'
+    const panelPageTitle = computed(() =>
+        title ? `${panelTitle} | ${title}` : panelTitle
+    )
+
+    return { adminPageTitle, webPageTitle, panelPageTitle}
 }

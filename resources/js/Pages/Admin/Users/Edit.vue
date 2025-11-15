@@ -255,7 +255,7 @@
                         />
                     </v-col>
                     <v-col class="v-col-12" v-if="['user', 'institution', 'teacher'].includes(form.role)">
-                        <ThumbnailUploader
+                        <ImageUploader
                             v-model:model-value="form.avatar_id"
                             :initialUrl="user.avatar.url"
                             upload-route="admin.upload.books.image"
@@ -265,7 +265,7 @@
                         />
                     </v-col>
                     <v-col class="v-col-12" v-if="form.role === 'teacher'">
-                        <ThumbnailUploader
+                        <ImageUploader
                             v-model:model-value="form.image_id"
                             :initialUrl="user.teacherDetails.image.url"
                             upload-route="admin.upload.books.image"
@@ -537,7 +537,7 @@ import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
 import UserRestrictionComponent from "@/Components/UserRestrictionComponent.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
-import ThumbnailUploader from "@/Components/ThumbnailUploader.vue";
+import ImageUploader from "@/Components/ImageUploader.vue";
 const {adminPageTitle} = usePageTitle('ویرایش کاربر');
 
 defineComponent({
