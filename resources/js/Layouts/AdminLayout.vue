@@ -166,4 +166,15 @@ const logout = () => {
 .zo-main {
     background: rgb(245, 245, 245, .75)
 }
+
+a {
+    display: block;
+    color: rgb(255, 255, 255);
+    border-radius: .25rem;
+    transition: .25s all ease-in-out;
+}
+
+a:hover {
+    background: rgb(255, 255, 255, .15)
+}
 </style>

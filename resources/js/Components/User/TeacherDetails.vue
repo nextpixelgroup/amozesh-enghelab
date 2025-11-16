@@ -151,7 +151,7 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" lg="6">
                     <ImageUploader
                         v-model:model-value="form.avatar_id"
                         upload-route="admin.upload.users.image"
@@ -161,7 +161,7 @@
                         type="user"
                     />
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="12" lg="6">
                     <ImageUploader
                         v-model:model-value="form.image_id"
                         upload-route="admin.upload.users.image"
