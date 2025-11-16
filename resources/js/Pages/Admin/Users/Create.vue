@@ -17,21 +17,21 @@
             </v-row>
         </div>
         <v-form @submit.prevent="addUser">
-            <v-card class="pa-5 mb-3 elevation-2">
-                <v-row dense>
-                    <UserDetails v-if="form.role == 'user'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form" :degree="degree"/>
-                    <AdminDetails v-else-if="form.role == 'admin'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form"/>
-                    <ContentManagerDetails v-else-if="form.role == 'content-manager'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form"/>
-                    <TeacherDetails v-else-if="form.role == 'teacher'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form" :site_url="site_url"/>
-                    <InstitutionDetails v-else-if="form.role == 'institution'" :roles="roles" :form="form"/>
-                    <v-col class="v-col-12 text-left">
-                        <v-btn color="primary" type="submit" :loading="isLoading">
-                            ایجاد کاربر
-                        </v-btn>
-                    </v-col>
-                </v-row>
-            </v-card>
+            <UserDetails v-if="form.role == 'user'" :roles="roles" :days="days" :months="months" :years="years"
+                         :gender="gender" :form="form" :degree="degree"/>
+            <AdminDetails v-else-if="form.role == 'admin'" :roles="roles" :days="days" :months="months" :years="years"
+                          :gender="gender" :form="form"/>
+            <ContentManagerDetails v-else-if="form.role == 'content-manager'" :roles="roles" :days="days"
+                                   :months="months" :years="years" :gender="gender" :form="form"/>
+            <TeacherDetails v-else-if="form.role == 'teacher'" :roles="roles" :days="days" :months="months"
+                            :years="years" :gender="gender" :form="form" :site_url="site_url"/>
+            <InstitutionDetails v-else-if="form.role == 'institution'" :roles="roles" :form="form"/>
 
+            <div class="text-end">
+                <v-btn color="primary" type="submit" :loading="isLoading">
+                    ایجاد کاربر
+                </v-btn>
+            </div>
         </v-form>
     </AdminLayout>
 </template>
@@ -106,8 +106,6 @@ const form = useForm({
     'image_id': '',
     'educations': []
 });
-
-
 
 
 const addUser = () => {
