@@ -16,23 +16,21 @@
                 </v-col>
             </v-row>
         </div>
-        <v-form @submit.prevent="addUser">
-            <UserDetails v-if="form.role == 'user'" :roles="roles" :days="days" :months="months" :years="years"
-                         :gender="gender" :form="form" :degree="degree"/>
-            <AdminDetails v-else-if="form.role == 'admin'" :roles="roles" :days="days" :months="months" :years="years"
-                          :gender="gender" :form="form"/>
-            <ContentManagerDetails v-else-if="form.role == 'content-manager'" :roles="roles" :days="days"
-                                   :months="months" :years="years" :gender="gender" :form="form"/>
-            <TeacherDetails v-else-if="form.role == 'teacher'" :roles="roles" :days="days" :months="months"
-                            :years="years" :gender="gender" :form="form" :site_url="site_url"/>
-            <InstitutionDetails v-else-if="form.role == 'institution'" :roles="roles" :form="form"/>
+        <UserDetails v-if="form.role == 'user'" :roles="roles" :days="days" :months="months" :years="years"
+                     :gender="gender" :form="form" :degree="degree"/>
+        <AdminDetails v-else-if="form.role == 'admin'" :roles="roles" :days="days" :months="months" :years="years"
+                      :gender="gender" :form="form"/>
+        <ContentManagerDetails v-else-if="form.role == 'content-manager'" :roles="roles" :days="days"
+                               :months="months" :years="years" :gender="gender" :form="form"/>
+        <TeacherDetails v-else-if="form.role == 'teacher'" :roles="roles" :days="days" :months="months"
+                        :years="years" :gender="gender" :form="form" :site_url="site_url"/>
+        <InstitutionDetails v-else-if="form.role == 'institution'" :roles="roles" :form="form"/>
 
-            <div class="text-end">
-                <v-btn color="primary" type="submit" :loading="isLoading">
-                    ایجاد کاربر
-                </v-btn>
-            </div>
-        </v-form>
+        <div class="text-end">
+            <v-btn color="primary" type="submit" :loading="isLoading" @click="addUser">
+                ایجاد کاربر
+            </v-btn>
+        </div>
     </AdminLayout>
 </template>
 <script setup>

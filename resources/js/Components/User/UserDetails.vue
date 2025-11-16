@@ -392,7 +392,7 @@ const togglePasswordVisibility = () => {
     showPassword.value = !showPassword.value
 }
 const addEducation = () => {
-    form.educations.push({
+    props.form.educations.push({
         university: '',
         field_of_study: '',
         degree: '',
@@ -406,7 +406,7 @@ const addEducation = () => {
     });
 };
 const removeEducation = (index) => {
-    form.educations.splice(index, 1);
+    props.form.educations.splice(index, 1);
 };
 
 // Initialize with one empty education if empty
