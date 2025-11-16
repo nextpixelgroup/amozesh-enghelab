@@ -163,6 +163,7 @@
                 label="فقط فایل تصویری آپلود کنید"
                 title="بارگذاری آواتار"
                 accept="image/*"
+                type="user"
             />
         </v-col>
         <v-col class="v-col-12">
@@ -172,6 +173,7 @@
                 label="فقط فایل تصویری آپلود کنید"
                 title="بارگذاری تصویر پس‌زمینه"
                 accept="image/*"
+                type="user"
             />
         </v-col>
         <v-col class="v-col-8">

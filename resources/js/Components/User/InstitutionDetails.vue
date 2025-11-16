@@ -89,6 +89,7 @@
             label="فقط فایل تصویری آپلود کنید"
             title="بارگذاری آواتار"
             accept="image/*"
+            type="user"
         />
     </v-col>
 </template>
