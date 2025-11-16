@@ -37,6 +37,26 @@ class Media extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function courseThumbnail()
+    {
+        return $this->hasOne(Course::class, 'thumbnail_id', 'id');
+    }
+
+    public function bookThumbnail()
+    {
+        return $this->hasOne(book::class, 'thumbnail_id', 'id');
+    }
+
+    public function lessonPoster()
+    {
+        return $this->hasOne(CourseLesson::class, 'poster_id', 'id');
+    }
+
+    public function videoCourses()
+    {
+        return $this->hasOne(Course::class, 'video_id', 'id');
+    }
+
     public static function uploadFile(UploadedFile $file, string $type = 'image', string $directory = 'uploads'): ?self
     {
         try {
@@ -44,7 +64,7 @@ class Media extends Model
             $filenameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $extension = $file->getClientOriginalExtension();
             $filename = createSlug($filenameWithoutExt) . '_' . time() . '.' . $extension;
-            $path = rtrim($directory, '/') . '/' . ltrim($type, '/') . 's/' . $filename;
+            $path = rtrim($directory, '/') . '/' . $filename;
 
             // Upload to FTP
             Storage::disk('ftp')->put($path, file_get_contents($file));
@@ -60,6 +80,17 @@ class Media extends Model
                 'path'      => $path,
                 'size'      => $file->getSize(),
             ]);
+        } catch (\Exception $e) {
+            log_error($e);
+            return null;
+        }
+    }
+
+    public function deleteFile()
+    {
+        try {
+            $this->delete();
+            Storage::disk('ftp')->delete($this->path);
         } catch (\Exception $e) {
             log_error($e);
             return null;

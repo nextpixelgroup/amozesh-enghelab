@@ -56,7 +56,6 @@ class UploadController extends Controller
 
         $file = $request->file('file');
         $media = Media::uploadFile($file, 'image', 'uploads/images/users');
-
         if (!$media) {
             return responseJSon('error', ' خطا در آپلود فایل');
         }
@@ -68,9 +67,19 @@ class UploadController extends Controller
         ]);
     }
 
-    public function destroy(Media $media)
+    public function destroy(Media $media, $type)
     {
-        sleep(2);
-        return responseJSon('success', 'با موفقیت حذف شد');
+        if($type == 'course'){
+            $media->courseThumbnail()->update(['thumbnail_id' => null]);
+        }
+        elseif($type == 'book'){
+            $media->bookThumbnail()->update(['thumbnail_id' => null]);
+        }
+        elseif($type == 'lesson'){
+
+            $media->lessonPoster()->update(['poster_id' => null]);
+        }
+        $media->deleteFile();
+        return responseJSon('success', 'فایل از هاست حذف شد. لطفا تغییرات را ذخیره کنید تا اعمال شود');
     }
 }

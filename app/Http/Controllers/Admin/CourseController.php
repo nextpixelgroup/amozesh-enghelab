@@ -317,33 +317,38 @@ class CourseController extends Controller
             $video_id = null;
             $domain = env('FTP_DOMAIN');
             $video_slug = env('COURSE_VIDEO_UPLOAD_SLUG');
+            $lesson = CourseLesson::find($lessonData['id']);
+            //dd($lesson);
+            //dd($lesson->video_id);
             if ($lessonData['video_url']) {
                 $http = env('FTP_SSL') ? 'https://' : 'http://';
                 $url = $http . $domain . '/' . $video_slug . $lessonData['video_url'];
                 $response = Http::head($url);
                 if (!$response->successful()) {
-                    return redirectMessage('error', 'چنین ویدیویی یافت نشد');
+                    return redirectMessage('error', "ویدیو {$lessonData['video_url']} یافت نشد");
                 } else {
-
-                    // Get file info
-                    $fileName = basename($lessonData['video_url']);
-                    $fileSize = $response->header('Content-Length');
-                    $mimeType = $response->header('Content-Type');
-                    // Save to media table
-                    $filenameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
-                    $media = auth()->user()->media()->create([
-                        'file_type' => 'video',
-                        'alt' => $filenameWithoutExt,
-                        'file_name' => $fileName,
-                        'mime_type' => $mimeType,
-                        'ssl' => true,
-                        'domain' => $domain,
-                        'path' => $video_slug . $lessonData['video_url'],
-                        'size' => $fileSize,
-                    ]);
-
+                    $media = Media::where('file_name',$lessonData['video_url'])->first();
+                    if(!$media) {
+                        // Get file info
+                        $fileName = basename($lessonData['video_url']);
+                        $fileSize = $response->header('Content-Length');
+                        $mimeType = $response->header('Content-Type');
+                        // Save to media table
+                        $filenameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
+                        $media = auth()->user()->media()->create([
+                            'file_type' => 'video',
+                            'alt' => $filenameWithoutExt,
+                            'file_name' => $fileName,
+                            'mime_type' => $mimeType,
+                            'ssl' => true,
+                            'domain' => $domain,
+                            'path' => $video_slug . $lessonData['video_url'],
+                            'size' => $fileSize,
+                        ]);
+                    }
                     $video_id = $media->id;
                 }
+
             }
             if(is_numeric($lessonData['id']) && $lessonData['id'] > 0){
                 $requestLessonIds[] = $lessonData['id'];
