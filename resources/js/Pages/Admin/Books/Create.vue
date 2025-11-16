@@ -231,6 +231,7 @@
                                 upload-route="admin.upload.books.image"
                                 label="فقط فایل تصویری آپلود کنید"
                                 accept="image/*"
+                                type="book"
                             />
 
                         </v-col>

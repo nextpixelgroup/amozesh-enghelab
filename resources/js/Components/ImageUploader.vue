@@ -8,6 +8,14 @@
     <!-- اگر فایل آپلود شده است -->
     <div v-if="fileUploaded" class="thumbnail-box">
 
+        <v-progress-circular
+            v-if="isRemoving"
+            indeterminate
+            color="primary"
+            size="48"
+            width="3"
+            class="my-4"
+        ></v-progress-circular>
         <div class="thumbnail-image"
              v-if="!isRemoving">
             <v-badge
@@ -65,13 +73,6 @@
             </v-card>
         </v-dialog>
 
-        <v-progress-circular v-if="isRemoving"
-            indeterminate
-            color="primary"
-            size="48"
-            width="3"
-            class="my-4"
-        ></v-progress-circular>
     </div>
 
     <!-- اگر فایل هنوز آپلود نشده است -->
@@ -107,7 +108,6 @@ import {ref, watch} from 'vue';
 import {route} from 'ziggy-js';
 import {VFileUpload} from 'vuetify/labs/VFileUpload'
 import ShowMessage from "@/Components/ShowMessage.vue";
-import {router} from "@inertiajs/vue3";
 
 const dialog = ref(false);
 const isRemoving = ref(false);
@@ -119,7 +119,8 @@ const props = defineProps({
     accept: {type: String, default: 'image/*'},
     maxSize: {type: Number, default: 5 * 1024 * 1024},
     initialUrl: {type: String, default: ''},
-    thumbnailText: {type: String, default: 'برای تغییر تصویر، ابتدا حذف کنید'}
+    thumbnailText: {type: String, default: 'برای تغییر تصویر، ابتدا حذف کنید'},
+    type: {type: String}
 });
 const thumbnailText = ref(props.thumbnailText);
 const emit = defineEmits([
@@ -204,23 +205,26 @@ const uploadThumbnail = async () => {
 
 const removeThumbnail = async () => {
 
-    isRemoving.value = true;
-    thumbnailText.value = 'درحال حذف لطفا منتظر بمانید...';
-    const response = await axios.delete(route('admin.media.destroy', props.modelValue), [], {
-        headers: {'Content-Type': 'multipart/form-data'},
-    });
-    if (response.status === 200) {
-        if (response.data.status == 'success') {
-            thumbnail.value = null;
-            thumbnailUrl.value = '';
-            fileUploaded.value = false;
-            emit('update:modelValue', null);
-            emit('removed', thumbnailUrl.value);
-            isRemoving.value = false;
-            thumbnailText.value = 'برای تغییر تصویر، ابتدا حذف کنید'
-        }
-        else {
-            showError(response.data.message);
+    const confirm = await $confirm("آیا از حذف این تصویر اطمینان دارید؟");
+
+    if(confirm) {
+        isRemoving.value = true;
+        thumbnailText.value = 'درحال حذف لطفا منتظر بمانید...';
+        const response = await axios.delete(route('admin.media.destroy', {media: props.modelValue, type: props.type}), [], {
+            headers: {'Content-Type': 'multipart/form-data'},
+        });
+        if (response.status === 200) {
+            if (response.data.status == 'success') {
+                thumbnail.value = null;
+                thumbnailUrl.value = '';
+                fileUploaded.value = false;
+                emit('update:modelValue', null);
+                emit('removed', thumbnailUrl.value);
+                isRemoving.value = false;
+                thumbnailText.value = 'برای تغییر تصویر، ابتدا حذف کنید'
+            } else {
+                showError(response.data.message);
+            }
         }
     }
 

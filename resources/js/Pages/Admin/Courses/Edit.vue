@@ -266,6 +266,7 @@
                                                                 title="آپلود تصویر ویدیو"
                                                                 label="تصویر ویدیو را اینجا رها کنید"
                                                                 accept="image/*"
+                                                                type="lesson"
                                                             />
                                                         </v-col>
                                                     </v-row>
@@ -655,6 +656,7 @@
                         title="آپلود تصویر شاخص دوره"
                         label="تصویر شاخص دوره را اینجا رها کنید"
                         accept="image/*"
+                        type="course"
                     />
                     <v-btn block
                            size="large"

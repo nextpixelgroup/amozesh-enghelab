@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class CourseLesson extends Model
@@ -30,6 +31,7 @@ class CourseLesson extends Model
     {
         return $this->belongsTo(Media::class, 'video_id');
     }
+
 
     public function poster()
     {

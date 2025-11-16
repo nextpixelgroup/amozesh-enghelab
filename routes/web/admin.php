@@ -85,7 +85,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.courses.image');
         Route::post('upload/users/image', [UploadController::class, 'userImage'])->name('upload.users.image');
 
-        Route::delete('media/{media}', [UploadController::class, 'destroy'])->name('media.destroy');
+        Route::delete('media/{media}/{type}', [UploadController::class, 'destroy'])->name('media.destroy');
 
         /********* Auth *********/
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
