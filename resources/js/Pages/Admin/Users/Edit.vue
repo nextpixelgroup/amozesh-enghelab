@@ -599,7 +599,7 @@ const form = useForm({
     'institution_id': user.value?.institution_id,
     'avatar_id': user.value?.avatar?.id,
     'image': user.value?.teacherDetails?.image,
-    'image_id': user.value?.teacherDetails?.image.id,
+    'image_id': user.value?.teacherDetails?.image?.id,
     'educations': user.value.educations && user.value.educations.length > 0
         ? user.value.educations.map(education => ({
             id: education.id || null,
