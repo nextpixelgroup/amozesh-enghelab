@@ -39,13 +39,11 @@ import {defineComponent, ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
 import usePageTitle from "@/Composables/usePageTitle.js";
-import UserInfo from "@/Components/User/UserInfo.vue";
-import InstitutionInfo from "@/Components/User/InstitutionInfo.vue";
 import AdminDetails from "@/Components/User/AdminDetails.vue";
 import UserDetails from "@/Components/User/UserDetails.vue";
 import ContentManagerDetails from "@/Components/User/ContentManagerDetails.vue";
 import TeacherDetails from "@/Components/User/TeacherDetails.vue";
-import InstitutionDetails from "@/Components/User/institutionDetails.vue";
+import InstitutionDetails from "@/Components/User/InstitutionDetails.vue";
 
 const {adminPageTitle} = usePageTitle('ایجاد کاربر');
 
