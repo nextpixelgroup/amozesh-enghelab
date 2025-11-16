@@ -225,132 +225,133 @@
                 </v-col>
             </v-row>
         </div>
-        <v-row v-for="(education, index) in form.educations" :key="index" class="mb-4">
-            <v-col cols="12" class="d-flex justify-space-between align-center">
-                <h4 class="text-subtitle-1">سابقه تحصیلی {{ index + 1 }}</h4>
-                <v-btn
-                    icon="mdi-delete"
-                    variant="text"
-                    color="error"
-                    size="small"
-                    @click="removeEducation(index)"
-                ></v-btn>
-            </v-col>
-
-            <v-col cols="12" md="4">
-                <v-text-field
-                    v-model="education.university"
-                    label="نام دانشگاه یا موسسه"
-                    variant="outlined"
-                    density="comfortable"
-                    hide-details
-                ></v-text-field>
-            </v-col>
-            <v-col cols="12" md="4">
-                <v-text-field
-                    v-model="education.city"
-                    label="شهر محل تحصیل"
-                    variant="outlined"
-                    density="comfortable"
-                    hide-details
-                ></v-text-field>
-            </v-col>
-            <v-col cols="12" md="4">
-                <v-text-field
-                    v-model="education.field_of_study"
-                    label="رشته تحصیلی"
-                    variant="outlined"
-                    density="comfortable"
-                    hide-details
-                ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" md="4">
-                <v-select
-                    v-model="education.degree"
-                    label="مدرک تحصیلی"
-                    variant="outlined"
-                    density="comfortable"
-                    :items="degree"
-                    prepend-inner-icon="mdi-calendar-badge"
-                    hide-details
-                />
-            </v-col>
-
+        <v-card class="pa-5 mb-3 elevation-2" v-for="(education, index) in form.educations" :key="index">
             <v-row dense>
-                <v-col class="v-col-6">
-                    <v-select
-                        v-model="education.start_month"
-                        label="ماه شروع تحصیل"
-                        variant="outlined"
-                        density="comfortable"
-                        :items="months"
-                        prepend-inner-icon="mdi-calendar-month"
-                        hide-details
-                    />
+                <v-col cols="12" class="d-flex justify-space-between align-center">
+                    <h4 class="text-subtitle-1">سابقه تحصیلی {{ index + 1 }}</h4>
+                    <v-btn
+                        icon="mdi-delete"
+                        variant="text"
+                        color="error"
+                        size="small"
+                        @click="removeEducation(index)"
+                    ></v-btn>
                 </v-col>
-                <v-col class="v-col-6">
+                <v-col cols="12" md="6" lg="3">
+                    <v-text-field
+                        v-model="education.university"
+                        label="نام دانشگاه یا موسسه"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-school"
+                        hide-details
+                        clearable
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6" lg="3">
+                    <v-text-field
+                        v-model="education.city"
+                        label="شهر محل تحصیل"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-map-marker"
+                        hide-details
+                        clearable
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6" lg="3">
+                    <v-text-field
+                        v-model="education.field_of_study"
+                        label="رشته تحصیلی"
+                        variant="outlined"
+                        prepend-inner-icon="mdi-human-male-board"
+                        hide-details
+                        clearable
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6" lg="3">
                     <v-select
-                        v-model="education.start_year"
-                        label="سال شروع تحصیل"
+                        v-model="education.degree"
+                        label="مدرک تحصیلی"
                         variant="outlined"
                         density="comfortable"
-                        :items="years"
+                        :items="degree"
                         prepend-inner-icon="mdi-calendar-badge"
                         hide-details
                     />
                 </v-col>
-            </v-row>
-            <v-row dense>
-                <v-col class="v-col-6">
-                    <v-select
-                        v-model="education.end_month"
-                        label="ماه پایان تحصیل"
-                        variant="outlined"
-                        density="comfortable"
-                        :items="months"
-                        prepend-inner-icon="mdi-calendar-month"
-                        hide-details
-                        :disabled="education.is_studying"
-                    />
+                <v-col cols="12" lg="6">
+                    <v-row dense>
+                        <v-col cols="12" md="6">
+                            <v-select
+                                v-model="education.start_month"
+                                label="ماه شروع تحصیل"
+                                variant="outlined"
+                                density="comfortable"
+                                :items="months"
+                                prepend-inner-icon="mdi-calendar-month"
+                                hide-details
+                            />
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <v-select
+                                v-model="education.start_year"
+                                label="سال شروع تحصیل"
+                                variant="outlined"
+                                density="comfortable"
+                                :items="years"
+                                prepend-inner-icon="mdi-calendar-badge"
+                                hide-details
+                            />
+                        </v-col>
+                    </v-row>
                 </v-col>
-                <v-col class="v-col-6">
-                    <v-select
-                        v-model="education.end_year"
-                        label="سال پایان تحصیل"
+                <v-col cols="12" lg="6">
+                    <v-row dense>
+                        <v-col cols="12" md="6">
+                            <v-select
+                                v-model="education.end_month"
+                                label="ماه پایان تحصیل"
+                                variant="outlined"
+                                density="comfortable"
+                                :items="months"
+                                prepend-inner-icon="mdi-calendar-month"
+                                hide-details
+                                :disabled="education.is_studying"
+                            />
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <v-select
+                                v-model="education.end_year"
+                                label="سال پایان تحصیل"
+                                variant="outlined"
+                                density="comfortable"
+                                :items="years"
+                                prepend-inner-icon="mdi-calendar-badge"
+                                hide-details
+                                :disabled="education.is_studying"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-col>
+                <v-col cols="12">
+                    <v-textarea
+                        v-model="education.description"
+                        label="توضیحات"
                         variant="outlined"
-                        density="comfortable"
-                        :items="years"
-                        prepend-inner-icon="mdi-calendar-badge"
+                        rows="2"
+                        prepend-inner-icon="mdi-text"
                         hide-details
-                        :disabled="education.is_studying"
-                    />
+                    ></v-textarea>
+                </v-col>
+                <v-col cols="12">
+                    <v-checkbox
+                        v-model="education.is_studying"
+                        label="در حال تحصیل هستم"
+                        hide-details
+                        @update:model-value="handleStudyingChange(education)"
+                    ></v-checkbox>
                 </v-col>
             </v-row>
-
-            <v-col cols="12" md="3" class="d-flex align-center">
-                <v-checkbox
-                    v-model="education.is_studying"
-                    label="در حال تحصیل هستم"
-                    hide-details
-                    @update:model-value="handleStudyingChange(education)"
-
-
-                ></v-checkbox>
-            </v-col>
-
-            <v-col cols="12">
-                <v-textarea
-                    v-model="education.description"
-                    label="توضیحات"
-                    variant="outlined"
-                    rows="2"
-                    hide-details
-                ></v-textarea>
-            </v-col>
-
-            <v-divider v-if="index < form.educations.length - 1" class="my-2"></v-divider>
-        </v-row>
+        </v-card>
     </div>
 </template>
 <script setup>
