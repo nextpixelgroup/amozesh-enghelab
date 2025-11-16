@@ -98,7 +98,8 @@ th {
     box-shadow: 0 1.5px 15px rgba(0, 0, 0, .15)
 }
 
-.zo-publish {
+.zo-publish,
+.zo-active {
     background: rgba(5, 105, 60);
     color: rgb(255, 255, 255)
 }
@@ -116,11 +117,6 @@ th {
 .zo-archive {
     background: rgba(0, 0, 0, .15);
     color: rgb(45, 45, 45);
-}
-
-.zo-active {
-    background: rgba(5, 105, 60, .15);
-    color: rgb(5, 105, 60);
 }
 
 .zo-deactive {
