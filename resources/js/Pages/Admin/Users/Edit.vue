@@ -35,7 +35,7 @@
                             </div>
                         </v-sheet>
                     </v-col>
-                    <v-col class="v-col-lg-4 v-col-12">
+                    <v-col class="v-col-12">
                         <v-select
                             v-model="form.role"
                             label="نقش کاربری"

@@ -100,9 +100,11 @@
         </v-main>
 
         <!-- Global Flash Message -->
+        <!--
         <div class="text-center text-caption text-grey py-2">
             طراحی و پیاده‌سازی توسط <a href="https://nextpixel.ir" target="_blank">نکست پیکسل</a>
         </div>
+        -->
         <FlashMessage/>
     </v-app>
 </template>

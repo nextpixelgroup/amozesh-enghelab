@@ -35,7 +35,7 @@
                             </div>
                         </v-sheet>
                     </v-col>
-                    <v-col class="v-col-lg-4 v-col-12">
+                    <v-col class="v-col-12">
                         <v-select
                             v-model="form.role"
                             label="نقش کاربری"
@@ -82,7 +82,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col class="v-col-lg-4 v-col-12">
+                    <v-col class="v-col-12">
                         <v-text-field
                             type="email"
                             v-model="form.email"
@@ -93,7 +93,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col class="v-col-lg-8 v-col-12">
+                    <v-col class="v-col-12">
                         <v-text-field
                             type="text"
                             v-model="form.address"
@@ -136,7 +136,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col class="v-col-lg-3 v-col-12">
+                    <v-col class="v-col-lg-6 v-col-12">
                         <v-text-field
                             type="text"
                             v-model="form.tel"
@@ -147,7 +147,7 @@
                             hide-details
                         />
                     </v-col>
-                    <v-col class="v-col-lg-3 v-col-12">
+                    <v-col class="v-col-lg-6 v-col-12">
                         <v-text-field
                             type="text"
                             v-model="form.postal_code"
@@ -584,7 +584,7 @@ const form = useForm({
     'bio': '',
     'avatar_id': '',
     'image_id': '',
-    'educations' : []
+    'educations': []
 });
 
 
