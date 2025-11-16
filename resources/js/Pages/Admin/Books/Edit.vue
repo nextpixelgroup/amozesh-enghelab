@@ -190,7 +190,7 @@
                                 density="compact"
                                 variant="outlined"
                                 prepend-inner-icon="mdi-bookshelf"
-                                min="1"
+                                :min="1"
                             ></v-number-input>
                         </v-col>
                         <v-col class="v-col-12">
@@ -201,7 +201,7 @@
                                 density="compact"
                                 variant="outlined"
                                 prepend-inner-icon="mdi-chart-line-variant"
-                                min="1"
+                                :min="1"
                             ></v-number-input>
                         </v-col>
                         <v-col class="v-col-12">
