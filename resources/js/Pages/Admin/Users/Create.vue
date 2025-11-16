@@ -19,54 +19,11 @@
         <v-form @submit.prevent="addUser">
             <v-card class="pa-5 mb-3 elevation-2">
                 <v-row dense>
-                    <v-col class="v-col-12">
-                        <v-sheet
-                            elevation="0"
-                            class="pa-4 rounded-lg bg-grey-lighten-4 mb-4"
-                        >
-                            <div class="d-flex align-center">
-                                <v-icon
-                                    icon="mdi-account-details"
-                                    color="primary"
-                                    class="ml-2"
-                                    size="24"
-                                ></v-icon>
-                                <h3 class="font-weight-medium">مشخصات کاربر</h3>
-                            </div>
-                        </v-sheet>
-                    </v-col>
-                    <InstitutionInfo v-if="form.role === 'institution'" :form="form" :roles="roles" />
-                    <UserInfo v-else :form="form" :roles="roles" />
-
-                </v-row>
-            </v-card>
-            <v-card class="pa-5 mb-3 elevation-2">
-                <v-row dense>
-                    <v-col class="v-col-12">
-                        <v-sheet
-                            elevation="0"
-                            class="pa-4 rounded-lg bg-grey-lighten-4 mb-4"
-                        >
-                            <div class="d-flex align-center">
-                                <v-icon
-                                    icon="mdi mdi-information-outline"
-                                    color="primary"
-                                    class="ml-2"
-                                    size="24"
-                                ></v-icon>
-                                <h3 class="font-weight-medium">جزئیات بیشتر</h3>
-                            </div>
-                        </v-sheet>
-                    </v-col>
-
-                    <UserDetails v-if="form.role == 'user'" :days="days" :months="months" :years="years" :gender="gender" :form="form" :degree="degree"/>
-                    <AdminDetails v-else-if="form.role == 'admin'" :days="days" :months="months" :years="years" :gender="gender" :form="form"/>
-                    <ContentManagerDetails v-else-if="form.role == 'content-manager'" :days="days" :months="months" :years="years" :gender="gender" :form="form"/>
-                    <TeacherDetails v-else-if="form.role == 'teacher'" :days="days" :months="months" :years="years" :gender="gender" :form="form" :site_url="site_url"/>
-                    <InstitutionDetails v-else-if="form.role == 'institution'" :form="form"/>
-
-                </v-row>
-                <v-row dense>
+                    <UserDetails v-if="form.role == 'user'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form" :degree="degree"/>
+                    <AdminDetails v-else-if="form.role == 'admin'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form"/>
+                    <ContentManagerDetails v-else-if="form.role == 'content-manager'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form"/>
+                    <TeacherDetails v-else-if="form.role == 'teacher'" :roles="roles" :days="days" :months="months" :years="years" :gender="gender" :form="form" :site_url="site_url"/>
+                    <InstitutionDetails v-else-if="form.role == 'institution'" :roles="roles" :form="form"/>
                     <v-col class="v-col-12 text-left">
                         <v-btn color="primary" type="submit" :loading="isLoading">
                             ایجاد کاربر
@@ -74,6 +31,7 @@
                     </v-col>
                 </v-row>
             </v-card>
+
         </v-form>
     </AdminLayout>
 </template>

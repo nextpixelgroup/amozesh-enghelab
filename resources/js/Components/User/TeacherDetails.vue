@@ -1,20 +1,77 @@
 <template>
     <v-row dense>
-        <v-col class="v-col-12">
-            <v-sheet
-                elevation="0"
-                class="pa-4 rounded-lg bg-grey-lighten-4 mb-4"
-            >
-                <div class="d-flex align-center">
-                    <v-icon
-                        icon="mdi mdi-information-outline"
-                        color="primary"
-                        class="ml-2"
-                        size="24"
-                    ></v-icon>
-                    <h3 class="font-weight-medium">جزئیات بیشتر</h3>
-                </div>
-            </v-sheet>
+        <v-col cols="12">
+            <v-select
+                v-model="form.role"
+                label="نقش کاربری"
+                variant="outlined"
+                density="comfortable"
+                :items="roles"
+                item-title="title"
+                item-value="value"
+                prepend-inner-icon="mdi-shield-account"
+                hide-details
+            />
+        </v-col>
+
+        <v-col cols="12" lg="4">
+            <v-text-field
+                v-model="form.firstname"
+                label="نام"
+                variant="outlined"
+                density="comfortable"
+                prepend-inner-icon="mdi-account"
+                hide-details
+                type="text"
+            />
+        </v-col>
+
+        <v-col cols="12" lg="4">
+            <v-text-field
+                v-model="form.lastname"
+                label="نام خانوادگی"
+                variant="outlined"
+                density="comfortable"
+                prepend-inner-icon="mdi-account-circle"
+                hide-details
+                type="text"
+            />
+        </v-col>
+
+        <v-col cols="12" lg="4">
+            <v-text-field
+                v-model="form.mobile"
+                label="تلفن همراه"
+                variant="outlined"
+                density="comfortable"
+                prepend-inner-icon="mdi-cellphone-settings"
+                hide-details
+                type="text"
+            />
+        </v-col>
+
+        <v-col cols="12">
+            <v-text-field
+                v-model="form.email"
+                label="ایمیل"
+                variant="outlined"
+                density="comfortable"
+                prepend-inner-icon="mdi-email"
+                hide-details
+                type="email"
+            />
+        </v-col>
+
+        <v-col cols="12">
+            <v-text-field
+                v-model="form.address"
+                label="آدرس"
+                variant="outlined"
+                density="comfortable"
+                prepend-inner-icon="mdi-map-marker-radius"
+                hide-details
+                type="text"
+            />
         </v-col>
         <v-col class="v-col-lg-3 v-col-12">
             <v-text-field
@@ -358,6 +415,10 @@
 <script setup>
 import ImageUploader from "@/Components/ImageUploader.vue";
 const props = defineProps({
+    roles: {
+        type: Object,
+        required: true
+    },
     form: {
         type: Object,
         required: true
