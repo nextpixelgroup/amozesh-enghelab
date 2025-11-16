@@ -195,6 +195,7 @@
                         label="فقط فایل تصویری آپلود کنید"
                         title="بارگذاری آواتار"
                         accept="image/*"
+                        type="user"
                     />
                 </v-col>
             </v-row>
@@ -384,6 +385,10 @@ const props = defineProps({
         required: true
     },
     degree: {
+        type: Object,
+        required: true
+    },
+    institutions: {
         type: Object,
         required: true
     },
