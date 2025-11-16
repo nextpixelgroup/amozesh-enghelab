@@ -17,7 +17,7 @@
             </v-row>
         </div>
         <UserDetails v-if="form.role == 'user'" :roles="roles" :days="days" :months="months" :years="years"
-                     :gender="gender" :form="form" :degree="degree"/>
+                     :gender="gender" :form="form" :degree="degree" :institutions="institutions"/>
         <AdminDetails v-else-if="form.role == 'admin'" :roles="roles" :days="days" :months="months" :years="years"
                       :gender="gender" :form="form"/>
         <ContentManagerDetails v-else-if="form.role == 'content-manager'" :roles="roles" :days="days"

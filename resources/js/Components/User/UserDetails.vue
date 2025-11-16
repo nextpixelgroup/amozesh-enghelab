@@ -387,6 +387,10 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    institutions: {
+        type: Object,
+        required: true
+    },
 })
 const showPassword = ref(false);
 const togglePasswordVisibility = () => {
