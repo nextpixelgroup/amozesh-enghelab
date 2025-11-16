@@ -117,6 +117,26 @@ const addUser = () => {
         }
     });
 };
+watch(() => form.role, (newRole, oldRole) => {
+    if (newRole !== oldRole) {
+        // اگر نقش تغییر کرد، فیلدهای غیرمرتبط پاک میشن
+        if (newRole === 'user') {
+            delete form.username
+            delete form.password
+            // یا اگر نمی‌خوای delete کنی، فقط خالیش کن
+            // form.username = ''
+        }
+
+        if (newRole === 'institution') {
+            // مثلاً مؤسسه شاید lastname نداشته باشه
+            delete form.lastname
+        }
+
+        if (newRole === 'admin') {
+            // نقش ادمین همه فیلدها رو داره پس شاید نیاز به پاک‌سازی نباشه
+        }
+    }
+})
 
 </script>
 <style>

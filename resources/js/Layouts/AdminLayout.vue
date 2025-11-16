@@ -16,46 +16,55 @@
             <div class="px-3">
                 <v-divider></v-divider>
             </div>
-
             <v-list density="comfortable" class="px-1">
                 <template v-for="(item, i) in menuItems" :key="i">
-                    <!-- Menu items with children (submenu) -->
-                    <v-list-group v-if="item.children" :value="item.title">
+                    <!-- Menu with children -->
+                    <v-list-group
+                        v-if="item.children"
+                        :value="item.title"
+                    >
                         <template v-slot:activator="{ props }">
                             <v-list-item
                                 v-bind="props"
                                 :prepend-icon="item.icon"
                                 :title="item.title"
-                                :value="item.route"
                                 :active="isActive(item.route) || item.children.some(child => isActive(child.route))"
                                 rounded
                             ></v-list-item>
                         </template>
 
-                        <v-list-item
+                        <!-- Submenu items -->
+                        <Link
                             v-for="(child, childIndex) in item.children"
                             :key="`child-${childIndex}`"
-                            :title="child.title"
-                            :value="child.route"
-                            :prepend-icon="child.icon"
-                            :active="isActive(child.route)"
-                            @click="navigate(child.route)"
-                            rounded
-                        ></v-list-item>
+                            :href="route(child.route)"
+                            class="text-decoration-none"
+                        >
+                            <v-list-item
+                                :title="child.title"
+                                :prepend-icon="child.icon"
+                                :active="isActive(child.route)"
+                                rounded
+                            ></v-list-item>
+                        </Link>
                     </v-list-group>
 
                     <!-- Regular menu items -->
-                    <v-list-item
+                    <Link
                         v-else
-                        :prepend-icon="item.icon"
-                        :title="item.title"
-                        :active="isActive(item.route)"
-                        :value="item.route"
-                        @click="navigate(item.route)"
-                        rounded
-                    ></v-list-item>
+                        :href="route(item.route)"
+                        class="text-decoration-none"
+                    >
+                        <v-list-item
+                            :prepend-icon="item.icon"
+                            :title="item.title"
+                            :active="isActive(item.route)"
+                            rounded
+                        ></v-list-item>
+                    </Link>
                 </template>
             </v-list>
+
 
             <template v-slot:append>
                 <ul class="zo-social">
