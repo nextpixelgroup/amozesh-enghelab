@@ -616,7 +616,8 @@
                 </v-card>
             </v-col>
             <v-col class="v-col-12 v-col-lg-3">
-                <v-card class="pa-3 mb-3 elevation-2  position-sticky top-0">
+                <v-card class="pa-3 mb-3 elevation-2  position-sticky top-0"
+                        :style="{ top: stickyOffset + 'px !important' }">
                     <v-select
                         v-model="course.must_complete_quizzes"
                         hide-details
@@ -668,7 +669,7 @@
 </template>
 
 <script setup>
-import {nextTick, reactive, ref, useTemplateRef, watch} from 'vue';
+import {nextTick, reactive, ref, useTemplateRef, watch, onMounted, onUnmounted} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {Head, router} from "@inertiajs/vue3";
@@ -678,6 +679,7 @@ import {useSortable} from "@vueuse/integrations/useSortable";
 import ImageUploader from "@/Components/ImageUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import MultipleSelector from "@/Components/MultipleSelector.vue";
+
 const {adminPageTitle} = usePageTitle('ایجاد دوره');
 const props = defineProps({
     categories: Object,
@@ -962,6 +964,20 @@ function submitForm() {
             isLoading.value = false
         }
     })
+}
+
+const stickyOffset = ref(0);
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
+
+function handleScroll() {
+    stickyOffset.value = window.scrollY > 10 ? 55 : 0;
 }
 </script>
 <style scoped>
