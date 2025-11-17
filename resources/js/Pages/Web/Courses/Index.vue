@@ -195,5 +195,23 @@ const courses = ref([
         students: '۲.۱۲۳',
         price: 'رایگان',
     },
+    {
+        image: 'assets/img/sample/2.png',
+        category: 'فلسفه',
+        title: 'دوره کتاب چهل حکمت نبوی (ص)',
+        professor: 'عباسی علیزاده',
+        time: '۰۳:۵۸',
+        students: '۲.۱۲۳',
+        price: 'رایگان',
+    },
+    {
+        image: 'assets/img/sample/2.png',
+        category: 'فلسفه',
+        title: 'دوره کتاب چهل حکمت نبوی (ص)',
+        professor: 'عباسی علیزاده',
+        time: '۰۳:۵۸',
+        students: '۲.۱۲۳',
+        price: 'رایگان',
+    },
 ])
 </script>

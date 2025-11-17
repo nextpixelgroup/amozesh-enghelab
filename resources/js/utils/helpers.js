@@ -113,18 +113,16 @@ export const removeCommaNumber = (value) =>{
 }
 
 export const isActive = (routeName) => {
-    // Get the full route path and clean it
-    const routePath = new URL(route(routeName), window.location.origin).pathname;
-    const currentPath = window.location.pathname;
+    const routePath = new URL(route(routeName), window.location.origin).pathname
+    const currentPath = window.location.pathname
 
-    // Normalize paths (remove trailing slashes for consistent comparison)
-    const normalizedRoutePath = routePath.replace(/\/+$/, '');
-    const normalizedCurrentPath = currentPath.replace(/\/+$/, '');
+    const normalizedRoutePath = routePath.replace(/\/+$/, '')
+    const normalizedCurrentPath = currentPath.replace(/\/+$/, '')
 
-    // Check for exact match or if current path starts with route path
-    return normalizedCurrentPath === normalizedRoutePath ||
-        normalizedCurrentPath.startsWith(normalizedRoutePath + '/');
+    // فقط مسیر دقیقاً برابر — هیچ startsWith و داستانی نه!
+    return normalizedCurrentPath === normalizedRoutePath
 }
+
 
 export const navigate = (routeName) => {
     router.visit(route(routeName), {preserveState: true});
