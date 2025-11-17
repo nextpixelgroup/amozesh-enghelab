@@ -155,7 +155,8 @@
                 </v-card>
             </v-col>
             <v-col class="v-col-12 v-col-lg-3">
-                <v-card class="pa-3 mb-3 elevation-2 position-sticky top-0">
+                <v-card class="pa-3 mb-3 elevation-2  position-sticky top-0"
+                        :style="{ top: stickyOffset + 'px !important' }">
                     <v-row dense>
                         <v-col class="v-col-12">
                             <label class="zo-label">موجودی</label>
@@ -255,7 +256,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {onMounted, onUnmounted, ref} from 'vue';
 import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {Head, useForm} from "@inertiajs/vue3";
@@ -311,6 +312,17 @@ const AddBook = () => {
         }
     })
 }
+const stickyOffset = ref(0);
 
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
+});
 
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
+
+function handleScroll() {
+    stickyOffset.value = window.scrollY > 10 ? 55 : 0;
+}
 </script>
