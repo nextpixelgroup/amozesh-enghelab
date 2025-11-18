@@ -47,8 +47,8 @@
                             </div>
                             <CourseDetailsSeasons :seasons="seasons"/>
                         </div>
-                        <CourseDetailsRequirments/>
-                        <CourseDetailsRalated/>
+                        <CourseDetailsRequirements/>
+                        <CourseDetailsRelated/>
                         <CourseDetailsComments/>
                     </v-card>
                 </v-col>
@@ -69,8 +69,8 @@ import {Navigation, Pagination} from "swiper/modules";
 import CourseDetailsSidebar from "@/Components/Web/CourseDetailsSidebar.vue";
 import CourseDetailsIntro from "@/Components/Web/CourseDetailsIntro.vue";
 import CourseDetailsComments from "@/Components/Web/CourseDetailsComments.vue";
-import CourseDetailsRalated from "@/Components/Web/CourseDetailsRalated.vue";
-import CourseDetailsRequirments from "@/Components/Web/CourseDetailsRequirments.vue";
+import CourseDetailsRelated from "@/Components/Web/CourseDetailsRelated.vue";
+import CourseDetailsRequirements from "@/Components/Web/CourseDetailsRequirements.vue";
 import CourseDetailsSeasons from "@/Components/Web/CourseDetailsSeasons.vue";
 import CourseDetailsDescription from "@/Components/Web/CourseDetailsDescription.vue";
 
@@ -125,7 +125,7 @@ const seasons = [
     },
 ];
 
-const prerequisites = ref([
+const requirements = ref([
     {
         image: '/assets/img/sample/1.png',
         category: 'فلسفه',
