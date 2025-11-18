@@ -21,28 +21,28 @@
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
                                             <img src="assets/img/site/stat-course.svg" alt="" class="img-fluid"/>
-                                            <strong>76</strong>
+                                            <strong>{{stats.courses}}</strong>
                                             <span>دوره‌های آموزشی</span>
                                         </div>
                                     </v-col>
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
                                             <img src="assets/img/site/stat-star.svg" alt="" class="img-fluid"/>
-                                            <strong>76</strong>
+                                            <strong>{{stats.ratings}}</strong>
                                             <span>میانگین امتیازات دوره‌ها</span>
                                         </div>
                                     </v-col>
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
                                             <img src="assets/img/site/stat-students.svg" alt="" class="img-fluid"/>
-                                            <strong>76</strong>
+                                            <strong>{{stats.students}}</strong>
                                             <span>کل شرکت کنندگان</span>
                                         </div>
                                     </v-col>
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
                                             <img src="assets/img/site/stat-lessons.svg" alt="" class="img-fluid"/>
-                                            <strong>1200</strong>
+                                            <strong>{{stats.seasons}}</strong>
                                             <span>سرفصل آموزشی</span>
                                         </div>
                                     </v-col>
@@ -59,14 +59,29 @@
                             <div class="zo-search">
                                 <div class="zo-select">
                                     <v-select
-                                        v-model="model"
-                                        hide-details
-                                        :items="category"
+                                        v-model="filters.category"
+                                        :label="filters.category ? '' : 'دسته‌بندی'"
+                                        :items="categories"
+                                        item-title="title"
+                                        item-value="value"
                                         variant="solo"
-                                    ></v-select>
+                                        :clearable="filters.category !== 'all'"
+                                        hide-details
+                                        @update:model-value="search('category')"
+                                        :loading="isCategoryLoading"
+                                        :disabled="disabled"
+                                    />
                                 </div>
                                 <div class="zo-input">
-                                    <v-text-field hide-details placeholder="جستجو" variant="solo"></v-text-field>
+                                    <v-text-field
+                                        v-model="filters.search"
+                                        hide-details
+                                        placeholder="جستجو"
+                                        variant="solo"
+                                        clearable
+                                        @update:model-value="search('search')"
+                                        :loading="isSearchLoading"
+                                    />
                                     <span class="zo-icon">
                                         <img src="assets/img/site/c-search.svg" alt="" class="img-fluid"/>
                                     </span>
@@ -75,20 +90,23 @@
                         </v-col>
                         <v-col md="4" cols="12">
                             <div class="zo-sort">
-                                <v-menu>
+                                <v-menu :disabled="disabled">
                                     <template #activator="{ props }">
                                         <v-btn
                                             v-bind="props"
                                             variant="tonal"
                                             icon="mdi-filter-variant"
                                             class="w-10 h-10"
+                                            :loading="isSortLoading"
                                         ></v-btn>
                                     </template>
                                     <v-list>
                                         <v-list-item
-                                            v-for="(item, index) in sort"
+                                            v-for="(item, index) in sorts"
                                             :key="index"
                                             :value="index"
+                                            v-model="sort"
+                                            @click="search('sort', item.value)"
                                         >
                                             <v-list-item-title>{{ item.title }}</v-list-item-title>
                                         </v-list-item>
@@ -109,27 +127,27 @@
                         md="4"
                         lg="3"
                     >
-                        <a href="#" class="zo-course">
+                        <Link :href="course.url" class="zo-course">
                             <figure>
                                 <div class="zo-thumbnail">
-                                    <img :src="course.image" alt="" class="img-fluid"/>
+                                    <img :src="course.thumbnail" alt="" class="img-fluid"/>
                                 </div>
-                                <div class="zo-category">
+                                <div class="zo-category"  v-if="course.category">
                                     <img src="assets/img/site/c-cat.svg" alt="" class="img-fluid"/>
                                     <span>{{ course.category }}</span>
                                 </div>
                             </figure>
                             <div class="zo-content">
                                 <h2>{{ course.title }}</h2>
-                                <span class="zo-prof">{{ course.professor }}</span>
+                                <span class="zo-prof">{{ course.teacher }}</span>
                                 <ul>
                                     <li>
                                         <img src="assets/img/site/c-clock.svg" alt="" class="img-fluid"/>
-                                        <span>{{ course.time }}</span>
+                                        <span>{{ course.duration }}</span>
                                     </li>
                                     <li>
                                         <img src="assets/img/site/c-students.svg" alt="" class="img-fluid"/>
-                                        <span>{{ course.students }} دانشجو</span>
+                                        <span>{{ course.students > 0 ? course.students : 'بدون' }} دانشجو</span>
                                     </li>
                                 </ul>
                                 <div class="zo-price">
@@ -138,18 +156,17 @@
                                 </div>
                                 <div class="zo-more">اطلاعات بیشتر</div>
                             </div>
-                        </a>
+                        </Link>
                     </v-col>
                 </v-row>
             </v-container>
             <v-container>
                 <v-row>
                     <v-col cols="12">
-                        <v-pagination
-                            v-model="page"
-                            :length="8"
-                            rounded="circle"
-                        ></v-pagination>
+                        <Pagination
+                            :v-model="page"
+                            :totalPages="12"
+                        />
                     </v-col>
                 </v-row>
             </v-container>
@@ -158,60 +175,101 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 import WebLayout from '@/Layouts/WebLayout.vue'
+import Pagination from '@/Components/Pagination.vue'
+import {Link, router, usePage} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+const page = usePage();
+const query = new URLSearchParams(page.url.split('?')[1])
+const filters = ref({
+    category: query.get('category') ? query.get('category') : 'all',
+    sort: query.get('sort') ?? '',
+    search: query.get('search') ?? '',
+});
+const categories = ref(page.props.categories);
+const courses = computed( () => page.props.courses.data);
+const stats = ref(page.props.stats);
+console.log(stats)
+const sort = ref('desc');
+const sorts = ref([{title: 'جدیدترین', value: 'desc'}, {title: 'قدیمی‌ترین', value: 'asc'}])
+const currentPage = ref(1)
 
-const sort = ref([
-    {title: 'جدیدترین'},
-    {title: 'قدیمی‌ترین'},
-])
 
-const category = ref([
-    'دسته‌بندی',
-    'فرهنگ و رسانه',
-    'انقلاب ایران',
-    'تفکر ذهن',
-])
+const disabled = ref(false)
+const isCategoryLoading = ref(false)
+const isSearchLoading = ref(false)
+const isSortLoading = ref(false)
+let searchDebounceTimeout = null
+let activeSearchAbort = null
+const search = (type, value = null) => {
+    const loadingMap = {
+        category: isCategoryLoading,
+        search: isSearchLoading,
+        sort: isSortLoading,
+    }
 
-const model = ref('دسته‌بندی')
-const page = ref(1)
+    // 🧩 قبل از ارسال درخواست بررسی کنیم که مقدار دسته‌بندی «پیش‌فرض» نباشه
+    if (type == 'sort') {
+        filters.value.sort = value
+    }
 
-const courses = ref([
-    {
-        image: 'assets/img/sample/1.png',
-        category: 'فلسفه',
-        title: 'دوره کتاب چهل حکمت نبوی (ص)',
-        professor: 'عباسی علیزاده',
-        time: '۰۳:۵۸',
-        students: '۲.۱۲۳',
-        price: 'رایگان',
-    },
-    {
-        image: 'assets/img/sample/2.png',
-        category: 'فلسفه',
-        title: 'دوره کتاب چهل حکمت نبوی (ص)',
-        professor: 'عباسی علیزاده',
-        time: '۰۳:۵۸',
-        students: '۲.۱۲۳',
-        price: 'رایگان',
-    },
-    {
-        image: 'assets/img/sample/2.png',
-        category: 'فلسفه',
-        title: 'دوره کتاب چهل حکمت نبوی (ص)',
-        professor: 'عباسی علیزاده',
-        time: '۰۳:۵۸',
-        students: '۲.۱۲۳',
-        price: 'رایگان',
-    },
-    {
-        image: 'assets/img/sample/2.png',
-        category: 'فلسفه',
-        title: 'دوره کتاب چهل حکمت نبوی (ص)',
-        professor: 'عباسی علیزاده',
-        time: '۰۳:۵۸',
-        students: '۲.۱۲۳',
-        price: 'رایگان',
-    },
-])
+    // تابع مشترک برای ارسال ریکویست
+    const executeRequest = () => {
+        const controller = new AbortController()
+        if (type === 'search') activeSearchAbort = () => controller.abort()
+
+        // فقط در هنگام ارسال واقعی درخواست
+        disabled.value = true
+        loadingMap[type].value = true
+
+        router.get(route('web.courses.index'),
+            {
+                ...filters.value,
+                page: 1,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['courses'],
+                signal: controller.signal,
+                onFinish: () => {
+                    loadingMap[type].value = false
+                    disabled.value = false
+                    if (type === 'search') activeSearchAbort = null
+                },
+            }
+        )
+    }
+
+    if (type === 'search') {
+        // ⏱ debounce + لغو درخواست قبلی
+        clearTimeout(searchDebounceTimeout)
+        if (activeSearchAbort) activeSearchAbort()
+
+        searchDebounceTimeout = setTimeout(executeRequest, 1000)
+    } else {
+        try {
+            executeRequest()
+        } catch (error) {
+            console.error('خطا در دریافت اطلاعات:', error)
+            loadingMap[type].value = false
+            disabled.value = false
+        }
+    }
+}
+
+watch(() => filters.value.category, (newVal) => {
+    if (!newVal) {
+        // وقتی کاربر دکمه‌ی clear زد
+        filters.value.category = 'all'
+    }
+})
 </script>
+<style>
+.v-field__clearable {
+    transform: translateX(20px);
+}
+
+</style>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CourseStatusEnum;
+use App\Observers\CourseObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class Course extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'slug', 'description', 'thumbnail_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at'
+        'user_id', 'title', 'slug', 'description', 'thumbnail_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at', 'duration'
     ];
 
     protected $casts = [
@@ -49,6 +50,18 @@ class Course extends Model
         return $this->hasMany(CourseSeason::class)->orderBy('order');
     }
 
+    public function lessons()
+    {
+        return $this->hasManyThrough(
+            CourseLesson::class,       // مدل مقصد
+            CourseSeason::class,       // مدل واسط
+            'course_id',               // foreignKey در CourseSeason → اشاره به Course
+            'season_id',               // foreignKey در CourseLesson → اشاره به Season
+            'id',                      // localKey در Course
+            'id'                       // localKey در CourseSeason
+        );
+    }
+
     /**
      * Get all comments for the course.
      */
@@ -73,7 +86,7 @@ class Course extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class, 'course_student')
+        return $this->belongsToMany(User::class, 'course_students')
             ->withPivot(['enrolled_at', 'completed_at', 'has_passed', 'progress'])
             ->withTimestamps();
     }

@@ -26,8 +26,7 @@ Route::name('web.')->group(function () {
 
     Route::get('/', [IndexController::class, 'index'])->name('index');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-    //Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
-    Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');

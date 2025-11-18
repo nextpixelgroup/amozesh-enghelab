@@ -36,14 +36,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
+        $path = $request->path();
+        $shared = [
             ...parent::share($request),
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
                 'message' => fn () => $request->session()->get('message'),
             ],
-            'menuItems' => [
+        ];
+
+        if (str_starts_with($request->path(), 'admin')) {
+            $shared['menuItems'] = [
                 [
                     'title' => 'دوره‌ها',
                     'icon' => 'mdi-book-open-page-variant',
@@ -118,8 +122,15 @@ class HandleInertiaRequests extends Middleware
                     'icon' => 'mdi-cog',
                     'route' => 'admin.settings.index'
                 ],
-            ],
-            'ticketCount' => Ticket::where('read_at', null)->count(),
-        ];
+            ];
+            $shared['ticketCount'] = Ticket::where('read_at', null)->count();
+        }
+        elseif (str_starts_with($request->path(), 'panel')) {
+
+        }
+        else{
+
+        }
+        return $shared;
     }
 }
