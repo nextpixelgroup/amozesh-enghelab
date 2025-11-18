@@ -3,13 +3,13 @@
         <header>
             <div class="zo-header-section">
                 <v-container>
-                    <v-row class="align-center">
-                        <v-col class="v-col-lg-3 v-col-12">
+                    <v-row dense class="align-center">
+                        <v-col cols="12" lg="2">
                             <a href="#">
                                 <img src="assets/img/site/logo-header.svg" alt="" class="img-fluid">
                             </a>
                         </v-col>
-                        <v-col class="v-col-lg-6 v-col-12">
+                        <v-col cols="12" lg="8">
                             <div class="zo-menu">
                                 <ul>
                                     <li><a href="#">خانه</a></li>
@@ -22,7 +22,7 @@
                                 </ul>
                             </div>
                         </v-col>
-                        <v-col class="v-col-lg-3 v-col-12">
+                        <v-col cols="12" lg="2">
                             <div class="zo-actions">
                             </div>
                         </v-col>

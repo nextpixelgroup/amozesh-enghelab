@@ -1,21 +1,51 @@
+@font-face {
+    font-family: 'Estedad-Regular';
+    src: url('/public/assets/fonts/Estedad-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
-/* Import fonts */
-@import './fonts.css';
+@font-face {
+    font-family: 'Estedad-Medium';
+    src: url('/public/assets/fonts/Estedad-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Estedad-Bold';
+    src: url('/public/assets/fonts/Estedad-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Estedad-Black';
+    src: url('/public/assets/fonts/Estedad-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 
 :root {
     --Primary: rgb(5, 105, 60);
     --Secondary: rgb(200, 160, 100);
+    --Text: rgb(5, 10, 5);
     --Sub: rgb(120, 125, 135);
     --White: rgb(255, 255, 255)
 }
 
 body {
     direction: rtl;
-    font-family: 'Estedad';
-    font-size: .875rem;
+    font-family: 'Estedad-Regular';
+    font-size: .95rem;
     line-height: 1.45;
-    background: rgb(255, 255, 255);
-    color: rgb(5, 10, 5);
+    background: rgb(250, 250, 250);
+    color: var(--Text);
     text-align: right
 }
 
@@ -37,6 +67,10 @@ a {
     text-decoration: none;
 }
 
+textarea {
+    resize: none
+}
+
 h1,
 h2,
 h3,
@@ -51,7 +85,7 @@ h6,
 .h6,
 strong {
     font-family: 'Estedad-Bold';
-    font-weight: 700;
+    font-weight: normal;
     line-height: 1.5;
 }
 
@@ -128,6 +162,12 @@ figure {
     margin: 0
 }
 
+.zo-hr {
+    width: 100%;
+    height: 1px;
+    border-top: 1px dashed rgb(240, 240, 240)
+}
+
 .zo-header-section {
     width: 100%;
     display: inline-block;
@@ -197,6 +237,14 @@ figure {
 .zo-courses-section .zo-stats .zo-stat span {
     display: block;
     color: var(--Primary)
+}
+
+.zo-courses-section .zo-title {
+    display: block;
+    position: relative;
+    top: 30px;
+    font-size: 1.125rem;
+    color: var(--Secondary)
 }
 
 .zo-courses-section .zo-col {
@@ -501,3 +549,446 @@ figure {
     font-size: .95rem;
 }
 
+.zo-course-section .zo-card {
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, .085)
+}
+
+.zo-course-section .zo-card .zo-space {
+    padding: 30px
+}
+
+.zo-course-section .zo-nav {
+    width: 100%;
+    display: inline-block;
+    margin: 0 0 30px;
+    padding: 0 0 30px;
+    border-bottom: 1px dashed rgb(240, 240, 240)
+}
+
+.zo-course-section .zo-nav ul {
+    display: flex;
+    align-items: center;
+    gap: 2.5px
+}
+
+.zo-course-section .zo-nav ul li {
+    display: inline-block;
+}
+
+.zo-course-section .zo-nav ul li a {
+    padding: 5px 15px;
+    color: var(--Text)
+}
+
+.zo-course-section .zo-nav ul li a:hover {
+    background: rgb(225, 225, 225, .25);
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px
+}
+
+.zo-course-section .zo-nav ul li a.zo-active {
+    background: var(--Secondary);
+    color: var(--White);
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px
+}
+
+.zo-course-section .zo-text-section {
+    width: 100%;
+    display: inline-block;
+    margin: 0 0 30px
+}
+
+.zo-course-section .zo-text-section .zo-title {
+    display: block;
+    margin: 0 0 15px;
+    font-size: 1.125rem;
+    color: var(--Secondary);
+}
+
+.zo-course-section .zo-text-section p {
+    margin: 0 0 10px
+}
+
+.zo-course-section .zo-text-section h1 {
+    margin: 0 0 10px;
+    font-size: 1.25rem
+}
+
+.zo-course-section .zo-text-section h2 {
+    margin: 0 0 10px;
+    font-size: 1.15rem
+}
+
+.zo-course-section .zo-text-section h3 {
+    font-size: 1.10rem
+}
+
+.zo-course-section .zo-text-section h4 {
+    font-size: 1.05rem
+}
+
+.zo-course-section .zo-text-section h5 {
+    font-size: 1rem
+}
+
+.zo-course-section .zo-text-section h6 {
+    font-size: .95rem
+}
+
+.zo-course-section .zo-text-section ul {
+    padding: 0 0 15px
+}
+
+.zo-course-section .zo-text-section ul li {
+    width: 100%;
+    display: inline-block;
+    padding: 1.5px 10px 1.5px 0;
+    position: relative
+}
+
+.zo-course-section .zo-text-section ul li:before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 9.5px;
+    right: 0;
+    background: var(--Secondary);
+}
+
+.zo-course-section .zo-info-section {
+    padding: 30px 0 15px
+}
+
+.zo-course-section .zo-info-section strong {
+    font-size: 1.125rem;
+    color: var(--Secondary);
+}
+
+.zo-course-section .zo-info-section ul {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px
+}
+
+.zo-course-section .zo-info-section ul li {
+    display: inline-block;
+    padding: 0 10px;
+    position: relative;
+}
+
+.zo-course-section .zo-info-section ul li:before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 7.5px;
+    left: -10px;
+    background: var(--Secondary);
+    border-radius: 50%
+}
+
+.zo-course-section .zo-info-section ul li:last-child:before {
+    display: none
+}
+
+.zo-course-section .zo-curriculum-section {
+    width: 100%;
+    display: inline-block;
+    padding: 0 0 15px;
+    border-bottom: 1px dashed rgb(240, 240, 240);
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section {
+    width: 100%;
+    display: inline-block;
+    margin: 5px 0;
+    border: 1px solid rgb(240, 240, 240);
+    border-radius: 15px
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-meta li {
+    display: inline-block;
+    padding: 0 10px;
+    position: relative;
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-meta li:before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 5px;
+    left: -10px;
+    background: var(--Secondary);
+    border-radius: 50%
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-meta li:last-child:before {
+    display: none
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section.v-expansion-panel--active {
+    box-shadow: 0 5px 30px rgba(0, 0, 0, .085)
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section:not(:first-child)::after {
+    display: none
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .v-expansion-panel__shadow {
+    box-shadow: none !important;
+}
+
+.zo-course-section .zo-curriculum-section.v-expansion-panels:not(.v-expansion-panels--variant-accordion)> :last-child:not(:first-child):not(.v-expansion-panel--active):not(.v-expansion-panel--after-active),
+.zo-course-section .zo-curriculum-section.v-expansion-panels:not(.v-expansion-panels--variant-accordion)> :first-child:not(:last-child):not(.v-expansion-panel--active):not(.v-expansion-panel--before-active),
+.zo-course-section .zo-curriculum-section.v-expansion-panels:not(.v-expansion-panels--variant-accordion)> :not(:first-child):not(:last-child):not(.v-expansion-panel--active):not(.v-expansion-panel--after-active) {
+    border-radius: 10px !important
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-title strong {
+    display: block;
+    padding: 0 10px 5px 0;
+    position: relative;
+    font-size: 1rem;
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-title strong:before {
+    content: '';
+    width: 3.5px;
+    height: 75%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--Primary);
+    border-radius: 300px;
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-title p {
+    color: var(--Sub)
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-info li {
+    display: inline-block;
+    padding: 0 10px;
+    position: relative;
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-info li:before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 5px;
+    left: -10px;
+    background: var(--Secondary);
+    border-radius: 50%
+}
+
+.zo-course-section .zo-curriculum-section .zo-topic-section .zo-info li:last-child:before {
+    display: none
+}
+
+.zo-course-section .zo-curriculum-section .zo-lessons-section {
+    padding: 15px 0 0;
+    border-top: 1px solid rgb(240, 240, 240)
+}
+
+.zo-course-section .zo-curriculum-section .zo-lessons-section .zo-lesson-section {
+    width: 100%;
+    display: inline-block;
+    margin: 5px 0;
+    background: rgb(245, 245, 245);
+    border-radius: 10px
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section:not(:first-child)::after {
+    display: none
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .v-expansion-panel__shadow {
+    box-shadow: none !important;
+}
+
+.zo-course-section .zo-lessons-section.v-expansion-panels:not(.v-expansion-panels--variant-accordion)> :first-child:not(:last-child):not(.v-expansion-panel--active):not(.v-expansion-panel--before-active),
+.zo-course-section .zo-lessons-section.v-expansion-panels:not(.v-expansion-panels--variant-accordion)> :last-child:not(:first-child):not(.v-expansion-panel--active):not(.v-expansion-panel--after-active) {
+    border-radius: 10px !important
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subtitle i {
+    width: 5px;
+    height: 5px;
+    display: block;
+    transform: rotate(45deg)
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subtitle i.zo-check {
+    background: rgb(50, 180, 55)
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subtitle i.zo-uncheck {
+    background: rgb(240, 15, 15)
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subinfo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subinfo li {
+    display: inline-block;
+    white-space: nowrap
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subinfo li .zo-check {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(50, 180, 55);
+    color: rgb(255, 255, 255);
+    outline: 2px solid rgb(50, 180, 55);
+    outline-offset: 2.5px;
+    border-radius: 50%
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subinfo li .zo-play {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: rgb(240, 15, 15);
+    border-radius: 50%
+}
+
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-subinfo li .zo-download {
+    padding: 5px 25px
+}
+
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-wrapper {
+    padding: 45px 0 0
+}
+
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 30px;
+    right: auto;
+    transform: rotate(180deg);
+    border: 1px solid var(--Primary);
+    border-top-right-radius: 300px;
+    border-bottom-right-radius: 300px;
+    cursor: pointer;
+    z-index: 15
+}
+
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-next {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 75px;
+    right: auto;
+    border: 1px solid var(--Primary);
+    border-top-right-radius: 300px;
+    border-bottom-right-radius: 300px;
+    cursor: pointer;
+    z-index: 15
+}
+
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev.swiper-button-disabled,
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-next.swiper-button-disabled {
+    opacity: .5;
+}
+
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev svg,
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-next svg {
+    width: 10px;
+    color: var(--Primary)
+}
+
+.zo-course-section .zo-related-courses-section {
+    margin: -30px 0 0;
+    padding: 0 30px 0 0
+}
+
+.zo-course-section .zo-comments-section {
+    width: 100%;
+    display: inline-block
+}
+
+.zo-course-section .zo-comments-section .zo-title {
+    display: block;
+    margin: 0 0 5px;
+    font-size: 1.125rem;
+    color: var(--Secondary)
+}
+
+.zo-course-section .zo-comments-section .zo-label {
+    display: block;
+    margin: 0 0 5px;
+    padding: 0 10px 5px 0;
+    position: relative;
+    font-size: 1rem
+}
+
+.zo-course-section .zo-comments-section .zo-label:before {
+    content: '';
+    width: 3.5px;
+    height: 75%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--Primary);
+    border-radius: 300px
+}
+
+.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined {
+    background: rgb(245, 245, 245)
+}
+
+.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__start,
+.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__end {
+    border: 0
+}
+
+.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__notch::before,
+.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__notch::after {
+    border: 0
+}
