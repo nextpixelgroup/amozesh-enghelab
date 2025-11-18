@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Course;
+use Illuminate\Support\Facades\Log;
 
 class CourseObserver
 {
@@ -11,7 +12,7 @@ class CourseObserver
      */
     public function created(Course $course): void
     {
-        //
+
     }
 
     /**
@@ -19,7 +20,7 @@ class CourseObserver
      */
     public function updated(Course $course): void
     {
-        //
+
     }
 
     /**

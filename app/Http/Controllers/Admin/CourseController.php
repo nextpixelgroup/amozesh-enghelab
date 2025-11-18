@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\CourseCreateRequest;
 use App\Http\Requests\Admin\CourseUpdateRequest;
 use App\Http\Resources\AdminCourseDetailsResource;
 use App\Http\Resources\AdminCourseResource;
+use App\Jobs\UpdateCourseDurationJob;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseLesson;
@@ -93,6 +94,7 @@ class CourseController extends Controller
                 if(isset($request->quiz['has_quiz']) && $request->quiz['has_quiz'] == true) {
                     $this->finalQuiz($course, $request->quiz);
                 }
+                UpdateCourseDurationJob::dispatch($course->id);
 
                 return redirectMessage('success', 'دوره با موفقیت ایجاد شد.',redirect: route('admin.courses.edit',$course->id));
             }
@@ -131,6 +133,7 @@ class CourseController extends Controller
                 if(isset($request->quiz['has_quiz'])) {
                     $this->finalUpdateQuiz($course, $request->quiz);
                 }
+                UpdateCourseDurationJob::dispatch($course->id);
                 return redirectMessage('success', 'دوره با موفقیت ویرایش شد.',redirect: route('admin.courses.edit',$course->id));
             });
         }

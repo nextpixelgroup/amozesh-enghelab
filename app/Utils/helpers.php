@@ -488,3 +488,14 @@ function video_upload_path()
     $http = env('FTP_SSL') ? 'https://' : 'http://';
     return $http.env('FTP_DOMAIN').'/'.env('COURSE_VIDEO_UPLOAD_SLUG');
 }
+
+function formatDurationTime(int $minutes): string
+{
+    $hours = intdiv($minutes, 60);
+    $remainingMinutes = $minutes % 60;
+
+    // اگه دقیقه کمتر از 10 باشه صفر جلوش بذار (مثل 1:05)
+    $formattedMinutes = str_pad($remainingMinutes, 2, '0', STR_PAD_LEFT);
+
+    return "{$hours}:{$formattedMinutes}";
+}

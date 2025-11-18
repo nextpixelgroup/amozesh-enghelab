@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Jobs;
+
+use App\Models\CourseSeason;
+use App\Models\Setting;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+
+class StatCourseSeasonsJob implements ShouldQueue
+{
+    use Queueable;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        $Setting = new Setting;
+        $setting = $Setting->getValue('statCourses');
+        $setting['seasons'] = CourseSeason::count();
+        $Setting->setValue('statCourses', $setting);
+    }
+}
