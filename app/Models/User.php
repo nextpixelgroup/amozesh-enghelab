@@ -38,6 +38,7 @@ class User extends Authenticatable
         'company',
         'password',
         'avatar_id',
+        'national_card_image_id',
         'tel',
         'institution_id',
     ];
@@ -119,6 +120,11 @@ class User extends Authenticatable
     public function avatar()
     {
         return $this->belongsTo(Media::class, 'avatar_id');
+    }
+
+    public function nationalCardImage()
+    {
+        return $this->belongsTo(Media::class, 'national_card_image_id');
     }
     public function ticketReplies(): HasMany
     {

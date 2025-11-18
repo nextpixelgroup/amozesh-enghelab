@@ -100,6 +100,7 @@ const form = useForm({
     'bio': '',
     'avatar_id': '',
     'image_id': '',
+    'national_card_image_id' : '',
     'educations': []
 });
 
