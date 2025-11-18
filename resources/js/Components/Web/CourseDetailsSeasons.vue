@@ -5,7 +5,7 @@
         class="zo-curriculum-section"
     >
         <v-expansion-panel
-            v-for="(chapter, cIndex) in chapters"
+            v-for="(chapter, cIndex) in seasons"
             :key="cIndex"
             class="zo-topic-section"
         >
@@ -70,4 +70,12 @@
     </v-expansion-panels>
 </template>
 <script setup>
+
+import {ref} from "vue";
+const props = defineProps({
+    seasons: {
+        type: Array,
+    }
+});
+const openChapter = ref([0]);
 </script>

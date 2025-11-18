@@ -27,59 +27,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="zo-text-section">
-                                <strong class="zo-title">درباره دوره</strong>
-                                <p>
-                                    دوره آموزشی آنلاین جهاد تبیین در گام دوم انقلاب یک برنامه جامع و مهارت‌محور است که
-                                    با
-                                    هدف توانمندسازی مخاطبان برای شناخت عمیق، روایت صحیح، مقابله با جنگ شناختی و ایفای
-                                    نقش
-                                    فعال در پیشبرد گام دوم انقلاب طراحی می‌شود.
-                                </p>
-                                <p>
-                                    در این دوره تلاش می‌شود تا شرکت‌کنندگان علاوه بر آشنایی با مبانی نظری و نگاه راهبردی
-                                    رهبر انقلاب، به مهارت‌های عملی برای تولید محتوا، پاسخ به شبهات، تحلیل رسانه‌ای و
-                                    فعالیت
-                                    مؤثر در فضای مجازی و حقیقی مجهز شوند.
-                                </p>
-                                <h2>خروجی مورد انتظار دوره</h2>
-                                <p>فارغ‌التحصیلان این دوره می‌توانند:</p>
-                                <ul>
-                                    <li>مفاهیم گام دوم انقلاب و جهاد تبیین را به شکل دقیق و قابل فهم برای دیگران بیان
-                                        کنند.
-                                    </li>
-                                    <li>شبهات رایج در حوزه انقلاب، نظام، پیشرفت، آزادی و عدالت را تحلیل و پاسخ دهند.
-                                    </li>
-                                    <li>با تکنیک‌های عملیات روانی و جنگ روایت‌ها آشنا شده و در برابر آن‌ها واکنش مؤثر
-                                        نشان
-                                        دهند.
-                                    </li>
-                                    <li>محتوای رسانه‌ای جذاب و اقناعی تولید و در فضای مجازی منتشر کنند.</li>
-                                    <li>نقش فعال‌تری در جریان‌سازی فرهنگی و اجتماعی داشته باشند.</li>
-                                </ul>
-                                <h2>ویژگی‌های دوره</h2>
-                                <ul>
-                                    <li>کاملاً کاربردی: از مباحث تئوریک تا مهارت‌های عملی روایت‌گری، اقناع، تولید محتوا
-                                        و
-                                        تحلیل رسانه.
-                                    </li>
-                                    <li>متناسب با نیازهای گام دوم انقلاب: تمرکز ویژه بر تحلیل بیانیه و نقش جوانان در
-                                        پیشرفت
-                                        و عدالت.
-                                    </li>
-                                    <li>آموزش در بستر جنگ شناختی امروز: مشارکت فعال در مقابله با عملیات رسانه‌ای و
-                                        شایعه‌سازی دشمن.
-                                    </li>
-                                    <li>قابل استفاده برای فعالان فرهنگی و رسانه‌ای: دانشجویان، طلاب، مدیران فرهنگی،
-                                        معلمان،
-                                        مربیان و…
-                                    </li>
-                                    <li>پروژه‌محور: در پایان دوره از فراگیران خواسته می‌شود یک طرح عملی جهاد تبیین در
-                                        محیط
-                                        زندگی یا کاری خود اجرا و ارائه کنند.
-                                    </li>
-                                </ul>
-                            </div>
+                           <CourseDetailsDescription/>
                             <div>
                                 <div class="zo-hr"></div>
                             </div>
@@ -90,14 +38,14 @@
                                     </v-col>
                                     <v-col cols="12" md="9">
                                         <ul class="zo-info">
-                                            <li>{{ courseContent.chapters }} فصل</li>
+                                            <li>{{ courseContent.seasons }} فصل</li>
                                             <li>{{ courseContent.lessons }} درس</li>
                                             <li>{{ courseContent.videos }} ویدیو</li>
                                         </ul>
                                     </v-col>
                                 </v-row>
                             </div>
-                            <CourseDetailsSeasons/>
+                            <CourseDetailsSeasons :seasons="seasons"/>
                         </div>
                         <CourseDetailsRequirments/>
                         <CourseDetailsRalated/>
@@ -124,18 +72,18 @@ import CourseDetailsComments from "@/Components/Web/CourseDetailsComments.vue";
 import CourseDetailsRalated from "@/Components/Web/CourseDetailsRalated.vue";
 import CourseDetailsRequirments from "@/Components/Web/CourseDetailsRequirments.vue";
 import CourseDetailsSeasons from "@/Components/Web/CourseDetailsSeasons.vue";
+import CourseDetailsDescription from "@/Components/Web/CourseDetailsDescription.vue";
 
 const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
 
 const courseContent = {
-    chapters: 7,
+    seasons: 7,
     lessons: 120,
     videos: 17,
 };
 
-const openChapter = ref([0]);
 
-const chapters = [
+const seasons = [
     {
         title: "فصل اول",
         description: "مبانی نظری جهاد تبیین",
