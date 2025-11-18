@@ -1,4 +1,18 @@
 <template>
+    <div class="zo-info-section">
+        <v-row dense class="align-center">
+            <v-col cols="12" md="3">
+                <strong>محتوای دوره</strong>
+            </v-col>
+            <v-col cols="12" md="9">
+                <ul class="zo-info">
+                    <li>{{ stats.seasons }} فصل</li>
+                    <li>{{ stats.lessons }} درس</li>
+                    <li>{{ stats.videos }} ویدیو</li>
+                </ul>
+            </v-col>
+        </v-row>
+    </div>
     <v-expansion-panels
         v-model="openChapter"
         multiple
@@ -74,7 +88,10 @@
 import {ref} from "vue";
 const props = defineProps({
     seasons: {
-        type: Array,
+        type: Object,
+    },
+    stats: {
+        type: Object,
     }
 });
 const openChapter = ref([0]);

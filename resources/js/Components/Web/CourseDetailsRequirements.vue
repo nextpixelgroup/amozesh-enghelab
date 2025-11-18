@@ -4,7 +4,7 @@
         <strong class="zo-title">پیش نیازها</strong>
         <v-row dense>
             <v-col cols="12" lg="6"
-                   v-for="(course, index) in prerequisites"
+                   v-for="(course, index) in courses"
                    :key="index"
             >
                 <a href="#" class="zo-course">
@@ -50,4 +50,9 @@
 </div>
 </template>
 <script setup>
+const props = defineProps({
+    courses: {
+        type: Array,
+    }
+})
 </script>

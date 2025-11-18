@@ -31,24 +31,11 @@
                             <div>
                                 <div class="zo-hr"></div>
                             </div>
-                            <div class="zo-info-section">
-                                <v-row dense class="align-center">
-                                    <v-col cols="12" md="3">
-                                        <strong>محتوای دوره</strong>
-                                    </v-col>
-                                    <v-col cols="12" md="9">
-                                        <ul class="zo-info">
-                                            <li>{{ courseContent.seasons }} فصل</li>
-                                            <li>{{ courseContent.lessons }} درس</li>
-                                            <li>{{ courseContent.videos }} ویدیو</li>
-                                        </ul>
-                                    </v-col>
-                                </v-row>
-                            </div>
-                            <CourseDetailsSeasons :seasons="seasons"/>
+
+                            <CourseDetailsSeasons :seasons="seasons" :stats="courseStats"/>
                         </div>
-                        <CourseDetailsRequirements/>
-                        <CourseDetailsRelated/>
+                        <CourseDetailsRequirements :courses="requirements"/>
+                        <CourseDetailsRelated :courses="related"/>
                         <CourseDetailsComments/>
                     </v-card>
                 </v-col>
@@ -63,9 +50,7 @@
 <script setup>
 import {ref} from 'vue'
 import WebLayout from '@/Layouts/WebLayout.vue'
-import {Swiper, SwiperSlide} from "swiper/vue";
 import "swiper/css";
-import {Navigation, Pagination} from "swiper/modules";
 import CourseDetailsSidebar from "@/Components/Web/CourseDetailsSidebar.vue";
 import CourseDetailsIntro from "@/Components/Web/CourseDetailsIntro.vue";
 import CourseDetailsComments from "@/Components/Web/CourseDetailsComments.vue";
@@ -76,7 +61,7 @@ import CourseDetailsDescription from "@/Components/Web/CourseDetailsDescription.
 
 const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
 
-const courseContent = {
+const courseStats = {
     seasons: 7,
     lessons: 120,
     videos: 17,
@@ -144,11 +129,47 @@ const requirements = ref([
         students: '۲.۱۲۳',
         price: 'رایگان',
     },
+    {
+        image: '/assets/img/sample/2.png',
+        category: 'فلسفه',
+        title: 'دوره کتاب چهل حکمت نبوی (ص)',
+        professor: 'عباسی علیزاده',
+        time: '۰۳:۵۸',
+        students: '۲.۱۲۳',
+        price: 'رایگان',
+    },
+    {
+        image: '/assets/img/sample/2.png',
+        category: 'فلسفه',
+        title: 'دوره کتاب چهل حکمت نبوی (ص)',
+        professor: 'عباسی علیزاده',
+        time: '۰۳:۵۸',
+        students: '۲.۱۲۳',
+        price: 'رایگان',
+    },
 ])
 
-const courses = ref([
+const related = ref([
     {
         image: '/assets/img/sample/1.png',
+        category: 'فلسفه',
+        title: 'دوره کتاب چهل حکمت نبوی (ص)',
+        professor: 'عباسی علیزاده',
+        time: '۰۳:۵۸',
+        students: '۲.۱۲۳',
+        price: 'رایگان',
+    },
+    {
+        image: '/assets/img/sample/2.png',
+        category: 'فلسفه',
+        title: 'دوره کتاب چهل حکمت نبوی (ص)',
+        professor: 'عباسی علیزاده',
+        time: '۰۳:۵۸',
+        students: '۲.۱۲۳',
+        price: 'رایگان',
+    },
+    {
+        image: '/assets/img/sample/2.png',
         category: 'فلسفه',
         title: 'دوره کتاب چهل حکمت نبوی (ص)',
         professor: 'عباسی علیزاده',
