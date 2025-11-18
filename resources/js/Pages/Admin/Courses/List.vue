@@ -94,7 +94,7 @@
                     <th class="text-right">عنوان</th>
                     <th class="text-center">مدرس</th>
                     <th class="text-center">وضعیت</th>
-                    <th class="text-center">کاربر</th>
+                    <th class="text-center">دانشجو</th>
                     <th class="text-center">تاریخ انتشار</th>
                     <th class="text-center">عملیات</th>
                 </tr>

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class Course extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'slug', 'description', 'thumbnail_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at', 'duration'
+        'user_id', 'title', 'slug', 'description', 'thumbnail_id', 'intro_id', 'poster_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at', 'duration'
     ];
 
     protected $casts = [
@@ -32,6 +32,16 @@ class Course extends Model
     public function thumbnail()
     {
         return $this->belongsTo(Media::class, 'thumbnail_id');
+    }
+
+    public function intro()
+    {
+        return $this->belongsTo(Media::class, 'intro_id');
+    }
+
+    public function poster()
+    {
+        return $this->belongsTo(Media::class, 'poster_id');
     }
 
     // Relationships

@@ -41,6 +41,41 @@
                                 </template>
                             </v-text-field>
                         </v-col>
+                        <v-col class="v-col-12">
+                            <ImageUploader
+                                v-model:model-value="course.poster_id"
+                                upload-route="admin.upload.courses.image"
+                                title="آپلود تصویر ویدیو مقدمه"
+                                label="تصویر ویدیو مقدمه را اینجا رها کنید"
+                                accept="image/*"
+                                type="lesson"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <v-text-field
+                                v-model="course.intro_url"
+                                type="text"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="لینک ویدیو مقدمه"
+                                :suffix="video_upload_slug"
+                                dir="ltr"
+                                prepend-inner-icon="mdi-link"
+                            >
+                                <template v-slot:append>
+                                    <v-btn
+                                        icon
+                                        variant="text"
+                                        @click="showVideo(course.intro_url)"
+                                        title="مشاهده"
+                                        :disabled="!course.intro_url"
+                                    >
+                                        <v-icon>mdi-open-in-new</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-text-field>
+                        </v-col>
                         <v-col class="v-col-12 v-col-lg-6">
                             <MultipleSelector
                                 v-model="course.category"
@@ -711,6 +746,8 @@ const course = reactive({
     must_complete_quizzes: null,
     status: 'pending',
     thumbnail_id: null,
+    intro_url: null,
+    poster_id: null,
     seasons: [
         {
             id: crypto.randomUUID(),

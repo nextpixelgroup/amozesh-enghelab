@@ -27,7 +27,7 @@
                                     </li>
                                 </ul>
                             </div>
-                           <CourseDetailsDescription/>
+                           <CourseDetailsDescription :description="course.data.description"/>
                             <div>
                                 <div class="zo-hr"></div>
                             </div>
@@ -59,6 +59,9 @@ import CourseDetailsRequirements from "@/Components/Web/CourseDetailsRequirement
 import CourseDetailsSeasons from "@/Components/Web/CourseDetailsSeasons.vue";
 import CourseDetailsDescription from "@/Components/Web/CourseDetailsDescription.vue";
 
+const props = defineProps({
+    course: Object
+})
 const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
 
 const courseStats = {

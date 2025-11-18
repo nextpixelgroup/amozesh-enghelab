@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WebCourseDetailsResource;
 use App\Http\Resources\WebCoursesResource;
 use App\Models\Category;
 use App\Models\Course;
@@ -44,6 +45,7 @@ class CourseController extends Controller
 
     public function show(Request $request, Course $course)
     {
-        return inertia('Web/Courses/Show', []);
+        $course = new WebCourseDetailsResource($course);
+        return inertia('Web/Courses/Show', compact('course'));
     }
 }

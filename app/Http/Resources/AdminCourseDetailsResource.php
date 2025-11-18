@@ -21,6 +21,15 @@ class AdminCourseDetailsResource extends JsonResource
                 'id'    => $this->thumbnail_id ?? null,
                 'url'   => $this->thumbnail?->url,
             ],
+            'intro' => [
+                'id'    => $this->intro_id ?? null,
+                'url'   => $this->intro?->url,
+            ],
+            'intro_url' => $this->intro?->file_name,
+            'poster' => [
+                'id'    => $this->poster_id ?? null,
+                'url'   => $this->poster?->url,
+            ],
             'title'       => $this->title,
             'slug'        => $this->slug,
             'categories'  => $this->categories->map(function ($category) {
