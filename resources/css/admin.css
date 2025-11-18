@@ -90,7 +90,7 @@ th {
 }
 
 .zo-status {
-    width: 100px;
+    width: 125px;
     display: block;
     margin: auto;
     padding: 3.5px 15px;
@@ -114,17 +114,20 @@ th {
     color: rgb(150, 90, 5);
 }
 
-.zo-archive {
+.zo-archive,
+.zo-archived {
     background: rgba(0, 0, 0, .15);
     color: rgb(45, 45, 45);
 }
 
-.zo-deactive {
+.zo-deactive,
+.zo-unread {
     background: rgba(150, 90, 5, .15);
     color: rgb(150, 90, 5);
 }
 
-.zo-suspended {
+.zo-suspended,
+.zo-trash {
     background: rgb(0, 0, 0);
     color: rgb(255, 255, 255);
 }
