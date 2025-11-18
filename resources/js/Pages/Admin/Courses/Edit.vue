@@ -773,7 +773,7 @@ const course = reactive({
     seasons: data.value.seasons,
     quiz: data.value.quiz
 });
-
+console.log(data.value)
 /********************************Seasons********************************/
 
 

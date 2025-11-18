@@ -162,7 +162,7 @@ class CourseController extends Controller
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processUpdateSeasons($course, $request->seasons);
 
-                if(isset($request->quiz['has_quiz'])) {
+                if(isset($request->quiz['has_quiz']) && $request->quiz['has_quiz']) {
                     $this->finalUpdateQuiz($course, $request->quiz);
                 }
 

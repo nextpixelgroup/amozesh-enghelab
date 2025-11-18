@@ -12,7 +12,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::job(new StatCourseDurationsJob())->everyMinute();
-Schedule::job(new StatCourseRatingsJob())->everyMinute();
-Schedule::job(new StatCourseStudentsJob())->everyMinute();
-Schedule::job(new StatCourseSeasonsJob())->everyMinute();
+Schedule::job(new StatCourseDurationsJob())->everyFifteenMinutes();
+Schedule::job(new StatCourseRatingsJob())->everyFifteenMinutes();
+Schedule::job(new StatCourseStudentsJob())->everyFifteenMinutes();
+Schedule::job(new StatCourseSeasonsJob())->everyFifteenMinutes();
