@@ -78,7 +78,7 @@
                     hide-details
                 ></v-textarea>
                 <v-number-input
-                    v-if="newRestriction.type === 'temporary_ban'"
+                    v-if="newRestriction.type === 'temporary'"
                     v-model.number="newRestriction.days"
                     variant="outlined"
                     type="number"

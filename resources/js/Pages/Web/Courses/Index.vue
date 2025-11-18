@@ -78,7 +78,6 @@
                                         hide-details
                                         placeholder="جستجو"
                                         variant="solo"
-                                        clearable
                                         @update:model-value="search('search')"
                                         :loading="isSearchLoading"
                                     />
@@ -107,6 +106,7 @@
                                             :value="index"
                                             v-model="sort"
                                             @click="search('sort', item.value)"
+                                            :class="{ 'bg-primary text-white': filters.sort === item.value }"
                                         >
                                             <v-list-item-title>{{ item.title }}</v-list-item-title>
                                         </v-list-item>
@@ -164,8 +164,9 @@
                 <v-row>
                     <v-col cols="12">
                         <Pagination
-                            :v-model="page"
-                            :totalPages="12"
+                            v-model="currentPage"
+                            :length="lastPage"
+                            @changePage="changePage"
                         />
                     </v-col>
                 </v-row>
@@ -190,11 +191,12 @@ const filters = ref({
 const categories = ref(page.props.categories);
 const courses = computed( () => page.props.courses.data);
 const stats = ref(page.props.stats);
-console.log(stats)
 const sort = ref('desc');
 const sorts = ref([{title: 'جدیدترین', value: 'desc'}, {title: 'قدیمی‌ترین', value: 'asc'}])
-const currentPage = ref(1)
+const currentPage = ref(page.props.courses?.meta.current_page)
+const lastPage = computed( () => page.props.courses?.meta.last_page)
 
+//console.log(page.props.courses.meta.last_page)
 
 const disabled = ref(false)
 const isCategoryLoading = ref(false)
@@ -260,16 +262,41 @@ const search = (type, value = null) => {
     }
 }
 
+const changePage = async (page) => {
+    try {
+        const query = {
+            ...filters.value,  // Keep existing filters
+            page  // Update only the page number
+        };
+
+        router.get(route('web.courses.index'),
+            query,
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['courses'],
+                onSuccess: () => {
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+            }
+        );
+    } catch (error) {
+        console.error('خطا در دریافت اطلاعات:', error);
+    }
+};
+
 watch(() => filters.value.category, (newVal) => {
     if (!newVal) {
         // وقتی کاربر دکمه‌ی clear زد
         filters.value.category = 'all'
     }
 })
+watch(() => page.props.courses, (newVal) => {
+    courses.value = newVal.data || [];
+    currentPage.value = newVal.meta?.current_page || 1;
+});
 </script>
 <style>
-.v-field__clearable {
-    transform: translateX(20px);
-}
 
 </style>

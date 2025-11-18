@@ -152,9 +152,9 @@
             </v-table>
             <v-pagination
                 rounded="circle"
-                v-if="props.courses?.meta.last_page > 1"
+                v-if="length > 1"
                 v-model="currentPage"
-                :length="props.courses?.meta.last_page"
+                :length="length"
                 @update:model-value="changePage"
                 class="mt-4"
             />
@@ -175,9 +175,9 @@ const props = defineProps({
     teachers: Object,
     categories: Object,
 })
-const currentPage = ref(props.courses?.meta.current_page)
+const currentPage = computed( () => props.courses?.meta.current_page)
+const length = computed( () => props.courses?.meta.last_page)
 const courses = computed(() => props.courses.data);
-console.log(courses)
 const status = ref(props.status)
 const teachers = ref(props.teachers)
 const categories = ref(props.categories)

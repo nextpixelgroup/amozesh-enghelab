@@ -13,7 +13,6 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
-        sleep(1);
         $categories = Category::where('type', 'course')->orderBy('created_at', 'desc')->get()->map(function ($item) {
            return [
                'value' => $item->slug,

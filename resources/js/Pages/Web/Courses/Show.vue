@@ -307,11 +307,7 @@
                     </v-card>
                 </v-col>
                 <v-col cols="12" lg="3">
-                    <v-card flat class="zo-card">
-                        <div class="zo-space">
-                            Sidebar
-                        </div>
-                    </v-card>
+                    <CourseDetailsSidebar/>
                 </v-col>
             </v-row>
         </v-container>
@@ -324,6 +320,7 @@ import WebLayout from '@/Layouts/WebLayout.vue'
 import {Swiper, SwiperSlide} from "swiper/vue";
 import "swiper/css";
 import {Navigation, Pagination} from "swiper/modules";
+import CourseDetailsSidebar from "@/Components/Web/CourseDetailsSidebar.vue";
 
 const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
 
