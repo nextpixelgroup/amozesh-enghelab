@@ -142,7 +142,7 @@
                             <Link :href="route('admin.courses.edit',item.id)">
                                 <v-btn icon="mdi-pencil" size="small" color="primary"></v-btn>
                             </Link>
-                            <a :href="route('web.courses.show',item.id)" target="_blank">
+                            <a :href="route('web.courses.show',item.slug)" target="_blank">
                                 <v-btn icon="mdi-eye" size="small" color="secondary"></v-btn>
                             </a>
                         </div>

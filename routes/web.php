@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Web\TeacherController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 if(env('APP_ENV') === 'production') {
     Route::domain('amozesh.enghelab.ir')->group(function () {
@@ -25,9 +26,9 @@ Route::name('web.')->group(function () {
 
 
     Route::get('/', [IndexController::class, 'index'])->name('index');
+    Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
-
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');
     //Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
@@ -46,6 +47,8 @@ Route::name('web.')->group(function () {
     Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
     Route::get('/pay', [PaymentController::class, 'pay'])->name('payment.pay');
     Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('payment.thankYou');
+
+
 
 
 });

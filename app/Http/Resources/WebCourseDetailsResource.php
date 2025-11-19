@@ -18,6 +18,27 @@ class WebCourseDetailsResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'seasons' => $this->seasons->map(function ($season) {
+                return [
+                    'id' => $season->id,
+                    'title' => $season->title,
+                    'lessons' => $season->lessons->map(function ($lesson) {
+                        return [
+                            'id' => $lesson->id,
+                            'title' => $lesson->title,
+                            'duration' => $lesson->duration,
+                            'video' => $lesson->video?->url,
+                            'poster' => $lesson->poster?->url,
+                            'completed' => rand(0, 1) ? true : false,
+                        ];
+                    }),
+                ];
+            }),
+            'stats' => [
+                'seasons' => $this->seasons->count(),
+                'lessons' => $this->lessons->count(),
+                'videos' => /*$this->videos->count()*/1231,
+            ],
         ];
 
     }

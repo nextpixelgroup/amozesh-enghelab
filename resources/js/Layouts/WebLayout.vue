@@ -6,7 +6,7 @@
                     <v-row dense class="align-center">
                         <v-col cols="12" lg="2">
                             <a href="#">
-                                <img src="assets/img/site/logo-header.svg" alt="" class="img-fluid">
+                                <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
                             </a>
                         </v-col>
                         <v-col cols="12" lg="8">
@@ -42,7 +42,7 @@
                     <v-row>
                         <v-col class="v-col-lg-5 v-col-12">
                             <div class="zo-about">
-                                <img src="assets/img/site/logo-footer.svg" alt="" class="img-fluid">
+                                <img src="/assets/img/site/logo-footer.svg" alt="" class="img-fluid">
                                 <p>
                                     متن توضیحات مرتبط با خانه انقلاب اسلامی که توضیحات مختصری در مورد فعالیت‌ها،
                                     برنامه‌ها و دوره‌های برگزار شده در این مجموعه است در این قسمت قرار می‌گیرد.
@@ -82,12 +82,12 @@
                                 <ul>
                                     <li>
                                         <a href="#">
-                                            <img src="assets/img/site/social-1.svg" alt="" class="img-fluid">
+                                            <img src="/assets/img/site/social-1.svg" alt="" class="img-fluid">
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <img src="assets/img/site/social-2.svg" alt="" class="img-fluid">
+                                            <img src="/assets/img/site/social-2.svg" alt="" class="img-fluid">
                                         </a>
                                     </li>
                                 </ul>

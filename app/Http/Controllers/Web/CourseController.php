@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CourseController extends Controller
 {
@@ -45,7 +46,64 @@ class CourseController extends Controller
 
     public function show(Request $request, Course $course)
     {
-        $course = new WebCourseDetailsResource($course);
-        return inertia('Web/Courses/Show', compact('course'));
+        $requirements = WebCoursesResource::collection($course->requirements);
+        $similarCourses = Course::whereHas('categories', function ($query) use ($course) {
+            $query->whereIn('id', $course->categories->pluck('id'));
+        })
+            ->where('id', '!=', $course->id) // حذف خود دوره
+            ->take(5)
+            ->get();
+        $related = WebCoursesResource::collection($similarCourses);
+        $course = WebCourseDetailsResource::make($course);
+        return inertia('Web/Courses/Show', compact('course','requirements', 'related'));
+    }
+
+    public function download($filename)
+    {
+        $remoteUrl = video_upload_path("{$filename}");
+
+        // مرحله 1: دریافت هدرها (برای گرفتن Content-Length)
+        $chHead = curl_init($remoteUrl);
+        curl_setopt_array($chHead, [
+            CURLOPT_NOBODY => true, // فقط هدرها
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+
+        $headerData = curl_exec($chHead);
+        curl_close($chHead);
+
+        $contentLength = null;
+        if (preg_match('/Content-Length:\s*(\d+)/i', $headerData, $matches)) {
+            $contentLength = (int)$matches[1];
+        }
+
+        // مرحله 2: استریم خود فایل
+        $response = new StreamedResponse(function () use ($remoteUrl) {
+            $ch = curl_init();
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $remoteUrl,
+                CURLOPT_RETURNTRANSFER => false,
+                CURLOPT_HEADER => false,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_FILE => fopen('php://output', 'wb'),
+            ]);
+            curl_exec($ch);
+            curl_close($ch);
+        });
+
+        // مرحله 3: ست کردن هدرهای دامنه دانلود
+        $response->headers->set('Content-Type', 'video/mp4');
+        $response->headers->set('Content-Disposition', "attachment; filename=\"{$filename}\"");
+
+        // این خط باعث میشه سایز فایل برای مرورگر قابل شناسایی بشه 🎯
+        if ($contentLength) {
+            $response->headers->set('Content-Length', $contentLength);
+        }
+
+        return $response;
     }
 }
