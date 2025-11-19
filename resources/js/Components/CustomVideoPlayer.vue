@@ -17,7 +17,6 @@
             @playing="isBuffering = false"
             @canplay="isBuffering = false"
         ></video>
-
         <!-- Loading Overlay - Show on top of video when buffering -->
         <div v-if="isBuffering" class="loading-overlay">
             <v-progress-circular
@@ -26,7 +25,6 @@
                 size="64"
             />
         </div>
-
         <div class="video-controls" :class="{ 'controls-hidden': !showControls }" @mousemove="handleControlInteraction">
             <!-- Controls wrapper for better hover handling -->
             <div class="controls-wrapper">
@@ -57,7 +55,6 @@
                             class="progress-slider"
                         />
                     </div>
-
                 </div>
                 <div class="controls-row">
                     <div class="controls-left">
@@ -67,7 +64,6 @@
                                 {{ isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}
                             </v-icon>
                         </button>
-
                         <!-- Download Button -->
                         <a
                             :href="route('web.courses.download.video',filename)"
@@ -97,7 +93,6 @@
                                     <v-icon color="white">mdi-speedometer</v-icon>
                                 </button>
                             </template>
-
                             <v-list class="speed-menu">
                                 <v-list-item
                                     v-for="speed in speeds"
@@ -110,16 +105,8 @@
                                 </v-list-item>
                             </v-list>
                         </v-menu>
-
-
-
                     </div>
-
                     <div class="controls-right">
-
-
-
-
                         <!-- Volume Control -->
                         <div class="volume-control">
                             <div class="volume-slider-container">
@@ -136,7 +123,7 @@
                             <v-icon color="white" size="20">mdi-volume-high</v-icon>
                         </div>
                         <div class="time-display">
-                            {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
+                            {{ formatTime(duration) }} / {{ formatTime(currentTime) }}
                         </div>
                         <!-- Forward 10s -->
                         <button @click="skip(10)" class="control-btn">
@@ -146,7 +133,6 @@
                         <button @click="skip(-10)" class="control-btn">
                             <v-icon color="white">mdi-rewind-10</v-icon>
                         </button>
-
                         <!-- Play/Pause -->
                         <button @click="playing = !playing" class="control-btn">
                             <v-icon color="white">
