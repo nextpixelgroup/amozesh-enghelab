@@ -17,7 +17,7 @@
                         </v-col>
                         <v-col cols="12" md="3">
                             <ul class="zo-subinfo">
-                                <li>{{ lesson.duration }} ساعت</li>
+                                <li>{{ lesson.duration }}</li>
                                 <li>
                                     <div v-if="lesson.completed" class="zo-check">
                                         <i class="mdi mdi-check"></i>
@@ -27,8 +27,12 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <v-btn variant="outlined" rounded="xl"
-                                           class="zo-download">
+                                    <v-btn
+                                        variant="outlined"
+                                        rounded="xl"
+                                        class="zo-download"
+                                        @click="downloadVideo(lesson.download_url)"
+                                    >
                                         دانلود
                                     </v-btn>
                                 </li>
@@ -36,8 +40,8 @@
                         </v-col>
                     </v-row>
                 </v-expansion-panel-title>
-                <v-expansion-panel-text>
-                    <CustomVideoPlayer src="https://dl.enghelab.ir/uploads/videos/courses/2.mp4" filename="2.mp4"/>
+                <v-expansion-panel-text v-if="lesson.video">
+                    <CustomVideoPlayer :src="lesson.video" :poster="lesson.poster" :filename="lesson.download_url"/>
                 </v-expansion-panel-text>
             </v-expansion-panel>
         </v-expansion-panels>
@@ -46,11 +50,17 @@
 <script setup>
 
 import CustomVideoPlayer from "@/Components/CustomVideoPlayer.vue";
+import {Link} from "@inertiajs/vue3";
 
 const props = defineProps({
     lessons: {
         type: Object,
     }
 })
+const downloadVideo = (url) => {
+    if(!url)
+        alert(1)
+    window.open(url, '_blank');
+}
 
 </script>
