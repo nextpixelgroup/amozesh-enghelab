@@ -7,7 +7,15 @@
             <div class="zo-price">
                 رایگان
             </div>
-            <v-btn block flat variant="elevated" class="zo-add">
+            <v-btn
+                block
+                flat
+                variant="elevated"
+                class="zo-add"
+                @click="enrollInCourse"
+                :disabled="isEnroll"
+                :loading="isEnroll"
+            >
                 <img src="/assets/img/site/click.svg" alt="">
                 ثبت نام در این دوره
             </v-btn>
@@ -83,6 +91,39 @@
     </v-card>
 </template>
 <script setup>
+
+import {ref} from "vue";
+import {router} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+const props = defineProps({
+    course: {
+        type: Object,
+        required: true
+    }
+})
+const isEnroll = ref(false);
+const enrollInCourse = () => {
+    try {
+        router.post(route('web.courses.enroll', { course: props.course.id }), {}, {
+            preserveScroll: true,
+            onStart: () => {
+                isEnroll.value = true;
+            },
+            onSuccess: () => {
+                // عملیات بعد از موفقیت‌آمیز بودن درخواست
+                isEnroll.value = false;
+                // می‌توانید state مربوطه را به‌روز کنید
+            },
+            onError: (errors) => {
+                console.error('خطا در ثبت‌نام:', errors);
+                isEnroll.value = false;
+            }
+        });
+    } catch (error) {
+        console.error('خطا در ارسال درخواست:', error);
+        isEnroll.value = false;
+    }
+}
 </script>
 <style scoped>
 .zo-content {

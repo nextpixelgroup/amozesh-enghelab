@@ -110,4 +110,14 @@ class CourseController extends Controller
 
         return $response;
     }
+
+    public function enroll(Course $course, Request $request)
+    {
+        $user = auth()->user();
+        if(!$user){
+            return redirectMessage('error', 'ابتدا وارد سایت شوید');
+        }
+
+        return redirectMessage('success', 'عضویت با موفقیت انجام شد');
+    }
 }

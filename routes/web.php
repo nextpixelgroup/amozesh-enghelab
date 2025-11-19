@@ -28,6 +28,7 @@ Route::name('web.')->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('index');
     Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+    Route::post('/courses/enroll/{course}', [CourseController::class, 'enroll'])->name('courses.enroll');
     Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');

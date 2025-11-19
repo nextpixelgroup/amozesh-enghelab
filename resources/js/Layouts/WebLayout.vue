@@ -101,9 +101,12 @@
             </div>
         </footer>
     </div>
+
+    <FlashMessage />
 </template>
 <script setup>
 import {ref} from 'vue'
+import FlashMessage from "@/Components/FlashMessage.vue";
 const isMenuOpen = ref(false)
 </script>
 
