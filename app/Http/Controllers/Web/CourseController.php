@@ -46,6 +46,7 @@ class CourseController extends Controller
 
     public function show(Request $request, Course $course)
     {
+        $courseRequest = $course;
         $requirements = WebCoursesResource::collection($course->requirements);
         $similarCourses = Course::whereHas('categories', function ($query) use ($course) {
             $query->whereIn('id', $course->categories->pluck('id'));
@@ -55,7 +56,10 @@ class CourseController extends Controller
             ->get();
         $related = WebCoursesResource::collection($similarCourses);
         $course = WebCourseDetailsResource::make($course);
-        return inertia('Web/Courses/Show', compact('course','requirements', 'related'));
+        $user = auth()->user();
+        $isEnrolled = false;
+        if($user) $isEnrolled = $user->isEnrolledIn($courseRequest);
+        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled'));
     }
 
     public function download($filename)

@@ -11,7 +11,9 @@
                     <v-row class="align-center">
                         <v-col cols="12" md="9">
                             <div class="zo-subtitle">
-                                <i :class="lesson.completed ? 'zo-check' : 'zo-uncheck'"></i>
+                                <i v-if="!isEnrolled" class="zo-uncheck"></i>
+                                <i v-else-if="lesson.completed" class="zo-uncheck"></i>
+                                <i v-else class="zo-uncheck"></i>
                                 <strong>{{ lesson.title }}</strong>
                             </div>
                         </v-col>
@@ -19,7 +21,11 @@
                             <ul class="zo-subinfo">
                                 <li>{{ lesson.duration }}</li>
                                 <li>
-                                    <div v-if="lesson.completed" class="zo-check">
+
+                                    <div v-if="!isEnrolled" class="zo-play">
+                                        <i class="mdi mdi-lock-outline"></i>
+                                    </div>
+                                    <div v-else-if="lesson.completed" class="zo-check">
                                         <i class="mdi mdi-check"></i>
                                     </div>
                                     <div v-else class="zo-play">
@@ -28,6 +34,7 @@
                                 </li>
                                 <li>
                                     <v-btn
+                                        v-if="isEnrolled"
                                         variant="outlined"
                                         rounded="xl"
                                         class="zo-download"
@@ -40,7 +47,7 @@
                         </v-col>
                     </v-row>
                 </v-expansion-panel-title>
-                <v-expansion-panel-text v-if="lesson.video">
+                <v-expansion-panel-text v-if="isEnrolled && lesson.video">
                     <CustomVideoPlayer :src="lesson.video" :poster="lesson.poster" :filename="lesson.download_url"/>
                 </v-expansion-panel-text>
             </v-expansion-panel>
@@ -55,6 +62,9 @@ import {Link} from "@inertiajs/vue3";
 const props = defineProps({
     lessons: {
         type: Object,
+    },
+    isEnrolled: {
+        type: Boolean,
     }
 })
 const downloadVideo = (url) => {
