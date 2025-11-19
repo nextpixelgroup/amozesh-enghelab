@@ -19,6 +19,16 @@
                 <img src="/assets/img/site/click.svg" alt="">
                 ثبت نام در این دوره
             </v-btn>
+            <div class="zo-progress">
+                <span class="zo-name">پیشرفت شما</span>
+                <span class="zo-percent">۷۰٪ کامل شده</span>
+                <v-progress-linear
+                    v-model="progress"
+                    color="secondary"
+                    height="10"
+                    rounded
+                ></v-progress-linear>
+            </div>
             <div class="zo-users">
                 <div class="zo-name">
                     <img src="/assets/img/site/c-gap-green.svg" alt="">
@@ -95,6 +105,9 @@
 import {ref} from "vue";
 import {router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
+
+const progress = ref(78)
+
 const props = defineProps({
     course: {
         type: Object,
@@ -104,7 +117,7 @@ const props = defineProps({
 const isEnroll = ref(false);
 const enrollInCourse = () => {
     try {
-        router.post(route('web.courses.enroll', { course: props.course.id }), {}, {
+        router.post(route('web.courses.enroll', {course: props.course.id}), {}, {
             preserveScroll: true,
             onStart: () => {
                 isEnroll.value = true;
@@ -164,6 +177,26 @@ const enrollInCourse = () => {
 
 .zo-content .zo-add img {
     margin: 0 0 0 10px
+}
+
+.zo-content .zo-progress {
+    width: 100%;
+    margin: 15px 0;
+    padding: 15px 20px;
+    background: rgb(5, 105, 60);
+    color: rgb(255, 255, 255);
+    border-radius: .75rem
+}
+
+.zo-content .zo-progress .zo-name {
+    display: block;
+    margin: 0 0 10px
+}
+
+.zo-content .zo-progress .zo-percent {
+    display: block;
+    margin: 0 0 2.5px;
+    font-size: .90rem
 }
 
 .zo-content .zo-users {
