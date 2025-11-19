@@ -21,7 +21,7 @@
         <div v-if="isBuffering" class="loading-overlay">
             <v-progress-circular
                 indeterminate
-                color="primary"
+                color="#0075ff"
                 size="64"
             />
         </div>
@@ -129,7 +129,7 @@
                                     step="0.01"
                                     v-model="volume"
                                     class="volume-slider"
-                                    style="transform: rotateY(180deg)"
+                                    style="transform: rotateY(180deg);"
                                 />
                             </div>
                             <v-icon color="white" size="20">mdi-volume-high</v-icon>
@@ -445,6 +445,7 @@ onBeforeUnmount(() => {
     width: 80px;
     cursor: pointer;
 }
+
 
 .volume-slider-container {
     display: flex;
@@ -796,7 +797,7 @@ onBeforeUnmount(() => {
     top: 0;
     left: 0;
     height: 100%;
-    background: #4CAF50;
+    background: #0075ff;
     border-radius: 2px;
     pointer-events: none;
     transition: width 0.1s linear;
@@ -811,7 +812,7 @@ onBeforeUnmount(() => {
     width: 10px;
     height: 14px;
     background: #fff;
-    border: 0px solid #4CAF50;
+    border: 0px solid #0075ff;
     border-radius: 50%;
     z-index: 5;
     pointer-events: none;
@@ -889,7 +890,7 @@ onBeforeUnmount(() => {
 }
 
 .speed-item.active {
-    background: #4CAF50 !important;
+    background: #0075ff !important;
     color: white !important;
     font-weight: bold;
 }
@@ -912,46 +913,4 @@ onBeforeUnmount(() => {
 .overlay-play:hover {
     background: rgba(0,0,0,0.55);
 }
-.volume-slider {
-    width: 80px;
-    cursor: pointer;
-    /* پاک کردن استایل پیش‌فرض */
-    -webkit-appearance: none;
-    background: transparent;
-}
-
-/* رنگ بک‌گراند بخش پر شده */
-.volume-slider::-webkit-slider-runnable-track {
-    height: 6px;
-    background: rgba(76, 175, 80, 0.4); /* سبز شفاف */
-    border-radius: 3px;
-}
-
-/* رنگ Thumb */
-.volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #4CAF50; /* سبز */
-    cursor: pointer;
-    margin-top: -4px; /* مرکز کردن */
-}
-
-/* Firefox */
-.volume-slider::-moz-range-track {
-    height: 6px;
-    background: rgba(76, 175, 80, 0.4);
-    border-radius: 3px;
-}
-
-.volume-slider::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #4CAF50;
-    border: none;
-    cursor: pointer;
-}
-
 </style>
