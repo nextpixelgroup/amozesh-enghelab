@@ -41,6 +41,42 @@
                                 </template>
                             </v-text-field>
                         </v-col>
+                        <v-col class="v-col-12">
+                            <ImageUploader
+                                v-model:model-value="course.poster_id"
+                                :initialUrl="data.poster.url"
+                                upload-route="admin.upload.courses.image"
+                                title="آپلود تصویر ویدیو مقدمه"
+                                label="تصویر ویدیو مقدمه را اینجا رها کنید"
+                                accept="image/*"
+                                type="lesson"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12">
+                            <v-text-field
+                                v-model="course.intro_url"
+                                type="text"
+                                hide-details
+                                variant="outlined"
+                                density="comfortable"
+                                label="لینک ویدیو مقدمه"
+                                :suffix="video_upload_slug"
+                                dir="ltr"
+                                prepend-inner-icon="mdi-link"
+                            >
+                                <template v-slot:append>
+                                    <v-btn
+                                        icon
+                                        variant="text"
+                                        @click="showVideo(course.intro_url)"
+                                        title="مشاهده"
+                                        :disabled="!course.intro_url"
+                                    >
+                                        <v-icon>mdi-open-in-new</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-text-field>
+                        </v-col>
                         <v-col class="v-col-12 v-col-lg-6">
                             <MultipleSelector
                                 v-model="course.category"
@@ -713,7 +749,7 @@ const status = ref(props.status);
 const courses = ref(props.courses);
 const data = ref(props.course.data);
 const video_upload_slug = ref(props.video_upload_slug);
-//console.log(data.value)
+console.log(data.value)
 const courseRequirements = courses;
 const showVideo = (slug) => {
     if (slug) {
@@ -731,10 +767,13 @@ const course = reactive({
     must_complete_quizzes: data.value.must_complete_quizzes ? 1 : 0,
     status: data.value.status.value,
     thumbnail_id: data.value.thumbnail.id,
+    intro_url: data.value.intro_url,
+    intro_id: data.value.intro.id,
+    poster_id: data.value.poster.id,
     seasons: data.value.seasons,
     quiz: data.value.quiz
 });
-
+console.log(data.value)
 /********************************Seasons********************************/
 
 

@@ -114,8 +114,11 @@ const form = useForm({
     'bio': user.value.teacherDetails?.bio,
     'institution_id': user.value?.institution_id,
     'avatar_id': user.value?.avatar?.id,
+    'avatar': user.value?.avatar,
     'image': user.value?.teacherDetails?.image,
     'image_id': user.value?.teacherDetails?.image?.id,
+    'national_card_image_id' : user.value?.national_card_image?.id,
+    'national_card_image' : user.value?.national_card_image,
     'educations': user.value.educations && user.value.educations.length > 0
         ? user.value.educations.map(education => ({
             id: education.id || null,
@@ -132,7 +135,7 @@ const form = useForm({
         }))
         : []
 });
-
+console.log(form)
 const viewPage = () => {
     window.open(route('web.teacher.show', form.slug), '_blank');
 }

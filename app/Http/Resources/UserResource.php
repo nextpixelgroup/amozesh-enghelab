@@ -38,6 +38,10 @@ class UserResource extends JsonResource
             'avatar'         => [
                 'id' => $this->avatar_id ?? null,
                 'url' => $this->avatar?->url ?? null,
+            ],
+            'national_card_image'         => [
+                'id' => $this->national_card_image_id ?? null,
+                'url' => $this->nationalCardImage?->url ?? null,
             ]
         ];
     }

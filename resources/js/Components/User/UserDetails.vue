@@ -176,21 +176,10 @@
                         clearable
                     />
                 </v-col>
-                <v-col cols="12" md="3" lg="3">
-                    <v-text-field
-                        v-model="form.password"
-                        variant="outlined"
-                        density="comfortable"
-                        label="کلمه عبور"
-                        :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                        :type="showPassword ? 'text' : 'password'"
-                        @click:append-inner="togglePasswordVisibility"
-                        hide-details
-                    />
-                </v-col>
-                <v-col cols="12">
+                <v-col cols="6">
                     <ImageUploader
                         v-model:model-value="form.avatar_id"
+                        :initial-url="form.avatar?.url"
                         upload-route="admin.upload.users.image"
                         label="فقط فایل تصویری آپلود کنید"
                         title="بارگذاری آواتار"
@@ -198,6 +187,18 @@
                         type="user"
                     />
                 </v-col>
+                <v-col cols="6">
+                    <ImageUploader
+                        v-model:model-value="form.national_card_image_id"
+                        :initial-url="form.national_card_image?.url"
+                        upload-route="admin.upload.users.image"
+                        label="فقط فایل تصویری آپلود کنید"
+                        title="بارگذاری تصویر کارت ملی"
+                        accept="image/*"
+                        type="user"
+                    />
+                </v-col>
+
             </v-row>
         </v-card>
         <div class="zo-header-section mb-5">
@@ -393,10 +394,6 @@ const props = defineProps({
         required: true
     },
 })
-const showPassword = ref(false);
-const togglePasswordVisibility = () => {
-    showPassword.value = !showPassword.value
-}
 const addEducation = () => {
     props.form.educations.push({
         university: '',

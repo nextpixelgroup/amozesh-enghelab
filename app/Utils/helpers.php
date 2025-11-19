@@ -489,8 +489,9 @@ function video_upload_path()
     return $http.env('FTP_DOMAIN').'/'.env('COURSE_VIDEO_UPLOAD_SLUG');
 }
 
-function formatDurationTime(int $minutes): string
+function formatDurationTime($minutes)
 {
+    if($minutes == null) return 0;
     $hours = intdiv($minutes, 60);
     $remainingMinutes = $minutes % 60;
 

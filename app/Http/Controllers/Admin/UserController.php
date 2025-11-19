@@ -102,22 +102,23 @@ class UserController extends Controller
                     $slug = makeSlugUnique($slug, User::class);
                 }
                 $user = User::create([
-                    'firstname'      => $request->firstname,
-                    'lastname'       => $request->lastname,
-                    'gender'         => $request->gender,
-                    'national_code'  => $request->national_code,
-                    'mobile'         => $request->mobile,
-                    'tel'            => $request->tel,
-                    'email'          => $request->email,
-                    'address'        => $request->address,
-                    'postal_code'    => $request->postal_code,
-                    'birth_date'     => $birthDate,
-                    'company'        => $request->company,
-                    'username'       => $request->username,
-                    'institution_id' => $request->institution_id,
-                    'password'       => $password,
-                    'slug'           => $slug,
-                    'avatar_id'      => $request->avatar_id,
+                    'firstname'              => $request->firstname,
+                    'lastname'               => $request->lastname,
+                    'gender'                 => $request->gender,
+                    'national_code'          => $request->national_code,
+                    'mobile'                 => $request->mobile,
+                    'tel'                    => $request->tel,
+                    'email'                  => $request->email,
+                    'address'                => $request->address,
+                    'postal_code'            => $request->postal_code,
+                    'birth_date'             => $birthDate,
+                    'company'                => $request->company,
+                    'username'               => $request->username,
+                    'institution_id'         => $request->institution_id,
+                    'password'               => $password,
+                    'slug'                   => $slug,
+                    'avatar_id'              => $request->avatar_id,
+                    'national_card_image_id' => $request->national_card_image_id,
                 ]);
                 if($user){
                     $user->teacherDetails()->create([
@@ -221,6 +222,7 @@ class UserController extends Controller
                     'institution_id' => $request->institution_id,
                     'slug'           => $slug,
                     'avatar_id'      => $request->avatar_id,
+                    'national_card_image_id' => $request->national_card_image_id,
                 ];
                 if($request->password){
                     $args['password'] = Hash::make($request->password);

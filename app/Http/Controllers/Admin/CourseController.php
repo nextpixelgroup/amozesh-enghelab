@@ -84,24 +84,44 @@ class CourseController extends Controller
 
     public function store(CourseCreateRequest $request)
     {
-        return DB::transaction(function () use ($request) {
+        try {
+            // First handle the video upload outside of transaction
+            $introId = null;
+            if ($request->intro_url) {
+                $introId = $this->addVideoToMedia($request->intro_url);
+                if (is_a($introId, '\Illuminate\Http\RedirectResponse')) {
+                    return $introId; // Return the error response if video upload fails
+                }
+            }
+
+            DB::beginTransaction();
+
             try {
-                // Create course
-                $course = $this->storeCourse($request);
+                // Create course with the already uploaded video ID
+                $course = $this->storeCourse($request, $introId);
 
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processSeasons($course, $request->seasons);
+
                 if(isset($request->quiz['has_quiz']) && $request->quiz['has_quiz'] == true) {
                     $this->finalQuiz($course, $request->quiz);
                 }
+
                 UpdateCourseDurationJob::dispatch($course->id);
 
-                return redirectMessage('success', 'دوره با موفقیت ایجاد شد.',redirect: route('admin.courses.edit',$course->id));
+                DB::commit();
+
+                return redirectMessage('success', 'دوره با موفقیت ایجاد شد.', redirect: route('admin.courses.edit', $course->id));
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e; // Re-throw to be caught by outer catch
             }
-            catch (\Exception $e) {
-                return redirectMessage('error',$e->getMessage());
-            }
-        });
+
+        } catch (\Exception $e) {
+            $error = log_error($e);
+            return redirectMessage('error', $e->getMessage());
+        }
     }
 
     public function edit(Course $course)
@@ -124,36 +144,58 @@ class CourseController extends Controller
     public function update(CourseUpdateRequest $request, Course $course)
     {
         try {
-            //dd($request->all());
-            return DB::transaction(function () use ($request, $course) {
-                // Create course
-                $course = $this->updateCourse($request, $course);
+            // Handle video upload outside of transaction
+            $introId = $course->intro_id;
+            if ($request->intro_url && $request->intro_url !== $course->intro?->path) {
+                $introId = $this->addVideoToMedia($request->intro_url);
+                if (is_a($introId, '\Illuminate\Http\RedirectResponse')) {
+                    return $introId; // Return the error response if video upload fails
+                }
+            }
+
+            DB::beginTransaction();
+
+            try {
+                // Update course with the uploaded video ID
+                $course = $this->updateCourse($request, $course, $introId);
+
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processUpdateSeasons($course, $request->seasons);
-                if(isset($request->quiz['has_quiz'])) {
+
+                if(isset($request->quiz['has_quiz']) && $request->quiz['has_quiz']) {
                     $this->finalUpdateQuiz($course, $request->quiz);
                 }
+
                 UpdateCourseDurationJob::dispatch($course->id);
-                return redirectMessage('success', 'دوره با موفقیت ویرایش شد.',redirect: route('admin.courses.edit',$course->id));
-            });
-        }
-        catch (\Exception $e) {
+
+                DB::commit();
+
+                return redirectMessage('success', 'دوره با موفقیت ویرایش شد.', redirect: route('admin.courses.edit', $course->id));
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e; // Re-throw to be caught by outer catch
+            }
+
+        } catch (\Exception $e) {
             $error = log_error($e);
-            return redirectMessage('error',"خطایی پیش آمد (کدخطا: $error->id)");
+            return redirectMessage('error', $e->getMessage());
         }
     }
 
-    private function storeCourse($request)
+    private function storeCourse($request, $introId = null)
     {
         $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
         $slug = makeSlugUnique($slug, Course::class);
 
-        $course = Course::create([
+        $args = [
             'user_id'      => auth()->user()->id,
             'title'        => $request->title,
             'slug'         => $slug,
             'description'  => $request->description,
             'thumbnail_id' => $request->thumbnail_id,
+            'intro_id'     => $introId,
+            'poster_id'    => $request->poster_id,
             'teacher_id'   => $request->teacher,
             'price'        => 0,
             'rate'         => null,
@@ -162,14 +204,15 @@ class CourseController extends Controller
             'published_at' => $request->published_at
                 ? verta()->parse($request->published_at)->datetime()
                 : now(),
-        ]);
+        ];
+        $course = Course::create($args);
         $requirements = $request->requirements ? collect($request->requirements)->pluck('value')->toArray() : [];
         $course->requirements()->sync($requirements);
         $course->categories()->sync($request->category);
         return $course;
     }
 
-    private function updateCourse($request, $course)
+    private function updateCourse($request, $course, $introId = null)
     {
         $slug = $request->slug;
         if(empty($request->slug)){
@@ -180,7 +223,7 @@ class CourseController extends Controller
             $slug = makeSlugUnique($slug, Course::class);
         }
 
-        $update = $course->update([
+        $updateData = [
             'title'                 => $request->title,
             'slug'                  => $slug,
             'description'           => $request->description,
@@ -188,7 +231,19 @@ class CourseController extends Controller
             'teacher_id'            => $request->teacher,
             'must_complete_quizzes' => $request->must_complete_quizzes,
             'status'                => $request->status,
-        ]);
+        ];
+
+        // Only update intro_id if a new video was uploaded
+        if ($introId !== null) {
+            $updateData['intro_id'] = $introId;
+        }
+
+        // Update poster_id if provided
+        if ($request->has('poster_id')) {
+            $updateData['poster_id'] = $request->poster_id;
+        }
+
+        $update = $course->update($updateData);
         if($update) {
             $requirements = $request->requirements ? collect($request->requirements)->pluck('value')->toArray() : [];
             $course->requirements()->sync($requirements);
@@ -263,38 +318,7 @@ class CourseController extends Controller
     {
         $order = 1;
         foreach ($lessons as $lessonData) {
-            $video_id = null;
-            $domain = env('FTP_DOMAIN');
-            $video_slug = env('COURSE_VIDEO_UPLOAD_SLUG');
-            if($lessonData['video_url']){
-                $http = env('FTP_SSL') ? 'https://' : 'http://';
-                $url = $http.$domain.'/'.$video_slug.$lessonData['video_url'];
-                $response = Http::head($url);
-                if (!$response->successful()) {
-                    return redirectMessage('error', 'چنین ویدیویی یافت نشد');
-                }
-                else{
-
-                    // Get file info
-                    $fileName = basename($lessonData['video_url']);
-                    $fileSize = $response->header('Content-Length');
-                    $mimeType = $response->header('Content-Type');
-                    // Save to media table
-                    $filenameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
-                    $media = auth()->user()->media()->create([
-                        'file_type' => 'video',
-                        'alt'       => $filenameWithoutExt,
-                        'file_name' => $fileName,
-                        'mime_type' => $mimeType,
-                        'ssl'       => true,
-                        'domain'    => $domain,
-                        'path'      => $video_slug.$lessonData['video_url'],
-                        'size'      => $fileSize,
-                    ]);
-
-                    $video_id = $media->id;
-                }
-            }
+            $video_id = $this->addVideoToMedia($lessonData['video_url']);
             $lesson = $season->lessons()->create([
                 'title'       => $lessonData['title'],
                 'description' => $lessonData['description'] ?? null,
@@ -317,42 +341,7 @@ class CourseController extends Controller
 
         $requestLessonIds = [];
         foreach ($lessons as $lessonData) {
-            $video_id = null;
-            $domain = env('FTP_DOMAIN');
-            $video_slug = env('COURSE_VIDEO_UPLOAD_SLUG');
-            $lesson = CourseLesson::find($lessonData['id']);
-            //dd($lesson);
-            //dd($lesson->video_id);
-            if ($lessonData['video_url']) {
-                $http = env('FTP_SSL') ? 'https://' : 'http://';
-                $url = $http . $domain . '/' . $video_slug . $lessonData['video_url'];
-                $response = Http::head($url);
-                if (!$response->successful()) {
-                    return redirectMessage('error', "ویدیو {$lessonData['video_url']} یافت نشد");
-                } else {
-                    $media = Media::where('file_name',$lessonData['video_url'])->first();
-                    if(!$media) {
-                        // Get file info
-                        $fileName = basename($lessonData['video_url']);
-                        $fileSize = $response->header('Content-Length');
-                        $mimeType = $response->header('Content-Type');
-                        // Save to media table
-                        $filenameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
-                        $media = auth()->user()->media()->create([
-                            'file_type' => 'video',
-                            'alt' => $filenameWithoutExt,
-                            'file_name' => $fileName,
-                            'mime_type' => $mimeType,
-                            'ssl' => true,
-                            'domain' => $domain,
-                            'path' => $video_slug . $lessonData['video_url'],
-                            'size' => $fileSize,
-                        ]);
-                    }
-                    $video_id = $media->id;
-                }
-
-            }
+            $video_id = $this->addVideoToMedia($lessonData['video_url']);
             if(is_numeric($lessonData['id']) && $lessonData['id'] > 0){
                 $requestLessonIds[] = $lessonData['id'];
 
@@ -588,5 +577,53 @@ class CourseController extends Controller
         catch (\Exception $e) {
             return redirectMessage('error',$e->getMessage());
         }
+    }
+
+    private function addVideoToMedia($videoUrl)
+    {
+        if (empty($videoUrl)) {
+            return null;
+        }
+
+        try {
+            $domain = env('FTP_DOMAIN');
+            $video_slug = env('COURSE_VIDEO_UPLOAD_SLUG');
+            $http = env('FTP_SSL') ? 'https://' : 'http://';
+            $url = $http . $domain . '/' . $video_slug . ltrim($videoUrl, '/');
+
+            // Verify the video exists and get its details
+            $response = Http::timeout(30)->head($url);
+
+            if (!$response->successful()) {
+                throw new \Exception("ویدیو یافت نشد: " . $videoUrl);
+            }
+
+            $media = Media::where('file_name',$videoUrl)->first();
+            if(!$media) {
+                // Get file info
+                $fileName = basename($videoUrl);
+                $fileSize = $response->header('Content-Length', 0);
+                $mimeType = $response->header('Content-Type', 'video/mp4');
+
+                // Save to media table
+                $filenameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
+
+                return auth()->user()->media()->create([
+                    'file_type' => 'video',
+                    'alt' => $filenameWithoutExt,
+                    'file_name' => $fileName,
+                    'mime_type' => $mimeType,
+                    'ssl' => true,
+                    'domain' => $domain,
+                    'path' => $video_slug . ltrim($videoUrl, '/'),
+                    'size' => $fileSize,
+                ])->id;
+            }
+            return $media->id;
+
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
     }
 }

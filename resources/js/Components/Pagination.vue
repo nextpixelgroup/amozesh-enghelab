@@ -1,12 +1,11 @@
 <template>
-    <v-row justify="center" align="center" class="gap-2" v-if="totalPages > 1">
+    <v-row justify="center" align="center" class="gap-2" v-if="length > 1">
 
         <v-pagination
-            v-model="localPage"
-            :length="totalPages"
-            :total-visible="7"
-
-            @update:modelValue="emit('update:modelValue', $event)"
+            v-model="page"
+            :length="length"
+            :total-visible="6"
+            @update:modelValue="updatePage"
         >
 
         </v-pagination>
@@ -23,22 +22,25 @@ const props = defineProps({
         required: true,
         default: 1
     },
-    totalPages: {
+    length: {
         type: Number,
         required: true,
         default: 1
     }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'changePage'])
 
 // حالت محلی برای sync شدن با v-model
-const localPage = ref(props.modelValue)
-
+const page = ref(props.modelValue)
+function updatePage(page) {
+    emit('update:modelValue', page) // برای v-model
+    emit('changePage', page)        // برای callback سفارشی
+}
 // هم‌زمان‌سازی با مقدار والد (در صورت تغییر برنامه‌ای)
 watch(
     () => props.modelValue,
-    (val) => (localPage.value = val)
+    (val) => (page.value = val)
 )
 </script>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WebCourseDetailsResource;
 use App\Http\Resources\WebCoursesResource;
 use App\Models\Category;
 use App\Models\Course;
@@ -13,7 +14,6 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
-        sleep(1);
         $categories = Category::where('type', 'course')->orderBy('created_at', 'desc')->get()->map(function ($item) {
            return [
                'value' => $item->slug,
@@ -45,6 +45,7 @@ class CourseController extends Controller
 
     public function show(Request $request, Course $course)
     {
-        return inertia('Web/Courses/Show', []);
+        $course = new WebCourseDetailsResource($course);
+        return inertia('Web/Courses/Show', compact('course'));
     }
 }
