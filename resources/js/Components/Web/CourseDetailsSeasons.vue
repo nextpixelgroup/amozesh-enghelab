@@ -6,9 +6,9 @@
             </v-col>
             <v-col cols="12" md="9">
                 <ul class="zo-info">
-                    <li>{{ stats.seasons }} فصل</li>
-                    <li>{{ stats.lessons }} درس</li>
-                    <li>{{ stats.duration }} مدت زمان</li>
+                    <li>تعداد فصل: {{ stats.seasons }}</li>
+                    <li>تعداد درس: {{ stats.lessons }}</li>
+                    <li>مدت زمان: {{ stats.duration }}</li>
                 </ul>
             </v-col>
         </v-row>
@@ -40,7 +40,7 @@
                     </v-col>
                 </v-row>
             </v-expansion-panel-title>
-            <CourseDetailsLessons :lessons="season.lessons"/>
+            <CourseDetailsLessons :lessons="season.lessons" :isEnrolled="isEnrolled"/>
         </v-expansion-panel>
     </v-expansion-panels>
 </template>
@@ -54,6 +54,9 @@ const props = defineProps({
     },
     stats: {
         type: Object,
+    },
+    isEnrolled: {
+        type: Boolean,
     }
 });
 const openSeason = ref([0]);

@@ -38,6 +38,11 @@ class CourseLesson extends Model
         return $this->belongsTo(Media::class, 'poster_id');
     }
 
+    public function completions()
+    {
+        return $this->hasMany(LessonCompletion::class);
+    }
+
     public function getIsUnlockedAttribute()
     {
         // Check if previous lessons are completed

@@ -32,7 +32,7 @@
                                 <div class="zo-hr"></div>
                             </div>
 
-                            <CourseDetailsSeasons :seasons="course.data.seasons" :stats="course.data.stats"/>
+                            <CourseDetailsSeasons :seasons="course.data.seasons" :stats="course.data.stats" :isEnrolled="isEnrolled"/>
                         </div>
                         <CourseDetailsRequirements :courses="requirements.data"/>
                         <CourseDetailsRelated :courses="related.data"/>
@@ -62,8 +62,8 @@ const props = defineProps({
     course: Object,
     requirements: Object,
     related: Object,
+    isEnrolled: Object,
 })
-console.log(props.course.data)
 const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
 
 

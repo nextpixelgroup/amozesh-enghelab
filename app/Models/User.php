@@ -138,9 +138,24 @@ class User extends Authenticatable
 
     public function enrolledCourses()
     {
-        return $this->belongsToMany(Course::class, 'course_student')
+        return $this->belongsToMany(Course::class, 'course_students')
             ->withPivot(['enrolled_at', 'completed_at', 'has_passed', 'progress'])
             ->withTimestamps();
+    }
+
+    /**
+     * Check if the user is enrolled in a specific course
+     *
+     * @param Course|int $course The course instance or course ID to check
+     * @return bool
+     */
+    public function isEnrolledIn($course): bool
+    {
+        $courseId = $course instanceof Course ? $course->id : $course;
+
+        return $this->enrolledCourses()
+            ->where('course_id', $courseId)
+            ->exists();
     }
 
 
@@ -156,13 +171,15 @@ class User extends Authenticatable
 
     public function completedLessons()
     {
-        return $this->belongsToMany(CourseLesson::class, 'lesson_completions')
-            ->withTimestamps();
+        return $this->hasMany(LessonCompletion::class);
     }
 
-    public function hasCompletedLesson(CourseLesson $lesson)
+    public function hasCompletedLesson($lessonId)
     {
-        return $this->completedLessons()->where('lesson_id', $lesson->id)->exists();
+        return $this->completedLessons()
+            ->where('course_lesson_id', $lessonId)
+            ->where('status', 'completed')
+            ->exists();
     }
 
     public function quizAttempts()
