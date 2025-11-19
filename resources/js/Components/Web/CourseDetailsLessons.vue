@@ -49,6 +49,7 @@
                 </v-expansion-panel-title>
                 <v-expansion-panel-text v-if="isEnrolled && lesson.video">
                     <CustomVideoPlayer :src="lesson.video" :poster="lesson.poster" :filename="lesson.download_url"/>
+                    <CourseLessonQuiz/>
                 </v-expansion-panel-text>
             </v-expansion-panel>
         </v-expansion-panels>
@@ -58,6 +59,7 @@
 
 import CustomVideoPlayer from "@/Components/CustomVideoPlayer.vue";
 import {Link} from "@inertiajs/vue3";
+import CourseLessonQuiz from "@/Components/Web/CourseLessonQuiz.vue";
 
 const props = defineProps({
     lessons: {
