@@ -8,7 +8,7 @@
                 <ul class="zo-info">
                     <li>{{ stats.seasons }} فصل</li>
                     <li>{{ stats.lessons }} درس</li>
-                    <li>{{ stats.videos }} ویدیو</li>
+                    <li>{{ stats.duration }} مدت زمان</li>
                 </ul>
             </v-col>
         </v-row>
@@ -35,7 +35,7 @@
                     <v-col cols="12" md="3">
                         <ul class="zo-meta">
                             <li>{{ season.lessons.length }} درس</li>
-                            <li>{{ season.duration }} ساعت</li>
+                            <li>{{ season.duration }}</li>
                         </ul>
                     </v-col>
                 </v-row>

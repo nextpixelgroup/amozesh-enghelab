@@ -11,6 +11,7 @@
         <video
             ref="video"
             class="video-player"
+            :poster="poster"
             @click="playing = !playing"
             @waiting="isBuffering = true"
             @playing="isBuffering = false"
@@ -167,6 +168,10 @@ import {ref, onMounted, computed, onBeforeUnmount, watch} from 'vue'
 import {route} from "ziggy-js";
 const props = defineProps({
     'src' : {
+        type: String,
+        required: true
+    },
+    'poster' : {
         type: String,
         required: true
     },
