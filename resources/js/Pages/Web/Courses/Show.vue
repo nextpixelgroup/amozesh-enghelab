@@ -309,7 +309,7 @@
                 <v-col cols="12" lg="3">
                     <v-card flat class="zo-card">
                         <div class="zo-space">
-                            Sidebar
+                            <div class="zo-price">رایگان</div>
                         </div>
                     </v-card>
                 </v-col>
@@ -437,3 +437,8 @@ const courses = ref([
     },
 ])
 </script>
+<style scoped>
+.zo-price {
+    background: url('/assets/img/site/c-students.svg');
+}
+</style>
