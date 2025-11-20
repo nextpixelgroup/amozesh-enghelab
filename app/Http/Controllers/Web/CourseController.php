@@ -59,7 +59,8 @@ class CourseController extends Controller
         $user = auth()->user();
         $isEnrolled = false;
         if($user) $isEnrolled = $user->isEnrolledIn($courseRequest);
-        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled'));
+        $pageTitle = $courseRequest->title;
+        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle'));
     }
 
     public function download($filename)

@@ -1,4 +1,5 @@
 <template>
+    <Head :title="`انقلاب | ${page.props.pageTitle}`" />
     <div>
         <header>
             <div class="zo-header-section">
@@ -107,6 +108,9 @@
 <script setup>
 import {ref} from 'vue'
 import FlashMessage from "@/Components/FlashMessage.vue";
+import {Head, usePage} from "@inertiajs/vue3";
 const isMenuOpen = ref(false)
+const page = usePage()
+
 </script>
 
