@@ -15,7 +15,7 @@
             </v-col>
             <v-col cols="12" lg="6">
                 <div class="zo-content">
-                    <h2 v-match-heights="'course-title'">{{ course.title }}</h2>
+                    <h2>{{ course.title }}</h2>
                     <span class="zo-prof">{{ course.teacher }}</span>
                     <ul>
                         <li>
