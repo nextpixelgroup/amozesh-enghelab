@@ -135,6 +135,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class, 'teacher_id');
     }
+    // Add this method
+    public function studentsCountRelation()
+    {
+        return $this->hasMany(Course::class, 'teacher_id')
+            ->selectRaw('teacher_id, count(distinct course_students.user_id) as students_count')
+            ->join('course_students', 'courses.id', '=', 'course_students.course_id')
+            ->groupBy('teacher_id');
+    }
+
+// Add this accessor
+    public function getStudentsCountAttribute()
+    {
+        if (!$this->relationLoaded('studentsCountRelation')) {
+            $this->load('studentsCountRelation');
+        }
+
+        return $this->studentsCountRelation->first()->students_count ?? 0;
+    }
+
 
     public function enrolledCourses()
     {

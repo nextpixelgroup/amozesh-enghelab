@@ -25,7 +25,22 @@ class WebCourseDetailsResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'summary' => $this->summary,
             'description' => $this->description,
+            'intro' => $this->intro?->url,
+            'poster' => $this->poster->url ?? '/assets/img/default.svg',
+            'teacher' => [
+                'name' => $this->teacher->firstname.' '.$this->teacher->lastname,
+                'students' => $this->teacher->studentsCount,
+                'courses' => $this->teacher->teachingCourses->count(),
+                'bio' => $this->teacher->bio,
+                'avatar' => $this->teacher->avatar->url ?? '/assets/img/default-teacher.svg',
+                'slug' => $this->teacher->slug
+            ],
+            'published_at' => verta()->instance($this->published_at)->format('l j F Y'),
+            'category' => $this->categories->first()->title,
+            'thumbnail' => $this->thumbnail->url ?? '/assets/img/default.svg',
+            'students' => $this->students->count(),
             'seasons' => $seasons->map(function ($season) {
                 // چون lessons قبلاً eager load شده‌اند، query جدید زده نمی‌شود
                 return [

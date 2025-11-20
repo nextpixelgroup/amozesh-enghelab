@@ -3,7 +3,7 @@
         <v-container class="zo-course-section" max-width="1260">
             <v-row dense>
                 <v-col cols="12">
-                    <CourseDetailsIntro/>
+                    <CourseDetailsIntro :course="course.data"/>
                 </v-col>
                 <v-col cols="12" lg="9">
                     <v-card flat class="zo-card">
@@ -36,11 +36,11 @@
                         </div>
                         <CourseDetailsRequirements :courses="requirements.data"/>
                         <CourseDetailsRelated :courses="related.data"/>
-                        <CourseDetailsComments/>
+                        <Comments/>
                     </v-card>
                 </v-col>
                 <v-col cols="12" lg="3">
-                    <CourseDetailsSidebar :course="course.data"/>
+                    <CourseDetailsSidebar :course="course.data" :isEnrolled="isEnrolled"/>
                 </v-col>
             </v-row>
         </v-container>
@@ -52,7 +52,7 @@ import WebLayout from '@/Layouts/WebLayout.vue'
 import "swiper/css";
 import CourseDetailsSidebar from "@/Components/Web/CourseDetailsSidebar.vue";
 import CourseDetailsIntro from "@/Components/Web/CourseDetailsIntro.vue";
-import CourseDetailsComments from "@/Components/Web/CourseDetailsComments.vue";
+import Comments from "@/Components/Web/Comments.vue";
 import CourseDetailsRelated from "@/Components/Web/CourseDetailsRelated.vue";
 import CourseDetailsRequirements from "@/Components/Web/CourseDetailsRequirements.vue";
 import CourseDetailsSeasons from "@/Components/Web/CourseDetailsSeasons.vue";

@@ -2,7 +2,7 @@
     <v-card flat class="zo-card">
         <div class="zo-content">
             <div class="zo-thumbnail">
-                <img src="/assets/img/sample/15.png" alt="">
+                <img :src="course.thumbnail" alt="">
             </div>
             <div class="zo-price">
                 رایگان
@@ -11,15 +11,15 @@
                 block
                 flat
                 variant="elevated"
-                class="zo-add"
-                @click="enrollInCourse"
+                :class="`zo-add ${isEnrolled ? 'added' : ''}`"
+                @click="!isEnrolled && enrollInCourse()"
                 :disabled="isEnroll"
                 :loading="isEnroll"
             >
                 <img src="/assets/img/site/click.svg" alt="">
-                ثبت نام در این دوره
+                {{isEnrolled ? 'شما عضو دوره هستید' : 'ثبت نام در این دوره'}}
             </v-btn>
-            <div class="zo-progress">
+            <div class="zo-progress" v-if="isEnrolled">
                 <span class="zo-name">پیشرفت شما</span>
                 <span class="zo-percent">۷۰٪ کامل شده</span>
                 <v-progress-linear
@@ -34,7 +34,7 @@
                     <img src="/assets/img/site/c-gap-green.svg" alt="">
                     <span>کل شرکت کنندگان</span>
                 </div>
-                <div class="zo-stat">76</div>
+                <div class="zo-stat">{{ course.students }}</div>
             </div>
             <div class="zo-info">
                 <ul>
@@ -43,39 +43,39 @@
                             <img src="/assets/img/site/c-clock.svg" alt="">
                             <span>شروع دوره</span>
                         </div>
-                        <strong>یکشنبه ۲۴ آذر ۱۴۰۴</strong>
+                        <strong>{{course.published_at}}</strong>
                     </li>
                     <li>
                         <div>
                             <img src="/assets/img/site/c-calendar.svg" alt="">
                             <span>تعداد جلسات</span>
                         </div>
-                        <strong>۱۸ جلسه</strong>
+                        <strong>{{ course.stats.lessons }} جلسه</strong>
                     </li>
                     <li>
                         <div>
                             <img src="/assets/img/site/c-file.svg" alt="">
-                            <span>دسته بندی موضوع</span>
+                            <span>دسته</span>
                         </div>
-                        <strong>ازدواج</strong>
+                        <strong>{{ course.category }}</strong>
                     </li>
-                    <li>
+<!--                    <li>
                         <div>
                             <img src="/assets/img/site/c-gap.svg" alt="">
                             <span>ظرفیت دوره</span>
                         </div>
                         <strong>۲۰ نفر</strong>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
             <div class="zo-prof">
                 <strong class="zo-title">درباره مدرس</strong>
                 <div class="zo-name">
                     <div class="zo-avatar">
-                        <img src="/assets/img/prof/3.jpg" alt="">
+                        <img :src="course.teacher.avatar" alt="">
                     </div>
                     <div>
-                        <span>محمد جواد حریری</span>
+                        <a :href="route('web.teacher.show',course.teacher.slug)" target="_blank"><span>{{course.teacher.name}}</span></a>
                         <div class="zo-social">
                             <img src="/assets/img/site/eitaa-grey.svg" alt="">
                             <img src="/assets/img/site/soroosh-grey.svg" alt="">
@@ -85,17 +85,14 @@
                 <ul>
                     <li>
                         <img src="/assets/img/site/c-lessons.svg" alt="">
-                        <span>9 دوره</span>
+                        <span>{{ course.teacher.courses }} دوره</span>
                     </li>
                     <li>
                         <img src="/assets/img/site/c-gap-grey.svg" alt="">
-                        <span>۵۴۸ دانشجو</span>
+                        <span>{{ course.teacher.students }} دانشجو</span>
                     </li>
                 </ul>
-                <p>
-                    لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است،
-                    چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که...
-                </p>
+                <p>{{course.teacher.bio}}</p>
             </div>
         </div>
     </v-card>
@@ -103,7 +100,7 @@
 <script setup>
 
 import {ref} from "vue";
-import {router} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 
 const progress = ref(78)
@@ -112,10 +109,15 @@ const props = defineProps({
     course: {
         type: Object,
         required: true
+    },
+    isEnrolled: {
+        type: Boolean,
+        required: true
     }
 })
 const isEnroll = ref(false);
 const enrollInCourse = () => {
+    if (props.isEnrolled.value) return false;
     try {
         router.post(route('web.courses.enroll', {course: props.course.id}), {}, {
             preserveScroll: true,
@@ -173,6 +175,11 @@ const enrollInCourse = () => {
     background: rgb(50, 180, 55);
     color: rgb(255, 255, 255);
     border-radius: 0.75rem
+}
+
+.zo-content .zo-add.added {
+    cursor: auto;
+    background: rgb(50, 126, 180);
 }
 
 .zo-content .zo-add img {

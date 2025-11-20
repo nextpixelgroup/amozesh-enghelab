@@ -98,6 +98,15 @@
                             />
                         </v-col>
                         <v-col class="v-col-12">
+                            <v-textarea
+                                v-model="course.summary"
+                                label="خلاصه"
+                                variant="outlined"
+                                density="comfortable"
+                                prepend-inner-icon="mdi-text-long"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12">
                             <Editor
                                 api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
                                 v-model="course.description"
@@ -762,6 +771,7 @@ const course = reactive({
     slug: data.value.slug,
     category: data.value.categories.map(category => category.value),
     teacher: data.value.teacher.id,
+    summary: data.value.summary,
     description: data.value.description,
     requirements: data.value.requirements,
     must_complete_quizzes: data.value.must_complete_quizzes ? 1 : 0,

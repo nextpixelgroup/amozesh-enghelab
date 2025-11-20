@@ -1,24 +1,49 @@
 <template>
     <div>
-        <div class="zo-intro-section">
+        <div class="zo-intro-section" @click="dialog = true">
             <div class="zo-player">
                 <img src="/assets/img/site/player.svg" alt="">
             </div>
             <div class="zo-thumbnail">
-                <img src="/assets/img/sample/video.png" alt="">
+                <img :src="course.poster" alt="">
             </div>
             <div class="zo-content">
-                <h1>دوره کتاب عیار ۲۴</h1>
-                <p>
-                    این کتاب، مجموعه‌ای است از پندها و نصایح مقام معظّم رهبری به زوج‌های جوانی که توفیق یافته‌اند پیوند
-                    زناشویی خود را با آهنگ کلام ایشان هماهنگ کنند و در آغاز زندگی از سرچشمه‌ی فیض و حکمت آن عالِم عارف
-                    بهره گیرند.
-                </p>
+                <h1>{{course.title}}</h1>
+                <p>{{course.summary}}</p>
             </div>
         </div>
     </div>
+
+    <v-dialog
+        v-model="dialog"
+        width="auto"
+    >
+        <v-card
+            max-width="400"
+            prepend-icon="mdi-update"
+            text="Your application will relaunch automatically after the update is complete."
+            title="Update in progress"
+        >
+            <template v-slot:actions>
+                <v-btn
+                    class="ms-auto"
+                    text="Ok"
+                    @click="dialog = false"
+                ></v-btn>
+            </template>
+        </v-card>
+    </v-dialog>
 </template>
 <script setup>
+import {ref} from "vue";
+
+const props = defineProps({
+    course: {
+        type: Object,
+        required: true
+    }
+})
+const dialog = ref(false)
 </script>
 <style scoped>
 .zo-intro-section {

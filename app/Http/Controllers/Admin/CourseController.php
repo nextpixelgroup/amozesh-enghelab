@@ -192,6 +192,7 @@ class CourseController extends Controller
             'user_id'      => auth()->user()->id,
             'title'        => $request->title,
             'slug'         => $slug,
+            'summary'      => $request->summary,
             'description'  => $request->description,
             'thumbnail_id' => $request->thumbnail_id,
             'intro_id'     => $introId,
@@ -226,6 +227,7 @@ class CourseController extends Controller
         $updateData = [
             'title'                 => $request->title,
             'slug'                  => $slug,
+            'summary'               => $request->summary,
             'description'           => $request->description,
             'thumbnail_id'          => $request->thumbnail_id,
             'teacher_id'            => $request->teacher,

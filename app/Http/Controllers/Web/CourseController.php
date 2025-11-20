@@ -118,6 +118,17 @@ class CourseController extends Controller
             return redirectMessage('error', 'ابتدا وارد سایت شوید');
         }
 
-        return redirectMessage('success', 'عضویت با موفقیت انجام شد');
+        if (!$user->isEnrolledIn($course)) {
+            $user->enrolledCourses()->attach($course, [
+                'enrolled_at' => now(),
+                'progress' => 0,
+            ]);
+            return redirectMessage('success', 'عضویت با موفقیت انجام شد');
+        }
+        else{
+            return redirectMessage('error', 'شما قبلا عضو دوره شده‌اید');
+        }
+
+
     }
 }

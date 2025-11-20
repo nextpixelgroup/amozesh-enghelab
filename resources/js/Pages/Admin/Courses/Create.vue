@@ -97,6 +97,15 @@
                             />
                         </v-col>
                         <v-col class="v-col-12">
+                            <v-textarea
+                                v-model="course.summary"
+                                label="خلاصه"
+                                variant="outlined"
+                                density="comfortable"
+                                prepend-inner-icon="mdi-text-long"
+                            />
+                        </v-col>
+                        <v-col class="v-col-12">
                             <Editor
                                 api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
                                 v-model="course.description"
@@ -741,6 +750,7 @@ const course = reactive({
     slug: '',
     category: null,
     teacher: null,
+    summary: '',
     description: '',
     requirements: [],
     must_complete_quizzes: null,

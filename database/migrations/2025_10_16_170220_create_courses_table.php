@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable();
             $table->string('title');// عنوان
             $table->string('slug')->unique(); // اسلاگ
-            $table->text('description')->nullable(); // توضیحات
+            $table->fullText('summary'); // خلاصه
+            $table->fullText('description'); // توضیحات
             $table->foreignId('thumbnail_id')->nullable()->constrained('media'); // تصویر شاخص
             $table->foreignId('teacher_id')->nullable()->constrained('users');
             $table->unsignedBigInteger('price')->nullable()->default(0);
