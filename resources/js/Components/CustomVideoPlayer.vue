@@ -16,6 +16,8 @@
             @waiting="isBuffering = true"
             @playing="isBuffering = false"
             @canplay="isBuffering = false"
+            :autoplay="autoplay"
+            :muted="autoplay"
         ></video>
         <!-- Loading Overlay - Show on top of video when buffering -->
         <div v-if="isBuffering" class="loading-overlay">
@@ -164,6 +166,10 @@ const props = defineProps({
     'filename': {
         type: String,
         required: true
+    },
+    autoplay: {
+        type: Boolean,
+        default: false
     }
 });
 const video = ref(null)
