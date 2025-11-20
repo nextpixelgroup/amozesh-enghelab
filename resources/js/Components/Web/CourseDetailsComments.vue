@@ -1,4 +1,29 @@
 <template>
+    <v-dialog v-model="replyDialog" max-width="500">
+        <v-card>
+            <v-card-title>ثبت پاسخ</v-card-title>
+            <v-card-text>
+                <v-textarea
+                    v-model="replyText"
+                    variant="outlined"
+                    rows="4"
+                    placeholder="پاسخ خود را بنویسید..."
+                />
+            </v-card-text>
+
+            <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn text @click="replyDialog = false">
+                    انصراف
+                </v-btn>
+
+                <v-btn color="primary" @click="submitReply">
+                    ثبت پاسخ
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
     <div class="zo-space">
         <div class="zo-comments-section">
             <strong class="zo-title">نظرات کاربران</strong>
@@ -38,9 +63,193 @@
                     <v-btn flat color="secondary">ارسال دیدگاه</v-btn>
                 </v-col>
             </v-row>
+            <v-row dense>
+                <v-col cols="12">
+                    <div class="zo-stats">
+                        <span>۳ دیدگاه</span>
+                    </div>
+                    <ul>
+                        <li>
+                            <div class="zo-comment">
+                                <v-row dense class="align-center">
+                                    <v-col lg="9">
+                                        <div class="zo-name">
+                                            <div class="zo-avatar">
+                                                <img src="/assets/img/prof/2.jpg" alt="">
+                                            </div>
+                                            <div>
+                                                <strong>احمد احمدی</strong>
+                                                <small>۱۴۰۳-۱۱-۲۳ ۰۹:۵۶:۴۳</small>
+                                            </div>
+                                        </div>
+                                    </v-col>
+                                    <v-col lg="3">
+                                        <div class="text-end">
+                                            <v-btn flat density="compact" variant="text" color="primary"
+                                                   icon="mdi-reply" @click="openReplyDialog(commentId)">
+                                            </v-btn>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                                <p>
+                                    سلام چجور میشه عضو شد؟؟
+                                    دوس دارم حضوری اونجا کمک کنم.
+                                </p>
+                            </div>
+                            <ul>
+                                <li class="zo-support">
+                                    <div class="zo-comment">
+                                        <v-row dense class="align-center">
+                                            <v-col lg="9">
+                                                <div class="zo-name">
+                                                    <div class="zo-avatar">
+                                                        <img src="/assets/img/prof/3.jpg" alt="">
+                                                    </div>
+                                                    <div>
+                                                        <strong>احمد احمدی</strong>
+                                                        <small>۱۴۰۳-۱۱-۲۳ ۰۹:۵۶:۴۳</small>
+                                                    </div>
+                                                </div>
+                                            </v-col>
+                                            <v-col lg="3">
+                                                <div class="text-end">
+                                                    <v-btn flat density="compact" variant="text" color="primary"
+                                                           icon="mdi-reply" @click="openReplyDialog(commentId)">
+                                                    </v-btn>
+                                                </div>
+                                            </v-col>
+                                        </v-row>
+                                        <p>
+                                            با سلام و احترام
+                                            شما میتونین با دانلود اپلیکیشن زودیکارا و خرید اشتراک یک ماهه، سه ماهه، شش
+                                            ماهه یا 1 ساله از خدمات ما بهره مند شوید.
+                                        </p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="zo-comment">
+                                <v-row dense class="align-center">
+                                    <v-col lg="9">
+                                        <div class="zo-name">
+                                            <div class="zo-avatar">
+                                                <img src="/assets/img/prof/4.jpg" alt="">
+                                            </div>
+                                            <div>
+                                                <strong>احمد احمدی</strong>
+                                                <small>۱۴۰۳-۱۱-۲۳ ۰۹:۵۶:۴۳</small>
+                                            </div>
+                                        </div>
+                                    </v-col>
+                                    <v-col lg="3">
+                                        <div class="text-end">
+                                            <v-btn flat density="compact" variant="text" color="primary"
+                                                   icon="mdi-reply" @click="openReplyDialog(commentId)">
+                                            </v-btn>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                                <p>
+                                    سلام چجور میشه عضو شد؟؟
+                                    دوس دارم حضوری اونجا کمک کنم.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </v-col>
+            </v-row>
         </div>
     </div>
 </template>
 <script setup>
+import {ref} from "vue";
 
+const replyDialog = ref(false);
+const replyText = ref("");
+const activeCommentId = ref(null);
+
+function openReplyDialog(id) {
+    activeCommentId.value = id;
+    replyDialog.value = true;
+}
+
+function submitReply() {
+    if (!replyText.value.trim()) return;
+
+    console.log("reply to:", activeCommentId.value);
+    console.log("text:", replyText.value);
+
+
+    replyDialog.value = false;
+    replyText.value = "";
+}
 </script>
+<style scoped>
+
+.zo-comments-section .zo-stats {
+    width: 100%;
+    padding: 0 0 5px;
+    border-bottom: 1px solid rgb(240, 240, 240)
+}
+
+.zo-comments-section .zo-stats span {
+    position: relative;
+    font-family: 'Estedad-Medium'
+}
+
+.zo-comments-section .zo-stats span:before {
+    content: '';
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    bottom: -4.5px;
+    right: 0;
+    background: rgb(5, 105, 60)
+}
+
+.zo-comments-section ul li {
+    width: 100%;
+    display: inline-block
+}
+
+.zo-comments-section ul li .zo-comment {
+    width: 100%;
+    padding: 15px
+}
+
+.zo-comments-section ul li ul {
+    padding: 0 15px 0 0
+}
+
+.zo-comments-section ul li ul li.zo-support .zo-comment {
+    background: rgb(245, 245, 245)
+}
+
+.zo-comments-section ul li .zo-comment .zo-name {
+    display: flex;
+    align-items: center;
+    gap: 5px
+}
+
+.zo-comments-section ul li .zo-comment .zo-name .zo-avatar img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%
+}
+
+.zo-comments-section ul li .zo-comment .zo-name strong {
+    display: block;
+    font-family: 'Estedad-Medium';
+    font-weight: normal
+}
+
+.zo-comments-section ul li .zo-comment .zo-name small {
+    color: rgb(120, 125, 135)
+}
+
+.zo-comments-section ul li .zo-comment p {
+    white-space: pre-line
+}
+</style>
