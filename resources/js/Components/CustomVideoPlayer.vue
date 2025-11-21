@@ -154,22 +154,27 @@
 import {useFullscreen, useMediaControls} from '@vueuse/core'
 import {ref, onMounted, computed, onBeforeUnmount, watch} from 'vue'
 import {route} from "ziggy-js";
+import {router} from "@inertiajs/vue3";
 const props = defineProps({
-    'src' : {
+    src : {
         type: String,
         required: true
     },
-    'poster' : {
+    poster : {
         type: String,
         required: true
     },
-    'filename': {
+    filename: {
         type: String,
         required: true
     },
     autoplay: {
         type: Boolean,
         default: false
+    },
+    lesson: {
+        type: Object,
+        default: null
     }
 });
 const video = ref(null)
@@ -392,6 +397,31 @@ const handleDownloadComplete = () => {
 onBeforeUnmount(() => {
     window.removeEventListener('keydown', handleKey)
     window.removeEventListener('blur', handleDownloadComplete)
+})
+
+const hasReportedEnd = ref(false)
+// پایش زمان پخش
+watch(currentTime, (time) => {
+    if (props.lesson?.completed === true) return
+    if (duration.value > 0 && !hasReportedEnd.value && props.lesson.id) {
+        const remaining = duration.value - time
+        if (remaining <= 2) {
+            hasReportedEnd.value = true  // 🔒 قفل کن حتی قبل از ارسال
+            router.post(route('web.courses.lesson.completed', props.lesson.id), [], {
+                preserveScroll: true,
+                preserveState: true,
+                // ❌ دیگر فلگ را در success یا error تغییر نده
+            })
+        }
+    }
+})
+
+// وقتی ویدیو به عقب برگرده (ری‌پلی)، دوباره اجازه بده ارسال انجام بشه
+watch(currentTime, (time, oldTime) => {
+    if (props.lesson?.completed === true) return
+    if (time < oldTime && hasReportedEnd.value && props.lesson.id) {
+        hasReportedEnd.value = false
+    }
 })
 
 </script>

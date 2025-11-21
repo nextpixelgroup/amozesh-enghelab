@@ -1,5 +1,5 @@
 <template>
-    <div class="text-center pa-4">
+    <div class="text-center pa-4" v-if="lesson.quiz?.id">
         <v-dialog
             v-model="dialog"
             transition="dialog-bottom-transition"
@@ -11,60 +11,39 @@
                     color="primary"
                     prepend-icon="mdi-book-open-variant"
                     v-bind="activatorProps"
-                >شرکت در آزمون
+                >
+                    {{ !!lesson.quiz.completed ? 'بررسی آزمون' : 'شرکت در آزمون' }}
                 </v-btn>
             </template>
             <v-card>
                 <v-toolbar>
-                    <v-toolbar-title>آزمون درس مفهوم ولایت فقیه</v-toolbar-title>
+                    <v-toolbar-title>{{ lesson.title }}</v-toolbar-title>
                     <v-toolbar-items>
                         <v-btn icon="mdi-close" @click="dialog = false"></v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
                 <v-card flat class="zo-questions">
                     <v-card-text class="zo-content">
-                        <h5>فهم کلی از مفهوم ولایت فقیه</h5>
-                        <p>
-                            ولایت فقیه به معنای سپردن رهبری جامعه به فقیهی آگاه، عادل و توانمند است که بتواند در
-                            نبود معصوم، هدایت دینی و مدیریتی جامعه را بر عهده بگیرد. این نظریه بر ضرورت پیوند میان
-                            ارزش‌های دینی و اداره امور اجتماعی تأکید دارد.
-                        </p>
+                        <h5>{{ lesson.quiz.title }}</h5>
+                        <p>{{ lesson.quiz.description }}</p>
                         <v-divider class="my-5"></v-divider>
-                        <div class="zo-question">
-                            <v-radio-group label="1- کدام گزینه بهترین تعریف ولایت فقیه را بیان می‌کند؟">
-                                <v-radio label="اداره جامعه توسط گروهی از فقها" value="one"></v-radio>
-                                <v-radio label="سپردن رهبری جامعه به فقیه عادل و آگاه در عصر غیبت"
-                                         value="two"></v-radio>
-                                <v-radio label="مشارکت فقیه در تصمیم‌گیری‌های قضایی" value="three"></v-radio>
-                                <v-radio label="نظارت فقیه بر فعالیت‌های فرهنگی" value="four"></v-radio>
+                        <div class="zo-question" v-for="(question, qIndex) in lesson.quiz.questions">
+                            <v-radio-group
+                                v-model="selectedAnswers[question.id]"
+                                :label="`${qIndex+1}- ${question.text}`"
+                            >
+                                question id: {{question.id}}
+                                <v-radio v-for="(option, oIndex) in question.options" :label="option.text" :value="option.id" :key="option.id"></v-radio>
                             </v-radio-group>
                         </div>
-                        <div class="zo-question">
-                            <v-radio-group label="2- مبنای نظری ولایت فقیه بیشتر بر کدام موضوع تأکید دارد؟">
-                                <v-radio label="تفکیک کامل دین از سیاست" value="one"></v-radio>
-                                <v-radio label="پیوند میان هدایت دینی و اداره امور جامعه" value="two"></v-radio>
-                                <v-radio label="اداره جامعه توسط نخبگان دانشگاهی" value="three"></v-radio>
-                                <v-radio label="تمرکز قدرت در نهادهای محلی" value="four"></v-radio>
-                            </v-radio-group>
-                        </div>
-                        <div class="zo-question">
-                            <v-radio-group label="3- نظریه ولایت فقیه در کدام دوره اهمیت بیشتری یافته است؟">
-                                <v-radio label="دوران صدر اسلام" value="one"></v-radio>
-                                <v-radio label="دوره‌های خلافت اموی" value="two"></v-radio>
-                                <v-radio label="اعصر غیبت امام معصوم" value="three"></v-radio>
-                                <v-radio label="دوران سامانیان" value="four"></v-radio>
-                            </v-radio-group>
-                        </div>
-                        <div class="zo-question">
-                            <v-radio-group label="4- ولایت فقیه چه نقشی را برای فقیه در جامعه قائل است؟">
-                                <v-radio label="نقش مشاور دینی بدون اختیار" value="one"></v-radio>
-                                <v-radio label="نقش رهبری و هدایت جامعه" value="two"></v-radio>
-                                <v-radio label="نقش قضایی محدود" value="three"></v-radio>
-                                <v-radio label="نقش اداره امور مالی کشور" value="four"></v-radio>
-                            </v-radio-group>
-                        </div>
-                        <div class="text-center">
-                            <v-btn variant="elevated" color="primary">
+                        <div class="text-center" v-if="!lesson.quiz.completed">
+                            <v-btn
+                                variant="elevated"
+                                color="primary"
+                                @click="submitQuiz"
+                                :loading="isLoading"
+                                :disabled="isLoading"
+                            >
                                 ثبت نهایی پاسخ‌ها
                             </v-btn>
                         </div>
@@ -75,12 +54,42 @@
     </div>
 </template>
 <script setup>
-import {shallowRef} from 'vue'
+import {ref, shallowRef} from 'vue'
+import {router} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
 
+const props = defineProps({
+    lesson: {
+        type: Object,
+    },
+})
 const dialog = shallowRef(false)
 const notifications = shallowRef(false)
 const sound = shallowRef(true)
 const widgets = shallowRef(false)
+const selectedAnswers = ref({});
+
+const isLoading = ref(false)
+
+const submitQuiz = () => {
+    router.post(route('web.courses.lesson.quiz.store', props.lesson.id),
+        {
+            selectedAnswers: selectedAnswers.value,
+        },
+        {
+            onStart: () => {
+                //isLoading.value = true
+            },
+            onSuccess: () => {
+                dialog.value = false
+                isLoading.value = false
+            },
+            onError: () => {
+                isLoading.value = false
+            }
+        }
+    )
+}
 </script>
 <style>
 .zo-content {

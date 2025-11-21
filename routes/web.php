@@ -29,6 +29,8 @@ Route::name('web.')->group(function () {
     Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::post('/courses/enroll/{course}', [CourseController::class, 'enroll'])->name('courses.enroll');
+    Route::post('/courses/lesson/{lesson}/completed', [CourseController::class, 'LessonCompleted'])->name('courses.lesson.completed');
+    Route::post('/courses/lesson/{lesson}/quiz', [CourseController::class, 'LessonQuizStore'])->name('courses.lesson.quiz.store');
     Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');

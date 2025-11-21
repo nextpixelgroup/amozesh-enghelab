@@ -139,7 +139,8 @@ class User extends Authenticatable
     public function studentsCountRelation()
     {
         return $this->hasMany(Course::class, 'teacher_id')
-            ->selectRaw('teacher_id, count(distinct course_students.user_id) as students_count')
+            ->selectRaw('teacher_id, count(distinct course_students.user_id) as students_count') // اگر کاربر تکراری کوئری گرفته نشود
+            //->selectRaw('teacher_id, count(course_students.user_id) as students_count')
             ->join('course_students', 'courses.id', '=', 'course_students.course_id')
             ->groupBy('teacher_id');
     }

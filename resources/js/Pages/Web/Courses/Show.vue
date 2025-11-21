@@ -66,5 +66,6 @@ const props = defineProps({
 })
 const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
 
+console.log(props.course.data)
 
 </script>

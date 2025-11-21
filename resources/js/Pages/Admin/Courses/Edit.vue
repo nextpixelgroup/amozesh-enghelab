@@ -318,13 +318,13 @@
                                                     <v-row dense class="mb-3">
                                                         <v-col class="v-col-12">
                                                             <v-checkbox
-                                                                v-model="lesson.has_quiz"
+                                                                v-model="lesson.quiz.is_active"
                                                                 hide-details
                                                                 label="فعال سازی آزمون؟"
                                                             >
                                                             </v-checkbox>
                                                         </v-col>
-                                                        <v-col class="v-col-12" v-if="lesson.has_quiz">
+                                                        <v-col class="v-col-12" v-if="lesson.quiz.is_active">
                                                             <v-text-field
                                                                 v-model="lesson.quiz.title"
                                                                 hide-details
@@ -335,7 +335,7 @@
                                                                 prepend-inner-icon="mdi-text-short"
                                                             />
                                                         </v-col>
-                                                        <v-col class="v-col-12" v-if="lesson.has_quiz">
+                                                        <v-col class="v-col-12" v-if="lesson.quiz.is_active">
                                                             <v-textarea
                                                                 v-model="lesson.quiz.description"
                                                                 hide-details
@@ -348,7 +348,7 @@
                                                             />
                                                         </v-col>
                                                     </v-row>
-                                                    <v-expansion-panel-text v-if="lesson.has_quiz">
+                                                    <v-expansion-panel-text v-if="lesson.quiz.is_active">
                                                         <v-expansion-panels
                                                             multiple
                                                             class="mb-3 questions-container"

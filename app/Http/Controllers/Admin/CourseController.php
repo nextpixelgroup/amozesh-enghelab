@@ -143,6 +143,7 @@ class CourseController extends Controller
 
     public function update(CourseUpdateRequest $request, Course $course)
     {
+        //dd($request->seasons);
         try {
             // Handle video upload outside of transaction
             $introId = $course->intro_id;

@@ -7,6 +7,7 @@ use App\Http\Resources\WebCourseDetailsResource;
 use App\Http\Resources\WebCoursesResource;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\CourseLesson;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -116,7 +117,7 @@ class CourseController extends Controller
     {
         $user = auth()->user();
         if(!$user){
-            return redirectMessage('error', 'ابتدا وارد سایت شوید');
+            return redirectMessage('error', 'ابتدا وارد سایت شوید', redirect: route('panel.login', ['redirect' => url()->previous()]));
         }
 
         if (!$user->isEnrolledIn($course)) {
@@ -130,6 +131,51 @@ class CourseController extends Controller
             return redirectMessage('error', 'شما قبلا عضو دوره شده‌اید');
         }
 
+    }
 
+    public function LessonCompleted(CourseLesson $lesson, Request $request)
+    {
+        $user = auth()->user();
+        if(!$user){
+            return redirectMessage('error', 'ابتدا وارد سایت شوید');
+        }
+        $completion = $lesson->completions()->exists();
+        if(!$completion){
+            $completed = $lesson->completions()->create([
+                'user_id' => $user->id,
+                'completed_at' => now(),
+                'progress' => 100,
+                'status' => 'completed'
+            ]);
+            if($completed){
+                return redirectMessage('success', ' این درس را با موفقیت به پایان رسانده‌اید.');
+            }
+            else{
+                return redirectMessage('error', 'وضعیت تکمیل این درس در سیستم ذخیره نشد.');
+            }
+        }
+        else{
+            return redirectMessage('error', 'پخش این درس را پیش‌تر به پایان رسانده‌اید.');
+        }
+    }
+
+    public function LessonQuizStore(CourseLesson $lesson, Request $request)
+    {
+        $user = auth()->user();
+        if(!$user){
+            return redirectMessage('error', 'ابتدا وارد سایت شوید');
+        }
+        $questions = $lesson->quiz->questions;
+        if(array_diff($questions->pluck('id')->toArray(),array_keys($request->selectedAnswers))){
+            return redirectMessage('error','لطفا همه سوال ها را پاسخ دهید');
+        }
+        foreach ($request->selectedAnswers as $questionId => $answerId){
+            $lesson->quiz->quizCompletions()->create([
+                'user_id' => $user->id,
+                'question_id' => $questionId,
+                'question_option_id' => $answerId,
+            ]);
+        }
+        return redirectMessage('success','آزمون با موفقیت ثبت شد');
     }
 }

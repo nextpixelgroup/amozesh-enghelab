@@ -12,7 +12,7 @@
                         <v-col cols="12" md="9">
                             <div class="zo-subtitle">
                                 <i v-if="!isEnrolled" class="zo-uncheck"></i>
-                                <i v-else-if="lesson.completed" class="zo-uncheck"></i>
+                                <i v-else-if="lesson.completed" class="zo-check"></i>
                                 <i v-else class="zo-uncheck"></i>
                                 <strong>{{ lesson.title }}</strong>
                             </div>
@@ -48,8 +48,9 @@
                     </v-row>
                 </v-expansion-panel-title>
                 <v-expansion-panel-text v-if="isEnrolled && lesson.video">
-                    <CustomVideoPlayer :src="lesson.video" :poster="lesson.poster" :filename="lesson.download_url"/>
-                    <CourseLessonQuiz/>
+                    <p class="mb-4">{{ lesson.description }}</p>
+                    <CustomVideoPlayer :lesson="lesson" :src="lesson.video" :poster="lesson.poster" :filename="lesson.download_url"/>
+                    <CourseLessonQuiz :lesson="lesson" />
                 </v-expansion-panel-text>
             </v-expansion-panel>
         </v-expansion-panels>
@@ -71,7 +72,7 @@ const props = defineProps({
 })
 const downloadVideo = (url) => {
     if(!url)
-        alert(1)
+        return false;
     window.open(url, '_blank');
 }
 

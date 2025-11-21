@@ -134,3 +134,10 @@ export const truncateText = (text, maxLength = 100) => {
         ? text.substring(0, maxLength) + '...'
         : text;
 }
+
+export const toEnglishDigits = (str) => {
+    if (!str) return str;
+    return str
+        .replace(/[۰-۹]/g, d => String.fromCharCode(d.charCodeAt(0) - 1728)) // Persian
+        .replace(/[٠-٩]/g, d => String.fromCharCode(d.charCodeAt(0) - 1584)); // Arabic
+};

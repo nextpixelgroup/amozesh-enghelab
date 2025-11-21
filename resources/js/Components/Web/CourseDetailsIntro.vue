@@ -22,7 +22,7 @@
             max-width="400"
         >
             <template v-slot:actions>
-                <CustomVideoPlayer filename="" :poster="course.poster" :src="course.intro" :autoplay="true"/>
+                <CustomVideoPlayer :filename="course.intro.file_name" :poster="course.poster" :src="course.intro.url" :autoplay="true"/>
             </template>
         </v-card>
     </v-dialog>

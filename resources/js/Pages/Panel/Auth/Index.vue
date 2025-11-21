@@ -11,5 +11,4 @@ export default defineComponent({
 
 <template>
     <Head title="Login" />
-    <h1>Login</h1>
 </template>
