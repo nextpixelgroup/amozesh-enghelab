@@ -24,7 +24,7 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
-    <div class="zo-space">
+    <div class="zo-space" id="comments">
         <div class="zo-comments-section">
             <strong class="zo-title">نظرات کاربران</strong>
             <div class="zo-label">ثبت دیدگاه</div>
@@ -32,7 +32,7 @@
                 <v-col cols="12" lg="6">
                     <v-text-field
                         v-if="!user"
-                        v-model="form.name"
+                        v-model="comment.name"
                         hide-details
                         variant="outlined"
                         density="comfortable"
@@ -44,18 +44,18 @@
                 <v-col cols="12" lg="6">
                     <v-text-field
                         v-if="!user"
-                        v-model="form.email"
+                        v-model="comment.email"
                         hide-details
                         variant="outlined"
                         density="comfortable"
                         type="text"
-                        placeholder="* پست الکترونیک"
+                        placeholder="پست الکترونیک"
                         prepend-inner-icon="mdi-email"
                     />
                 </v-col>
                 <v-col cols="12">
                     <v-textarea
-                        v-model="form.body"
+                        v-model="comment.body"
                         hide-details
                         variant="outlined"
                         density="comfortable"
@@ -74,17 +74,17 @@
                         <span>۳ دیدگاه</span>
                     </div>
                     <ul>
-                        <li>
-                            <div class="zo-comment">
+                        <li v-for="(comment,index) in comments.data">
+                            <div class="zo-comment" :key="comment.id">
                                 <v-row dense class="align-center">
                                     <v-col lg="9">
                                         <div class="zo-name">
                                             <div class="zo-avatar">
-                                                <img src="/assets/img/prof/2.jpg" alt="">
+                                                <img :src="comment.avatar" alt="">
                                             </div>
                                             <div>
-                                                <strong>احمد احمدی</strong>
-                                                <small>۱۴۰۳-۱۱-۲۳ ۰۹:۵۶:۴۳</small>
+                                                <strong>{{comment.name}}</strong>
+                                                <small>{{comment.created_at}}</small>
                                             </div>
                                         </div>
                                     </v-col>
@@ -96,23 +96,20 @@
                                         </div>
                                     </v-col>
                                 </v-row>
-                                <p>
-                                    سلام چجور میشه عضو شد؟؟
-                                    دوس دارم حضوری اونجا کمک کنم.
-                                </p>
+                                <p>{{comment.body}}</p>
                             </div>
-                            <ul>
-                                <li class="zo-support">
+                            <ul v-if="comment.replies.length">
+                                <li class="zo-support" v-for="(reply,index) in comment.replies">
                                     <div class="zo-comment">
                                         <v-row dense class="align-center">
                                             <v-col lg="9">
                                                 <div class="zo-name">
                                                     <div class="zo-avatar">
-                                                        <img src="/assets/img/prof/3.jpg" alt="">
+                                                        <img :src="reply.avatar" alt="">
                                                     </div>
                                                     <div>
-                                                        <strong>احمد احمدی</strong>
-                                                        <small>۱۴۰۳-۱۱-۲۳ ۰۹:۵۶:۴۳</small>
+                                                        <strong>{{reply.name}}</strong>
+                                                        <small>{{reply.created_at}}</small>
                                                     </div>
                                                 </div>
                                             </v-col>
@@ -133,54 +130,43 @@
                                 </li>
                             </ul>
                         </li>
-                        <li>
-                            <div class="zo-comment">
-                                <v-row dense class="align-center">
-                                    <v-col lg="9">
-                                        <div class="zo-name">
-                                            <div class="zo-avatar">
-                                                <img src="/assets/img/prof/4.jpg" alt="">
-                                            </div>
-                                            <div>
-                                                <strong>احمد احمدی</strong>
-                                                <small>۱۴۰۳-۱۱-۲۳ ۰۹:۵۶:۴۳</small>
-                                            </div>
-                                        </div>
-                                    </v-col>
-                                    <v-col lg="3">
-                                        <div class="text-end">
-                                            <v-btn flat density="compact" variant="text" color="primary"
-                                                   icon="mdi-reply" @click="openReplyDialog(commentId)">
-                                            </v-btn>
-                                        </div>
-                                    </v-col>
-                                </v-row>
-                                <p>
-                                    سلام چجور میشه عضو شد؟؟
-                                    دوس دارم حضوری اونجا کمک کنم.
-                                </p>
-                            </div>
-                        </li>
                     </ul>
                 </v-col>
             </v-row>
         </div>
     </div>
+    <ShowMessage
+        v-model:show="message.isShow"
+        :message="message.text"
+        :type="message.type"
+    />
 </template>
 <script setup>
 import {ref} from "vue";
-import {useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
-defineProps({
+import ShowMessage from "@/Components/ShowMessage.vue";
+const props = defineProps({
+    course: {
+        type: Object,
+    },
     user: {
         type: Object,
+    },
+    comments: {
+        type: Object
     }
 })
-const form = useForm({
+console.log(props.comments.data)
+const comment = ref({
     name: '',
     email: '',
     body: '',
 });
+const message = ref({
+    isShow: false,
+    text: '',
+    type: '',
+})
 const replyDialog = ref(false);
 const replyText = ref("");
 const activeCommentId = ref(null);
@@ -206,15 +192,34 @@ function submitReply() {
 const submitComment = async () => {
     try {
         submitting.value = true
-        const response = await axios.post(route(props.uploadRoute), formData, {
-            headers: {'Content-Type': 'multipart/form-data'},
-            onUploadProgress: (e) => {
-                if (e.total) progress.value = Math.round((e.loaded / e.total) * 100);
-            },
+        const response = await axios.post(route('web.comments.course.store',props.course.slug), {
+            name: comment.value.name,
+            email: comment.value.email,
+            body: comment.value.body,
         });
+
+        submitting.value = false
+        if(response.status == 200){
+            if(response.data.status == 'sucess'){
+                comment.value.name = '';
+                comment.value.email = '';
+                comment.value.body = '';
+                message.value.isShow = true;
+                message.value.text = response.data.message;
+                message.value.type = 'success'
+            }
+            else if(response.data.status == 'error'){
+                message.value.isShow = true;
+                message.value.text = response.data.message;
+                message.value.type = 'error'
+            }
+        }
+
     }
     catch (error) {
-
+        message.value.isShow = true;
+        message.value.text = error;
+        message.value.type = 'error'
     }
 }
 </script>

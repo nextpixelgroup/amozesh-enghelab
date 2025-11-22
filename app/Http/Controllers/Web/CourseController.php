@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WebCommentResource;
 use App\Http\Resources\WebCourseDetailsResource;
 use App\Http\Resources\WebCoursesResource;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Course;
 use App\Models\CourseLesson;
 use App\Models\Setting;
@@ -61,7 +63,16 @@ class CourseController extends Controller
         $isEnrolled = false;
         if($user) $isEnrolled = $user->isEnrolledIn($courseRequest);
         $pageTitle = $courseRequest->title;
-        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user'));
+
+        /*$comments = Comment::whereNull('parent_id')
+        ->with(['children' => function ($query) {
+            $query->orderBy('created_at', 'asc');
+        }])
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();*/
+        $comments = WebCommentResource::collection($course->comments()->paginate(env('PER_PAGE')));
+        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user', 'comments'));
     }
 
     public function download($filename)

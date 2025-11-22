@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Course extends Model
 {
+    public static function label(): string
+    {
+        return 'دوره';
+    }
+
     protected $fillable = [
         'user_id', 'title', 'slug', 'summary', 'description', 'thumbnail_id', 'intro_id', 'poster_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'published_at', 'duration'
     ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CommentRequest;
+use App\Http\Resources\AdminCommentResource;
 use App\Models\Book;
 use App\Models\Comment;
 use App\Models\Course;
@@ -11,13 +12,19 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
 
     public function index()
     {
-        return Inertia::render('Admin/Comments/List');
+        $comments = Comment::with('user')
+        ->orderBy('created_at', 'desc')
+        ->paginate(env('PER_PAGE'));
+        $comments = AdminCommentResource::collection($comments);
+
+        return Inertia::render('Admin/Comments/List', compact('comments'));
         /*$model = $this->getCommentableModel($type, $id);
 
         if (!$model) {
@@ -45,12 +52,13 @@ class CommentController extends Controller
         ]);*/
     }
 
-    /**
-     * Store a new comment
-     *
-     * @param CommentRequest $request
-     * @return JsonResponse
-     */
+    public function approve(Comment $comment)
+    {
+        $comment->update([
+            'is_approved' => true
+        ]);
+        return redirectMessage('success', 'نظر با موفقیت تایید شد');
+    }
     public function store(CommentRequest $request): JsonResponse
     {
         $model = $this->getCommentableModel($request->commentable_type, $request->commentable_id);
@@ -79,33 +87,21 @@ class CommentController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Reply to a comment
-     *
-     * @param CommentRequest $request
-     * @param Comment $comment
-     * @return JsonResponse
-     */
-    public function reply(CommentRequest $request, Comment $comment): JsonResponse
+
+    public function reply(Request $request, Comment $comment)
     {
-        if ($comment->depth >= 2) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'امکان پاسخ بیشتر از دو سطح وجود ندارد.'
-            ], Response::HTTP_BAD_REQUEST);
+        if ($comment->depth >= 1) {
+            return redirectMessage('error', 'امکان پاسخ بیشتر از دو سطح وجود ندارد.');
         }
 
+        $user = auth()->user();
         $reply = $comment->addReply([
+            'depth' => 1,
             'body' => $request->body,
-        ], Auth::user());
+        ],$user );
 
-        $reply->load('user:id,name,avatar');
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'پاسخ شما با موفقیت ثبت شد.',
-            'data' => $reply
-        ], Response::HTTP_CREATED);
+        return redirectMessage('success', 'پاسخ شما با موفقیت ثبت شد.');
     }
 
     /**
@@ -137,32 +133,12 @@ class CommentController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified comment
-     *
-     * @param Comment $comment
-     * @return JsonResponse
-     */
-    public function destroy(Comment $comment): JsonResponse
+    public function destroy(Comment $comment)
     {
-        // Check if the authenticated user is the owner of the comment or an admin
-        if ($comment->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'شما اجازه حذف این نظر را ندارید.'
-            ], Response::HTTP_FORBIDDEN);
-        }
 
-        // Delete all replies first
-        $comment->replies()->delete();
-
-        // Then delete the comment
         $comment->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'نظر با موفقیت حذف شد.'
-        ]);
+        return redirectMessage('success', 'نظر با موفقیت حذف شد');
     }
 
     /**

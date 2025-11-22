@@ -3,6 +3,7 @@
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Web\AboutController;
 use App\Http\Controllers\Web\BookController;
+use App\Http\Controllers\Web\CommentController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\CourseController;
 use App\Http\Controllers\Web\IndexController;
@@ -50,6 +51,10 @@ Route::name('web.')->group(function () {
     Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
     Route::get('/pay', [PaymentController::class, 'pay'])->name('payment.pay');
     Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('payment.thankYou');
+
+    Route::post('/comment/{course:slug}/store', [CommentController::class, 'courseStore'])->name('comments.course.store');
+    Route::post('/comment/{book:slug}/store', [CommentController::class, 'bookStore'])->name('comments.book.store');
+    Route::post('/comment/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
 
 
 

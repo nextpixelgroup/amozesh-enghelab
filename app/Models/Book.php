@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Book extends Model
 {
+    public static function label(): string
+    {
+        return 'کتاب';
+    }
+
     protected $fillable = [
         'title',
         'subtitle',

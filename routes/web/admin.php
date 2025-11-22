@@ -59,6 +59,12 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
 
+        /********* comments *********/
+        Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+        Route::post('/comments/{comment}/approve', [CommentController::class, 'approve'])->name('comments.approve');
+        Route::post('/comments/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
+        Route::delete('/comments/{comment}/destroy', [CommentController::class, 'destroy'])->name('comments.destroy');
+
         /********* Users *********/
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -67,10 +73,6 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::put('/users/{user}/update', [UserController::class, 'update'])->name('users.update');
         Route::post('/users/{user}/restrictions/', [RestrictionController::class, 'store'])->name('users.restrictions.store');
         Route::put('/users/restrictions/{restriction}', [RestrictionController::class, 'update'])->name('users.restrictions.update');
-
-
-        /********* Users *********/
-        Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
 
         /********* supports *********/
         Route::get('/supports', [TicketController::class, 'index'])->name('tickets.index');

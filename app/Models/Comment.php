@@ -12,6 +12,8 @@ class Comment extends Model
 {
     protected $fillable = [
         'body',
+        'name',
+        'email',
         'is_approved',
         'user_id',
         'parent_id',
@@ -38,6 +40,11 @@ class Comment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Comment::class, 'parent_id')->orderBy('created_at', 'asc');
     }
 
     /**
@@ -85,8 +92,8 @@ class Comment extends Model
      */
     public function addReply(array $data, User $user): Comment
     {
-        if ($this->depth >= 2) {
-            throw new \Exception('Maximum reply depth reached (2 levels)');
+        if ($this->depth >= 1) {
+            throw new \Exception('حداکثر پاسخ به نظرات یک عمق می‌باشد');
         }
 
         return $this->replies()->create([
@@ -96,6 +103,7 @@ class Comment extends Model
             'commentable_type' => $this->commentable_type,
             'parent_id' => $this->id,
             'depth' => $this->depth + 1,
+            'is_approve' => true
         ]);
     }
 }

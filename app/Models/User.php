@@ -97,6 +97,11 @@ class User extends Authenticatable
         return ['super-admin', 'admin', 'content-manager'];
     }
 
+    public function institution()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function educationals(): HasMany
     {
         return $this->hasMany(Educational::class);

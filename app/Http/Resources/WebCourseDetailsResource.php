@@ -110,6 +110,7 @@ class WebCourseDetailsResource extends JsonResource
         });
         $data = [
             'id' => $this->id,
+            'slug' => $this->slug,
             'title' => $this->title,
             'summary' => $this->summary,
             'description' => $this->description,

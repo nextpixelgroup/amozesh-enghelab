@@ -45,31 +45,33 @@
                 <tr>
                     <th class="text-center">ردیف</th>
                     <th class="text-center">کاربر</th>
-                    <th class="text-right">دوره</th>
-                    <th class="text-center">نظر</th>
+                    <th class="text-center">بخش</th>
+                    <th class="text-center">عنوان</th>
+                    <th class="text-right">نظر</th>
                     <th class="text-center">تاریخ ارسال</th>
                     <th class="text-center">عملیات</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr
-                    v-for="item in comments"
-                    :key="item.row"
-                    :class="{'zo-draft': item.status === 'draft'}"
+                    v-for="(item, index) in comments"
+                    :key="index"
+                    :class="{'zo-draft': item.is_approved === false}"
                 >
-                    <td class="text-center">{{ item.row }}</td>
+                    <td class="text-center">{{ index+1 }}</td>
                     <td width="200px">
                         <div class="d-flex align-items-center ga-3">
                             <v-avatar>
-                                <v-img :alt="item.author" :src="item.avatar"></v-img>
+                                <v-img :alt="item.user.avatar" :src="item.user.avatar"></v-img>
                             </v-avatar>
                             <div>
-                                <strong class="d-block">{{ item.author }}</strong>
-                                <small>{{ item.type }}</small>
+                                <strong class="d-block">{{ item.user.name }}</strong>
+                                <small>{{ item.user.is_user ? item.user?.institution : item.user.email }}</small>
                             </div>
                         </div>
                     </td>
-                    <td class="text-center">{{ item.course }}</td>
+                    <td class="text-center"><span>{{ item.model.type }}</span></td>
+                    <td class="text-center"><span><a :href="item.model.url" target="_blank">{{ item.model.title }}</a></span></td>
                     <td>{{ item.comment }}</td>
                     <td>
                         <span class="d-block">{{ item.date }}</span>
@@ -78,18 +80,29 @@
                     <td>
                         <div class="d-flex ga-1 justify-center">
                             <v-btn
-                                v-if="item.status === 'draft'"
+                                v-if="item.is_approved === false"
                                 icon="mdi-check"
                                 size="small"
                                 color="primary"
+                                @click="approve(item)"
+                                :loading="approving[item.id]"
+                                :disabled="approving[item.id]"
                             ></v-btn>
                             <v-btn
+                                v-if="item.is_approved"
                                 icon="mdi-reply"
                                 size="small"
                                 color="rgb(65, 75, 60)"
-                                @click="openReplyDialog"
+                                @click="openReplyDialog(item)"
                             ></v-btn>
-                            <v-btn icon="mdi-trash-can" size="small" color="secondary"></v-btn>
+                            <v-btn
+                                icon="mdi-trash-can"
+                                size="small"
+                                color="secondary"
+                                @click="destroy(item)"
+                                :loading="destroying[item.id]"
+                                :disabled="destroying[item.id]"
+                            ></v-btn>
                         </div>
                     </td>
                 </tr>
@@ -98,126 +111,142 @@
             <v-dialog v-model="dialog" max-width="400">
                 <v-card class="pa-4 text-center">
                     <h3 class="mb-4">پاسخ به نظر</h3>
-                    <v-textarea label="پاسخ به امیر احمدیان" variant="outlined"></v-textarea>
-                    <v-btn color="primary" @click="dialog = false">بستن</v-btn>
+                    <v-textarea
+                        v-model="replyBody"
+                        :label="`پاسخ به ${replyTo}`"
+                        variant="outlined"></v-textarea>
+                    <v-btn
+                        color="primary"
+                        @click="reply(commentId)"
+                        :loading="replying"
+                        :disabled="replying"
+                    >ثبت پاسخ</v-btn>
                 </v-card>
             </v-dialog>
-            <v-pagination rounded="circle" :length="8"></v-pagination>
+            <v-pagination
+                rounded="circle"
+                v-if="length > 1"
+                v-model="currentPage"
+                :length="length"
+                @update:model-value="changePage"
+                class="mt-4"
+            />
         </v-card>
     </AdminLayout>
 </template>
 
 <script setup>
-import {Head} from '@inertiajs/vue3'
-import {ref} from "vue";
+import {Head, router, usePage} from '@inertiajs/vue3'
+import {computed, ref, watch} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import {route} from "ziggy-js";
+
+const props = defineProps({
+    comments: Object
+})
+const comments = computed(() => props.comments.data);
+const currentPage = computed( () => props.comments?.meta.current_page)
+const length = computed( () => props.comments?.meta.last_page)
 const {adminPageTitle} = usePageTitle('نظرات');
-
+const commentId = ref(null)
+const replyTo = ref(null)
 const dialog = ref(false)
+const approving = ref({})
+const destroying = ref({})
+const replying = ref(false)
+const replyBody = ref(null)
+const page = usePage();
+const query = new URLSearchParams(page.url.split('?')[1])
+const filters = ref({
+    status: query.get('status') ?? '',
+    teacher: query.get('teacher') ?? '',
+    category: query.get('category') ?? '',
+    search: query.get('search') ?? '',
+});
+const changePage = async (page) => {
+    try {
+        const query = {
+            ...filters.value,  // Keep existing filters
+            page  // Update only the page number
+        };
 
-const openReplyDialog = () => {
-    dialog.value = true
+        router.get(route('admin.comments.index'),
+            query,
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['comments'],
+                onSuccess: () => {
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+            }
+        );
+    } catch (error) {
+        console.error('خطا در دریافت اطلاعات:', error);
+    }
+};
+watch(() => props.comments, (newVal) => {
+    comments.value = newVal.data || [];
+    currentPage.value = newVal.meta?.current_page || 1;
+});
+
+const openReplyDialog = (item) => {
+    dialog.value = true;
+    commentId.value = item.id;
+    replyTo.value = item.user.name;
 }
 
-const comments = ref([
-    {
-        "id": "1",
-        "row": "1",
-        "avatar": '/assets/img/prof/2.jpg',
-        "author": "حمید بصیرت منش",
-        "type": "دانشگاه امام صادق (ع)",
-        "comment": "سلام وقتتون بخیر. جسارتا من نمیتونم ویدیو شماره 3 دوره را مشاهده کنم. لطف می کنید بگین مشکل چی هست؟",
-        "course": "کتاب جهان پس از ظهور",
-        "status": "publish",
-        "date": "1404/10/29",
-        "time": "10:12 ب.ظ"
-    },
-    {
-        "id": "2",
-        "row": "2",
-        "avatar": '/assets/img/prof/3.jpg',
-        "author": "محسن سراج",
-        "type": "دانشگاه صنعتی امیرکبیر",
-        "comment": "دوره بسیار کاربردی و منظم برگزار شد. سپاس از گروه آموزش.",
-        "course": "دوره تحلیل تاریخ معاصر ایران",
-        "status": "publish",
-        "date": "1404/09/10",
-        "time": "7:39 ب.ظ"
-    },
-    {
-        "id": "3",
-        "row": "3",
-        "avatar": '/assets/img/prof/4.jpg',
-        "author": "سیدمحمود سادات",
-        "type": "دانشگاه فردوسی مشهد",
-        "comment": "سلام و عرض ادب، لطفاً لینک جلسه‌ی اول را مجدداً در اختیار بگذارید، لینک فعلی باز نمی‌شود.",
-        "course": "دوره تاریخ دفاع مقدس",
-        "status": "publish",
-        "date": "1404/06/12",
-        "time": "7:59 ب.ظ"
-    },
-    {
-        "id": "4",
-        "row": "4",
-        "avatar": "/assets/img/prof/5.jpg",
-        "author": "فاطمه کرمی",
-        "type": "دانشگاه تهران",
-        "comment": "سلام، فایل جزوه‌ی جلسه‌ی دوم در سامانه بارگذاری نشده. امکان داره بررسی بفرمایید؟",
-        "course": "دوره فلسفه اسلامی",
-        "status": "draft",
-        "date": "1404/07/18",
-        "time": "9:45 ق.ظ"
-    },
-    {
-        "id": "5",
-        "row": "5",
-        "avatar": "/assets/img/prof/6.jpg",
-        "author": "علی موسوی‌نیا",
-        "type": "دانشگاه علامه طباطبایی",
-        "comment": "بسیار دوره مفیدی بود، خصوصاً بخش تحلیل موردی‌ها. تشکر از اساتید محترم.",
-        "course": "دوره تحلیل تاریخ معاصر ایران",
-        "status": "publish",
-        "date": "1404/08/25",
-        "time": "6:27 ب.ظ"
-    },
-    {
-        "id": "6",
-        "row": "6",
-        "avatar": "/assets/img/prof/7.jpg",
-        "author": "زهرا رضایی",
-        "type": "دانشگاه شهید بهشتی",
-        "comment": "سلام وقت بخیر. آزمون پایان دوره چه زمانی برگزار می‌شود؟",
-        "course": "کتاب موعود در آیینه ادیان",
-        "status": "publish",
-        "date": "1404/11/02",
-        "time": "11:10 ق.ظ"
-    },
-    {
-        "id": "7",
-        "row": "7",
-        "avatar": "/assets/img/prof/2.jpg",
-        "author": "محمدصادق کیانی",
-        "type": "دانشگاه اصفهان",
-        "comment": "ممنون از محتوای خوب و استاد گرامی. فقط لطفاً ویدیوها با کیفیت بالاتری قرار بدید.",
-        "course": "دوره تحلیل تاریخ معاصر ایران",
-        "status": "draft",
-        "date": "1404/09/30",
-        "time": "8:50 ب.ظ"
-    },
-    {
-        "id": "8",
-        "row": "8",
-        "avatar": "/assets/img/prof/3.jpg",
-        "author": "الهام احمدی",
-        "type": "دانشگاه الزهرا (س)",
-        "comment": "ثبت‌نام من در دوره انجام شده اما هنوز به محتوای دروس دسترسی ندارم.",
-        "course": "دوره تاریخ دفاع مقدس",
-        "status": "publish",
-        "date": "1404/10/03",
-        "time": "5:33 ب.ع"
-    }
-])
+const approve = (comment) => {
+    router.post(route('admin.comments.approve',comment.id), {}, {
+        onStart: () => {
+            approving.value = {...approving.value, [comment.id]: true}
+        },
+        onSuccess: () => {
+
+        },
+        onFinish: () => {
+            const newLoading = {...approving.value}
+            delete newLoading[comment.id]
+            approving.value = newLoading
+        }
+    });
+}
+const destroy = (comment) => {
+    router.delete(route('admin.comments.destroy',comment.id), {}, {
+        onStart: () => {
+            destroying.value = {...destroying.value, [comment.id]: true}
+        },
+        onSuccess: () => {
+
+        },
+        onFinish: () => {
+            const newLoading = {...destroying.value}
+            delete newLoading[comment.id]
+            destroying.value = newLoading
+        }
+    });
+}
+
+const reply = (commentId) => {
+    router.post(route('admin.comments.reply',commentId), {body: replyBody.value}, {
+        onStart: () => {
+            replying.value = true;
+        },
+        onSuccess: () => {
+            commentId.value = null;
+            replyTo.value = null;
+            replyBody.value = null;
+            dialog.value = false;
+            replyBody.value = '';
+        },
+        onFinish: () => {
+            replying.value = false;
+        }
+    });
+}
+
 </script>
 
 <style scoped>
