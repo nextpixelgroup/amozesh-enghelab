@@ -8,21 +8,22 @@
                 <img :src="course.poster" alt="">
             </div>
             <div class="zo-content">
-                <h1>{{course.title}}</h1>
-                <p>{{course.summary}}</p>
+                <h1>{{ course.title }}</h1>
+                <p>{{ course.summary }}</p>
             </div>
         </div>
     </div>
 
     <v-dialog
         v-model="dialog"
-        width="auto"
+        max-width="800"
     >
-        <v-card
-            max-width="400"
-        >
+        <v-card>
             <template v-slot:actions>
-                <CustomVideoPlayer :filename="course.intro.file_name" :poster="course.poster" :src="course.intro.url" :autoplay="true"/>
+                <CustomVideoPlayer :filename="course.intro.file_name"
+                                   :poster="course.poster"
+                                   :src="course.intro.url"
+                                   :autoplay="true"/>
             </template>
         </v-card>
     </v-dialog>
