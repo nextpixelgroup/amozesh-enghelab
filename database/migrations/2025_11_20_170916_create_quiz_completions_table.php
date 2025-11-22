@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('quiz_completions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('course_id')->nullable()->constrained('courses')->nullOnDelete();
             $table->foreignId('quiz_id')->nullable()->constrained('quizzes')->nullOnDelete();
             $table->foreignId('question_id')->nullable()->constrained('questions')->nullOnDelete();
             $table->foreignId('question_option_id')->nullable()->constrained('question_options')->nullOnDelete();

@@ -21,7 +21,7 @@
             </v-btn>
             <div class="zo-progress" v-if="isEnrolled">
                 <span class="zo-name">پیشرفت شما</span>
-                <span class="zo-percent">۷۰٪ کامل شده</span>
+                <span class="zo-percent">{{ course.progress }}٪ کامل شده</span>
                 <v-progress-linear
                     v-model="progress"
                     color="secondary"
@@ -99,11 +99,10 @@
 </template>
 <script setup>
 
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {Link, router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 
-const progress = ref(78)
 
 const props = defineProps({
     course: {
@@ -115,6 +114,7 @@ const props = defineProps({
         required: true
     }
 })
+const progress = computed( () => props.course.progress)
 const isEnroll = ref(false);
 const enrollInCourse = () => {
     if (props.isEnrolled.value) return false;

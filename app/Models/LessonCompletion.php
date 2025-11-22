@@ -11,6 +11,7 @@ class LessonCompletion extends Model
 
     protected $fillable = [
         'user_id',
+        'course_id',
         'course_lesson_id',
         'completed_at',
         'progress',
@@ -24,6 +25,11 @@ class LessonCompletion extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id');
     }
 
     public function lesson()

@@ -31,6 +31,8 @@
             <v-row dense>
                 <v-col cols="12" lg="6">
                     <v-text-field
+                        v-if="!user"
+                        v-model="form.name"
                         hide-details
                         variant="outlined"
                         density="comfortable"
@@ -41,6 +43,8 @@
                 </v-col>
                 <v-col cols="12" lg="6">
                     <v-text-field
+                        v-if="!user"
+                        v-model="form.email"
                         hide-details
                         variant="outlined"
                         density="comfortable"
@@ -51,6 +55,7 @@
                 </v-col>
                 <v-col cols="12">
                     <v-textarea
+                        v-model="form.body"
                         hide-details
                         variant="outlined"
                         density="comfortable"
@@ -60,7 +65,7 @@
                     ></v-textarea>
                 </v-col>
                 <v-col cols="12" class="text-end">
-                    <v-btn flat color="secondary">ارسال دیدگاه</v-btn>
+                    <v-btn flat color="secondary" @click="submitComment" :loading="submitting" :disabled="submitting">ارسال دیدگاه</v-btn>
                 </v-col>
             </v-row>
             <v-row dense>
@@ -164,10 +169,23 @@
 </template>
 <script setup>
 import {ref} from "vue";
-
+import {useForm} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+defineProps({
+    user: {
+        type: Object,
+    }
+})
+const form = useForm({
+    name: '',
+    email: '',
+    body: '',
+});
 const replyDialog = ref(false);
 const replyText = ref("");
 const activeCommentId = ref(null);
+const submitting = ref(false);
+const replying = ref(false);
 
 function openReplyDialog(id) {
     activeCommentId.value = id;
@@ -183,6 +201,21 @@ function submitReply() {
 
     replyDialog.value = false;
     replyText.value = "";
+}
+
+const submitComment = async () => {
+    try {
+        submitting.value = true
+        const response = await axios.post(route(props.uploadRoute), formData, {
+            headers: {'Content-Type': 'multipart/form-data'},
+            onUploadProgress: (e) => {
+                if (e.total) progress.value = Math.round((e.loaded / e.total) * 100);
+            },
+        });
+    }
+    catch (error) {
+
+    }
 }
 </script>
 <style scoped>

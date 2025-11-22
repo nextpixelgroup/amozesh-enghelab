@@ -838,6 +838,14 @@ figure {
     gap: 10px
 }
 
+.zo-course-section .zo-lessons-section .zo-lesson-section .zo-description {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    color: var(--Sub);
+    font-size: 13px;
+}
+
 .zo-course-section .zo-lessons-section .zo-lesson-section .zo-subtitle i {
     width: 5px;
     height: 5px;

@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('lesson_completions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_lesson_id')->constrained()->cascadeOnDelete();
             $table->timestamp('completed_at')->nullable();
             $table->unsignedTinyInteger('progress')->default(0); // 0-100

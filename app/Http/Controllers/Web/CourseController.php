@@ -61,7 +61,7 @@ class CourseController extends Controller
         $isEnrolled = false;
         if($user) $isEnrolled = $user->isEnrolledIn($courseRequest);
         $pageTitle = $courseRequest->title;
-        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle'));
+        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user'));
     }
 
     public function download($filename)
@@ -142,6 +142,7 @@ class CourseController extends Controller
         $completion = $lesson->completions()->exists();
         if(!$completion){
             $completed = $lesson->completions()->create([
+                'course_id' => $lesson->course->id,
                 'user_id' => $user->id,
                 'completed_at' => now(),
                 'progress' => 100,
@@ -172,6 +173,7 @@ class CourseController extends Controller
         foreach ($request->selectedAnswers as $questionId => $answerId){
             $lesson->quiz->quizCompletions()->create([
                 'user_id' => $user->id,
+                'course_id' => $lesson->course->id,
                 'question_id' => $questionId,
                 'question_option_id' => $answerId,
             ]);

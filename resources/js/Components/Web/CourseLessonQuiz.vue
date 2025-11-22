@@ -32,8 +32,7 @@
                                 v-model="selectedAnswers[question.id]"
                                 :label="`${qIndex+1}- ${question.text}`"
                             >
-                                question id: {{question.id}}
-                                <v-radio v-for="(option, oIndex) in question.options" :label="option.text" :value="option.id" :key="option.id"></v-radio>
+                                <v-radio v-for="(option, oIndex) in question.options" :label="option.text" :value="option.id" :key="option.id" selected></v-radio>
                             </v-radio-group>
                         </div>
                         <div class="text-center" v-if="!lesson.quiz.completed">

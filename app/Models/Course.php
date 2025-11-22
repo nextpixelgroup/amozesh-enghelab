@@ -24,6 +24,11 @@ class Course extends Model
         return $this->belongsToMany(Path::class, 'path_items', 'course_id', 'path_id');
     }
 
+    public function LessonCompletions()
+    {
+        return $this->hasMany(LessonCompletion::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -110,6 +115,11 @@ class Course extends Model
     public function quiz()
     {
         return $this->hasOne(Quiz::class);
+    }
+
+    public function quizCompletions()
+    {
+        return $this->hasMany(QuizCompletion::class);
     }
 
     public function requirements()

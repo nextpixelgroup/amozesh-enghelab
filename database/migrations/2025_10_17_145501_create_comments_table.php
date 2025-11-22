@@ -13,25 +13,17 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->index()->constrained()->onDelete('cascade');
+            $table->string('name')->index()->nullable();
+            $table->string('email')->index()->nullable();
             $table->text('body');
             $table->boolean('is_approved')->default(false);
-            
-            // Polymorphic relationship
             $table->unsignedBigInteger('commentable_id');
             $table->string('commentable_type');
-            
-            // User who created the comment
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            
-            // For nested comments (replies)
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->index()->nullable();
             $table->integer('depth')->default(0);
-            
             $table->timestamps();
-            
-            // Indexes
             $table->index(['commentable_id', 'commentable_type']);
-            $table->index('parent_id');
         });
     }
 

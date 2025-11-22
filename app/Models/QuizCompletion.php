@@ -6,11 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuizCompletion extends Model
 {
-    protected $fillable = ['user_id', 'quiz_id', 'question_id', 'question_option_id'];
+    protected $fillable = ['user_id', 'course_id', 'quiz_id', 'question_id', 'question_option_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
     }
 
     public function quiz()

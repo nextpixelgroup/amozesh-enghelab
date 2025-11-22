@@ -6,21 +6,21 @@
             </v-col>
             <v-col cols="12" md="9">
                 <ul class="zo-info">
-                    <li>تعداد فصل: {{ stats.seasons }}</li>
-                    <li>تعداد درس: {{ stats.lessons }}</li>
-                    <li>مدت زمان: {{ stats.duration }}</li>
+                    <li>تعداد فصل: {{ course.stats.seasons }}</li>
+                    <li>تعداد درس: {{ course.stats.lessons }}</li>
+                    <li>مدت زمان: {{ course.stats.duration }}</li>
                 </ul>
             </v-col>
         </v-row>
     </div>
     <v-expansion-panels
-        v-if="seasons.length"
+        v-if="course.seasons.length"
         v-model="openSeason"
         multiple
         class="zo-curriculum-section"
     >
         <v-expansion-panel
-            v-for="(season, sIndex) in seasons"
+            v-for="(season, sIndex) in course.seasons"
             :key="sIndex"
             class="zo-topic-section"
         >
@@ -40,7 +40,7 @@
                     </v-col>
                 </v-row>
             </v-expansion-panel-title>
-            <CourseDetailsLessons :lessons="season.lessons" :isEnrolled="isEnrolled"/>
+            <CourseDetailsLessons :lessons="season.lessons" :mustCompleteQuizzes="course.must_complete_quizzes" :isEnrolled="isEnrolled"/>
         </v-expansion-panel>
     </v-expansion-panels>
 </template>
@@ -49,10 +49,7 @@
 import {ref} from "vue";
 import CourseDetailsLessons from "@/Components/Web/CourseDetailsLessons.vue";
 const props = defineProps({
-    seasons: {
-        type: Object,
-    },
-    stats: {
+    course: {
         type: Object,
     },
     isEnrolled: {
