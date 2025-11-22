@@ -68,7 +68,7 @@
                     </li>-->
                 </ul>
             </div>
-            <div class="zo-prof">
+            <div class="zo-prof" id="about-teacher">
                 <strong class="zo-title">درباره مدرس</strong>
                 <div class="zo-name">
                     <div class="zo-avatar">

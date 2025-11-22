@@ -1,5 +1,5 @@
 <template>
-    <div class="zo-prerequisites-courses-section" v-if="courses.length">
+    <div class="zo-prerequisites-courses-section" v-if="courses.length" id="requirements">
         <div class="zo-courses-section">
             <strong class="zo-title">پیش نیازها</strong>
             <v-row dense>

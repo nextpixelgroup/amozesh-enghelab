@@ -2,7 +2,7 @@
     <div>
         <div class="zo-intro-section" @click="dialog = true">
             <div class="zo-player">
-                <img v-if="course.intro.url" src="/assets/img/site/player.svg" alt="">
+                <img v-if="course.intro.url" src="/assets/img/site/player.svg" alt="" style="cursor: pointer" />
             </div>
             <div class="zo-thumbnail">
                 <img :src="course.poster" alt="">

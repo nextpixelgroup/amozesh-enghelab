@@ -1,5 +1,5 @@
 <template>
-    <div class="zo-info-section">
+    <div class="zo-info-section" id="lessons">
         <v-row dense class="align-center">
             <v-col cols="12" md="3">
                 <strong>محتوای دوره</strong>
