@@ -15,7 +15,13 @@ class CommentController extends Controller
 
     public function courseComments(Request $request,Course $course)
     {
-        $comments = WebCommentResource::collection($course->comments()->paginate(env('PER_PAGE')));
+        $resource = WebCommentResource::collection($course->comments()->where('is_approved',true)->paginate(env('PER_PAGE')));
+        $totalAllComments = Comment::where('commentable_id', $course->id)
+            ->where('commentable_type', get_class($course))
+            ->count();
+        $comments = $resource->response()->getData(true);
+        $comments['total_comments_count'] = $totalAllComments;
+
         return sendJson(data: $comments);
     }
 
@@ -84,6 +90,18 @@ class CommentController extends Controller
 
     public function reply(Request $request, Comment $comment)
     {
+        if ($comment->depth >= 1) {
+            return sendJson('error', 'امکان پاسخ بیشتر از دو سطح وجود ندارد.');
+        }
 
+        $user = auth()->user();
+        $reply = $comment->addReply([
+            'depth' => 1,
+            'body' => $request->body,
+        ],$user );
+
+
+        return redirectMessage('success', 'پاسخ شما با موفقیت ثبت شد.');
+        return sendJson(data:$comment);
     }
 }

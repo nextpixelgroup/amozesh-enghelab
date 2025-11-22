@@ -20,6 +20,7 @@ class WebCommentResource extends JsonResource
         }
 
         $data = [
+            'id' => $this->id,
             'avatar' => $avatar,
             'name' => $this->user_id ? $this->user->firstname.' '.$this->user->lastname : $this->name,
             'body' => $this->body,

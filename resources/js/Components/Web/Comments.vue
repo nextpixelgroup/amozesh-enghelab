@@ -77,9 +77,8 @@
                     <div v-else>
                         <div class="zo-stats">
                             <!-- فرض بر این است که تعداد کل در دیتای دریافتی موجود است یا طول آرایه را می‌گیرید -->
-                            <span>{{ comments.meta?.total }} دیدگاه</span>
+                            <span>{{ comments.total_comments_count }} دیدگاه</span>
                         </div>
-
                         <ul v-if="comments.data && comments.data.length > 0">
                             <li v-for="(commentItem, index) in comments.data" :key="commentItem.id">
                                 <div class="zo-comment">
@@ -134,6 +133,11 @@
                         <div v-else class="text-center pa-4 text-grey">
                             هنوز دیدگاهی ثبت نشده است. اولین نفر باشید!
                         </div>
+                        <Pagination
+                            v-model="currentPage"
+                            :length="lastPage"
+                            @changePage="fetchComments"
+                        />
                     </div>
                 </v-col>
             </v-row>
@@ -148,10 +152,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import {ref, onMounted, computed} from "vue";
 import { route } from "ziggy-js";
 import axios from "axios"; // مطمئن شوید axios ایمپورت شده است
 import ShowMessage from "@/Components/ShowMessage.vue";
+import Pagination from "@/Components/Pagination.vue";
+import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
     course: {
@@ -165,7 +171,10 @@ const props = defineProps({
 })
 
 // استیت‌ها
-const comments = ref({ data: [] }); // مقدار اولیه آرایه خالی برای جلوگیری از ارور
+const comments = ref({ data: [], meta: {} });
+const lastPage = computed( () => comments.value?.meta.last_page)
+const currentPage = ref(comments.value?.meta.current_page)
+
 const loadingComments = ref(true); // وضعیت لودینگ اولیه
 const comment = ref({
     name: '',
@@ -183,25 +192,32 @@ const activeCommentId = ref(null);
 const submitting = ref(false);
 
 // --- متد دریافت کامنت‌ها ---
-const fetchComments = async () => {
+const fetchComments = async (page = 1) => {
     loadingComments.value = true;
-    try {
-        // فرض بر این است که یک روت GET برای دریافت کامنت‌ها دارید
-        // مثلا: web.comments.course.index
-        // اگر روت متفاوتی دارید، نام آن را اینجا جایگزین کنید
-        const response = await axios.get(route('web.comments.course.index', props.course.slug));
 
-        // دیتای دریافتی را داخل متغیر می‌ریزیم
-        // ساختار ریسپانس بستگی به بک‌اند شما دارد، معمولا response.data کامنت‌هاست
-        comments.value = response.data;
+    // اگر ورودی عدد نبود (مثلا ایونت کلیک بود)، همان صفحه جاری بماند
+    const targetPage = typeof page === 'number' ? page : currentPage.value;
+
+    try {
+        // ارسال پارامتر page به سمت سرور
+        const response = await axios.get(route('web.comments.course.index', props.course.slug), {
+            params: {
+                page: targetPage
+            }
+        });
+
+        // ذخیره کل دیتا (شامل data, meta, total_comments_count)
+        comments.value = response.data.data;
+
+        // --- آپدیت کردن وضعیت صفحه‌بندی ---
+        if (comments.value.meta) {
+            currentPage.value = comments.value.meta.current_page;
+            lastPage.value = comments.value.meta.last_page;
+        }
 
     } catch (error) {
         console.error("Error fetching comments:", error);
-        message.value = {
-            isShow: true,
-            text: 'خطا در دریافت نظرات',
-            type: 'error'
-        };
+        // ... مدیریت خطا
     } finally {
         loadingComments.value = false;
     }
@@ -220,17 +236,14 @@ function openReplyDialog(id) {
 async function submitReply() {
     if (!replyText.value.trim()) return;
 
-    // اینجا باید لاجیک ارسال پاسخ به سرور را اضافه کنید
-    // await axios.post(...)
-
     console.log("reply to:", activeCommentId.value);
     console.log("text:", replyText.value);
+
+    const response = axios.post(route('web.comments.course.reply', activeCommentId.value), {body: replyText.value})
 
     replyDialog.value = false;
     replyText.value = "";
 
-    // بعد از ثبت پاسخ، بهتر است لیست را رفرش کنید
-    await fetchComments();
 }
 
 const submitComment = async () => {
@@ -252,9 +265,6 @@ const submitComment = async () => {
                 message.value.text = response.data.message;
                 message.value.type = 'success'
 
-                // ***** بسیار مهم *****
-                // پس از ثبت موفقیت‌آمیز، دوباره کامنت‌ها را لود می‌کنیم تا کاربر کامنت خود را ببیند
-                await fetchComments();
             }
             else if(response.data.status === 'error'){
                 message.value.isShow = true;

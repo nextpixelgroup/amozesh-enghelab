@@ -168,7 +168,6 @@ const sorts = ref([{title: 'جدیدترین', value: 'desc'}, {title: 'قدیم
 const currentPage = ref(page.props.courses?.meta.current_page)
 const lastPage = computed( () => page.props.courses?.meta.last_page)
 
-//console.log(page.props.courses.meta.last_page)
 
 const disabled = ref(false)
 const isCategoryLoading = ref(false)
