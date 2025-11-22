@@ -22,32 +22,10 @@
     <div class="zo-space" id="comments">
         <div class="zo-comments-section">
             <strong class="zo-title">نظرات کاربران</strong>
-            <div class="zo-label">ثبت دیدگاه</div>
+            <div class="zo-label" v-if="user">ثبت دیدگاه</div>
 
             <!-- فرم ارسال نظر -->
-            <v-row dense>
-                <v-col cols="12" lg="6">
-                    <v-text-field
-                        v-if="!user"
-                        v-model="comment.name"
-                        hide-details
-                        variant="outlined"
-                        density="comfortable"
-                        placeholder="* نام و نام خانوادگی"
-                        prepend-inner-icon="mdi-account-circle"
-                    />
-                </v-col>
-                <v-col cols="12" lg="6">
-                    <v-text-field
-                        v-if="!user"
-                        v-model="comment.email"
-                        hide-details
-                        variant="outlined"
-                        density="comfortable"
-                        placeholder="پست الکترونیک"
-                        prepend-inner-icon="mdi-email"
-                    />
-                </v-col>
+            <v-row dense v-if="user">
                 <v-col cols="12">
                     <v-textarea
                         v-model="comment.body"
@@ -62,6 +40,11 @@
                 <v-col cols="12" class="text-end">
                     <v-btn flat color="secondary" @click="submitComment" :loading="submitting" :disabled="submitting">ارسال دیدگاه</v-btn>
                 </v-col>
+            </v-row>
+            <v-row dense v-else>
+                <div  class="text-center pa-4 text-grey">
+                    برای ثبت نظر باید وارد شوید
+                </div>
             </v-row>
 
             <!-- لیست نظرات -->
@@ -177,8 +160,6 @@ const currentPage = ref(comments.value?.meta.current_page)
 
 const loadingComments = ref(true); // وضعیت لودینگ اولیه
 const comment = ref({
-    name: '',
-    email: '',
     body: '',
 });
 const message = ref({
@@ -250,16 +231,12 @@ const submitComment = async () => {
     try {
         submitting.value = true
         const response = await axios.post(route('web.comments.course.store', props.course.slug), {
-            name: comment.value.name,
-            email: comment.value.email,
             body: comment.value.body,
         });
 
         submitting.value = false
         if(response.status === 200){
             if(response.data.status === 'sucess' || response.data.status === 'success'){ // هندل کردن تایپوگرافی احتمالی
-                comment.value.name = '';
-                comment.value.email = '';
                 comment.value.body = '';
                 message.value.isShow = true;
                 message.value.text = response.data.message;

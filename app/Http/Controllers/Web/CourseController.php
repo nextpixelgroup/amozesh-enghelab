@@ -40,10 +40,10 @@ class CourseController extends Controller
         });
         $courses = WebCoursesResource::collection($query->orderBy('published_at', 'desc')->paginate(env('COURSES_PER_PAGE')));
         $stats = Setting::getValue('statCourses');
-        $stats['courses'] = number_format($stats['courses']);
-        $stats['ratings'] = number_format($stats['ratings'],1);
-        $stats['students'] = number_format($stats['students']);
-        $stats['seasons'] = number_format($stats['seasons']);
+        $stats['courses'] = number_format(@$stats['courses']);
+        $stats['ratings'] = number_format(@$stats['ratings'],1);
+        $stats['students'] = number_format(@$stats['students']);
+        $stats['seasons'] = number_format(@$stats['seasons']);
         return inertia('Web/Courses/Index', compact('categories', 'courses', 'stats'));
     }
 
