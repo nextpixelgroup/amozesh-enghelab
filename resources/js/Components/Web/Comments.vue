@@ -113,19 +113,8 @@
                                                     </div>
                                                 </div>
                                             </v-col>
-                                            <v-col lg="3">
-                                                <div class="text-end">
-                                                    <v-btn flat density="compact" variant="text" color="primary"
-                                                           icon="mdi-reply" @click="openReplyDialog(commentId)">
-                                                    </v-btn>
-                                                </div>
-                                            </v-col>
                                         </v-row>
-                                        <p>
-                                            با سلام و احترام
-                                            شما میتونین با دانلود اپلیکیشن زودیکارا و خرید اشتراک یک ماهه، سه ماهه، شش
-                                            ماهه یا 1 ساله از خدمات ما بهره مند شوید.
-                                        </p>
+                                        <p>{{reply.body}}</p>
                                     </div>
                                 </li>
                             </ul>

@@ -18,9 +18,8 @@ return new class extends Migration
             $table->string('email')->index()->nullable();
             $table->text('body');
             $table->boolean('is_approved')->default(false);
-            $table->unsignedBigInteger('commentable_id');
-            $table->string('commentable_type');
-            $table->unsignedBigInteger('parent_id')->index()->nullable();
+            $table->morphs('commentable');
+            $table->foreignId('parent_id')->index()->nullable();
             $table->integer('depth')->default(0);
             $table->timestamps();
             $table->index(['commentable_id', 'commentable_type']);
