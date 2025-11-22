@@ -36,7 +36,7 @@
                         </div>
                         <CourseDetailsRequirements :courses="requirements.data"/>
                         <CourseDetailsRelated :courses="related.data"/>
-                        <Comments :user="user" :course="course.data" :comments="comments"/>
+                        <Comments :user="user" :course="course.data"/>
                     </v-card>
                 </v-col>
                 <v-col cols="12" lg="3">
@@ -64,7 +64,6 @@ const props = defineProps({
     related: Object,
     isEnrolled: Object,
     user: Object,
-    comments: Object,
 })
 const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
 

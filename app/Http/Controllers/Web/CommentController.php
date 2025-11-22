@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WebCommentResource;
 use App\Models\Comment;
 use App\Models\Course;
 use Exception;
@@ -11,6 +12,13 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
+
+    public function courseComments(Request $request,Course $course)
+    {
+        $comments = WebCommentResource::collection($course->comments()->paginate(env('PER_PAGE')));
+        return sendJson(data: $comments);
+    }
+
     public function courseStore(Request $request, Course $course)
     {
         try {

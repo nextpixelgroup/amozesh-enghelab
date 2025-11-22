@@ -71,8 +71,7 @@ class CourseController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();*/
-        $comments = WebCommentResource::collection($course->comments()->paginate(env('PER_PAGE')));
-        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user', 'comments'));
+        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user'));
     }
 
     public function download($filename)

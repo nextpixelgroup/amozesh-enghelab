@@ -52,6 +52,9 @@ Route::name('web.')->group(function () {
     Route::get('/pay', [PaymentController::class, 'pay'])->name('payment.pay');
     Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('payment.thankYou');
 
+
+    Route::get('/comments/courses/{course:slug}', [CommentController::class, 'courseComments'])->name('comments.course.index');
+
     Route::post('/comment/{course:slug}/store', [CommentController::class, 'courseStore'])->name('comments.course.store');
     Route::post('/comment/{book:slug}/store', [CommentController::class, 'bookStore'])->name('comments.book.store');
     Route::post('/comment/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
