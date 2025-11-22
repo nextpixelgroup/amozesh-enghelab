@@ -18,6 +18,7 @@
                             </v-form>
                             <v-form @submit.prevent="verifyCode" v-if="step === 2">
                                 <v-otp-input
+                                    autofocus
                                     label="کد تایید"
                                     v-model="form.code"
                                     length="5"
@@ -26,9 +27,6 @@
                                 />
 
                                 <v-btn type="submit" color="primary" :loading="isLoading">تایید</v-btn>
-
-
-
                             </v-form>
                             <div v-if="step === 2">
                                 <div v-if="countdown > 0" class="mt-2">

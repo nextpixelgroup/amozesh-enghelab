@@ -16,7 +16,7 @@ class CommentController extends Controller
     public function courseComments(Request $request,Course $course)
     {
         $resource = WebCommentResource::collection($course->comments()->where('is_approved',true)->paginate(env('PER_PAGE')));
-        $totalAllComments = Comment::where('commentable_id', $course->id)
+        $totalAllComments = Comment::where('commentable_id', $course->id)->where('is_approved', true)
             ->where('commentable_type', get_class($course))
             ->count();
         $comments = $resource->response()->getData(true);
@@ -27,8 +27,11 @@ class CommentController extends Controller
 
     public function courseStore(Request $request, Course $course)
     {
+        $user = auth()->user();
+        if(!$user){
+            return sendJson('error', 'ابتدا وارد سایت شوید');
+        }
         try {
-            $user = auth()->user();
             if ($user) {
                 $validator = Validator::make(
                     $request->all(),
@@ -80,7 +83,7 @@ class CommentController extends Controller
 
             $comment = $course->comments()->create($args);
             if($comment){
-                return sendJson('sucess', 'نظر شما پس از تایید منتشر خواهد شد');
+                return sendJson('success', 'نظر شما پس از تایید منتشر خواهد شد');
             }
         } catch (Exception $e) {
             $error = log_error($e);
@@ -90,18 +93,22 @@ class CommentController extends Controller
 
     public function reply(Request $request, Comment $comment)
     {
-        if ($comment->depth >= 1) {
+        sleep(4);
+        $user = auth()->user();
+        if(!$user){
+            return sendJson('error', 'ابتدا وارد سایت شوید');
+        }
+        elseif ($comment->depth >= 1) {
             return sendJson('error', 'امکان پاسخ بیشتر از دو سطح وجود ندارد.');
         }
 
-        $user = auth()->user();
         $reply = $comment->addReply([
-            'depth' => 1,
-            'body' => $request->body,
+            'depth'       => 1,
+            'body'        => $request->body,
+            'is_approved' => false,
         ],$user );
 
 
-        return redirectMessage('success', 'پاسخ شما با موفقیت ثبت شد.');
-        return sendJson(data:$comment);
+        return sendJson(message: 'نظر شما پس از تایید منتشر خواهد شد');
     }
 }

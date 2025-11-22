@@ -103,7 +103,7 @@ class Comment extends Model
             'commentable_type' => $this->commentable_type,
             'parent_id' => $this->id,
             'depth' => $this->depth + 1,
-            'is_approved' => true
+            'is_approved' => $data['is_approved'] ?? true
         ]);
     }
 }
