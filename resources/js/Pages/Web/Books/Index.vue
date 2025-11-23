@@ -83,8 +83,13 @@
                                                     <span>۴.۹</span>
                                                 </div>
                                                 <div class="zo-price">
-                                                    <strong>2.450.000</strong>
-                                                    <small>تومان</small>
+                                                    <div class="zo-regular">
+                                                        <span> 1.450.000</span>
+                                                    </div>
+                                                    <div class="zo-sale">
+                                                        <strong>2.450.000</strong>
+                                                        <small>تومان</small>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="zo-add">
@@ -238,8 +243,13 @@
                                                         <span>۴.۹</span>
                                                     </div>
                                                     <div class="zo-price">
-                                                        <strong>2.450.000</strong>
-                                                        <small>تومان</small>
+                                                        <div class="zo-regular">
+                                                            1.450.000
+                                                        </div>
+                                                        <div class="zo-sale">
+                                                            <strong>2.450.000</strong>
+                                                            <small>تومان</small>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="zo-add">
@@ -260,8 +270,13 @@
                                                         <span>۴.۹</span>
                                                     </div>
                                                     <div class="zo-price">
-                                                        <strong>2.450.000</strong>
-                                                        <small>تومان</small>
+                                                        <div class="zo-regular">
+                                                            1.450.000
+                                                        </div>
+                                                        <div class="zo-sale">
+                                                            <strong>2.450.000</strong>
+                                                            <small>تومان</small>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="zo-add">
@@ -373,8 +388,13 @@
                                                 </p>
                                                 <div class="zo-meta">
                                                     <div class="zo-price">
-                                                        <strong>2.450.000</strong>
-                                                        <small>تومان</small>
+                                                        <div class="zo-regular">
+                                                            <span> 1.450.000</span>
+                                                        </div>
+                                                        <div class="zo-sale">
+                                                            <strong>2.450.000</strong>
+                                                            <small>تومان</small>
+                                                        </div>
                                                     </div>
                                                     <div class="zo-add">
                                                         <i class="mdi mdi-cart-outline"></i>
