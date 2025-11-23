@@ -10,17 +10,17 @@
                         <div class="zo-space">
                             <div class="zo-nav">
                                 <ul>
-                                    <li>
+                                    <li v-if="course.data.description">
                                         <a href="#" class="zo-active">درباره دوره</a>
                                     </li>
                                     <li>
-                                        <a href="#">محتوای دوره</a>
+                                        <a href="#lessons">محتوای دوره</a>
+                                    </li>
+                                    <li v-if="requirements.data.length">
+                                        <a href="#requirements">پیش نیازها</a>
                                     </li>
                                     <li>
-                                        <a href="#">پیش نیازها</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">درباره استاد</a>
+                                        <a href="#about-teacher">درباره استاد</a>
                                     </li>
                                     <li>
                                         <a href="#comments">نظرات کاربران</a>

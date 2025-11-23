@@ -7,27 +7,14 @@
             <div class="zo-price">
                 رایگان
             </div>
-            <v-btn
-                block
-                flat
-                variant="elevated"
-                :class="`zo-add ${isEnrolled ? 'added' : ''}`"
-                @click="!isEnrolled && enrollInCourse()"
-                :disabled="isEnroll"
-                :loading="isEnroll"
-            >
+            <v-btn block flat variant="elevated" :class="`zo-add ${isEnrolled ? 'added' : ''}`" @click="!isEnrolled && enrollInCourse()" :disabled="isEnroll" :loading="isEnroll">
                 <img src="/assets/img/site/click.svg" alt="">
                 {{ isEnrolled ? 'شما عضو دوره هستید' : 'ثبت نام در این دوره' }}
             </v-btn>
             <div class="zo-progress" v-if="isEnrolled">
                 <span class="zo-name">پیشرفت شما</span>
                 <span class="zo-percent">{{ course.progress }}٪ کامل شده</span>
-                <v-progress-linear
-                    v-model="progress"
-                    color="secondary"
-                    height="10"
-                    rounded
-                ></v-progress-linear>
+                <v-progress-linear v-model="progress" color="secondary" height="10" rounded></v-progress-linear>
             </div>
             <div class="zo-users">
                 <div class="zo-name">
@@ -62,28 +49,18 @@
                 </ul>
             </div>
             <div class="zo-rating mt-3">
-                <v-icon
-                    v-for="n in 5"
-                    :key="n"
-                    :color="n <= hover || n <= rating ? 'yellow darken-3' : 'grey'"
-                    @mouseover="hover = n"
-                    @mouseleave="hover = 0"
-                    @click="rating = n"
-                    size="28"
-                    class="me-1"
-                >
+                <v-icon v-for="n in 5" :key="n" :color="n <= hover || n <= rating ? 'yellow darken-3' : 'grey'" @mouseover="hover = n" @mouseleave="hover = 0" @click="rating = n" size="28" class="me-1">
                     mdi-star
                 </v-icon>
             </div>
-            <div class="zo-prof">
+            <div class="zo-prof" id="about-teacher">
                 <strong class="zo-title">درباره مدرس</strong>
                 <div class="zo-name">
                     <div class="zo-avatar">
                         <img :src="course.teacher.avatar" alt="">
                     </div>
                     <div>
-                        <a :href="route('web.teacher.show',course.teacher.slug)"
-                           target="_blank"><span>{{ course.teacher.name }}</span></a>
+                        <a :href="route('web.teacher.show',course.teacher.slug)" target="_blank"><span>{{ course.teacher.name }}</span></a>
                         <div class="zo-social">
                             <img src="/assets/img/site/eitaa-grey.svg" alt="">
                             <img src="/assets/img/site/soroosh-grey.svg" alt="">
@@ -106,10 +83,9 @@
     </v-card>
 </template>
 <script setup>
-
-import {computed, ref} from "vue";
-import {Link, router} from "@inertiajs/vue3";
-import {route} from "ziggy-js";
+import { computed, ref } from "vue";
+import { Link, router } from "@inertiajs/vue3";
+import { route } from "ziggy-js";
 
 
 const props = defineProps({
@@ -130,7 +106,7 @@ const isEnroll = ref(false);
 const enrollInCourse = () => {
     if (props.isEnrolled.value) return false;
     try {
-        router.post(route('web.courses.enroll', {course: props.course.id}), {}, {
+        router.post(route('web.courses.enroll', { course: props.course.id }), {}, {
             preserveScroll: true,
             onStart: () => {
                 isEnroll.value = true;
@@ -150,6 +126,7 @@ const enrollInCourse = () => {
         isEnroll.value = false;
     }
 }
+
 </script>
 <style scoped>
 .zo-content {
@@ -304,4 +281,5 @@ const enrollInCourse = () => {
     font-size: .90rem;
     color: rgb(120, 125, 135)
 }
+
 </style>

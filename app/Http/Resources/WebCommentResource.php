@@ -24,8 +24,10 @@ class WebCommentResource extends JsonResource
             'avatar' => $avatar,
             'name' => $this->user_id ? $this->user->firstname.' '.$this->user->lastname : $this->name,
             'body' => $this->body,
-            'created_at' => verta()->instance($this->created_at)->format('Y/m/d-H:i'),
-            'replies' => WebCommentResource::collection($this->replies),
+            'created_at' => verta()->instance($this->created_at)->format('j F Y'),
+            'replies' => WebCommentResource::collection(
+                $this->replies()->where('is_approved', true)->get()
+            )
         ];
         return $data;
     }

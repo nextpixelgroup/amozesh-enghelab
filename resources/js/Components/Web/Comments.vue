@@ -19,7 +19,7 @@
         </v-card>
     </v-dialog>
 
-    <div class="zo-space" id="comments">
+    <div class="zo-space" id="comments" >
         <div class="zo-comments-section">
             <strong class="zo-title">نظرات کاربران</strong>
             <div class="zo-label" v-if="user">ثبت دیدگاه</div>
@@ -41,11 +41,6 @@
                     <v-btn flat color="secondary" @click="submitComment" :loading="submitting" :disabled="submitting">ارسال دیدگاه</v-btn>
                 </v-col>
             </v-row>
-            <v-row dense v-else>
-                <div  class="text-center pa-4 text-grey">
-                    برای ثبت نظر باید وارد شوید
-                </div>
-            </v-row>
 
             <!-- لیست نظرات -->
             <v-row dense class="mt-4">
@@ -58,7 +53,7 @@
 
                     <!-- نمایش نظرات -->
                     <div v-else>
-                        <div class="zo-stats">
+                        <div class="zo-stats" v-if="comments.total_comments_count > 0">
                             <!-- فرض بر این است که تعداد کل در دیتای دریافتی موجود است یا طول آرایه را می‌گیرید -->
                             <span>{{ comments.total_comments_count }} دیدگاه</span>
                         </div>
@@ -77,9 +72,8 @@
                                                 </div>
                                             </div>
                                         </v-col>
-                                        <v-col lg="3">
+                                        <v-col lg="3" v-if="user">
                                             <div class="text-end">
-                                                <!-- نکته: در کد اصلی شما اینجا متغیر commentId استفاده شده بود که اشتباه بود، به commentItem.id تغییر کرد -->
                                                 <v-btn flat density="compact" variant="text" color="primary"
                                                        icon="mdi-reply" @click="openReplyDialog(commentItem.id)">
                                                 </v-btn>
@@ -140,7 +134,6 @@ import { route } from "ziggy-js";
 import axios from "axios"; // مطمئن شوید axios ایمپورت شده است
 import ShowMessage from "@/Components/ShowMessage.vue";
 import Pagination from "@/Components/Pagination.vue";
-import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
     course: {
@@ -158,7 +151,7 @@ const comments = ref({ data: [], meta: {} });
 const lastPage = computed( () => comments.value?.meta.last_page)
 const currentPage = ref(comments.value?.meta.current_page)
 
-const loadingComments = ref(true); // وضعیت لودینگ اولیه
+const loadingComments = ref(true);
 const comment = ref({
     body: '',
 });
@@ -217,51 +210,87 @@ function openReplyDialog(id) {
 async function submitReply() {
     if (!replyText.value.trim()) return;
 
-    console.log("reply to:", activeCommentId.value);
-    console.log("text:", replyText.value);
+    try {
+        // ۱. اضافه کردن await
+        const response = await axios.post(route('web.comments.course.reply', activeCommentId.value), {
+            body: replyText.value
+        });
 
-    const response = axios.post(route('web.comments.course.reply', activeCommentId.value), {body: replyText.value})
+        if(response.data.status === 'success'){
+            message.value.isShow = true;
+            message.value.text = response.data.message;
+            message.value.type = 'success';
 
-    replyDialog.value = false;
-    replyText.value = "";
+            // ۲. بستن دیالوگ و پاک کردن متن
+            replyDialog.value = false;
+            replyText.value = "";
 
+        }
+        else {
+            message.value.isShow = true;
+            message.value.text = response.data.message || 'خطایی رخ داد';
+            message.value.type = 'error';
+        }
+    }
+    catch (error) {
+        console.error(error);
+        message.value.isShow = true;
+        message.value.text = 'خطایی در برقراری ارتباط رخ داد';
+        message.value.type = 'error';
+    }
 }
 
+
 const submitComment = async () => {
+    // 1. چک کردن خالی نبودن (اختیاری ولی توصیه شده)
+    if (!comment.value.body.trim()) return;
+
     try {
-        submitting.value = true
+        submitting.value = true;
+
         const response = await axios.post(route('web.comments.course.store', props.course.slug), {
             body: comment.value.body,
         });
 
-        submitting.value = false
-        if(response.status === 200){
-            if(response.data.status === 'sucess' || response.data.status === 'success'){ // هندل کردن تایپوگرافی احتمالی
-                comment.value.body = '';
-                message.value.isShow = true;
-                message.value.text = response.data.message;
-                message.value.type = 'success'
+        submitting.value = false;
 
-            }
-            else if(response.data.status === 'error'){
-                message.value.isShow = true;
-                message.value.text = response.data.message;
-                message.value.type = 'error'
-            }
+        // 2. لاگ بگیرید تا ببینید دقیقا چه چیزی از سرور می‌آید (برای دیباگ)
+        console.log('Response Received:', response);
+
+        // 3. حذف شرط سخت‌گیرانه response.status === 200
+        // اگر به اینجا رسیدیم یعنی درخواست موفق بوده (200 یا 201)
+
+        if(response.data.status === 'success'){
+            comment.value.body = ''; // پاک کردن تکست‌اریا
+            message.value.isShow = true;
+            message.value.text = response.data.message;
+            message.value.type = 'success';
+
         }
+        else {
+            // حالتی که درخواست 200 است اما منطق بیزنس خطا داده (مثلا کلمات ممنوعه)
+            message.value.isShow = true;
+            message.value.text = response.data.message || 'عملیات انجام نشد';
+            message.value.type = 'error'; // یا warning
+        }
+
     }
     catch (error) {
         submitting.value = false;
+        console.error("Submit Error:", error);
+
         message.value.isShow = true;
-        // هندل کردن ارورهای ولیدیشن
+        message.value.type = 'error';
+
+        // هندل کردن دقیق ارور ولیدیشن (422)
         if (error.response && error.response.data && error.response.data.message) {
             message.value.text = error.response.data.message;
         } else {
-            message.value.text = 'خطایی رخ داده است';
+            message.value.text = 'خطایی در ثبت دیدگاه رخ داده است';
         }
-        message.value.type = 'error'
     }
 }
+
 </script>
 
 <style scoped>
