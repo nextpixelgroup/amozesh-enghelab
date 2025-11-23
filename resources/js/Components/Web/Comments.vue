@@ -14,7 +14,7 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text @click="replyDialog = false">انصراف</v-btn>
-                <v-btn color="primary" @click="submitReply">ثبت پاسخ</v-btn>
+                <v-btn color="primary" @click="submitReply" :loading="replying" :disabled="replying">ثبت پاسخ</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -164,6 +164,7 @@ const replyDialog = ref(false);
 const replyText = ref("");
 const activeCommentId = ref(null);
 const submitting = ref(false);
+const replying = ref(false);
 
 // --- متد دریافت کامنت‌ها ---
 const fetchComments = async (page = 1) => {
@@ -209,7 +210,7 @@ function openReplyDialog(id) {
 
 async function submitReply() {
     if (!replyText.value.trim()) return;
-
+    replying.value = true;
     try {
         // ۱. اضافه کردن await
         const response = await axios.post(route('web.comments.course.reply', activeCommentId.value), {
@@ -238,6 +239,8 @@ async function submitReply() {
         message.value.text = 'خطایی در برقراری ارتباط رخ داد';
         message.value.type = 'error';
     }
+
+    replying.value = false;
 }
 
 

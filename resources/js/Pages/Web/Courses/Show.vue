@@ -11,9 +11,14 @@
                             <div class="zo-nav">
                                 <ul>
                                     <li v-if="course.data.description">
-                                        <a href="#" class="zo-active">درباره دوره</a>
+                                        <a
+                                            href="#description"
+                                            class="zo-active"
+                                            :class="{ 'zo-active': activeSection === 'description' }"
+                                            @click.prevent="scrollToSection('description')"
+                                        >درباره دوره</a>
                                     </li>
-                                    <li>
+                                    <li v-if="course.data.seasons.length">
                                         <a href="#lessons">محتوای دوره</a>
                                     </li>
                                     <li v-if="requirements.data.length">
@@ -57,6 +62,7 @@ import CourseDetailsRelated from "@/Components/Web/CourseDetailsRelated.vue";
 import CourseDetailsRequirements from "@/Components/Web/CourseDetailsRequirements.vue";
 import CourseDetailsSeasons from "@/Components/Web/CourseDetailsSeasons.vue";
 import CourseDetailsDescription from "@/Components/Web/CourseDetailsDescription.vue";
+import {ref} from "vue";
 
 const props = defineProps({
     course: Object,
@@ -65,7 +71,8 @@ const props = defineProps({
     isEnrolled: Object,
     user: Object,
 })
-const tabs = ["درباره دوره", "محتوای دوره", "پیش نیازها", "درباره استاد", "نظرات کاربران"];
+const activeSection = ref(''); // مثلاً 'lessons' یا 'requirements'
+
 
 console.log(props.course.data)
 

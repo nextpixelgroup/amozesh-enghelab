@@ -93,7 +93,6 @@ class CommentController extends Controller
 
     public function reply(Request $request, Comment $comment)
     {
-        sleep(4);
         $user = auth()->user();
         if(!$user){
             return sendJson('error', 'ابتدا وارد سایت شوید');
