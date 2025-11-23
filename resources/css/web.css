@@ -88,7 +88,7 @@ h6,
 .h5,
 .h6,
 strong {
-    font-family: 'Estedad-Bold';
+    font-family: 'Estedad-Medium';
     font-weight: normal;
     line-height: 1.5;
 }
@@ -166,6 +166,26 @@ figure {
     margin: 0
 }
 
+.swiper-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 15px 0 0
+}
+
+.swiper-pagination .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: rgb(240, 240, 240);
+    cursor: pointer;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active {
+    background: var(--Secondary)
+}
+
 .zo-hr {
     width: 100%;
     height: 1px;
@@ -176,7 +196,7 @@ figure {
     width: 100%;
     display: inline-block;
     padding: 15px 0;
-    background: var(--Primary) url(/assets/img/site/footer-pattern.png);
+    background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
     color: var(--White)
 }
 
@@ -427,7 +447,7 @@ figure {
     display: inline-block;
     margin: 60px 0 0;
     padding: 45px 0;
-    background: var(--Primary) url(/assets/img/site/footer-pattern.png);
+    background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
     color: var(--White)
 }
 
@@ -468,7 +488,7 @@ figure {
     position: absolute;
     top: 7.5px;
     right: 0;
-    background: var(--Primary) url(/assets/img/site/footer-menu.svg);
+    background: var(--Primary) url(/public/assets/img/site/footer-menu.svg);
     background-size: contain
 }
 
@@ -1082,8 +1102,7 @@ figure {
     display: inline-block;
     background: url(../../public/assets/img/site/frame.svg) no-repeat;
     background-size: contain;
-    background-position: center;
-    drop-shadow: 0 5px 30px 0 rgba(0, 0, 0, .85)
+    background-position: center
 }
 
 .zo-books-section .zo-book img {
@@ -1140,4 +1159,234 @@ figure {
 
 .zo-books-section .zo-book:hover .zo-content .zo-add {
     opacity: .90
+}
+
+.zo-home-books-section .zo-title-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 0 0 15px;
+    padding: 0 15px;
+    font-size: 1.25rem
+}
+
+.zo-home-books-section .zo-title-section strong {
+    font-family: 'Estedad-Medium';
+    font-weight: normal
+}
+
+.zo-home-books-section .zo-content-section h2 {
+    display: block;
+    margin: 0 0 15px;
+    font-family: 'Estedad-Medium';
+    font-size: 1.250rem;
+    color: var(--Primary)
+}
+
+.zo-home-books-section .zo-content-section p {
+    text-align: justify;
+}
+
+.zo-home-books-section .zo-more {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.zo-home-books-section .zo-more a {
+    width: 200px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0 0;
+    background: rgba(200, 160, 100, .05);
+    color: var(--Secondary);
+    border: 1px solid var(--Secondary);
+    border-radius: .5rem;
+}
+
+.zo-home-books-section .zo-selected-books-section {
+    width: 100%;
+    display: inline-block;
+    margin: 60px 0
+}
+
+.zo-home-books-section .zo-selected-books-section {
+    width: 100%;
+    display: inline-block;
+    padding: 60px 0;
+    background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
+    color: var(--White)
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book img {
+    width: 100%;
+    display: block;
+    box-shadow: -10px 10px 20px 0 rgba(0, 0, 0, .25)
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book {
+    width: 100%
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content {
+    max-width: 80%;
+    color: var(--White)
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content h2 {
+    display: block;
+    margin: 0 0 35px;
+    font-size: 1rem;
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 15px;
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta .zo-star {
+    display: flex;
+    align-items: center;
+    gap: 2.5px;
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta .zo-star i {
+    color: var(--Secondary);
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta .zo-price {
+    display: flex;
+    align-items: center;
+    gap: 2.5px;
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-add {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--Secondary);
+    color: var(--White);
+    border-radius: .75rem 0 .75rem 0;
+}
+
+.zo-home-books-section .zo-swiper {
+    position: relative
+}
+
+.zo-home-books-section .zo-swiper .zo-prev,
+.zo-home-books-section .zo-swiper .zo-next {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    font-size: 2rem;
+    color: var(--Primary);
+    border: 1px solid var(--Primary);
+    cursor: pointer;
+    z-index: 15;
+}
+
+.zo-home-books-section .zo-swiper .zo-prev {
+    top: 50%;
+    left: -45px;
+    border-top-left-radius: 300px;
+    border-bottom-left-radius: 300px
+}
+
+.zo-home-books-section .zo-swiper .zo-next {
+    top: 50%;
+    right: -45px;
+    border-top-right-radius: 300px;
+    border-bottom-right-radius: 300px
+}
+
+.zo-home-books-section .zo-swiper .zo-prev i,
+.zo-home-books-section .zo-swiper .zo-next i {
+    display: flex
+}
+
+.zo-home-books-section .zo-swiper .zo-prev.swiper-button-disabled,
+.zo-home-books-section .zo-swiper .zo-next.swiper-button-disabled {
+    opacity: .5;
+}
+
+.zo-home-books-section .zo-special-books-section {
+    width: 100%;
+    display: inline-block;
+    margin: 60px 0;
+    padding: 30px 0;
+    background: var(--Primary) url(/public/assets/img/site/books-pattern.png);
+    color: var(--White)
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book {
+    display: block;
+    padding: 60px 0
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content {
+    display: flex;
+    align-items: center;
+    background: var(--White);
+    border-radius: 1rem
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book img {
+    margin: -60px 0;
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content {
+    padding: 0 0 0 30px;
+    position: relative
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content h2 {
+    display: block;
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    color: var(--Primary)
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content .zo-sub {
+    display: block;
+    margin: 0 0 10px;
+    color: var(--Primary);
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content p {
+    margin: 0 0 10px;
+    text-align: justify;
+    color: var(--Sub)
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content .zo-meta {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin: 15px 0 0
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content .zo-price {
+    display: flex;
+    align-items: center;
+    gap: 2.5px;
+}
+
+.zo-home-books-section .zo-special-books-section .zo-book .zo-content .zo-add {
+    width: 200px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--Secondary);
+    color: var(--White);
+    border-radius: .75rem 0 .75rem 0;
 }
