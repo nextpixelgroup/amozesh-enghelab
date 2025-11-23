@@ -2,7 +2,7 @@
     <v-card flat class="zo-card">
         <div class="zo-content">
             <div class="zo-thumbnail">
-                <img :src="course.thumbnail" alt="">
+                <img :src="course.thumbnail" alt="" class="rounded-lg">
             </div>
             <div class="zo-price">
                 رایگان
@@ -17,7 +17,7 @@
                 :loading="isEnroll"
             >
                 <img src="/assets/img/site/click.svg" alt="">
-                {{isEnrolled ? 'شما عضو دوره هستید' : 'ثبت نام در این دوره'}}
+                {{ isEnrolled ? 'شما عضو دوره هستید' : 'ثبت نام در این دوره' }}
             </v-btn>
             <div class="zo-progress" v-if="isEnrolled">
                 <span class="zo-name">پیشرفت شما</span>
@@ -43,7 +43,7 @@
                             <img src="/assets/img/site/c-clock.svg" alt="">
                             <span>شروع دوره</span>
                         </div>
-                        <strong>{{course.published_at}}</strong>
+                        <strong>{{ course.published_at }}</strong>
                     </li>
                     <li>
                         <div>
@@ -59,14 +59,21 @@
                         </div>
                         <strong>{{ course.category }}</strong>
                     </li>
-<!--                    <li>
-                        <div>
-                            <img src="/assets/img/site/c-gap.svg" alt="">
-                            <span>ظرفیت دوره</span>
-                        </div>
-                        <strong>۲۰ نفر</strong>
-                    </li>-->
                 </ul>
+            </div>
+            <div class="zo-rating mt-3">
+                <v-icon
+                    v-for="n in 5"
+                    :key="n"
+                    :color="n <= hover || n <= rating ? 'yellow darken-3' : 'grey'"
+                    @mouseover="hover = n"
+                    @mouseleave="hover = 0"
+                    @click="rating = n"
+                    size="28"
+                    class="me-1"
+                >
+                    mdi-star
+                </v-icon>
             </div>
             <div class="zo-prof">
                 <strong class="zo-title">درباره مدرس</strong>
@@ -75,7 +82,8 @@
                         <img :src="course.teacher.avatar" alt="">
                     </div>
                     <div>
-                        <a :href="route('web.teacher.show',course.teacher.slug)" target="_blank"><span>{{course.teacher.name}}</span></a>
+                        <a :href="route('web.teacher.show',course.teacher.slug)"
+                           target="_blank"><span>{{ course.teacher.name }}</span></a>
                         <div class="zo-social">
                             <img src="/assets/img/site/eitaa-grey.svg" alt="">
                             <img src="/assets/img/site/soroosh-grey.svg" alt="">
@@ -92,7 +100,7 @@
                         <span>{{ course.teacher.students }} دانشجو</span>
                     </li>
                 </ul>
-                <p>{{course.teacher.bio}}</p>
+                <p>{{ course.teacher.bio }}</p>
             </div>
         </div>
     </v-card>
@@ -114,7 +122,10 @@ const props = defineProps({
         required: true
     }
 })
-const progress = computed( () => props.course.progress)
+const rating = ref(0)
+const hover = ref(0)
+
+const progress = computed(() => props.course.progress)
 const isEnroll = ref(false);
 const enrollInCourse = () => {
     if (props.isEnrolled.value) return false;

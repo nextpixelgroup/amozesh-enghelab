@@ -62,9 +62,13 @@ ol {
 }
 
 a {
-    color: rgb(15, 70, 160);
+    color: var(--Text);
     transition: all 0.25s ease-in-out;
     text-decoration: none;
+}
+
+img {
+    max-width: 100%
 }
 
 textarea {
@@ -266,49 +270,58 @@ figure {
     }
 }
 
-.zo-courses-section .zo-actions .zo-sort {
+.zo-courses-section .zo-actions .zo-sort,
+.zo-books-section .zo-actions .zo-sort {
     text-align: left
 }
 
-.zo-courses-section .zo-actions .zo-sort button {
+.zo-courses-section .zo-actions .zo-sort button,
+.zo-books-section .zo-actions .zo-sort button {
     border-radius: 0.75rem;
 }
 
-.zo-courses-section .zo-actions .zo-select .v-field {
+.zo-courses-section .zo-actions .zo-select .v-field,
+.zo-books-section .zo-actions .zo-select .v-field {
     background: var(--Secondary);
     color: var(--White);
     box-shadow: none
 }
 
-.zo-courses-section .zo-actions .zo-search {
+.zo-courses-section .zo-actions .zo-search,
+.zo-books-section .zo-actions .zo-search {
     display: flex;
     gap: 10px;
     position: relative;
 }
 
-.zo-courses-section .zo-actions .zo-search .zo-select .v-field .v-field__input {
+.zo-courses-section .zo-actions .zo-search .zo-select .v-field .v-field__input,
+.zo-books-section .zo-actions .zo-search .zo-select .v-field .v-field__input {
     height: 40px;
     min-height: 40px;
     padding: 0 15px
 }
 
-.zo-courses-section .zo-actions .zo-search .zo-input {
+.zo-courses-section .zo-actions .zo-search .zo-input,
+.zo-books-section .zo-actions .zo-search .zo-input {
     width: 300px;
     position: relative
 }
 
-.zo-courses-section .zo-actions .zo-search .zo-input .v-field {
+.zo-courses-section .zo-actions .zo-search .zo-input .v-field,
+.zo-books-section .zo-actions .zo-search .zo-input .v-field {
     background: rgb(240, 240, 240);
     box-shadow: none
 }
 
-.zo-courses-section .zo-actions .zo-search .zo-input .v-field .v-field__input {
+.zo-courses-section .zo-actions .zo-search .zo-input .v-field .v-field__input,
+.zo-books-section .zo-actions .zo-search .zo-input .v-field .v-field__input {
     height: 40px;
     min-height: 40px;
     padding: 0 15px
 }
 
-.zo-courses-section .zo-actions .zo-search .zo-input .zo-icon {
+.zo-courses-section .zo-actions .zo-search .zo-input .zo-icon,
+.zo-books-section .zo-actions .zo-search .zo-input .zo-icon {
     position: absolute;
     top: 7.5px;
     left: 7.5px
@@ -1029,4 +1042,102 @@ figure {
 .zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__notch::before,
 .zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__notch::after {
     border: 0
+}
+
+
+.zo-breadcrumbs-section {
+    width: 100%;
+    display: inline-block;
+    padding: 0 0 10px;
+    border-bottom: 1px solid rgb(240, 240, 240)
+}
+
+.zo-breadcrumbs-section nav ul {
+    display: flex;
+    gap: 5px;
+}
+
+.zo-breadcrumbs-section nav ul li {
+    display: inline-block;
+    padding: 0 0 0 20px;
+    position: relative
+}
+
+.zo-breadcrumbs-section nav ul li:before {
+    content: '\F0141';
+    font-family: 'Material Design Icons';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 15
+}
+
+.zo-breadcrumbs-section nav ul li:last-child:before {
+    display: none
+}
+
+.zo-books-section .zo-book {
+    width: 100%;
+    height: 500px;
+    display: inline-block;
+    background: url(../../public/assets/img/site/frame.svg) no-repeat;
+    background-size: contain;
+    background-position: center;
+    drop-shadow: 0 5px 30px 0 rgba(0, 0, 0, .85)
+}
+
+.zo-books-section .zo-book img {
+    display: block;
+    margin: 60px auto 0;
+    box-shadow: -10px 10px 20px 0 rgba(0, 0, 0, .25)
+}
+
+.zo-books-section .zo-book .zo-content {
+    width: 85%;
+    margin: 0 auto;
+    padding: 15px 0 0;
+    color: var(--Primary)
+}
+
+.zo-books-section .zo-book .zo-content h2 {
+    display: block;
+    margin: 0 0 35px;
+    font-size: 1rem;
+}
+
+.zo-books-section .zo-book .zo-content .zo-meta {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 15px
+}
+
+.zo-books-section .zo-book .zo-content .zo-meta .zo-star {
+    display: flex;
+    align-items: center;
+    gap: 2.5px;
+}
+
+.zo-books-section .zo-book .zo-content .zo-meta .zo-star i {
+    color: var(--Secondary)
+}
+
+.zo-books-section .zo-book .zo-content .zo-meta .zo-price {
+    display: flex;
+    align-items: center;
+    gap: 2.5px;
+}
+
+.zo-books-section .zo-book .zo-content .zo-add {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--Secondary);
+    color: var(--White);
+    border-radius: .75rem 0 .75rem 0
+}
+
+.zo-books-section .zo-book:hover .zo-content .zo-add {
+    opacity: .90
 }
