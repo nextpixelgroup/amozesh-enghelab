@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CourseRating extends Model
 {
 
-    protected $fillable = ['course_id', 'user_id', 'rating'];
+    protected $fillable = ['course_id', 'user_id', 'rate'];
 
     protected $casts = [
         'is_approved' => 'boolean',

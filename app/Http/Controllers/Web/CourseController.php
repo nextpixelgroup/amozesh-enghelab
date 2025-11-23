@@ -74,6 +74,32 @@ class CourseController extends Controller
         return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user'));
     }
 
+    public function rating(Request $request, Course $course)
+    {
+        $user = auth()->user();
+        if(!$user){
+            return sendJson('error', 'ابتدا وارد سایت شوید');
+        }
+        elseif ($request->rate < 1 || $request->rate > 5) {
+            return sendJson('error', 'امتیاز باید بین ۱ تا ۵ باشد');
+        }
+        if($user->hasRatedCourse($course)){
+            $findRate = $course->ratings()->where('user_id',$user->id)->first();
+            $diffInMinutes = now()->diffInMinutes($findRate->updated_at);
+            if($diffInMinutes < 60){
+                return sendJson('error', 'شما فقط هر یک ساعت یک‌بار می‌توانید امتیاز را تغییر دهید');
+            }
+            $findRate->update(['rate' => $request->rate]);
+        }
+        else{
+            $course->ratings()->create([
+                'user_id' => $user->id,
+                'rate' => $request->rate
+            ]);
+        }
+        return sendJson('success', 'امتیاز با موفقیت ثبت شد', ['rate' => number_format(Course::find($course->id)->rate,1)]);
+    }
+
     public function download($filename)
     {
         $remoteUrl = video_upload_path("{$filename}");
