@@ -39,7 +39,7 @@
                                     <div class="zo-input">
                                         <v-text-field hide-details placeholder="جستجو" variant="solo"></v-text-field>
                                         <span class="zo-icon">
-                                            <img src="assets/img/site/c-search.svg" alt="" class="img-fluid" />
+                                            <img src="/assets/img/site/c-search.svg" alt="" class="img-fluid" />
                                         </span>
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@
                 <v-row dense>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/16.png" alt="">
+                            <img src="/assets/img/sample/16.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -88,7 +88,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/17.png" alt="">
+                            <img src="/assets/img/sample/17.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -110,7 +110,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/18.png" alt="">
+                            <img src="/assets/img/sample/18.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -132,7 +132,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/19.png" alt="">
+                            <img src="/assets/img/sample/19.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -154,7 +154,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/20.png" alt="">
+                            <img src="/assets/img/sample/20.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -176,7 +176,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/21.png" alt="">
+                            <img src="/assets/img/sample/21.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -198,7 +198,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/22.png" alt="">
+                            <img src="/assets/img/sample/22.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -220,7 +220,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/23.png" alt="">
+                            <img src="/assets/img/sample/23.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -242,7 +242,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/24.png" alt="">
+                            <img src="/assets/img/sample/24.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -264,7 +264,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/19.png" alt="">
+                            <img src="/assets/img/sample/19.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -286,7 +286,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/16.png" alt="">
+                            <img src="/assets/img/sample/16.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
@@ -308,7 +308,7 @@
                     </v-col>
                     <v-col lg="3" md="6" cols="12">
                         <a href="#" class="zo-book">
-                            <img src="assets/img/sample/18.png" alt="">
+                            <img src="/assets/img/sample/18.png" alt="">
                             <div class="zo-content">
                                 <h2>تربیت کودک</h2>
                                 <div class="zo-meta">
