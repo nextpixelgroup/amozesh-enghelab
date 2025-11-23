@@ -48,8 +48,8 @@
                     </li>
                 </ul>
             </div>
-            <div class="zo-rating mt-3">
-                <v-icon v-for="n in 5" :key="n" :color="n <= hover || n <= rating ? 'yellow darken-3' : 'grey'" @mouseover="hover = n" @mouseleave="hover = 0" @click="rating = n" size="28" class="me-1">
+            <div class="zo-rating">
+                <v-icon v-for="n in 5" :key="n" :color="n <= hover || n <= rating ? 'yellow darken-5' : 'grey'" @mouseover="hover = n" @mouseleave="hover = 0" @click="rating = n" size="20">
                     mdi-star
                 </v-icon>
             </div>
@@ -229,6 +229,12 @@ const enrollInCourse = () => {
     display: flex;
     align-items: center;
     gap: 5px
+}
+
+.zo-content .zo-rating {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0 0
 }
 
 .zo-content .zo-prof {
