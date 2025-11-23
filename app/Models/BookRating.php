@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CourseRating extends Model
+class BookRating extends Model
 {
-
-    protected $fillable = ['course_id', 'user_id', 'rate'];
+    protected $fillable = ['book_id', 'user_id', 'rate'];
 
     public function course()
     {

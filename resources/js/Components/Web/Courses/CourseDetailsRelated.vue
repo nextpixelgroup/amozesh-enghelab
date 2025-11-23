@@ -25,7 +25,7 @@
 
 import {Navigation} from "swiper/modules";
 import {Swiper, SwiperSlide} from "swiper/vue";
-import CourseCard from "@/Components/Web/CourseCard.vue";
+import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
 
 const props = defineProps({
     courses: {

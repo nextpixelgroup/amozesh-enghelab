@@ -60,7 +60,7 @@
 
 import CustomVideoPlayer from "@/Components/CustomVideoPlayer.vue";
 import {Link} from "@inertiajs/vue3";
-import CourseLessonQuiz from "@/Components/Web/CourseLessonQuiz.vue";
+import CourseLessonQuiz from "@/Components/Web/Courses/CourseLessonQuiz.vue";
 
 const props = defineProps({
     lessons: {

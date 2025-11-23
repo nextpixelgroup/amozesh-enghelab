@@ -14,7 +14,7 @@
     </div>
 </template>
 <script setup>
-import CourseCard2 from "@/Components/Web/CourseCard2.vue";
+import CourseCard2 from "@/Components/Web/Courses/CourseCard2.vue";
 
 const props = defineProps({
     courses: {

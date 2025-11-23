@@ -95,7 +95,7 @@
 import {ref} from 'vue'
 import {Head, router} from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import CategoryDialog from '@/Components/CategoryDialog.vue'
+import CategoryDialog from '@/Components/Admin/CategoryDialog.vue'
 import {route} from "ziggy-js";
 import {truncateText} from "../../../../utils/helpers.js";
 import usePageTitle from "@/Composables/usePageTitle.js";

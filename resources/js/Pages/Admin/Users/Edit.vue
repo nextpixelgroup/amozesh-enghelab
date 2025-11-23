@@ -46,14 +46,14 @@ import {Form, Head, Link, router, useForm, usePage} from '@inertiajs/vue3'
 import {defineComponent, ref} from "vue";
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {route} from "ziggy-js";
-import UserRestrictionComponent from "@/Components/UserRestrictionComponent.vue";
+import UserRestrictionComponent from "@/Components/Admin/UserRestrictionComponent.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import ImageUploader from "@/Components/ImageUploader.vue";
-import ContentManagerDetails from "@/Components/User/ContentManagerDetails.vue";
-import TeacherDetails from "@/Components/User/TeacherDetails.vue";
-import InstitutionDetails from "@/Components/User/InstitutionDetails.vue";
-import UserDetails from "@/Components/User/UserDetails.vue";
-import AdminDetails from "@/Components/User/AdminDetails.vue";
+import ContentManagerDetails from "@/Components/Admin/User/ContentManagerDetails.vue";
+import TeacherDetails from "@/Components/Admin/User/TeacherDetails.vue";
+import InstitutionDetails from "@/Components/Admin/User/InstitutionDetails.vue";
+import UserDetails from "@/Components/Admin/User/UserDetails.vue";
+import AdminDetails from "@/Components/Admin/User/AdminDetails.vue";
 const {adminPageTitle} = usePageTitle('ویرایش کاربر');
 
 defineComponent({

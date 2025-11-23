@@ -66,6 +66,17 @@ class Book extends Model
             ->orderBy('created_at', 'desc');
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(CourseRating::class);
+    }
+
+    public function updateAverageRating()
+    {
+        $this->rate = $this->ratings()->avg('rate');
+        $this->save();
+    }
+
     /**
      * Get all comments including replies for the book.
      */

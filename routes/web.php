@@ -38,8 +38,7 @@ Route::name('web.')->group(function () {
 
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');
-    //Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
-    Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
+    Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 
     Route::get('/teachers', [TeacherController::class, 'index'])->name('teacher.index');
     Route::get('/t/{teacher:slug}', [TeacherController::class, 'show'])->name('teacher.show');

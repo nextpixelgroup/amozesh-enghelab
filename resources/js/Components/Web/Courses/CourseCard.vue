@@ -5,7 +5,7 @@
                 <img :src="course.thumbnail" alt="" class="img-fluid"/>
             </div>
             <div class="zo-category"  v-if="course.category">
-                <img src="assets/img/site/c-cat.svg" alt="" class="img-fluid"/>
+                <img src="/assets/img/site/c-cat.svg" alt="" class="img-fluid"/>
                 <span>{{ course.category }}</span>
             </div>
         </figure>
@@ -14,11 +14,11 @@
             <span class="zo-prof">{{ course.teacher }}</span>
             <ul>
                 <li>
-                    <img src="assets/img/site/c-clock.svg" alt="" class="img-fluid"/>
+                    <img src="/assets/img/site/c-clock.svg" alt="" class="img-fluid"/>
                     <span>{{ course.duration }}</span>
                 </li>
                 <li>
-                    <img src="assets/img/site/c-students.svg" alt="" class="img-fluid"/>
+                    <img src="/assets/img/site/c-students.svg" alt="" class="img-fluid"/>
                     <span>{{ course.students > 0 ? course.students : 'بدون' }} دانشجو</span>
                 </li>
             </ul>

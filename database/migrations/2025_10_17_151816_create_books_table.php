@@ -30,10 +30,11 @@ return new class extends Migration
             $table->string('edition',50)->nullable();
             $table->string('size',50)->nullable();
             $table->string('author',100)->index()->nullable();
+            $table->tinyInteger('rate')->index()->nullable();
             $table->enum('status', enumNames(BookStatusEnum::cases()))->index()->default('draft');
             $table->timestamps();
             $table->softDeletes();
-            $table->fullText(['title', 'content']);
+            $table->fullText(['title', 'subtitle', 'content']);
         });
 
     }

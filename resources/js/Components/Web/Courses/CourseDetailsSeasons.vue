@@ -47,7 +47,7 @@
 <script setup>
 
 import {ref} from "vue";
-import CourseDetailsLessons from "@/Components/Web/CourseDetailsLessons.vue";
+import CourseDetailsLessons from "@/Components/Web/Courses/CourseDetailsLessons.vue";
 const props = defineProps({
     course: {
         type: Object,

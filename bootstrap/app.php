@@ -114,7 +114,10 @@ return Application::configure(basePath: dirname(__DIR__))
                     }
 
                     // برای سایر موارد
-                    return response()->view('errors.404', [], 404);
+                    return Inertia::render('Web/404');
+                }
+                elseif($e instanceof AccessDeniedHttpException){
+                    return Inertia::render('Web/404');
                 }
             }
         });

@@ -50,13 +50,13 @@
 <script setup>
 import WebLayout from '@/Layouts/WebLayout.vue'
 import "swiper/css";
-import CourseDetailsSidebar from "@/Components/Web/CourseDetailsSidebar.vue";
-import CourseDetailsIntro from "@/Components/Web/CourseDetailsIntro.vue";
+import CourseDetailsSidebar from "@/Components/Web/Courses/CourseDetailsSidebar.vue";
+import CourseDetailsIntro from "@/Components/Web/Courses/CourseDetailsIntro.vue";
 import Comments from "@/Components/Web/Comments.vue";
-import CourseDetailsRelated from "@/Components/Web/CourseDetailsRelated.vue";
-import CourseDetailsRequirements from "@/Components/Web/CourseDetailsRequirements.vue";
-import CourseDetailsSeasons from "@/Components/Web/CourseDetailsSeasons.vue";
-import CourseDetailsDescription from "@/Components/Web/CourseDetailsDescription.vue";
+import CourseDetailsRelated from "@/Components/Web/Courses/CourseDetailsRelated.vue";
+import CourseDetailsRequirements from "@/Components/Web/Courses/CourseDetailsRequirements.vue";
+import CourseDetailsSeasons from "@/Components/Web/Courses/CourseDetailsSeasons.vue";
+import CourseDetailsDescription from "@/Components/Web/Courses/CourseDetailsDescription.vue";
 import {ref} from "vue";
 
 const props = defineProps({

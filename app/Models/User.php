@@ -240,6 +240,18 @@ class User extends Authenticatable
             ->exists();
     }
 
+    public function bookRatings()
+    {
+        return $this->hasMany(BookRating::class);
+    }
+
+    public function hasRatedBook(Book $book)
+    {
+        return $this->ratings()
+            ->where('book_id', $book->id)
+            ->exists();
+    }
+
     public function media()
     {
         return $this->hasMany(Media::class);

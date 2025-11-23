@@ -12,6 +12,7 @@ use App\Models\Course;
 use App\Models\CourseLesson;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CourseController extends Controller
@@ -28,6 +29,7 @@ class CourseController extends Controller
             'title' => 'همه دسته‌ها',
         ]);
         $query = Course::with(['lessons','thumbnail', 'categories', 'teacher'])
+            ->where('status', 'publish')
             ->when($request->filled('category') && $request->category !== 'all', function ($query) use ($request) {
                 $query->whereRelation('categories', 'slug', $request->category);
             })
@@ -49,12 +51,15 @@ class CourseController extends Controller
 
     public function show(Request $request, Course $course)
     {
+        Gate::authorize('view', $course);
+
         $courseRequest = $course;
-        $requirements = WebCoursesResource::collection($course->requirements);
+        $requirements = WebCoursesResource::collection($course->requirements()->where('status','publish')->get());
         $similarCourses = Course::whereHas('categories', function ($query) use ($course) {
             $query->whereIn('id', $course->categories->pluck('id'));
         })
-            ->where('id', '!=', $course->id) // حذف خود دوره
+            ->where('id', '!=', $course->id)
+            ->where('status', 'publish')
             ->take(5)
             ->get();
         $related = WebCoursesResource::collection($similarCourses);

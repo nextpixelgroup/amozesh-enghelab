@@ -152,7 +152,7 @@ import WebLayout from '@/Layouts/WebLayout.vue'
 import Pagination from '@/Components/Pagination.vue'
 import {Link, router, usePage} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
-import CourseCard from "@/Components/Web/CourseCard.vue";
+import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
 const page = usePage();
 const query = new URLSearchParams(page.url.split('?')[1])
 const filters = ref({
