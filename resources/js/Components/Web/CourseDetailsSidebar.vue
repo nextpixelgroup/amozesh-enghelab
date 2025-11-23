@@ -46,12 +46,37 @@
                         </div>
                         <strong>{{ course.category }}</strong>
                     </li>
+                    <li>
+                        <div>
+                            <img src="/assets/img/site/c-star.svg" alt="">
+                            <span>امتیاز دوره</span>
+                        </div>
+                        <strong>{{ rate }}</strong>
+                    </li>
                 </ul>
             </div>
-            <div class="zo-rating">
-                <v-icon v-for="n in 5" :key="n" :color="n <= hover || n <= rating ? 'yellow darken-5' : 'grey'" @mouseover="hover = n" @mouseleave="hover = 0" @click="rating = n" size="20">
+            <div class="zo-rating" v-if="isEnrolled">
+                <v-icon
+                    v-for="n in 5"
+                    :key="n"
+                    :color="n <= (hover || user_rate) ? 'yellow darken-3' : 'grey lighten-1'"
+                    @mouseover="!isRatingLoading ? hover = n : null"
+                    @mouseleave="!isRatingLoading ? hover = 0 : null"
+                    @click="submitRating(n)"
+                    :disabled="isRatingLoading"
+                    class="mx-1"
+                    size="24"
+                >
                     mdi-star
                 </v-icon>
+                <v-progress-circular
+                    v-if="isRatingLoading"
+                    indeterminate
+                    color="primary"
+                    size="20"
+                    width="2"
+                    class="ms-2"
+                ></v-progress-circular>
             </div>
             <div class="zo-prof" id="about-teacher">
                 <strong class="zo-title">درباره مدرس</strong>
@@ -81,12 +106,17 @@
             </div>
         </div>
     </v-card>
+    <ShowMessage
+        v-model:show="message.isShow"
+        :message="message.text"
+        :type="message.type"
+    />
 </template>
 <script setup>
 import { computed, ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
-
+import ShowMessage from "@/Components/ShowMessage.vue";
 
 const props = defineProps({
     course: {
@@ -98,11 +128,18 @@ const props = defineProps({
         required: true
     }
 })
-const rating = ref(0)
-const hover = ref(0)
 
 const progress = computed(() => props.course.progress)
+const user_rate = ref(props.course.user_rate)
+const rate = ref( props.course.rate)
+const hover = ref(0)
 const isEnroll = ref(false);
+const isRatingLoading = ref(false)
+const message = ref({
+    isShow: false,
+    text: '',
+    type: '',
+})
 const enrollInCourse = () => {
     if (props.isEnrolled.value) return false;
     try {
@@ -124,6 +161,25 @@ const enrollInCourse = () => {
     } catch (error) {
         console.error('خطا در ارسال درخواست:', error);
         isEnroll.value = false;
+    }
+}
+
+const submitRating = async (n) => {
+    isRatingLoading.value = true;
+    const response = await axios.post(route('web.courses.rating', { course: props.course.slug }), {rate: n});
+    if(response.data.status === 'success'){
+        isRatingLoading.value = false;
+        rate.value = response.data.data.rate;
+        user_rate.value = n;
+        message.value.isShow = true;
+        message.value.text = response.data.message;
+        message.value.type = 'success';
+    }
+    else {
+        isRatingLoading.value = false;
+        message.value.isShow = true;
+        message.value.text = response.data.message || 'خطایی رخ داد';
+        message.value.type = 'error';
     }
 }
 

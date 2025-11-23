@@ -75,7 +75,6 @@ class WebCourseDetailsResource extends JsonResource
                         : '',
                     'poster' => $lesson->poster?->url,
                     'completed' => $lesson->completions()->exists(), // اگر برای این هم relation دارید بهتر است eager load شود
-
                     // مقادیر محاسبه شده
                     'can_show_video' => $currentLessonCanShow,
                     'locked_reason' => $currentLessonCanShow ? null : $currentLockedReason,
@@ -114,6 +113,8 @@ class WebCourseDetailsResource extends JsonResource
             'title' => $this->title,
             'summary' => $this->summary,
             'description' => $this->description,
+            'rate' => number_format($this->rate,1),
+            'user_rate' => $userId ? $this->ratings()->where('user_id',$userId)->first()?->rate : null,
             'intro' => ['url' => $this->intro?->url, 'file_name' => $this->intro?->file_name],
             'poster' => $this->poster->url ?? '/assets/img/shrine.jpg',
             'teacher' => [

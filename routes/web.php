@@ -33,6 +33,9 @@ Route::name('web.')->group(function () {
     Route::post('/courses/lesson/{lesson}/completed', [CourseController::class, 'LessonCompleted'])->name('courses.lesson.completed');
     Route::post('/courses/lesson/{lesson}/quiz', [CourseController::class, 'LessonQuizStore'])->name('courses.lesson.quiz.store');
     Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
+    Route::post('/courses/{course:slug}/rating', [CourseController::class, 'rating'])->name('courses.rating');
+
+
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');
     //Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');

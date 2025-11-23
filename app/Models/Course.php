@@ -150,7 +150,7 @@ class Course extends Model
 
     public function updateAverageRating()
     {
-        $this->rate = $this->ratings()->avg('rating');
+        $this->rate = $this->ratings()->avg('rate');
         $this->save();
     }
 

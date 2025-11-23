@@ -11,12 +11,7 @@
                             <div class="zo-nav">
                                 <ul>
                                     <li v-if="course.data.description">
-                                        <a
-                                            href="#description"
-                                            class="zo-active"
-                                            :class="{ 'zo-active': activeSection === 'description' }"
-                                            @click.prevent="scrollToSection('description')"
-                                        >درباره دوره</a>
+                                        <a href="#description">درباره دوره</a>
                                     </li>
                                     <li v-if="course.data.seasons.length">
                                         <a href="#lessons">محتوای دوره</a>
