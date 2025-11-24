@@ -10,11 +10,11 @@ class BookRating extends Model
 
     public function course()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Book::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Book::class);
     }
 }

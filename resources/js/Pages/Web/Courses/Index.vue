@@ -20,28 +20,28 @@
                                 <v-row class="align-center">
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
-                                            <img src="assets/img/site/stat-course.svg" alt="" class="img-fluid"/>
+                                            <img src="/assets/img/site/stat-course.svg" alt="" class="img-fluid"/>
                                             <strong>{{stats.courses}}</strong>
                                             <span>دوره‌های آموزشی</span>
                                         </div>
                                     </v-col>
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
-                                            <img src="assets/img/site/stat-star.svg" alt="" class="img-fluid"/>
+                                            <img src="/assets/img/site/stat-star.svg" alt="" class="img-fluid"/>
                                             <strong>{{stats.ratings}}</strong>
                                             <span>میانگین امتیازات دوره‌ها</span>
                                         </div>
                                     </v-col>
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
-                                            <img src="assets/img/site/stat-students.svg" alt="" class="img-fluid"/>
+                                            <img src="/assets/img/site/stat-students.svg" alt="" class="img-fluid"/>
                                             <strong>{{stats.students}}</strong>
                                             <span>کل شرکت کنندگان</span>
                                         </div>
                                     </v-col>
                                     <v-col md="6" cols="12">
                                         <div class="zo-stat">
-                                            <img src="assets/img/site/stat-lessons.svg" alt="" class="img-fluid"/>
+                                            <img src="/assets/img/site/stat-lessons.svg" alt="" class="img-fluid"/>
                                             <strong>{{stats.seasons}}</strong>
                                             <span>سرفصل آموزشی</span>
                                         </div>

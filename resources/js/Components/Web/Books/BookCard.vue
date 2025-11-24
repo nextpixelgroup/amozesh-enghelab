@@ -8,9 +8,20 @@
                     <i class="mdi mdi-star-outline"></i>
                     <span>{{ book.rate }}</span>
                 </div>
-                <div class="zo-price">
-                    <strong>2.450.000</strong>
-                    <small>تومان</small>
+                <div class="zo-price" v-if="book.special_price.length">
+                    <div class="zo-regular">
+                        <span>{{book.price}}</span>
+                    </div>
+                    <div class="zo-sale">
+                        <strong>{{book.special_price}}</strong>
+                        <small>تومان</small>
+                    </div>
+                </div>
+                <div class="zo-price" v-else>
+                    <div class="zo-sale">
+                        <strong>{{book.price}}</strong>
+                        <small>تومان</small>
+                    </div>
                 </div>
             </div>
             <div class="zo-add">

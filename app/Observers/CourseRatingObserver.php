@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\CourseRating;
 
-class RatingObserver
+class CourseRatingObserver
 {
     /**
      * Handle the CourseRating "created" event.

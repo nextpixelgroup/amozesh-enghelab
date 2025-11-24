@@ -35,7 +35,8 @@ class CourseController extends Controller
             })
         ->when($request->filled('search'), function ($query) use ($request) {
             $query->where('title', 'like', "%{$request->search}%")
-            ->orWhere('description', 'like', "%{$request->search}%");
+            ->orWhere('description', 'like', "%{$request->search}%")
+            ->orWhere('summary', 'like', "%{$request->search}%");
         })
         ->when($request->filled('sort'), function ($query) use ($request) {
             $query->orderBy('published_at', $request->sort);
