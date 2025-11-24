@@ -18,6 +18,7 @@ class WebBooksResource extends JsonResource
             'slug'          => $this->slug,
             'title'         => $this->title,
             'subtitle'      => $this->subtitle,
+            'summary'      => $this->summary,
             'thumbnail'     => $this->thumbnail ? $this->thumbnail->url : asset('assets/img/default.svg'),
             'price'         => number_format($this->price),
             'special_price' => $this->special_price ? number_format($this->special_price) : 0,

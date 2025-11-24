@@ -14,7 +14,15 @@ class BookController extends Controller
 
     public function index()
     {
-        return inertia('Web/Books/Index');
+        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'special')->orderBy('created_at', 'desc')->paginate(15);
+        $section1 = WebBooksResource::collection($query);
+
+        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'popular')->orderBy('created_at', 'desc')->paginate(15);
+        $section2 = WebBooksResource::collection($query);
+        $section3 = WebBooksResource::collection($query);
+        $section4 = WebBooksResource::collection($query);
+        $section5 = WebBooksResource::collection($query);
+        return inertia('Web/Books/Index',compact('section1' , 'section2', 'section3','section4', 'section5'));
     }
 
     public function archives(Request $request)
@@ -32,7 +40,7 @@ class BookController extends Controller
             ->when($request->filled('sort'), function ($query) use ($request) {
                 $query->orderBy('created_at', $request->sort);
             });
-        $books = WebBooksResource::collection($query->orderBy('created_at', 'desc')->paginate(1));
+        $books = WebBooksResource::collection($query->orderBy('created_at', 'desc')->paginate(env('BOOKS_PER_PAGE')));
         return inertia('Web/Books/Archives', compact('books', 'categories'));
     }
 

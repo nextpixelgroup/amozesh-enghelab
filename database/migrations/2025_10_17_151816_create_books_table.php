@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('subtitle')->index()->nullable();
             $table->string('slug')->index()->unique();
             $table->text('summary')->nullable();
-            $table->text('content');
+            $table->text('content')->nullable();
             $table->foreignId('thumbnail_id')->nullable()->constrained('media')->nullOnDelete();
             $table->string('publisher',100)->nullable();
             $table->decimal('price', 20, 0)->index()->default(0);
