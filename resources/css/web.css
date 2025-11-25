@@ -1074,7 +1074,8 @@ figure {
 
 .zo-breadcrumbs-section nav ul {
     display: flex;
-    gap: 5px;
+    flex-wrap: wrap;
+    gap: 5px
 }
 
 .zo-breadcrumbs-section nav ul li {
