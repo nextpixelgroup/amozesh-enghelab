@@ -1441,3 +1441,103 @@ figure {
     color: var(--White);
     border-radius: .75rem 0 .75rem 0;
 }
+
+.zo-cart-section .zo-section {
+    width: 100%;
+    display: inline-block;
+    background: rgb(255, 255, 255);
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 0.75rem
+}
+
+.zo-cart-section .zo-section .zo-content {
+    padding: 15px
+}
+
+.zo-cart-section table thead tr {
+    background: rgb(250, 250, 250)
+}
+
+.zo-cart-section table thead tr th {
+    font-size: .90rem
+}
+
+.zo-cart-section table tbody tr td img {
+    max-width: 75px;
+    display: block;
+    margin: auto
+}
+
+.zo-cart-section table tbody tr td .zo-number {
+    width: 130px;
+    margin: 0 auto
+}
+
+.zo-cart-section .zo-price {
+    width: 100%;
+    display: inline-block
+}
+
+.zo-cart-section .zo-price .zo-regular {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5px
+}
+
+.zo-cart-section .zo-price .zo-sale {
+    display: flex;
+    align-items: center;
+    flex-direction: column
+}
+
+.zo-cart-section .zo-price .zo-sale del {
+    position: relative;
+    text-decoration: none
+}
+
+.zo-cart-section .zo-price .zo-sale del:before {
+    content: '';
+    width: 115%;
+    height: 1px;
+    position: absolute;
+    top: 10px;
+    left: -5px;
+    background: rgba(0, 0, 0, .5);
+    transform: rotate(10deg)
+}
+
+.zo-cart-section .zo-price .zo-sale div {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5px
+}
+
+.zo-cart-section .zo-total .zo-price strong {
+    font-family: 'Estedad-Bold'
+}
+
+.zo-cart-section .zo-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin: 15px 0
+}
+
+.zo-cart-section .zo-actions .zo-action {
+    height: 40px;
+    padding: 0 25px
+}
+
+b,
+strong {
+    font-weight: normal !important
+}
+
+.v-table {
+    font-size: 1rem !important
+}
+
+.zo-cart-section table tbody tr td {
+    padding: 5px 0 !important
+}
