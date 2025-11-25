@@ -1442,7 +1442,8 @@ figure {
     border-radius: .75rem 0 .75rem 0;
 }
 
-.zo-cart-section .zo-section {
+.zo-cart-section .zo-section,
+.zo-checkout-section .zo-section {
     width: 100%;
     display: inline-block;
     background: rgb(255, 255, 255);
@@ -1450,8 +1451,17 @@ figure {
     border-radius: 0.75rem
 }
 
-.zo-cart-section .zo-section .zo-content {
+.zo-cart-section .zo-section .zo-content,
+.zo-checkout-section .zo-section .zo-content {
     padding: 15px
+}
+
+.zo-cart-section .zo-section .zo-content h3,
+.zo-checkout-section .zo-section .zo-content h3 {
+    display: block;
+    margin: 0 0 15px;
+    font-family: 'Estedad-Black';
+    font-size: 1.25rem
 }
 
 .zo-cart-section table thead tr {
@@ -1473,30 +1483,39 @@ figure {
     margin: 0 auto
 }
 
-.zo-cart-section .zo-price {
+.zo-cart-section .zo-price,
+.zo-checkout-section .zo-price {
     width: 100%;
     display: inline-block
 }
 
-.zo-cart-section .zo-price .zo-regular {
+.zo-cart-section .zo-price .zo-regular,
+.zo-checkout-section .zo-price .zo-regular {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1.5px
 }
 
-.zo-cart-section .zo-price .zo-sale {
+.zo-checkout-section .zo-price .zo-regular {
+    justify-content: flex-end
+}
+
+.zo-cart-section .zo-price .zo-sale,
+.zo-checkout-section .zo-price .zo-sale {
     display: flex;
     align-items: center;
     flex-direction: column
 }
 
-.zo-cart-section .zo-price .zo-sale del {
+.zo-cart-section .zo-price .zo-sale del,
+.zo-checkout-section .zo-price .zo-sale del {
     position: relative;
     text-decoration: none
 }
 
-.zo-cart-section .zo-price .zo-sale del:before {
+.zo-cart-section .zo-price .zo-sale del:before,
+.zo-checkout-section .zo-price .zo-sale del:before {
     content: '';
     width: 115%;
     height: 1px;
@@ -1507,29 +1526,69 @@ figure {
     transform: rotate(10deg)
 }
 
-.zo-cart-section .zo-price .zo-sale div {
+.zo-cart-section .zo-price .zo-sale div,
+.zo-checkout-section .zo-price .zo-sale div {
     display: flex;
     align-items: baseline;
     gap: 1.5px
 }
 
-.zo-cart-section .zo-total .zo-price strong {
+.zo-cart-section .zo-total .zo-price strong,
+.zo-checkout-section .zo-total .zo-price strong {
     font-family: 'Estedad-Bold'
 }
 
-.zo-cart-section .zo-actions {
+.zo-cart-section .zo-actions,
+.zo-checkout-section .zo-actions {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
-    margin: 15px 0
+    margin: 10px 0
 }
 
-.zo-cart-section .zo-actions .zo-action {
+.zo-cart-section .zo-actions .zo-action,
+.zo-checkout-section .zo-actions .zo-action {
     height: 40px;
     padding: 0 25px
 }
 
+.zo-checkout-section .zo-section .zo-content table {
+    width: 100%
+}
+
+.zo-checkout-section .zo-section .zo-content table tr th,
+.zo-checkout-section .zo-section .zo-content table tr td {
+    padding: 2.5px 0;
+    border-bottom: 1px solid rgb(240, 240, 240)
+}
+
+.zo-checkout-section .zo-section .zo-content table tr:last-child th,
+.zo-checkout-section .zo-section .zo-content table tr:last-child td {
+    border-bottom: 0
+}
+
+.zo-checkout-section .zo-section .zo-content .zo-form label {
+    display: block;
+    padding: 0 0 5.5px;
+    font-family: 'Estedad-Medium';
+    font-size: .95rem
+}
+
+.zo-checkout-section .zo-section .zo-content .zo-bank {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 15px 0 0;
+    padding: 15px;
+    font-size: .95rem;
+    background: rgba(95, 95, 225, .05);
+    border: 1px solid rgb(95, 95, 225);
+    border-radius: .35rem
+}
+
 b,
+th,
 strong {
     font-weight: normal !important
 }
