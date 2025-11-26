@@ -65,7 +65,7 @@
                                         </v-col>
                                         <v-col cols="12">
                                             <label>توضیحات</label>
-                                            <v-textarea hide-details density="compact" variant="outlined" prepend-inner-icon="mdi-text" label="یادداشت‌هایی درباره سفارش شما، مثلاً نکات ویژه برای تحویل.">
+                                            <v-textarea hide-details density="compact" variant="outlined" prepend-inner-icon="mdi-text" placeholder="یادداشت‌هایی درباره سفارش شما، مثلاً نکات ویژه برای تحویل.">
                                             </v-textarea>
                                         </v-col>
                                     </v-row>
