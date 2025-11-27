@@ -47,7 +47,7 @@
                 <v-col cols="12">
                     <!-- لودینگ در زمان دریافت کامنت‌ها -->
                     <div v-if="loadingComments" class="text-center pa-5">
-                        <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                        <v-progress-circular indeterminate color="#c8a064"></v-progress-circular>
                         <div class="mt-2 text-grey">در حال بارگذاری نظرات...</div>
                     </div>
 
@@ -107,9 +107,6 @@
                             </li>
                         </ul>
 
-                        <div v-else class="text-center pa-4 text-grey">
-                            هنوز دیدگاهی ثبت نشده است. اولین نفر باشید!
-                        </div>
                         <Pagination
                             v-model="currentPage"
                             :length="lastPage"
@@ -136,13 +133,17 @@ import ShowMessage from "@/Components/ShowMessage.vue";
 import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
-    course: {
+    item: {
         type: Object,
         required: true
     },
     user: {
         type: Object,
     },
+    type: {
+        type: String,
+        required: true
+    }
     // comments prop removed as requested
 })
 
@@ -175,7 +176,7 @@ const fetchComments = async (page = 1) => {
 
     try {
         // ارسال پارامتر page به سمت سرور
-        const response = await axios.get(route('web.comments.course.index', props.course.slug), {
+        const response = await axios.get(route(`web.comments.${props.type}.index`, props.item.slug), {
             params: {
                 page: targetPage
             }
@@ -213,7 +214,7 @@ async function submitReply() {
     replying.value = true;
     try {
         // ۱. اضافه کردن await
-        const response = await axios.post(route('web.comments.course.reply', activeCommentId.value), {
+        const response = await axios.post(route(`web.comments.reply`, activeCommentId.value), {
             body: replyText.value
         });
 
@@ -251,7 +252,7 @@ const submitComment = async () => {
     try {
         submitting.value = true;
 
-        const response = await axios.post(route('web.comments.course.store', props.course.slug), {
+        const response = await axios.post(route(`web.comments.${props.type}.store`, props.item.slug), {
             body: comment.value.body,
         });
 

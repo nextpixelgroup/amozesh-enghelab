@@ -33,11 +33,13 @@ class CourseController extends Controller
             ->when($request->filled('category') && $request->category !== 'all', function ($query) use ($request) {
                 $query->whereRelation('categories', 'slug', $request->category);
             })
-        ->when($request->filled('search'), function ($query) use ($request) {
-            $query->where('title', 'like', "%{$request->search}%")
-            ->orWhere('description', 'like', "%{$request->search}%")
-            ->orWhere('summary', 'like', "%{$request->search}%");
-        })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->where(function ($subQuery) use ($request) {
+                    $subQuery->where('title', 'like', "%{$request->search}%")
+                        ->orWhere('description', 'like', "%{$request->search}%")
+                        ->orWhere('summary', 'like', "%{$request->search}%");
+                });
+            })
         ->when($request->filled('sort'), function ($query) use ($request) {
             $query->orderBy('published_at', $request->sort);
         });
@@ -91,9 +93,9 @@ class CourseController extends Controller
         }
         if($user->hasRatedCourse($course)){
             $findRate = $course->ratings()->where('user_id',$user->id)->first();
-            $diffInMinutes = now()->diffInMinutes($findRate->updated_at);
-            if($diffInMinutes < 60){
-                return sendJson('error', 'شما فقط هر یک ساعت یک‌بار می‌توانید امتیاز را تغییر دهید');
+            $diffInMinutes = now()->diffInMinutes($findRate->updated_at,true);
+            if($diffInMinutes <= 1){
+                return sendJson('error', 'شما فقط هر یک دقیقه یک‌بار می‌توانید امتیاز را تغییر دهید');
             }
             $findRate->update(['rate' => $request->rate]);
         }

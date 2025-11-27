@@ -36,7 +36,7 @@
                         </div>
                         <CourseDetailsRequirements :courses="requirements.data"/>
                         <CourseDetailsRelated :courses="related.data"/>
-                        <Comments :user="user" :course="course.data"/>
+                        <Comments :user="user" :item="course.data" type="course"/>
                     </v-card>
                 </v-col>
                 <v-col cols="12" lg="3">

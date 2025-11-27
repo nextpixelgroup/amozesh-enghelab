@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\WebBookDetailsResource;
 use App\Http\Resources\WebBooksResource;
 use App\Models\Book;
 use App\Models\Category;
@@ -19,10 +20,12 @@ class BookController extends Controller
 
         $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'popular')->orderBy('created_at', 'desc')->paginate(15);
         $section2 = WebBooksResource::collection($query);
-        $section3 = WebBooksResource::collection($query);
+        $section3 = WebBooksResource::collection($query)->response()->getData(true);
+        $section3['moreUrl'] = route('web.books.archives', ['category' => 'popular']);
         $section4 = WebBooksResource::collection($query);
-        $section5 = WebBooksResource::collection($query);
-        return inertia('Web/Books/Index',compact('section1' , 'section2', 'section3','section4', 'section5'));
+        $section5 = WebBooksResource::collection($query)->response()->getData(true);
+        $section5['moreUrl'] = route('web.books.archives', ['category' => 'معارف-اسلامی']);
+        return inertia('Web/Books/Index', compact('section1', 'section2', 'section3', 'section4', 'section5'));
     }
 
     public function archives(Request $request)
@@ -33,9 +36,11 @@ class BookController extends Controller
                 $query->whereRelation('categories', 'slug', $request->category);
             })
             ->when($request->filled('search'), function ($query) use ($request) {
-                $query->where('title', 'like', "%{$request->search}%")
-                    ->orWhere('content', 'like', "%{$request->search}%")
-                    ->orWhere('summary', 'like', "%{$request->search}%");
+                $query->where(function ($subQuery) use ($request) {
+                    $subQuery->where('title', 'like', "%{$request->search}%")
+                        ->orWhere('content', 'like', "%{$request->search}%")
+                        ->orWhere('summary', 'like', "%{$request->search}%");
+                });
             })
             ->when($request->filled('sort'), function ($query) use ($request) {
                 $query->orderBy('created_at', $request->sort);
@@ -46,7 +51,17 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        return Inertia::render('Web/Books/Show', compact('book'));
+        $user = auth()->user();
+        $book = WebBookDetailsResource::make($book);
+        $similarCourses = Book::whereHas('categories', function ($query) use ($book) {
+            $query->whereIn('id', $book->categories->pluck('id'));
+        })
+            ->where('id', '!=', $book->id)
+            ->where('status', 'publish')
+            ->take(5)
+            ->get();
+        $related = WebBooksResource::collection($similarCourses);
+        return Inertia::render('Web/Books/Show', compact('book', 'user', 'related'));
     }
 
     private function categories()
@@ -61,5 +76,30 @@ class BookController extends Controller
             'title' => 'همه دسته‌ها',
         ]);
         return $categories;
+    }
+
+
+    public function rating(Request $request, Book $book)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return sendJson('error', 'ابتدا وارد سایت شوید');
+        } elseif ($request->rate < 1 || $request->rate > 5) {
+            return sendJson('error', 'امتیاز باید بین ۱ تا ۵ باشد');
+        }
+        if ($user->hasRatedBook($book)) {
+            $findRate = $book->ratings()->where('user_id', $user->id)->first();
+            $diffInMinutes = now()->diffInMinutes($findRate->updated_at, true);
+            if ($diffInMinutes <= 1) {
+                return sendJson('error', 'شما فقط هر یک دقیقه یک‌بار می‌توانید امتیاز را تغییر دهید');
+            }
+            $findRate->update(['rate' => $request->rate]);
+        } else {
+            $book->ratings()->create([
+                'user_id' => $user->id,
+                'rate' => $request->rate
+            ]);
+        }
+        return sendJson('success', 'امتیاز با موفقیت ثبت شد', ['rate' => number_format(Book::find($book->id)->rate, 1)]);
     }
 }

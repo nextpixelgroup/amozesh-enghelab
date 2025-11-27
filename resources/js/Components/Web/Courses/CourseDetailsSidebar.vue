@@ -59,23 +59,24 @@
                 <v-icon
                     v-for="n in 5"
                     :key="n"
-                    :color="n <= (hover || user_rate) ? 'yellow darken-3' : 'grey lighten-1'"
+                    :color="n <= (hover || user_rate) ? '#c8a064' : 'grey lighten-1'"
                     @mouseover="!isRatingLoading ? hover = n : null"
                     @mouseleave="!isRatingLoading ? hover = 0 : null"
                     @click="submitRating(n)"
                     :disabled="isRatingLoading"
                     class="mx-1"
-                    size="24"
+                    size="21"
                 >
                     mdi-star
                 </v-icon>
                 <v-progress-circular
                     v-if="isRatingLoading"
                     indeterminate
-                    color="primary"
+                    color="#c8a064"
                     size="20"
                     width="2"
                     class="ms-2"
+                    :disabled="isRatingLoading"
                 ></v-progress-circular>
             </div>
             <div class="zo-prof" id="about-teacher">
