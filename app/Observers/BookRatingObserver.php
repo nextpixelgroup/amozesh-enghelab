@@ -12,12 +12,12 @@ class BookRatingObserver
 
     public function created(BookRating $rating)
     {
-        $this->updateBookRating($rating->course);
+        $this->updateBookRating($rating->book);
     }
 
     public function updated(BookRating $rating)
     {
-        $this->updateBookRating($rating->course);
+        $this->updateBookRating($rating->book);
     }
 
     public function deleted(BookRating $rating)
@@ -31,17 +31,17 @@ class BookRatingObserver
     }
 
     /**
-     * Handle the CourseRating "restored" event.
+     * Handle the bookRating "restored" event.
      */
-    public function restored(BookRating $courseRating): void
+    public function restored(BookRating $bookRating): void
     {
         //
     }
 
     /**
-     * Handle the CourseRating "force deleted" event.
+     * Handle the BookRating "force deleted" event.
      */
-    public function forceDeleted(BookRating $courseRating): void
+    public function forceDeleted(BookRating $bookRating): void
     {
         //
     }

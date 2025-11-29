@@ -228,14 +228,14 @@ class User extends Authenticatable
             ->exists();
     }
 
-    public function ratings()
+    public function courseRatings()
     {
         return $this->hasMany(CourseRating::class);
     }
 
     public function hasRatedCourse(Course $course)
     {
-        return $this->ratings()
+        return $this->courseRatings()
             ->where('course_id', $course->id)
             ->exists();
     }
@@ -247,7 +247,7 @@ class User extends Authenticatable
 
     public function hasRatedBook(Book $book)
     {
-        return $this->ratings()
+        return $this->bookRatings()
             ->where('book_id', $book->id)
             ->exists();
     }

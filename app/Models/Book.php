@@ -33,6 +33,7 @@ class Book extends Model
         'max_order',
         'status',
         'thumbnail_id',
+        'rate',
     ];
 
     protected $casts = [
@@ -55,6 +56,11 @@ class Book extends Model
         return $this->morphToMany(Category::class, 'categorizable');
     }
 
+    public function cartItems()
+    {
+        return $this->morphMany(CartItem::class, 'item');
+    }
+
     /**
      * Get all comments for the book.
      */
@@ -68,7 +74,7 @@ class Book extends Model
 
     public function ratings()
     {
-        return $this->hasMany(CourseRating::class);
+        return $this->hasMany(BookRating::class);
     }
 
     public function updateAverageRating()

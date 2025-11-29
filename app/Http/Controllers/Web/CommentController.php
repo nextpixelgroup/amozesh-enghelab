@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WebCommentResource;
+use App\Models\Book;
 use App\Models\Comment;
 use App\Models\Course;
 use Exception;
@@ -110,4 +111,83 @@ class CommentController extends Controller
 
         return sendJson(message: 'نظر شما پس از تایید منتشر خواهد شد');
     }
+
+    public function bookComments(Request $request,Book $book)
+    {
+        $resource = WebCommentResource::collection($book->comments()->where('is_approved',true)->paginate(env('PER_PAGE')));
+        $totalAllComments = Comment::where('commentable_id', $book->id)->where('is_approved', true)
+            ->where('commentable_type', get_class($book))
+            ->count();
+        $comments = $resource->response()->getData(true);
+        $comments['total_comments_count'] = $totalAllComments;
+
+        return sendJson(data: $comments);
+    }
+
+    public function bookStore(Request $request, Book $book)
+    {
+        $user = auth()->user();
+        if(!$user){
+            return sendJson('error', 'ابتدا وارد سایت شوید');
+        }
+        try {
+            if ($user) {
+                $validator = Validator::make(
+                    $request->all(),
+                    [
+                        'body' => 'required|min:5|max:255',
+                    ],
+                    [
+                        'body.required' => 'وارد کردن نظر الزامی می‌باشد.',
+                        'body.min' => 'حداقل کاراکتر باید :min باشد',
+                        'body.max' => 'حداکثر کاراکتر باید :max باشد',
+                    ]
+                );
+
+
+                $args = [
+                    'user_id' => $user->id,
+                    'body' => trim(preg_replace('/\s+/', ' ', strip_tags($request->body)))
+                ];
+            } else {
+
+                $validator = Validator::make(
+                    $request->all(),
+                    [
+                        'name' => 'required|min:2|max:40',
+                        'email' => 'nullable|email',
+                        'body' => 'required|min:5|max:255',
+                    ],
+                    [
+                        'name.required' => 'وارد کردن نام و نام خانوادگی الزامی می‌باشد.',
+                        'name.min' => 'حداقل کاراکتر نام باید :min باشد',
+                        'name.max' => 'حداکثر کاراکتر نام باید :min باشد',
+                        'email.email' => 'ایمیل معتبر وارد نمایید',
+                        'body.required' => 'وارد کردن نظر الزامی می‌باشد.',
+                        'body.min' => 'حداقل کاراکتر نظر باید :min باشد',
+                        'body.max' => 'حداکثر کاراکتر نظر باید :max باشد',
+                    ]
+                );
+
+                $args = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'body' => trim(preg_replace('/\s+/', ' ', strip_tags($request->body)))
+                ];
+            }
+
+            if ($validator->fails()) {
+                return sendJson('error', $validator->errors()->first());
+            }
+
+            $comment = $book->comments()->create($args);
+            if($comment){
+                return sendJson('success', 'نظر شما پس از تایید منتشر خواهد شد');
+            }
+        } catch (Exception $e) {
+            $error = log_error($e);
+            return sendJson('error', "خطایی پیش آمد(کد خطا: $error->id)");
+        }
+    }
+
 }

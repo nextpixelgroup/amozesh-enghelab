@@ -8,7 +8,7 @@ class BookRating extends Model
 {
     protected $fillable = ['book_id', 'user_id', 'rate'];
 
-    public function course()
+    public function book()
     {
         return $this->belongsTo(Book::class);
     }

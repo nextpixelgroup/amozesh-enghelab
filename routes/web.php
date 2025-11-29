@@ -39,6 +39,7 @@ Route::name('web.')->group(function () {
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');
     Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
+    Route::post('/books/{book:slug}/rating', [BookController::class, 'rating'])->name('books.rating');
 
     Route::get('/teachers', [TeacherController::class, 'index'])->name('teacher.index');
     Route::get('/t/{teacher:slug}', [TeacherController::class, 'show'])->name('teacher.show');
@@ -56,10 +57,14 @@ Route::name('web.')->group(function () {
 
 
     Route::get('/comments/courses/{course:slug}', [CommentController::class, 'courseComments'])->name('comments.course.index');
-    Route::post('/comment/{course:slug}/store', [CommentController::class, 'courseStore'])->name('comments.course.store');
-    Route::post('/comments/{comment}', [CommentController::class, 'reply'])->name('comments.course.reply');
+    Route::post('/comment/courses/{course:slug}/store', [CommentController::class, 'courseStore'])->name('comments.course.store');
 
-    Route::post('/comment/{book:slug}/store', [CommentController::class, 'bookStore'])->name('comments.book.store');
+    Route::get('/comments/books/{book:slug}', [CommentController::class, 'bookComments'])->name('comments.book.index');
+    Route::post('/comments/books/{book:slug}/store', [CommentController::class, 'bookStore'])->name('comments.book.store');
+
+    Route::post('/comments/{comment}', [CommentController::class, 'reply'])->name('comments.reply');
+
+    Route::post('/payment/cart/{book:slug}/store', [PaymentController::class, 'store'])->name('cart.store');
 
 
 
