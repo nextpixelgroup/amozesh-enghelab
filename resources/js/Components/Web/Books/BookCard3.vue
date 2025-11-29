@@ -9,7 +9,12 @@
                 </div>
                 <p>{{book.summary}} </p>
                 <div class="zo-meta">
-                    <div class="zo-price" v-if="book.special_price.length">
+                    <div class="zo-price" v-if="!book.is_stock">
+                        <div class="zo-sale">
+                            <strong>ناموجود</strong>
+                        </div>
+                    </div>
+                    <div class="zo-price" v-else-if="book.special_price.length">
                         <div class="zo-regular">
                             <span>{{book.price}}</span>
                         </div>

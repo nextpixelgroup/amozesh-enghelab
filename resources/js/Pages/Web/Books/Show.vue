@@ -30,7 +30,7 @@
                                 <v-row>
                                     <v-col lg="5" cols="12">
                                         <div class="zo-thumbnail">
-                                            <img src="/assets/img/sample/29.png" alt="">
+                                            <img :src="book.thumbnail" alt="">
                                         </div>
                                     </v-col>
                                     <v-col lg="7" cols="12">
@@ -143,39 +143,58 @@
                                         <span>قیمت</span>
                                     </div>
                                     <div class="zo-price">
-                                        <div class="zo-regular">
+                                        <div class="zo-regular" v-if="book.is_stock">
                                             <strong>{{book.price}}</strong>
                                             <small>تومان</small>
+                                        </div>
+                                        <div class="zo-regular" v-else>
+                                            <strong>ناموجود</strong>
                                         </div>
 
                                     </div>
                                 </div>
                                 <div class="zo-number">
                                     <v-number-input
+                                        v-if="book.cartItemId"
                                         v-model="order.qty"
-                                        :reverse="false"
-                                        color="primary"
-                                        controlVariant="split"
-                                        label=""
-                                        :hideInput="false"
-                                        :inset="false"
-                                        variant="outlined"
                                         :min="1"
                                         :max="book.max_order"
-                                    />
+                                        :reverse="false"
+                                        color="primary"
+                                        control-variant="split"
+                                        variant="outlined"
+                                        class="qty-input"
+                                        @update:model-value="updateQty"
+                                        :loading="qtyLoading"
+                                        :disabled="qtyLoading"
+                                    ></v-number-input>
                                 </div>
                                 <v-btn
+                                    v-if="book.is_stock && !book.cartItemId"
                                     block
                                     flat
                                     rounded
                                     color="secondary"
                                     class="zo-add"
                                     prepend-icon="mdi mdi-cart-outline"
-                                    :disabled="isOrdering"
                                     :loading="isOrdering"
                                     @click="addToCart"
                                 >
                                     خرید آنلاین
+                                </v-btn>
+                                <v-btn
+                                    v-if="book.cartItemId"
+                                    block
+                                    flat
+                                    rounded
+                                    color="#ba000d"
+                                    class="zo-add"
+                                    prepend-icon="mdi mdi-cart-off"
+                                    :loading="isOrdering"
+                                    :disabled="disabling"
+                                    @click="removeFromCart"
+                                >
+                                    حذف از سبد خرید
                                 </v-btn>
                             </div>
                         </v-card>
@@ -192,7 +211,7 @@
     />
 </template>
 <script setup>
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 
 import WebLayout from "@/Layouts/WebLayout.vue";
 import Comments from "@/Components/Web/Comments.vue";
@@ -214,19 +233,20 @@ const props = defineProps({
 const hover = ref(0);
 const isRatingLoading = ref(false);
 const isOrdering = ref(false);
+const qtyLoading = ref(false);
+const disabling = ref(false);
 const message = ref({
     isShow: false,
     text: '',
     type: '',
 })
-const book = ref(props.book.data);
+const book = computed(() => props.book.data);
 const user_rate = ref(book.value.user_rate)
 const rate = ref(book.value.rate)
 const order = useForm({
     qty: book.value.qty ?? 1,
-    bookSlug: book.slug,
+    bookSlug: book.value.slug,
 });
-
 const submitRating = async (n) => {
     isRatingLoading.value = true;
     const response = await axios.post(route('web.books.rating', { book: book.value.slug }), {rate: n});
@@ -248,6 +268,8 @@ const submitRating = async (n) => {
 
 const addToCart = () => {
     order.post(route('web.cart.store', book.value.slug), {
+        preserveScroll: true,
+        preserveState: true,
         onStart: () => {
           isOrdering.value = true;
         },
@@ -256,6 +278,40 @@ const addToCart = () => {
         },
         onError: () => {
             isOrdering.value = false;
+        },
+    })
+}
+const removeFromCart = () => {
+    order.delete(route('web.cart.item.destroy', book.value.cartItemId), {
+        preserveScroll: true,
+        preserveState: true,
+        onStart: () => {
+          isOrdering.value = true;
+        },
+        onSuccess: () => {
+            isOrdering.value = false;
+        },
+        onError: () => {
+            isOrdering.value = false;
+        },
+    })
+}
+
+const updateQty = () => {
+    order.put(route('web.cart.item.update', book.value.cartItemId), {
+        preserveScroll: true,
+        preserveState: true,
+        onStart: () => {
+            qtyLoading.value = true;
+            disabling.value = true;
+        },
+        onSuccess: () => {
+            qtyLoading.value = false;
+            disabling.value = false;
+        },
+        onError: () => {
+            qtyLoading.value = false;
+            disabling.value = false;
         },
     })
 }

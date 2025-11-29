@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\IndexController;
 use App\Http\Controllers\Web\PathController;
 use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Web\TeacherController;
+use App\Models\CartItem;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -50,10 +51,6 @@ Route::name('web.')->group(function () {
 
     Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 
-    Route::get('/cart', [PaymentController::class, 'cart'])->name('payment.cart');
-    Route::get('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
-    Route::get('/pay', [PaymentController::class, 'pay'])->name('payment.pay');
-    Route::get('/thank-you', [PaymentController::class, 'thankYou'])->name('payment.thankYou');
 
 
     Route::get('/comments/courses/{course:slug}', [CommentController::class, 'courseComments'])->name('comments.course.index');
@@ -64,7 +61,16 @@ Route::name('web.')->group(function () {
 
     Route::post('/comments/{comment}', [CommentController::class, 'reply'])->name('comments.reply');
 
-    Route::post('/payment/cart/{book:slug}/store', [PaymentController::class, 'store'])->name('cart.store');
+
+    Route::get('/cart', [PaymentController::class, 'cart'])->name('cart');
+    Route::post('/cart/{book:slug}/store', [PaymentController::class, 'store'])->name('cart.store');
+    Route::post('/cart', [PaymentController::class, 'cart'])->name('cart');
+    Route::put('/cart/{cartItem}/update', [PaymentController::class, 'update'])->name('cart.item.update');
+    Route::delete('/cart/{cartItem}/destroy', [PaymentController::class, 'destroy'])->name('cart.item.destroy');
+    Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
+    Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
+    Route::get('/paying', [PaymentController::class, 'paying'])->name('paying');
+    Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
 
 

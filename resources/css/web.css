@@ -1550,7 +1550,7 @@ figure {
 .zo-cart-section .zo-actions .zo-action,
 .zo-checkout-section .zo-actions .zo-action {
     height: 40px;
-    padding: 0 25px
+    padding: 0 25px;
 }
 
 .zo-checkout-section .zo-section .zo-content table {

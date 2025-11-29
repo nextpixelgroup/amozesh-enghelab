@@ -17,6 +17,7 @@ Route::name('panel.')->prefix('panel')->group(function () {
 
     Route::middleware(['auth', 'client'])->group(function () {
         Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+        Route::get('/orders', [CourseController::class, 'index'])->name('orders.index');
 
 
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

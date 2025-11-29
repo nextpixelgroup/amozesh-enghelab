@@ -17,6 +17,15 @@ class WebBookDetailsResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = auth()->user();
+        $qty = 1;
+        $cartItemId = null;
+        if($user){
+            $cartItem = CartItem::query()->where('item_id', $this->id)->where('item_type', Book::class)->whereHas('cart', fn($q) => $q->where('user_id', $user->id))->first();
+            if($cartItem) {
+                $qty = $cartItem->qty;
+                $cartItemId = $cartItem->id;
+            }
+        }
         return [
             'id'             => $this->id,
             'slug'           => $this->slug,
@@ -25,7 +34,7 @@ class WebBookDetailsResource extends JsonResource
             'summary'        => $this->summary,
             'content'        => $this->content,
             'rate'           => number_format($this->rate,1),
-            'user_rate'      => $user->id ? $this->ratings()->where('user_id',$user->id)->first()?->rate : null,
+            'user_rate'      => $user ? $this->ratings()->where('user_id',$user->id)->first()?->rate : null,
             'thumbnail'      => $this->thumbnail->url ?? '/assets/img/default.svg',
             'publisher'      => $this->publisher,
             'year_published' => $this->year_published,
@@ -38,7 +47,9 @@ class WebBookDetailsResource extends JsonResource
             'stock'          => $this->stock,
             'max_order'      => $this->max_order,
             'category'       => $this->categories?->first()?->title,
-            'qty'            => $user->id ? (int)CartItem::query()->where('item_id', $this->id)->where('item_type', Book::class)->whereHas('cart', fn($q) => $q->where('user_id', $user->id))->sum('qty') : 1
+            'url'            => route('web.books.show',$this->slug),
+            'qty'            => $qty,
+            'cartItemId'     => $cartItemId,
         ];
     }
 }

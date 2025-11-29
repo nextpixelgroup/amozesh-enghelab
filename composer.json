@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.30",
         "league/flysystem-ftp": "^3.29",
+        "shetabit/payment": "^6.3",
         "spatie/laravel-permission": "^6.21",
         "tightenco/ziggy": "^2.6"
     },

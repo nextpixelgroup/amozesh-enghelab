@@ -51,10 +51,13 @@ return Application::configure(basePath: dirname(__DIR__))
             // اگر درخواست از Inertia است، اجازه بده لاراول به‌صورت پیش‌فرض هندل کند
             if ($request->header('X-Inertia')) {
                 if($e instanceof AccessDeniedHttpException){
-                    return redirectMessage('error', 'شما دسترسی ندارید');
+                    return Inertia::render('Web/404'); // کاربر دسترسی ندارد
                 }
                 elseif ($e instanceof MethodNotAllowedHttpException){
-                    return redirectMessage('error', 'متد ارسالی در سرور وجود ندارد');
+                    return Inertia::render('Web/404'); // متد ارسالی وجود ندارد
+                }
+                elseif ($e instanceof NotFoundHttpException || $e instanceof ModelNotFoundException) {
+                    return Inertia::render('Web/404'); // وجود ندارد
                 }
                 return null; // لاراول خودش redirect/back با errors برمی‌گرداند
             }

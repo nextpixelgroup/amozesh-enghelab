@@ -1,5 +1,5 @@
 <template>
-    <a :href="book.url" class="zo-book">
+    <Link :href="book.url" class="zo-book">
         <v-row dense class="align-end">
             <v-col md="5" cols="12">
                 <img :src="book.thumbnail" alt="">
@@ -12,7 +12,12 @@
                             <i class="mdi mdi-star-outline"></i>
                             <span>{{book.rate}}</span>
                         </div>
-                        <div class="zo-price" v-if="book.special_price.length">
+                        <div class="zo-price" v-if="!book.is_stock">
+                            <div class="zo-sale">
+                                <strong>ناموجود</strong>
+                            </div>
+                        </div>
+                        <div class="zo-price" v-else-if="book.special_price.length">
                             <div class="zo-regular">
                                 <span>{{book.price}}</span>
                             </div>
@@ -35,9 +40,11 @@
                 </div>
             </v-col>
         </v-row>
-    </a>
+    </Link>
 </template>
 <script setup>
+import {Link} from "@inertiajs/vue3";
+
 defineProps({
     book: {
         type: Object,
