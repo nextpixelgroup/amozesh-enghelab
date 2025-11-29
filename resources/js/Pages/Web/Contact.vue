@@ -100,7 +100,7 @@
                                     <v-col lg="4" cols="12">
                                         <i class="mdi mdi-email-outline"></i>
                                         <strong>ایمیل</strong>
-                                        <span>nfo@Revo.com</span>
+                                        <span>Info@Revo.com</span>
                                     </v-col>
                                 </v-row>
                             </div>
