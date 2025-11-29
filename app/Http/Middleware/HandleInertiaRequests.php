@@ -98,6 +98,11 @@ class HandleInertiaRequests extends Middleware
                     'route' => 'admin.paths.index'
                 ],
                 [
+                    'title' => 'برگه ها',
+                    'icon' => 'mdi-page-layout-sidebar-right',
+                    'route' => 'admin.pages.index'
+                ],
+                [
                     'title' => 'سفارش‌ها',
                     'icon' => 'mdi-cart',
                     'route' => 'admin.orders.index'

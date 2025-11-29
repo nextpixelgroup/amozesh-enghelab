@@ -26,6 +26,7 @@ return new class extends Migration
             $table->timestamp('canceled_at')->nullable();
             $table->timestamp('failed_at')->nullable();
             $table->json('meta')->nullable();
+            $table->text('canceled_reason')->nullable();
             $table->timestamps();
         });
     }

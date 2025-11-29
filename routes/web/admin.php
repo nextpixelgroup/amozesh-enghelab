@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CourseCategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PathController;
 use App\Http\Controllers\Admin\RestrictionController;
 use App\Http\Controllers\Admin\SettingController;
@@ -54,6 +55,10 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/paths', [PathController::class, 'index'])->name('paths.index');
         Route::post('/paths/store', [PathController::class, 'store'])->name('paths.store');
         Route::delete('/paths/{path}/destroy', [PathController::class, 'destroy'])->name('paths.destroy');
+
+        /********* Pages *********/
+        Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
+        Route::get('/pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
 
         /********* Orders *********/
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

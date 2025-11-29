@@ -10,7 +10,7 @@ class Order extends Model
         'user_id', 'original_total', 'discount_total', 'shipping_cost', 'total',
         'status', 'reference_id',
         'gateway', 'paid_at', 'canceled_at', 'failed_at',
-        'meta'
+        'meta','canceled_reason'
     ];
 
     protected $casts = [

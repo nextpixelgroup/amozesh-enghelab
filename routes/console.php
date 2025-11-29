@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\CancelExpiredOrders;
 use App\Jobs\StatCourseDurationsJob;
 use App\Jobs\StatCourseRatingsJob;
 use App\Jobs\StatCourseSeasonsJob;
@@ -16,3 +17,4 @@ Schedule::job(new StatCourseDurationsJob())->everyFifteenMinutes();
 Schedule::job(new StatCourseRatingsJob())->everyFifteenMinutes();
 Schedule::job(new StatCourseStudentsJob())->everyFifteenMinutes();
 Schedule::job(new StatCourseSeasonsJob())->everyFifteenMinutes();
+Schedule::job(new CancelExpiredOrders())->everyMinute();
