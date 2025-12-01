@@ -2,40 +2,57 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Api\V1\Admin\ContactMessage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ContactRequest;
+use App\Http\Resources\AdminContactsResource;
 use App\Models\Contact;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-    public function store(ContactRequest $request): JsonResponse
+    public function store(ContactRequest $request)
     {
         $message = Contact::create($request->validated());
 
-        // Here you can add email notification logic if needed
-
-        return response()->json([
-            'message' => 'پیام شما با موفقیت ارسال شد',
-            'data' => $message
-        ], 201);
     }
 
     // Admin only endpoints (protected by auth middleware)
-    public function index()
+    public function index(Request $request)
     {
-        $messages = Contact::latest()->paginate(15);
-        return response()->json($messages);
-    }
 
-    public function show(ContactMessage $message)
-    {
-        // Mark as read when viewed
-        if (! $message->isRead()) {
-            $message->markAsRead();
+        $query = Contact::query();
+        if($request->filled('type')){
+            if($request->type == 'read'){
+                $query->whereNotNull('read_at');
+            }
+
         }
-
-        return response()->json($message);
+        else{
+            $query->whereNull('read_at');
+        }
+        if($request->filled('search')){
+            $search = $request->search;
+            $query->where(function($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('mobile', 'like', "%{$search}%")
+                    ->orWhere('message', 'like', "%{$search}%");
+            });
+        }
+        $messages = AdminContactsResource::collection($query->orderBy('id', 'desc')->paginate(config('app.per_page')));
+        return inertia('Admin/Contacts/Index', compact('messages'));
     }
+
+    public function archive(Contact $contact)
+    {
+        try {
+            $update = $contact->update(['read_at' => now()]);
+            return redirectMessage('success', 'با موفقیت آرشیو شد');
+        }
+        catch (\Exception $e) {
+            $error = log_error($e);
+            return redirectMessage('error', "خطایی پیش آمد (کدخطا: $error->id)");
+        }
+    }
+
 }

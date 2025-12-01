@@ -6,7 +6,7 @@
                 <v-col class="v-col-lg-9 v-col-12">
                     <div class="zo-info d-lg-flex d-sm-none">
                         <div class="zo-icon elevation-4">
-                            <i class="mdi mdi-account-circle"></i>
+                            <i class="mdi mdi-page-layout-sidebar-right"></i>
                         </div>
                         <div class="zo-name">
                             <strong class="d-block mb-1">لیست برگه‌ها</strong>

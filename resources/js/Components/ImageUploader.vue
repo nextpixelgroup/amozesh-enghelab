@@ -189,12 +189,21 @@ const uploadThumbnail = async () => {
         });
 
         const result = response.data;
-        thumbnailUrl.value = result.data.url;
-        fileUploaded.value = true;
-        progress.value = 0;
+        if(result.status === 'success') {
+            thumbnailUrl.value = result.data.url;
+            fileUploaded.value = true;
+            progress.value = 0;
 
-        emit('update:modelValue', result.data.id);
-        emit('uploaded', {url: result.data.url, id: result.data.id, file});
+            emit('update:modelValue', result.data.id);
+            emit('uploaded', {url: result.data.url, id: result.data.id, file});
+        }
+        else{
+            thumbnail.value = null;
+            fileUploaded.value = false;
+            progress.value = 0;
+            showError(result.message);
+
+        }
     } catch (error) {
         const errorMessage = error.response?.data?.message || 'خطا در آپلود فایل!';
         showError(errorMessage);

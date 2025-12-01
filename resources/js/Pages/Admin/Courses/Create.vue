@@ -106,17 +106,8 @@
                             />
                         </v-col>
                         <v-col class="v-col-12">
-                            <Editor
-                                api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
+                            <TipTapEditor
                                 v-model="course.description"
-                                :init="{
-                                    height: 400,
-                                    menubar: true,
-                                    language: 'fa',
-                                    plugins: 'link image media table code lists',
-                                    images_upload_url: '/upload/image',
-                                    file_picker_types: 'image media',
-                                }"
                             />
                         </v-col>
                     </v-row>
@@ -714,7 +705,6 @@
 
 <script setup>
 import {nextTick, reactive, ref, useTemplateRef, watch, onMounted, onUnmounted} from 'vue';
-import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {Head, router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
@@ -723,6 +713,7 @@ import {useSortable} from "@vueuse/integrations/useSortable";
 import ImageUploader from "@/Components/ImageUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import MultipleSelector from "@/Components/MultipleSelector.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 
 const {adminPageTitle} = usePageTitle('ایجاد دوره');
 const props = defineProps({

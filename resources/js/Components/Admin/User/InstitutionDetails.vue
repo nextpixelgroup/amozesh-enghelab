@@ -84,6 +84,7 @@
                 <v-col cols="12">
                     <ImageUploader
                         v-model:model-value="form.avatar_id"
+                        :initial-url="form.avatar?.url"
                         upload-route="admin.upload.users.image"
                         label="فقط فایل تصویری آپلود کنید"
                         title="بارگذاری آواتار"

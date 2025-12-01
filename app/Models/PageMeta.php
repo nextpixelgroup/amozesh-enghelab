@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PageMeta extends Model
 {
-    protected $table = 'page_meta';
+    protected $table = 'page_metas';
 
     protected $fillable = [
         'page_id',

@@ -25,8 +25,6 @@ if(env('APP_ENV') === 'production') {
 
 Route::name('web.')->group(function () {
 
-
-
     Route::get('/', [IndexController::class, 'index'])->name('index');
     Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
@@ -36,22 +34,19 @@ Route::name('web.')->group(function () {
     Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
     Route::post('/courses/{course:slug}/rating', [CourseController::class, 'rating'])->name('courses.rating');
 
-
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');
     Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
     Route::post('/books/{book:slug}/rating', [BookController::class, 'rating'])->name('books.rating');
 
-    Route::get('/teachers', [TeacherController::class, 'index'])->name('teacher.index');
-    Route::get('/t/{teacher:slug}', [TeacherController::class, 'show'])->name('teacher.show');
+    Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.index');
+    Route::get('/t/{teacher:slug}', [TeacherController::class, 'show'])->name('teachers.show');
 
     Route::get('/path', [PathController::class, 'index'])->name('path.index');
 
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-
+    Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
     Route::get('/about', [AboutController::class, 'index'])->name('about.index');
-
-
 
     Route::get('/comments/courses/{course:slug}', [CommentController::class, 'courseComments'])->name('comments.course.index');
     Route::post('/comment/courses/{course:slug}/store', [CommentController::class, 'courseStore'])->name('comments.course.store');

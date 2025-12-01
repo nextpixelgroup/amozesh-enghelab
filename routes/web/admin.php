@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\CourseCategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\OrderController;
@@ -59,6 +60,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
         /********* Pages *********/
         Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
         Route::get('/pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
+        Route::put('/pages/{page}/update', [PageController::class, 'update'])->name('pages.update');
 
         /********* Orders *********/
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
@@ -83,6 +85,10 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/supports', [TicketController::class, 'index'])->name('tickets.index');
         Route::put('/supports/{ticket}/archive', [TicketController::class, 'archive'])->name('tickets.archive');
 
+        /********* Contact *********/
+        Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
+        Route::put('/contacts/{contact}/archive', [ContactController::class, 'archive'])->name('contacts.archive');
+
         /********* Setting *********/
         Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.index');
         Route::get('/settings/menus', [SettingController::class, 'menus'])->name('settings.menu');
@@ -91,6 +97,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');
         Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.courses.image');
         Route::post('upload/users/image', [UploadController::class, 'userImage'])->name('upload.users.image');
+        Route::post('upload/pages/image', [UploadController::class, 'pageImage'])->name('upload.pages.image');
 
         Route::delete('media/{media}/{type}', [UploadController::class, 'destroy'])->name('media.destroy');
 

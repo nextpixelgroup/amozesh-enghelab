@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->index();
             $table->string('mobile', 11)->index();
-            $table->string('subject');
             $table->text('message');
             $table->timestamp('read_at')->nullable();
             $table->timestamps();

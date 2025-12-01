@@ -51,7 +51,15 @@ export default defineConfig(({ ssrBuild }) => ({
             : {}),
     },
     optimizeDeps: {
-        include: ['vue', '@inertiajs/vue3', 'ziggy-js', 'vuetify'],
+        include: [
+            'vue',
+            '@inertiajs/vue3',
+            'ziggy-js',
+            'vuetify',
+            '@tiptap/vue-3',
+            '@tiptap/starter-kit',
+            '@tiptap/extension-bubble-menu',
+        ],
     },
     server: {
         // اختیاری: برای اینکه ارورهای HMR تجربه رفحص را متوقف نکند

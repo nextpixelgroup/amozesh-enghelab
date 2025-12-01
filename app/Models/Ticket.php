@@ -65,7 +65,7 @@ class Ticket extends Model
         return Attribute::make(
             get: function ($value, $attributes) {
                 $value = $attributes['read_at'];
-                $label = verta()->instance($value)->format('Y/m/d H:i');
+                $label = $value ? verta()->instance($value)->format('Y/m/d H:i') : null;
                 return ['value' => $value, 'title' => $label];
             }
         );

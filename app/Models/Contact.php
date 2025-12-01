@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -11,13 +12,14 @@ class Contact extends Model
         'name',
         'email',
         'mobile',
-        'subject',
         'message',
         'read_at'
     ];
 
     protected $casts = [
         'read_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // Scope for unread messages
@@ -36,5 +38,27 @@ class Contact extends Model
     public function isRead(): bool
     {
         return ! is_null($this->read_at);
+    }
+
+    protected function readAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['read_at'];
+                $label = $value ? verta()->instance($value)->format('Y/m/d H:i') : null;
+                return ['value' => $value, 'title' => $label];
+            }
+        );
+    }
+
+    protected function createdAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['created_at'];
+                $label = verta()->instance($value)->format('Y/m/d H:i');
+                return ['value' => $value, 'title' => $label];
+            }
+        );
     }
 }

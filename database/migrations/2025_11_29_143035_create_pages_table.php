@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('summary')->nullable();
             $table->longText('content')->nullable();
             $table->enum('status', enumNames(PageStatusEnum::cases()))->default('draft')->index();
+            $table->foreignId('thumbnail_id')->nullable()->constrained('media')->nullOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('published_at')->nullable();

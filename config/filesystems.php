@@ -68,8 +68,9 @@ return [
             'port'     => 21,
             'root'     => env('FTP_ROOT'),
             'passive'  => true,
-            'ssl'      => true,
+            'ssl'      => false,
             'timeout'  => 10000,
+            'transferMode'  => FTP_BINARY,
         ],
 
     ],

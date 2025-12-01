@@ -64,7 +64,7 @@
                             </v-textarea>
                         </v-col>
                         <v-col class="v-col-12">
-                            <Editor
+                            <TipTapEditor
                                 api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
                                 v-model="form.content"
                                 :init="{
@@ -257,7 +257,6 @@
 
 <script setup>
 import {ref} from 'vue';
-import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {Head, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
@@ -265,6 +264,7 @@ import FieldNumber from "@/Components/FieldNumber.vue";
 import ImageUploader from "@/Components/ImageUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import MultipleSelector from "@/Components/MultipleSelector.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 const {adminPageTitle} = usePageTitle('ویرایش کتاب');
 
 const props = defineProps({

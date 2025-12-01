@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminPagesResource extends JsonResource
+class WebContactResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,12 +14,11 @@ class AdminPagesResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $meta = $this->metaArray;
         return [
-            'id'      => $this->id,
             'title'   => $this->title,
             'content' => $this->content,
-            'status'  => $this->statusObject,
-            'type'    => $this->type,
+            'meta'    => $meta,
         ];
     }
 }

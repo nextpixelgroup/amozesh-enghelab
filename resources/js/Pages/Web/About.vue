@@ -10,7 +10,7 @@
                             <nav>
                                 <ul>
                                     <li>
-                                        <a href="#">خانه</a>
+                                        <Link :href="route('web.index')">خانه</Link>
                                     </li>
                                     <li>
                                         <span>درباره ما</span>
@@ -25,170 +25,66 @@
                 <v-container>
                     <v-row class="align-center">
                         <v-col lg="4" cols="12">
-                            <h1>درباره ما</h1>
-                            <p>
-                                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک
-                                است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط
-                                فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد.
-                            </p>
+                            <h1>{{ about.title }}</h1>
+                            <div v-html="about.content"></div>
                         </v-col>
                         <v-col lg="8" cols="12">
                             <figure>
-                                <img src="/assets/img/sample/30.png" alt="">
+                                <img :src="about.thumbnail?.url" alt="">
                             </figure>
                         </v-col>
                     </v-row>
                 </v-container>
             </div>
-            <div class="zo-university-section">
+            <div class="zo-university-section" v-if="about.meta.institutions">
                 <v-container>
                     <v-row class="align-center">
                         <v-col cols="12">
                             <strong>همکاری با سازمان‌ها و دانشگاه‌ها</strong>
                         </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
+                        <v-col lg="3" cols="12" v-for="(institution, index) in about.meta.institutions">
+                            <div class="zo-university" :key="index">
                                 <figure>
-                                    <img src="/assets/img/sample/31.png" alt="">
+                                    <img :src="institution.avatar" alt="">
                                 </figure>
-                                <span>دانشگاه امیرکبیر</span>
-                            </div>
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
-                                <figure>
-                                    <img src="/assets/img/sample/32.png" alt="">
-                                </figure>
-                                <span>دانشگاه شهید بهشتی</span>
-                            </div>
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
-                                <figure>
-                                    <img src="/assets/img/sample/33.png" alt="">
-                                </figure>
-                                <span>دانشگاه خواجه نصیر</span>
-                            </div>
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
-                                <figure>
-                                    <img src="/assets/img/sample/34.png" alt="">
-                                </figure>
-                                <span>دانشگاه علم و صنعت</span>
-                            </div>
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
-                                <figure>
-                                    <img src="/assets/img/sample/35.png" alt="">
-                                </figure>
-                                <span>دانشگاه امام صادق</span>
-                            </div>
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
-                                <figure>
-                                    <img src="/assets/img/sample/36.png" alt="">
-                                </figure>
-                                <span>دانشگاه امام رضا</span>
-                            </div>
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
-                                <figure>
-                                    <img src="/assets/img/sample/37.png" alt="">
-                                </figure>
-                                <span>دانشگاه اصفهان</span>
-                            </div>
-                        </v-col>
-                        <v-col lg="3" cols="12">
-                            <div class="zo-university">
-                                <figure>
-                                    <img src="/assets/img/sample/38.png" alt="">
-                                </figure>
-                                <span>دانشگاه تهران</span>
+                                <span>{{institution.title}}</span>
                             </div>
                         </v-col>
                     </v-row>
                 </v-container>
             </div>
-            <div class="zo-institute-section">
+            <div class="zo-institute-section" v-if="about.meta.section1Title && about.meta.section1Content">
                 <v-container>
                     <v-row class="align-center">
                         <v-col lg="6" cols="12">
                             <figure>
-                                <img src="/assets/img/sample/39.png" alt="">
+                                <img :src="about.meta.section1Thumbnail.url" alt="">
                             </figure>
                         </v-col>
                         <v-col lg="6" cols="12">
-                            <strong>معرفی موسسه</strong>
-                            <p>
-                                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک
-                                است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است،
-                            </p>
-                            <a href="#">
+                            <strong>{{about.meta.section1Title}}</strong>
+                            <p>{{about.meta.section1Content}}</p>
+<!--                            <a href="#">
                                 <span>مشاهده بیشتر</span>
                                 <i class="mdi mdi-chevron-left"></i>
-                            </a>
+                            </a>-->
                         </v-col>
                     </v-row>
                 </v-container>
             </div>
-            <div class="zo-activity-section">
-                <v-container>
-                    <v-row class="align-center">
-                        <v-col lg="6" cols="12">
-                            <strong>معرفی موسسه</strong>
-                            <p>
-                                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک
-                                است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است،
-                            </p>
-                            <a href="#">
-                                <span>مشاهده بیشتر</span>
-                                <i class="mdi mdi-chevron-left"></i>
-                            </a>
-                        </v-col>
-                        <v-col lg="6" cols="12">
-                            <figure>
-                                <img src="/assets/img/sample/40.png" alt="">
-                            </figure>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </div>
-            <v-container>
+            <v-container v-if="about.meta.section2Title && about.meta.section2Content">
                 <v-row class="justify-center">
                     <v-col lg="9" cols="12">
                         <div class="zo-title-section">
                             <img src="/assets/img/site/right-primary.svg" alt="">
-                            <strong>معرفی خانه انقلاب اسلامی</strong>
+                            <strong>{{about.meta.section2Title}}</strong>
                             <img src="/assets/img/site/left-primary.svg" alt="">
                         </div>
-                        <p>
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک
-                            است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی
-                            تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی
-                            در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم
-                            افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان
-                            فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و
-                            شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات
-                            پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.
-                        </p>
-                        <p>
-                            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک
-                            است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی
-                            تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی
-                            در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم
-                            افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان
-                            فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و
-                            شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات
-                            پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.
-                        </p>
+                        <p>{{about.meta.section2Content}}</p>
                     </v-col>
                 </v-row>
             </v-container>
-            <div class="zo-prof-section">
+            <div class="zo-prof-section" v-if="about.meta.teachers">
                 <v-container>
                     <v-row class="align-center">
                         <v-col cols="12">
@@ -198,54 +94,12 @@
                                 <img src="/assets/img/site/left-primary.svg" alt="">
                             </div>
                         </v-col>
-                        <v-col lg="3" sm="6" cols="12">
-                            <a href="#">
+                        <v-col lg="3" sm="6" cols="12" v-for="(teacher,index) in about.meta.teachers">
+                            <a :href="teacher.url">
                                 <figure>
-                                    <img src="/assets/img/sample/41.png" alt="">
+                                    <img :src="teacher.avatar" alt="">
                                 </figure>
-                                <strong>حجت الاسلام و المسلمین آقایی</strong>
-                            </a>
-                            <ul>
-                                <li><a href="#"><img src="/assets/img/site/social-1.svg" alt="" class="img-fluid"></a>
-                                </li>
-                                <li><a href="#"><img src="/assets/img/site/social-2.svg" alt="" class="img-fluid"></a>
-                                </li>
-                            </ul>
-                        </v-col>
-                        <v-col lg="3" sm="6" cols="12">
-                            <a href="#">
-                                <figure>
-                                    <img src="/assets/img/sample/42.png" alt="">
-                                </figure>
-                                <strong>دکتر فائزه عظیم زاده اردبیلی</strong>
-                            </a>
-                            <ul>
-                                <li><a href="#"><img src="/assets/img/site/social-1.svg" alt="" class="img-fluid"></a>
-                                </li>
-                                <li><a href="#"><img src="/assets/img/site/social-2.svg" alt="" class="img-fluid"></a>
-                                </li>
-                            </ul>
-                        </v-col>
-                        <v-col lg="3" sm="6" cols="12">
-                            <a href="#">
-                                <figure>
-                                    <img src="/assets/img/sample/43.png" alt="">
-                                </figure>
-                                <strong>دکتر رحیم پور ازغدی</strong>
-                            </a>
-                            <ul>
-                                <li><a href="#"><img src="/assets/img/site/social-1.svg" alt="" class="img-fluid"></a>
-                                </li>
-                                <li><a href="#"><img src="/assets/img/site/social-2.svg" alt="" class="img-fluid"></a>
-                                </li>
-                            </ul>
-                        </v-col>
-                        <v-col lg="3" sm="6" cols="12">
-                            <a href="#">
-                                <figure>
-                                    <img src="/assets/img/sample/44.png" alt="">
-                                </figure>
-                                <strong>حجت السلام و المسلمین قرائتی</strong>
+                                <strong>{{teacher.title}}</strong>
                             </a>
                             <ul>
                                 <li><a href="#"><img src="/assets/img/site/social-1.svg" alt="" class="img-fluid"></a>
@@ -261,6 +115,12 @@
     </WebLayout>
 </template>
 <script setup>
-import {Head} from '@inertiajs/vue3'
+import {Head, Link} from '@inertiajs/vue3'
 import WebLayout from "@/Layouts/WebLayout.vue";
+import {route} from "ziggy-js";
+import {ref} from "vue";
+const props = defineProps({
+    about: Object
+})
+const about = ref(props.about.data)
 </script>

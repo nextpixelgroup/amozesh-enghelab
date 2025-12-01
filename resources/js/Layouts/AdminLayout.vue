@@ -99,6 +99,13 @@
             <v-toolbar-title class="text-h6 font-weight-bold"></v-toolbar-title>
 
             <div class="d-flex align-center">
+                <Link :href="route('admin.contacts.index')">
+                    <v-btn icon color="black">
+                        <v-badge color="secondary" :content="contactCount">
+                            <v-icon>mdi-bell-ring</v-icon>
+                        </v-badge>
+                    </v-btn>
+                </Link>
                 <Link :href="route('admin.tickets.index')">
                     <v-btn icon color="black">
                         <v-badge color="secondary" :content="ticketCount">
@@ -149,6 +156,7 @@ const groupStates = ref({})
 /* From server props */
 const menuItems = computed(() => page.props.menuItems || [])
 const ticketCount = computed(() => page.props.ticketCount || 0)
+const contactCount = computed(() => page.props.contactCount || 0)
 
 /* Social Buttons */
 const socialButtons = [

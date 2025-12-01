@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Contact;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -50,7 +51,7 @@ class HandleInertiaRequests extends Middleware
             $shared['menuItems'] = [
                 [
                     'title' => 'دوره‌ها',
-                    'icon' => 'mdi-book-open-page-variant',
+                    'icon' => 'mdi-laptop',
                     'route' => 'admin.courses.index',
                     'children' => [
                         [
@@ -72,7 +73,7 @@ class HandleInertiaRequests extends Middleware
                 ],
                 [
                     'title' => 'کتب',
-                    'icon' => 'mdi-book',
+                    'icon' => 'mdi-book-open-page-variant',
                     'route' => 'admin.books.index',
                     'children' => [
                         [
@@ -118,6 +119,11 @@ class HandleInertiaRequests extends Middleware
                     'route' => 'admin.tickets.index'
                 ],
                 [
+                    'title' => 'تماس با ما',
+                    'icon' => 'mdi-bell-ring',
+                    'route' => 'admin.contacts.index'
+                ],
+                [
                     'title' => 'کاربران',
                     'icon' => 'mdi-account-group',
                     'route' => 'admin.users.index'
@@ -129,6 +135,7 @@ class HandleInertiaRequests extends Middleware
                 ],
             ];
             $shared['ticketCount'] = Ticket::where('read_at', null)->count();
+            $shared['contactCount'] = Contact::where('read_at', null)->count();
         }
         elseif (str_starts_with($request->path(), 'panel')) {
 

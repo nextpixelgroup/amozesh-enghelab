@@ -51,21 +51,8 @@
                             </v-textarea>
                         </v-col>
                         <v-col class="v-col-12">
-                            <Editor
-                                api-key="kvdbqg230zkimldk8fapggyvjb9gmfa547eveky0zcfgg1zq"
+                            <TipTapEditor
                                 v-model="form.content"
-                                :init="{
-                                    height: 400,
-                                    menubar: true,
-                                    language: 'fa',
-                                    plugins: 'link image media table code lists',
-                                  toolbar:
-                                    'undo redo | formatselect | bold italic underline | ' +
-                                    'alignleft aligncenter alignright | bullist numlist outdent indent | ' +
-                                    'image media link code table',
-                                  images_upload_url: '/upload/image',
-                                  file_picker_types: 'image media',
-                                }"
                             />
                         </v-col>
                         <v-col class="v-col-12 v-col-lg-6">
@@ -257,15 +244,14 @@
 
 <script setup>
 import {onMounted, onUnmounted, ref} from 'vue';
-import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {Head, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import FieldNumber from "@/Components/FieldNumber.vue";
-import ShowMessage from "@/Components/ShowMessage.vue";
 import ImageUploader from "@/Components/ImageUploader.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
 import MultipleSelector from "@/Components/MultipleSelector.vue";
+import TipTapEditor from "@/Components/TipTapEditor.vue";
 
 const {adminPageTitle} = usePageTitle('افزودن کتاب');
 

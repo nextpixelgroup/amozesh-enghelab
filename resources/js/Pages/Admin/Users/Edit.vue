@@ -86,7 +86,7 @@ const degree = ref(props.degree);
 const site_url = ref(props.site_url);
 const isLoading = ref(false);
 const showPassword = ref(false);
-console.log(user.value)
+//console.log(user.value)
 const form = useForm({
     'firstname': user.value.firstname,
     'lastname': user.value.lastname,
@@ -137,7 +137,7 @@ const form = useForm({
 });
 console.log(form)
 const viewPage = () => {
-    window.open(route('web.teacher.show', form.slug), '_blank');
+    window.open(route('web.teachers.show', form.slug), '_blank');
 }
 
 const updateUser = () => {
