@@ -23,6 +23,7 @@
     "dependencies": {
         "@inertiajs/vue3": "^2.2.11",
         "@mdi/font": "^7.4.47",
+        "@tinymce/tinymce-vue": "^6.3.0",
         "@tiptap/extension-bubble-menu": "^3.11.1",
         "@tiptap/extension-color": "^3.11.1",
         "@tiptap/extension-highlight": "^3.11.1",
