@@ -70,7 +70,7 @@ return [
             'passive'  => true,
             'ssl'      => false,
             'timeout'  => 10000,
-            'transferMode'  => FTP_BINARY,
+            'transferMode'  => 2, // 2== FTP_BINARY
         ],
 
     ],
