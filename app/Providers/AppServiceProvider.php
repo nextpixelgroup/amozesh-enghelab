@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\CourseLesson;
 use App\Models\CourseRating;
 use App\Models\CourseSeason;
+use App\Models\Order;
 use App\Models\Question;
 use App\Models\Quiz;
 use App\Observers\BookRatingObserver;
@@ -14,6 +15,7 @@ use App\Observers\CourseLessonObserver;
 use App\Observers\CourseObserver;
 use App\Observers\CourseRatingObserver;
 use App\Observers\CourseSeasonObserver;
+use App\Observers\OrderObserver;
 use App\Observers\QuestionObserver;
 use App\Observers\QuizObserver;
 use Illuminate\Support\ServiceProvider;
@@ -40,5 +42,6 @@ class AppServiceProvider extends ServiceProvider
         CourseSeason::observe(CourseSeasonObserver::class);
         Question::observe(QuestionObserver::class);
         Quiz::observe(QuizObserver::class);
+        Order::observe(OrderObserver::class);
     }
 }

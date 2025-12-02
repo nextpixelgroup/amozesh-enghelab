@@ -64,7 +64,8 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
         /********* Orders *********/
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        Route::put('/orders/{order}/update', [OrderController::class, 'update'])->name('orders.update');
 
         /********* comments *********/
         Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');

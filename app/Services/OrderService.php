@@ -10,7 +10,7 @@ use App\Services\Contracts\OrderServiceInterface;
 use Illuminate\Support\Collection;
 
 class OrderService implements OrderServiceInterface {
-    public function createOrder(User $user, Collection $cartItems, string $gateway, int $shippingCost = 0): Order
+    public function createOrder(User $user, Collection $cartItems, string $gateway, array $userData, int $shippingCost = 0): Order
     {
         $originalTotal = 0;
         $total = 0;
@@ -31,10 +31,16 @@ class OrderService implements OrderServiceInterface {
             'user_id' => $user->id,
             'original_total' => $originalTotal,
             'discount_total' => $discount,
-            'shipping_cost' => $shippingCost,
-            'total' => $total+$shippingCost,
-            'status' => 'pending',
-            'gateway' => $gateway,
+            'shipping_cost'  => $shippingCost,
+            'total'          => $total+$shippingCost,
+            'status'         => 'pending',
+            'gateway'        => $gateway,
+            'fullname'       => $userData['firstname'].' '.$userData['lastname'],
+            'address'        => $userData['address'],
+            'mobile'         => $userData['mobile'],
+            'postal_code'    => $userData['postal_code'],
+            'email'          => $userData['email'],
+            'user_note'      => $userData['user_note'],
         ]);
 
         foreach ($cartItems as $cartItem) {

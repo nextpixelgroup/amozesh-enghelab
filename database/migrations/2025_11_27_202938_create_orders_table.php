@@ -15,12 +15,18 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('fullname',100)->index()->nullable();
+            $table->text('address')->nullable();
+            $table->string('mobile',20)->index()->nullable();
+            $table->string('email',50)->index()->nullable();
+            $table->string('postal_code',20)->index()->nullable();
+            $table->text('user_note')->nullable();
             $table->unsignedBigInteger('original_total');
             $table->unsignedBigInteger('discount_total');
             $table->unsignedBigInteger('shipping_cost');
             $table->unsignedBigInteger('total');
             $table->enum('status', enumNames(OrderStatusEnum::cases()))->default('pending');
-            $table->string('reference_id')->nullable();
+            $table->unsignedBigInteger('reference_id')->index()->nullable();
             $table->string('gateway')->nullable(); // sadad | wallet_topup | wallet | mixed
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('canceled_at')->nullable();

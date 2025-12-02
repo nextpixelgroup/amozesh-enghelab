@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 
 interface OrderServiceInterface {
-    public function createOrder(User $user, Collection $cartItems, string $gateway, int $shippingCost): Order;
+    public function createOrder(User $user, Collection $cartItems, string $gateway, array $userData, int $shippingCost): Order;
 
     public function markOrderPaid(Order $order): void;
     public function markOrderCanceled(Order $order): void;

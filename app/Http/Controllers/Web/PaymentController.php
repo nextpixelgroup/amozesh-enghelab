@@ -123,24 +123,17 @@ class PaymentController extends Controller
                 return redirectMessage('error',$check['message']);
             }
 
-            $user->update([
+            $userData = [
                 'firstname' => $request->input('firstname'),
                 'lastname' => $request->input('lastname'),
                 'address' => $request->input('address'),
                 'postal_code' => $request->input('postal_code'),
                 'email' => $request->input('email'),
-            ]);
-
-            $order = $orderService->createOrder($user, $cart->first()->items,$gateway,$this->shipping_price());
-
-
-            if($request->filled('note')){
-                OrderNote::create([
-                    'creator_id' => $order->id,
-                    'order_id' => $order->id,
-                    'message' => $request->input('note'),
-                ]);
-            }
+            ];
+            $user->update();
+            $userData['user_note'] = $request->input('note');
+            $userData['mobile'] = $user->mobile;
+            $order = $orderService->createOrder($user, $cart->first()->items,$gateway,$userData,$this->shipping_price());
 
             $cart->first()->delete();
 

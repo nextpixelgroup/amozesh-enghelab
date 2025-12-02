@@ -274,6 +274,11 @@ class User extends Authenticatable
         return $this->restrictions->first(fn ($restriction) => $restriction->isActive());
     }*/
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     protected function genderObject(): Attribute
     {
         return Attribute::make(

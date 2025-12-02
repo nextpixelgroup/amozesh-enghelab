@@ -9,8 +9,8 @@
                             <i class="mdi mdi-cart"></i>
                         </div>
                         <div class="zo-name">
-                            <strong class="d-block mb-1">جزئیات سفارش <span>1794175</span></strong>
-                            <span>امیر محبیان - 1404/09/02 ساعت 6:10 ب.ظ</span>
+                            <strong class="d-block mb-1">جزئیات سفارش <span>{{ order.reference_id }}</span></strong>
+                            <span>{{ order.user.fullname }} - {{order.created_at.title.split(' ')[0]}} ساعت {{order.created_at.title.split(' ')[1]}}</span>
                         </div>
                     </div>
                 </v-col>
@@ -22,53 +22,36 @@
                     <v-table>
                         <thead>
                         <tr>
-                            <th class="text-center">ردیف</th>
+                            <th class="text-center">شناسه</th>
                             <th class="text-center">کتاب</th>
-                            <th class="text-center">قیمت تک</th>
+                            <th class="text-center">قیمت واحد</th>
                             <th class="text-center">تعداد</th>
                             <th class="text-center">قیمت کل</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
+                        <tr v-for="product in order.products" :key="product.id">
+                            <td class="text-center">{{ product.id }}</td>
                             <td class="text-center">
-                                <strong>کتاب اسلام و مسیحیت؛ گفت‌وگوی تمدن‌ها</strong>
+                                <strong>{{product.title}}</strong>
                             </td>
                             <td class="text-center">
                                 <div class="zo-price">
+                                    <del class="pe-1" v-if="product.price > product.sale_price">{{ numberFormat(product.price) }}</del>
                                     <div class="zo-sale">
-                                        <strong class="pe-1">214,350</strong>
+                                        <strong class="pe-1">{{ numberFormat(product.sale_price) }}</strong>
                                         <small>تومان</small>
                                     </div>
                                 </div>
                             </td>
-                            <td class="text-center">3</td>
+                            <td class="text-center">{{product.qty}}</td>
                             <td class="text-center">
                                 <div class="zo-price">
-                                    <strong class="pe-1">643,050</strong>
-                                    <small>تومان</small>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td class="text-center">
-                                <strong>کتاب جهان پس از ظهور</strong>
-                            </td>
-                            <td class="text-center">
-                                <div class="zo-price">
+                                    <del class="pe-1" v-if="product.price > product.sale_price">{{ numberFormat(product.price*product.qty) }}</del>
                                     <div class="zo-sale">
-                                        <strong class="pe-1">189,350</strong>
+                                        <strong class="pe-1">{{ numberFormat(product.sale_price*product.qty) }}</strong>
                                         <small>تومان</small>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="text-center">3</td>
-                            <td class="text-center">
-                                <div class="zo-price">
-                                    <strong class="pe-1">568,050</strong>
-                                    <small>تومان</small>
                                 </div>
                             </td>
                         </tr>
@@ -76,13 +59,48 @@
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td class="text-center"><span class="pe-1">تعداد کل:</span></td>
+                            <td class="text-center">
+                                <strong>{{ totalQty }}</strong>
+                            </td>
+                        </tr>
+                        <tr>
                             <td></td>
-                            <td>
-                                <span class="pe-1">مجموع:</span>
-                                <strong>
-                                    <span class="pe-1">568,050</span>
+                            <td></td>
+                            <td></td>
+                            <td class="text-center"><span class="pe-1">جمع:</span></td>
+                            <td class="text-center">
+                                <div class="zo-price">
+                                    <del class="pe-1" v-if="order.discount_total">{{numberFormat(order.original_total)}}</del>
+                                    <div class="zo-sale">
+                                        <strong class="pe-1">{{numberFormat(order.total-order.shipping_cost)}}</strong>
+                                        <small class="text-caption">تومان</small>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-center"><span class="pe-1">حمل و نقل:</span></td>
+                            <td class="text-center">
+                               <div class="zo-price">
+                                   <strong class="pe-1">{{numberFormat(order.shipping_cost)}}</strong>
+                                   <small class="text-caption">تومان</small>
+                               </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-center"><span class="pe-1">جمع پرداختی:</span></td>
+                            <td class="text-center">
+                                <div class="zo-price">
+                                    <strong class="pe-1">{{numberFormat(order.total)}}</strong>
                                     <small class="text-caption">تومان</small>
-                                </strong>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
@@ -94,17 +112,8 @@
                             <div class="d-flex align-center ga-3">
                                 <i class="mdi mdi-account-circle"></i>
                                 <div>
-                                    <small class="d-block">کاربر</small>
-                                    <strong>امیر محبیان</strong>
-                                </div>
-                            </div>
-                        </v-col>
-                        <v-col class="v-col">
-                            <div class="d-flex align-center ga-3">
-                                <i class="mdi mdi-school"></i>
-                                <div>
-                                    <small class="d-block">نوع کاربری</small>
-                                    <strong>عادی</strong>
+                                    <small class="d-block">خریدار</small>
+                                    <strong>{{order.fullname}}</strong>
                                 </div>
                             </div>
                         </v-col>
@@ -112,8 +121,8 @@
                             <div class="d-flex align-center ga-3">
                                 <i class="mdi mdi-cellphone-settings"></i>
                                 <div>
-                                    <small class="d-block">شماره موبایل</small>
-                                    <strong>09332775003</strong>
+                                    <small class="d-block">شماره موبایل خریدار</small>
+                                    <strong>{{ order.mobile }}</strong>
                                 </div>
                             </div>
                         </v-col>
@@ -122,7 +131,16 @@
                                 <i class="mdi mdi-airplane-takeoff"></i>
                                 <div>
                                     <small class="d-block">نوع ارسال</small>
-                                    <strong>پست پیشتاز</strong>
+                                    <strong>{{ order.shipping }}</strong>
+                                </div>
+                            </div>
+                        </v-col>
+                        <v-col class="v-col">
+                            <div class="d-flex align-center ga-3">
+                                <i class="mdi mdi-barcode"></i>
+                                <div>
+                                    <small class="d-block">کد تراکنش بانک</small>
+                                    <strong>{{order.payment.transaction_id}}</strong>
                                 </div>
                             </div>
                         </v-col>
@@ -131,7 +149,7 @@
                                 <i class="mdi mdi-barcode"></i>
                                 <div>
                                     <small class="d-block">کد رهگیری بانک</small>
-                                    <strong>198757569</strong>
+                                    <strong>{{order.payment.reference_id}}</strong>
                                 </div>
                             </div>
                         </v-col>
@@ -139,8 +157,8 @@
                             <div class="d-flex align-center ga-3">
                                 <i class="mdi mdi-map-marker-radius"></i>
                                 <div>
-                                    <small class="d-block">کد پستی</small>
-                                    <strong>09216897159</strong>
+                                    <small class="d-block">کد پستی خریدار</small>
+                                    <strong>{{ order.postal_code }}</strong>
                                 </div>
                             </div>
                         </v-col>
@@ -150,8 +168,8 @@
                             <div class="d-flex align-center ga-3">
                                 <i class="mdi mdi-map-marker-radius"></i>
                                 <div>
-                                    <small class="d-block">آدرس</small>
-                                    <strong>خراسان رضوی - مشهد - راهنمایی 23 پلاک 17</strong>
+                                    <small class="d-block">آدرس خریدار</small>
+                                    <strong>{{order.address}}</strong>
                                 </div>
                             </div>
                         </v-col>
@@ -159,10 +177,8 @@
                             <div class="d-flex align-center ga-3">
                                 <i class="mdi mdi-comment"></i>
                                 <div>
-                                    <small class="d-block">یادداشت مشتری</small>
-                                    <strong>
-                                        خواهشمندم هنگام ارسال، پیامکی شامل کد رهگیری برایم ارسال شود.
-                                    </strong>
+                                    <small class="d-block">یادداشت خریدار</small>
+                                    <strong>{{order.user_note}}</strong>
                                 </div>
                             </div>
                         </v-col>
@@ -171,15 +187,19 @@
             </v-col>
             <v-col class="v-col-lg-3 v-col-12">
                 <v-card class="pa-3 elevation-2">
-                    <v-select hide-details
-                              variant="outlined"
-                              density="compact"
-                              label="وضعیت"
-                              clearable
-                              class="mb-3"
-                    >
-                    </v-select>
+                    <v-select
+                        v-model="form.status"
+                        :items="status"
+                        hide-details
+                        variant="outlined"
+                        density="compact"
+                        label="وضعیت"
+                        clearable
+                        class="mb-3"
+                        :disabled="isLoading"
+                    />
                     <v-textarea
+                        v-model="form.note"
                         type="textarea"
                         variant="outlined"
                         density="comfortable"
@@ -187,25 +207,19 @@
                         prepend-inner-icon="mdi-text"
                         hide-details
                         class="mb-3"
+                        :disabled="isLoading"
                     />
                     <v-btn
                         block
                         color="primary"
+                        :disabled="isLoading"
+                        :loading="isLoading"
+                        @click="updateOrder"
                     >
                         ثبت تغییرات
                     </v-btn>
-                    <v-card flat class="mt-3 bg-yellow-lighten-4">
-                        <v-card-text>
-                            پرداخت موفقیت آمیز بود.
-                            کد رهگیری: 4335025042
-                            شماره کارت پرداخت کننده: 621986******7245
-                            شماره مرجع: 224023038470
-                        </v-card-text>
-                    </v-card>
-                    <v-card flat class="mt-3 bg-yellow-lighten-4">
-                        <v-card-text>
-                            پیامک با موفقیت به مدیر کل با شماره 09155067625 ارسال گردید.
-                        </v-card-text>
+                    <v-card flat class="mt-3 bg-yellow-lighten-4" v-if="order.notes" v-for="note in order.notes">
+                        <v-card-text :key="note.id">{{note.creator}}: {{note.message}}</v-card-text>
                     </v-card>
                 </v-card>
             </v-col>
@@ -213,11 +227,53 @@
     </AdminLayout>
 </template>
 <script setup>
-import {Head} from '@inertiajs/vue3'
+import {Head, useForm} from '@inertiajs/vue3'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import usePageTitle from "@/Composables/usePageTitle.js";
+import {computed, ref} from "vue";
+import {numberFormat} from "../../../utils/helpers.js";
+import {route} from "ziggy-js";
 
 const {adminPageTitle} = usePageTitle('جزئیات سفارش');
+
+const props = defineProps({
+    order: Object,
+    status: Object,
+});
+const isLoading = ref(false);
+const order = ref(props.order.data);
+const totalQty = computed(() => {
+    return order.value.products.reduce((sum, product) => {
+        return sum + product.qty;
+    }, 0);
+});
+const form = useForm({
+    note: '',
+    status: order.value.status,
+});
+
+const updateOrder = () => {
+    try {
+        form.put(route('admin.orders.update',order.value.id), {
+            preserveScroll: true,
+            preserveState: true,
+            onStart: () => {
+                isLoading.value = true
+            },
+            onSuccess: () => {
+                form.note = ''
+                isLoading.value = false
+            },
+            onError: () => {
+                isLoading.value = false
+            }
+        })
+    }
+    catch (error) {
+        isLoading.value = false
+    }
+}
+
 </script>
 <style scoped>
 .zo-order-section i {

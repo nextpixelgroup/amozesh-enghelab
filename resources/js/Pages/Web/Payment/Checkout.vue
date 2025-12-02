@@ -296,7 +296,7 @@ const pay = () => {
         preserveScroll:true,
         preserveState:true,
         onStart: () => {
-            //isLoading.value = true;
+            isLoading.value = true;
         },
         onSuccess: () => {
             isLoading.value = false;
