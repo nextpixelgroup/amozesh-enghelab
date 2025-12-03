@@ -25,6 +25,7 @@ return new class extends Migration
             $table->float('rate')->nullable()->default(0); // میانگین امتیاز
             $table->boolean('must_complete_quizzes')->default(false);
             $table->enum('status', enumNames(CourseStatusEnum::cases()))->default('draft');
+            $table->integer('views')->index()->default(0);
             $table->dateTime('published_at')->index();
             $table->timestamps();
             $table->softDeletes();

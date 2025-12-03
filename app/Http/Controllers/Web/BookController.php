@@ -52,6 +52,7 @@ class BookController extends Controller
     public function show(Book $book)
     {
         $user = auth()->user();
+        $book->update(['views' => $book->views + 1]);
         $book = WebBookDetailsResource::make($book);
         $similarCourses = Book::whereHas('categories', function ($query) use ($book) {
             $query->whereIn('id', $book->categories->pluck('id'));

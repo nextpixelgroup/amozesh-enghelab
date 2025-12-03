@@ -32,6 +32,7 @@ class Book extends Model
         'stock',
         'max_order',
         'status',
+        'views',
         'thumbnail_id',
         'rate',
     ];

@@ -55,7 +55,7 @@ class CourseController extends Controller
     public function show(Request $request, Course $course)
     {
         Gate::authorize('view', $course);
-
+        $course->update(['views' => $course->views + 1]);
         $courseRequest = $course;
         $requirements = WebCoursesResource::collection($course->requirements()->where('status','publish')->get());
         $similarCourses = Course::whereHas('categories', function ($query) use ($course) {
