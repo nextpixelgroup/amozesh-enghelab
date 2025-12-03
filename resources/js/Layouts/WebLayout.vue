@@ -6,20 +6,23 @@
                 <v-container>
                     <v-row dense class="align-center">
                         <v-col cols="12" lg="2">
-                            <a href="#">
+                            <Link :href="route('web.index')">
                                 <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
-                            </a>
+                            </Link>
                         </v-col>
                         <v-col cols="12" lg="8">
-                            <div class="zo-menu">
+                            <div class="zo-menu" v-if="menu.length">
                                 <ul>
-                                    <li><a href="#">خانه</a></li>
-                                    <li><a href="#">دوره‌ها</a></li>
-                                    <li><a href="#">معرفی اساتید</a></li>
-                                    <li><a href="#">فروشگاه کتاب</a></li>
-                                    <li><a href="#">درباره ما</a></li>
-                                    <li><a href="#">تماس با ما</a></li>
-                                    <li><a href="#">سیر مطالعاتی</a></li>
+                                    <li v-for="(item,index) in menu" :key="index" >
+                                        <Link v-if="item.target === '_self'" :href="item.url" :target="item.target">{{ item.title }}</Link>
+                                        <a v-else :href="item.url" :target="item.target">{{ item.title }}</a>
+                                        <ul v-if="item.children.length">
+                                            <li v-for="(item,index) in menu" :key="index" >
+                                                <Link v-if="item.target === '_self'" :href="item.url" :target="item.target">{{ item.title }}</Link>
+                                                <a v-else :href="item.url" :target="item.target">{{ item.title }}</a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </div>
                         </v-col>
@@ -108,9 +111,10 @@
 <script setup>
 import {ref} from 'vue'
 import FlashMessage from "@/Components/FlashMessage.vue";
-import {Head, usePage} from "@inertiajs/vue3";
+import {Head, Link, usePage} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
 const isMenuOpen = ref(false)
 const page = usePage()
-
+const menu = ref(page.props.menu)
 </script>
 

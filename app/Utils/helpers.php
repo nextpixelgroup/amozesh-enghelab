@@ -500,3 +500,14 @@ function formatDurationTime($minutes)
 
     return "{$hours}:{$formattedMinutes}";
 }
+
+function buildMenuTree($items, $grouped)
+{
+    return $items->map(function ($item) use ($grouped) {
+        $item->children = $grouped[$item->id] ?? collect();
+        if ($item->children->isNotEmpty()) {
+            $item->children = buildMenuTree($item->children, $grouped);
+        }
+        return $item;
+    });
+}

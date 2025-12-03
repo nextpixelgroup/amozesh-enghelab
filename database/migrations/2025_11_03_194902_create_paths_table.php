@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('paths', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->text('description')->nullable();
             $table->integer('order');
             $table->timestamps();
         });

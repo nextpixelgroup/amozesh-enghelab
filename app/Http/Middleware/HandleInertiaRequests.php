@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Contact;
+use App\Models\Menu;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -141,6 +142,8 @@ class HandleInertiaRequests extends Middleware
 
         }
         else{
+            $query = Menu::where('is_active', 1)->orderBy('order')->get()->groupBy('parent_id');
+            $shared['menu'] = buildMenuTree($query[null] ?? collect(), $query);
 
         }
         return $shared;
