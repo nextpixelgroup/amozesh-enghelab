@@ -76,7 +76,7 @@
                             >
                                 <span>{{ index + 1 }}</span>
                             </div>
-                            <CoursePath :course="course"/>
+                            <CourseCard :course="course"/>
                         </swiper-slide>
                     </swiper>
                 </div>
@@ -116,7 +116,7 @@
                             >
                                 <span>{{ index + 1 }}</span>
                             </div>
-                            <CoursePath :course="course"/>
+                            <CourseCard :course="course"/>
                         </swiper-slide>
                     </swiper>
                 </div>
@@ -156,7 +156,7 @@
                             >
                                 <span>{{ index + 1 }}</span>
                             </div>
-                            <CoursePath :course="course"/>
+                            <CourseCard :course="course"/>
                         </swiper-slide>
                     </swiper>
                 </div>
@@ -167,7 +167,7 @@
 <script setup>
 import {Head} from '@inertiajs/vue3'
 import WebLayout from "@/Layouts/WebLayout.vue";
-import CoursePath from "@/Components/Web/Courses/CoursePath.vue";
+import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
 import {Navigation} from "swiper/modules";
 import 'swiper/css'
 import 'swiper/css/navigation'
