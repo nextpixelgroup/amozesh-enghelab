@@ -1,8 +1,7 @@
 <template>
     <Head title="مدرس"/>
     <v-container class="mt-5">
-        <h1 class="text-black">Teacher Show</h1>
-        <span>{{teacher.firstname}} {{teacher.lastname}}</span>
+        سیبسی
     </v-container>
 </template>
 <script setup lang="ts">
