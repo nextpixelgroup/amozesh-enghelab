@@ -11,7 +11,7 @@
                             </Link>
                         </v-col>
                         <v-col cols="12" lg="8">
-                            <div class="zo-menu" v-if="menu.length">
+                            <div class="zo-menu" v-if="menu">
                                 <ul>
                                     <li v-for="(item,index) in menu" :key="index" >
                                         <Link v-if="item.target === '_self'" :href="item.url" :target="item.target">{{ item.title }}</Link>

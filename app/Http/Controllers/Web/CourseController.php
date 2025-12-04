@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Course;
 use App\Models\CourseLesson;
+use App\Models\CourseStudent;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -183,25 +184,61 @@ class CourseController extends Controller
         if(!$user){
             return redirectMessage('error', 'ابتدا وارد سایت شوید');
         }
-        $completion = $lesson->completions()->exists();
-        if(!$completion){
-            $completed = $lesson->completions()->create([
-                'course_id' => $lesson->course->id,
-                'user_id' => $user->id,
-                'completed_at' => now(),
-                'progress' => 100,
-                'status' => 'completed'
-            ]);
-            if($completed){
-                return redirectMessage('success', ' این درس را با موفقیت به پایان رسانده‌اید.');
-            }
-            else{
-                return redirectMessage('error', 'وضعیت تکمیل این درس در سیستم ذخیره نشد.');
-            }
-        }
-        else{
+
+        // Check if already completed
+        $completion = $lesson->completions()->where('user_id', $user->id)->exists();
+        if($completion){
             return redirectMessage('error', 'پخش این درس را پیش‌تر به پایان رسانده‌اید.');
         }
+
+        // Mark lesson as completed
+        $completed = $lesson->completions()->create([
+            'course_id' => $lesson->course->id,
+            'user_id' => $user->id,
+            'completed_at' => now(),
+            'progress' => 100,
+            'status' => 'completed'
+        ]);
+
+        if(!$completed){
+            return redirectMessage('error', 'وضعیت تکمیل این درس در سیستم ذخیره نشد.');
+        }
+
+        // Check if all lessons in the course are completed
+        $course = $lesson->course;
+        
+        // Count only active lessons in active seasons
+        $totalLessons = $course->seasons()
+            ->where('is_active', true)
+            ->withCount(['lessons' => function($query) {
+                $query->where('is_active', true);
+            }])
+            ->get()
+            ->sum('lessons_count');
+            
+        $completedLessons = $user->lessonCompletions()
+            ->where('course_id', $course->id)
+            ->whereHas('lesson', function($query) {
+                $query->where('is_active', true);
+            })
+            ->count();
+
+        // If all lessons are completed, update CourseStudent record
+        if($totalLessons > 0 && $completedLessons >= $totalLessons) {
+            $courseStudent = CourseStudent::where('course_id', $course->id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if($courseStudent) {
+                $courseStudent->update([
+                    'completed_at' => now(),
+                    'has_passed' => true,
+                    'progress' => 100
+                ]);
+            }
+        }
+
+        return redirectMessage('success', 'این درس را با موفقیت به پایان رسانده‌اید.');
     }
 
     public function LessonQuizStore(CourseLesson $lesson, Request $request)

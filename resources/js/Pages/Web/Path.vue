@@ -71,6 +71,7 @@
                             :class="[course.passed ? 'zo-passed' : 'zo-notpassed' ]"
                         >
                             <div
+                                v-if="index !== item.courses.length - 1"
                                 class="zo-step"
                                 :class="(index + 1) % 2 === 1 ? 'zo-up' : 'zo-down'"
                             >

@@ -937,6 +937,23 @@ const questionsContainers = ref(
     )
 );
 
+// Watch for changes in seasons' active status
+watch(() => course.seasons.map(s => s.is_active), (newActiveStates, oldActiveStates) => {
+    if (!oldActiveStates) return;
+    
+    newActiveStates.forEach((isActive, index) => {
+        const wasActive = oldActiveStates[index];
+        if (wasActive === true && isActive === false) {
+            // Season was just deactivated, deactivate all its lessons
+            if (course.seasons[index]?.lessons) {
+                course.seasons[index].lessons.forEach(lesson => {
+                    lesson.is_active = false;
+                });
+            }
+        }
+    });
+}, { deep: true });
+
 const lessonActivePanels = ref(
     course.seasons.map(() => []) // هر فصل یک آرایه خالی برای ذخیره ایندکس درس‌های فعال
 );
