@@ -69,7 +69,7 @@ ol {
 a {
     color: var(--Text);
     transition: all 0.25s ease-in-out;
-    text-decoration: none;
+    text-decoration: none
 }
 
 img {
@@ -1943,49 +1943,6 @@ figure {
 
 .zo-about-section .zo-prof-section a:hover {
     margin: -15px 0 0
-}
-
-.zo-about-section .zo-prof-section figure img {
-    width: 200px;
-    height: 200px;
-    display: block;
-    margin: 0 auto 15px;
-    border-radius: 50%
-}
-
-.zo-about-section .zo-prof-section strong {
-    display: block;
-    margin: 0 0 15px
-}
-
-.zo-about-section .zo-prof-section ul {
-    display: flex;
-    justify-content: center;
-    gap: 20px
-}
-
-.zo-about-section .zo-prof-section ul li {
-    display: inline-block;
-    position: relative
-}
-
-.zo-about-section .zo-prof-section ul li:before {
-    content: '';
-    width: 5px;
-    height: 5px;
-    position: absolute;
-    top: 10px;
-    right: -13.5px;
-    background: var(--Secondary);
-    border-radius: 50%;
-}
-
-.zo-about-section .zo-prof-section ul li:first-child:before {
-    display: none
-}
-
-.zo-about-section .zo-prof-section ul li img {
-    width: 25px
 }
 
 .zo-contact-section .zo-content {

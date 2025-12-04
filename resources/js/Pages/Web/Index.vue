@@ -142,7 +142,7 @@
                                 },
                                 1260: {
                                     slidesPerView: 5.5,
-                                    spaceBetween: 60
+                                    spaceBetween: 30
                                 }
                             }">
                         <swiper-slide>
