@@ -40,7 +40,7 @@ Route::name('web.')->group(function () {
     Route::post('/books/{book:slug}/rating', [BookController::class, 'rating'])->name('books.rating');
 
     Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.index');
-    Route::get('/t/{teacher:slug}', [TeacherController::class, 'show'])->name('teachers.show');
+    Route::get('/teacher/{teacher:slug}', [TeacherController::class, 'show'])->name('teachers.show');
 
     Route::get('/path', [PathController::class, 'index'])->name('path.index');
 

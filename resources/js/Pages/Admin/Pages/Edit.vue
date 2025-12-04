@@ -107,7 +107,6 @@
 
 <script setup>
 import {ref} from 'vue';
-import Editor from '@tinymce/tinymce-vue'
 import AdminLayout from "../../../Layouts/AdminLayout.vue";
 import {Head, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";

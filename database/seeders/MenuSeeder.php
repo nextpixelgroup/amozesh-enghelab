@@ -49,7 +49,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'title' => 'سیرمطالعاتی',
             'icon' => 'mdi-multicast',
-            'url' => '/paths',
+            'url' => '/path',
             'order' => 4,
             'is_active' => true,
             'target' => '_self',

@@ -180,7 +180,7 @@
                         variant="outlined"
                         density="comfortable"
                         label="نامک"
-                        :suffix="site_url+'/t/'"
+                        :suffix="site_url+'/teacher/'"
                         dir="ltr"
                         prepend-inner-icon="mdi-link"
                         hide-details

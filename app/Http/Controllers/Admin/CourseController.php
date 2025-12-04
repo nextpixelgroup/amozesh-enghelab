@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\CourseCreateRequest;
 use App\Http\Requests\Admin\CourseUpdateRequest;
 use App\Http\Resources\AdminCourseDetailsResource;
 use App\Http\Resources\AdminCourseResource;
+use App\Jobs\RecalculateCourseCompletionStatus;
 use App\Jobs\UpdateCourseDurationJob;
 use App\Models\Category;
 use App\Models\Course;
@@ -169,6 +170,9 @@ class CourseController extends Controller
 
                 UpdateCourseDurationJob::dispatch($course->id);
 
+                // Check and update course completion status for all students
+                RecalculateCourseCompletionStatus::dispatch($course->id);
+
                 DB::commit();
 
                 return redirectMessage('success', 'دوره با موفقیت ویرایش شد.', redirect: route('admin.courses.edit', $course->id));
@@ -279,6 +283,8 @@ class CourseController extends Controller
         foreach ($seasons as $seasonData) {
             if(is_numeric($seasonData['id']) && $seasonData['id'] > 0){
                 $season = CourseSeason::find($seasonData['id']);
+
+
                 $season->update([
                     'title' => $seasonData['title'],
                     'description' => $seasonData['description'] ?? null,
@@ -288,6 +294,7 @@ class CourseController extends Controller
 
                 // اضافه کردن آیدی به لیست فصل‌های درخواست
                 $requestSeasonIds[] = $season->id;
+
 
                 // پردازش دروس این فصل
                 if (isset($seasonData['lessons']) && is_array($seasonData['lessons'])) {
@@ -307,6 +314,7 @@ class CourseController extends Controller
                 }
             }
             $order++;
+
 
         }
         // حذف فصل‌هایی که در درخواست جدید وجود ندارند
@@ -549,6 +557,7 @@ class CourseController extends Controller
             return redirectMessage('error',$e->getMessage());
         }
     }
+
 
     private function finalUpdateQuiz($course,$quizData)
     {
