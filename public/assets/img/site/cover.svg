@@ -1,0 +1,8 @@
+<svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 160" width="1440" height="160">
+	<title>Cover</title>
+	<style>
+		tspan { white-space:pre }
+		.s0 { fill: #fdfdfd } 
+	</style>
+	<path id="Layer" class="s0" d="m0 0l120 26.7c120 26.3 360 80.3 600 80c240 0.3 480-53.7 600-80l120-26.7v160h-120c-120 0-360 0-600 0c-240 0-480 0-600 0h-120v-160z" />
+</svg>

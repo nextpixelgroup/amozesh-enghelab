@@ -1,7 +1,7 @@
 <template>
     <Head title="مدرسین"/>
     <WebLayout>
-        <div class="zo-prof-section">
+        <div class="zo-profs-section">
             <v-container>
                 <v-row class="align-center">
                     <v-col cols="12">
@@ -102,14 +102,14 @@ import WebLayout from "@/Layouts/WebLayout.vue";
 
 </script>
 <style scoped>
-.zo-prof-section {
+.zo-profs-section {
     width: 100%;
     display: inline-block;
     padding: 30px 0;
     text-align: center
 }
 
-.zo-prof-section .zo-title-section {
+.zo-profs-section .zo-title-section {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,17 +119,17 @@ import WebLayout from "@/Layouts/WebLayout.vue";
     font-size: 1.25rem
 }
 
-.zo-prof-section .zo-title-section strong {
+.zo-profs-section .zo-title-section strong {
     font-family: 'Estedad-Medium';
     font-weight: normal
 }
 
-.zo-prof-section .zo-prof {
+.zo-profs-section .zo-prof {
     display: block;
     margin: 0 0 10px
 }
 
-.zo-prof-section .zo-prof figure img {
+.zo-profs-section .zo-prof figure img {
     width: 200px;
     height: 200px;
     display: block;
@@ -139,18 +139,18 @@ import WebLayout from "@/Layouts/WebLayout.vue";
     transition: all 0.25s ease-in-out
 }
 
-.zo-prof-section .zo-prof strong {
+.zo-profs-section .zo-prof strong {
     display: block;
     margin: 0 0 5px
 }
 
-.zo-prof-section .zo-prof span {
+.zo-profs-section .zo-prof span {
     display: block;
     margin: 0 0 10px;
     color: var(--Sub)
 }
 
-.zo-prof-section .zo-prof small {
+.zo-profs-section .zo-prof small {
     max-width: 100px;
     display: flex;
     align-items: center;
@@ -163,11 +163,11 @@ import WebLayout from "@/Layouts/WebLayout.vue";
     transition: all 0.25s ease-in-out
 }
 
-.zo-prof-section .zo-prof:hover figure img {
+.zo-profs-section .zo-prof:hover figure img {
     box-shadow: 0 5px 15px rgba(0, 0, 0, .085)
 }
 
-.zo-prof-section .zo-prof:hover small {
+.zo-profs-section .zo-prof:hover small {
     background: var(--Primary);
     color: var(--White)
 }
