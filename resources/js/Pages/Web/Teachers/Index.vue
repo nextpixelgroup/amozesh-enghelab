@@ -1,6 +1,5 @@
 <template>
-
-    <Head title="مدرسین" />
+    <Head title="مدرسین"/>
     <WebLayout>
         <div class="zo-prof-section">
             <v-container>
@@ -98,7 +97,7 @@
     </WebLayout>
 </template>
 <script setup>
-import { Head } from "@inertiajs/vue3";
+import {Head} from "@inertiajs/vue3";
 import WebLayout from "@/Layouts/WebLayout.vue";
 
 </script>
