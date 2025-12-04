@@ -22,6 +22,7 @@ class PathController extends Controller
                 return [
                     'id' => $path->id,
                     'title' => $path->title,
+                    'description' => $path->description,
                     'order' => $path->order,
                     'items' => $path->items->map(function($item) {
                         return [
@@ -44,6 +45,7 @@ class PathController extends Controller
                 $path = Path::find($item['id']);
                 $path->update([
                     'title' => $item['title'],
+                    'description' => $item['description'],
                     'order' => $order++,
                 ]);
                 $pathItem = PathItem::where('path_id', $item['id'])->delete();
@@ -59,6 +61,7 @@ class PathController extends Controller
             else{
                 $path = Path::create([
                     'title' => $item['title'],
+                    'description' => $item['description'],
                     'order' => $order++,
                 ]);
                 if($path){

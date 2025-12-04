@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Path extends Model
 {
-    protected $fillable = ['title', 'order'];
+    protected $fillable = ['title', 'description', 'order'];
 
     public function items()
     {

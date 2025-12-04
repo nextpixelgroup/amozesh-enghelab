@@ -42,13 +42,13 @@
                 </v-row>
             </v-container>
         </div>
-        <div class="zo-path-section">
-            <v-container>
+        <div class="zo-path-section" v-for="(item,index) in path">
+            <v-container :key="index">
                 <v-row>
                     <v-col cols="12">
                         <div class="zo-title-section">
-                            <strong>مسیر شماره 1</strong>
-                            <span>توضیحات مربوط به این دوره در اینجا قرار می‌گیرد</span>
+                            <strong>{{item.title}}</strong>
+                            <span>{{item.description}}</span>
                         </div>
                     </v-col>
                 </v-row>
@@ -66,87 +66,7 @@
                         }"
                     >
                         <swiper-slide
-                            v-for="(course, index) in courses"
-                            :key="index"
-                            :class="[course.passed ? 'zo-passed' : 'zo-notpassed' ]"
-                        >
-                            <div
-                                class="zo-step"
-                                :class="(index + 1) % 2 === 1 ? 'zo-up' : 'zo-down'"
-                            >
-                                <span>{{ index + 1 }}</span>
-                            </div>
-                            <CourseCard :course="course"/>
-                        </swiper-slide>
-                    </swiper>
-                </div>
-            </div>
-        </div>
-        <div class="zo-path-section">
-            <v-container>
-                <v-row>
-                    <v-col cols="12">
-                        <div class="zo-title-section">
-                            <strong>مسیر شماره 2</strong>
-                            <span>توضیحات مربوط به این دوره در اینجا قرار می‌گیرد</span>
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-container>
-            <div class="zo-courses-section">
-                <div class="zo-swiper">
-                    <Swiper
-                        dir="rtl"
-                        :modules="[Navigation]"
-                        :breakpoints="{
-                            0: { slidesPerView: 1.5, spaceBetween: 15 },
-                            575: { slidesPerView: 2.5, spaceBetween: 15 },
-                            990: { slidesPerView: 3.5, spaceBetween: 15 },
-                            1200: { slidesPerView: 6.15, spaceBetween: 15 }
-                        }"
-                    >
-                        <swiper-slide
-                            v-for="(course, index) in courses"
-                            :key="index"
-                            :class="[course.passed ? 'zo-passed' : 'zo-notpassed' ]"
-                        >
-                            <div
-                                class="zo-step"
-                                :class="(index + 1) % 2 === 1 ? 'zo-up' : 'zo-down'"
-                            >
-                                <span>{{ index + 1 }}</span>
-                            </div>
-                            <CourseCard :course="course"/>
-                        </swiper-slide>
-                    </swiper>
-                </div>
-            </div>
-        </div>
-        <div class="zo-path-section">
-            <v-container>
-                <v-row>
-                    <v-col cols="12">
-                        <div class="zo-title-section">
-                            <strong>مسیر شماره 3</strong>
-                            <span>توضیحات مربوط به این دوره در اینجا قرار می‌گیرد</span>
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-container>
-            <div class="zo-courses-section">
-                <div class="zo-swiper">
-                    <Swiper
-                        dir="rtl"
-                        :modules="[Navigation]"
-                        :breakpoints="{
-                            0: { slidesPerView: 1.5, spaceBetween: 15 },
-                            575: { slidesPerView: 2.5, spaceBetween: 15 },
-                            990: { slidesPerView: 3.5, spaceBetween: 15 },
-                            1200: { slidesPerView: 6.15, spaceBetween: 15 }
-                        }"
-                    >
-                        <swiper-slide
-                            v-for="(course, index) in courses"
+                            v-for="(course, index) in item.courses"
                             :key="index"
                             :class="[course.passed ? 'zo-passed' : 'zo-notpassed' ]"
                         >
@@ -172,127 +92,10 @@ import {Navigation} from "swiper/modules";
 import 'swiper/css'
 import 'swiper/css/navigation'
 import {Swiper, SwiperSlide} from "swiper/vue";
+import {ref} from "vue";
 
-const courses = [
-    {
-        thumbnail: '/assets/img/sample/1.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: true,
-    },
-    {
-        thumbnail: '/assets/img/sample/2.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: true,
-    },
-    {
-        thumbnail: '/assets/img/sample/3.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: true,
-    },
-    {
-        thumbnail: '/assets/img/sample/4.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/5.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/6.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/7.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/8.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/9.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/10.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/11.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-    {
-        thumbnail: '/assets/img/sample/12.png',
-        category: 'انقلاب',
-        title: 'انقلاب اسلامی',
-        teacher: 'علی مظلوم',
-        duration: '12:45',
-        students: 12,
-        price: '10,000',
-        passed: false,
-    },
-]
+const props = defineProps({
+    path: Object
+})
+const path = ref(props.path.data);
 </script>

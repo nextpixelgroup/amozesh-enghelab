@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('author',100)->index()->nullable();
             $table->tinyInteger('rate')->index()->nullable();
             $table->enum('status', enumNames(BookStatusEnum::cases()))->index()->default('draft');
+            $table->integer('views')->index()->default(0);
             $table->timestamps();
             $table->softDeletes();
             $table->fullText(['title', 'subtitle', 'content']);

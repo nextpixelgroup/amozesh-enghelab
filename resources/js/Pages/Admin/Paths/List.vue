@@ -60,6 +60,12 @@
                         variant="outlined"
                         density="comfortable"
                     />
+                    <v-text-field
+                        v-model="path.description"
+                        label="توضیحات مسیر"
+                        variant="outlined"
+                        density="comfortable"
+                    />
 
                     <v-autocomplete
                         v-model="path.selectedCourse"
@@ -187,6 +193,7 @@ onMounted(() => {
             paths.value.push({
                 id: path.id,
                 title: path.title,
+                description: path.description,
                 selectedCourse: null,
                 availableCourses: courses.value.filter(c =>
                     !path.items?.some(item => item.id === c.value)
@@ -206,6 +213,7 @@ const savePaths = () => {
     const payload = paths.value.map(path => ({
         id: path.id,
         title: path.title,
+        description: path.description,
         courses: path.courses.map(course => course.value), // فقط شناسه دوره‌ها
     }));
 
@@ -225,6 +233,7 @@ const addPath = () => {
     paths.value.push({
         id: null,
         title: 'مسیر آموزشی جدید',
+        description: '',
         selectedCourse: null,
         availableCourses: [...courses.value],
         courses: []

@@ -30,7 +30,7 @@ class MenuSeeder extends Seeder
             'title' => 'دوره ها',
             'icon' => 'mdi-monitor',
             'url' => '/courses',
-            'order' => 4,
+            'order' => 2,
             'is_active' => true,
             'target' => '_self',
             'type' => 'submenu',
@@ -40,6 +40,26 @@ class MenuSeeder extends Seeder
             'title' => 'فروشگاه کتاب',
             'icon' => 'mdi-code-tags',
             'url' => '/books',
+            'order' => 3,
+            'is_active' => true,
+            'target' => '_self',
+            'type' => 'submenu',
+        ]);
+
+        Menu::create([
+            'title' => 'سیرمطالعاتی',
+            'icon' => 'mdi-multicast',
+            'url' => '/paths',
+            'order' => 4,
+            'is_active' => true,
+            'target' => '_self',
+            'type' => 'submenu',
+        ]);
+
+        Menu::create([
+            'title' => 'معرفی اساتید',
+            'icon' => 'mdi-code-tags',
+            'url' => '/teachers',
             'order' => 5,
             'is_active' => true,
             'target' => '_self',
@@ -50,7 +70,7 @@ class MenuSeeder extends Seeder
             'title' => 'درباره ما',
             'icon' => 'mdi-information',
             'url' => '/about',
-            'order' => 2,
+            'order' => 6,
             'is_active' => true,
             'target' => '_self',
             'type' => 'header',
@@ -60,31 +80,13 @@ class MenuSeeder extends Seeder
             'title' => 'تماس با ما',
             'icon' => 'mdi-phone',
             'url' => '/contact',
-            'order' => 3,
+            'order' => 7,
             'is_active' => true,
             'target' => '_self',
             'type' => 'footer',
         ]);
 
-        Menu::create([
-            'title' => 'معرفی اساتید',
-            'icon' => 'mdi-code-tags',
-            'url' => '/teachers',
-            'order' => 6,
-            'is_active' => true,
-            'target' => '_self',
-            'type' => 'submenu',
-        ]);
 
-        Menu::create([
-            'title' => 'سیرمطالعاتی',
-            'icon' => 'mdi-multicast',
-            'url' => '/paths',
-            'order' => 7,
-            'is_active' => true,
-            'target' => '_self',
-            'type' => 'submenu',
-        ]);
 
     }
 }

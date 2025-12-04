@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Course;
 use App\Models\Setting;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -25,7 +26,7 @@ class StatCourseRatingsJob implements ShouldQueue
     {
         $Setting = new Setting;
         $setting = $Setting->getValue('statCourses');
-        $setting['ratings'] = 0;
+        $setting['ratings'] = Course::avg('rate');;
         $Setting->setValue('statCourses', $setting);
     }
 }
