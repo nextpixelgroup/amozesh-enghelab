@@ -84,7 +84,7 @@
                     </v-col>
                 </v-row>
             </v-container>
-            <div class="zo-prof-section" v-if="about.meta.teachers">
+            <div class="zo-profs-section" v-if="about.meta.teachers">
                 <v-container>
                     <v-row class="align-center">
                         <v-col cols="12">
@@ -95,18 +95,7 @@
                             </div>
                         </v-col>
                         <v-col lg="3" sm="6" cols="12" v-for="(teacher,index) in about.meta.teachers">
-                            <a :href="teacher.url">
-                                <figure>
-                                    <img :src="teacher.avatar" alt="">
-                                </figure>
-                                <strong>{{teacher.title}}</strong>
-                            </a>
-                            <ul>
-                                <li><a href="#"><img src="/assets/img/site/social-1.svg" alt="" class="img-fluid"></a>
-                                </li>
-                                <li><a href="#"><img src="/assets/img/site/social-2.svg" alt="" class="img-fluid"></a>
-                                </li>
-                            </ul>
+                            <TeacherCard :teacher="teacher"/>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -119,6 +108,7 @@ import {Head, Link} from '@inertiajs/vue3'
 import WebLayout from "@/Layouts/WebLayout.vue";
 import {route} from "ziggy-js";
 import {ref} from "vue";
+import TeacherCard from "@/Components/Web/TeacherCard.vue";
 const props = defineProps({
     about: Object
 })

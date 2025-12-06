@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PathController;
 use App\Http\Controllers\Admin\RestrictionController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SettingMenuController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\UserController;
@@ -91,8 +92,12 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::put('/contacts/{contact}/archive', [ContactController::class, 'archive'])->name('contacts.archive');
 
         /********* Setting *********/
-        Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.index');
-        Route::get('/settings/menus', [SettingController::class, 'menus'])->name('settings.menu');
+        Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.general');
+        Route::get('/settings/menus', [SettingMenuController::class, 'index'])->name('settings.menus');
+        Route::post('/admin/settings/menus', [SettingMenuController::class, 'store'])->name('settings.menus.store');
+        Route::put('/admin/settings/{menu}/menus', [SettingMenuController::class, 'update'])->name('settings.menus.update');
+        Route::put('/admin/settings/menus/order', [SettingMenuController::class, 'order'])->name('settings.menus.order');
+        Route::delete('/admin/settings/{menu}/destroy', [SettingMenuController::class, 'destroy'])->name('settings.menus.destroy');
 
         /********* media & upload *********/
         Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');

@@ -13,46 +13,41 @@
                     <v-col cols="12">
                         <div class="zo-name">
                             <figure>
-                                <img src="/assets/img/sample/1.webp" alt="">
+                                <img :src="teacher.avatar" alt="">
                                 <strong>{{teacher.firstname}} {{teacher.lastname}}</strong>
-                                <span>نظریه‌پرداز توطئه و ایدئولوگ</span>
+                                <span>{{teacher.academic_title}}</span>
                             </figure>
                         </div>
                         <div class="zo-bio">
-                            <p class="text-justify">
-                                حسن رحیم‌پور ازغدی (زادهٔ ۱۳۴۲) سخنران، نظریه‌پرداز توطئه و ایدئولوگ محافظه‌کار اصولگرای ایرانی است. وی از سال ۱۳۸۲ عضو شورای عالی انقلاب فرهنگی ایران است. او از نسل جدید سخنرانان اصولگرا به‌شمار می‌رود که سعی دارد تا نظام و سیاست‌های آن را تئوریزه کند و توجیه ایدئولوژیک شیعی برای آن ارائه کند.
-                            </p>
-                            <p class="text-justify">
-                                رحیم‌پور ازغدی همچنین به عنوان یکی از مدافعان برجسته «روحانیت حاکم» و گفتمان «شیعی حکومتی» در ایران تلقی می‌شود، قرائتی سیاسی از اسلام که قصد دارد حوزه‌های علمیه را دستکاری و کنترل کند، برخلاف ارتدکس سنتی شیعه که طرفدار استقلال از دولت است.
-                            </p>
+                            <p class="text-justify">{{teacher.bio}}</p>
                         </div>
                         <ul>
                             <li>
                                 <i class="mdi mdi-school"></i>
                                 <div>
                                     <span>مدرک تحصیلی</span>
-                                    <strong>کارشناسی ارشد الهیات و معارف اسلامی – گرایش فقه و اصول</strong>
+                                    <strong>{{ teacher.degree }}</strong>
                                 </div>
                             </li>
                             <li>
                                 <i class="mdi mdi-leaf"></i>
                                 <div>
                                     <span>زمینه تدریس</span>
-                                    <strong>علوم قرآنی، فقه و اصول، عقاید اسلامی، اخلاق اسلامی، تاریخ اسلام</strong>
+                                    <strong>{{teacher.teaching}}</strong>
                                 </div>
                             </li>
                             <li>
                                 <i class="mdi mdi-bookshelf"></i>
                                 <div>
                                     <span>سوابق تدریس</span>
-                                    <strong>بیش از ۱۰ سال تدریس در حوزه‌های علمیه، مدارس و مراکز آموزش دینی؛ برگزاری دوره‌های تخصصی تفسیر قرآن و آموزش احکام</strong>
+                                    <strong>{{teacher.history}}</strong>
                                 </div>
                             </li>
                             <li>
                                 <i class="mdi mdi-human-male-board"></i>
                                 <div>
                                     <span>مهارت‌ها و تخصص</span>
-                                    <strong>تفسیر و تحلیل متون دینی، خطابه و سخنرانی مذهبی، مهارت ارتباطی قوی، پژوهش در حوزه فقه و کلام، تولید محتوای آموزشی دین</strong>
+                                    <strong>{{teacher.skills}}</strong>
                                 </div>
                             </li>
                         </ul>
@@ -68,7 +63,7 @@ import WebLayout from "@/Layouts/WebLayout.vue";
 const props = defineProps({
     teacher: Object
 });
-const teacher = props.teacher;
+const teacher = props.teacher.data;
 
 </script>
 <style scoped>

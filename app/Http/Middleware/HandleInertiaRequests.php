@@ -132,7 +132,7 @@ class HandleInertiaRequests extends Middleware
                 [
                     'title' => 'تنظیمات',
                     'icon' => 'mdi-cog',
-                    'route' => 'admin.settings.index'
+                    'route' => 'admin.settings.general'
                 ],
             ];
             $shared['ticketCount'] = Ticket::where('read_at', null)->count();

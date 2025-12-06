@@ -27,7 +27,6 @@ const form = ref({...props.category})
 const title = computed(() => props.isEditing ? 'ویرایش دسته' : 'افزودن دسته جدید')
 
 watch(() => props.category, (newVal) => {
-    console.log(form)
     form.value = {...newVal}
 }, {deep: true})
 

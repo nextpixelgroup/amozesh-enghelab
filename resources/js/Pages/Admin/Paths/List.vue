@@ -260,7 +260,6 @@ const removePath = async (index,id) => {
     if (confirm){
         if(id) {
             const response = await axios.delete(route('admin.paths.destroy', id), []);
-            console.log();
             if(response.data.status == 'success'){
 
                 isShowMessage.value = true

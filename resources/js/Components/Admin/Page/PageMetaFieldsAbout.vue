@@ -125,5 +125,4 @@ const localMeta = computed({
     get: () => props.modelValue,
     set: (value) => emit('update:modelValue', value)
 });
-console.log(localMeta.value)
 </script>

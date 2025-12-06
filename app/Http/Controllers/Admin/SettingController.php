@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AdminMenusResource;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -12,8 +14,4 @@ class SettingController extends Controller
         return inertia('Admin/Settings/General');
     }
 
-    public function menus()
-    {
-        return inertia('Admin/Settings/Menus');
-    }
 }

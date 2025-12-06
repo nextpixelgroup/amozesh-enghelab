@@ -156,7 +156,6 @@ else if(page.value.type == 'contact'){
     }
 
 }
-console.log(meta.value)
 const form = useForm({
     'type': page.value.type,
     'title': page.value.title,
@@ -166,7 +165,6 @@ const form = useForm({
     'thumbnail_id': page.value.thumbnail?.id ?? null,
     'meta': meta.value
 });
-console.log(page.value)
 const updatePage = () => {
     form.put(route('admin.pages.update', page.value.id), {
         preserveScroll: true,

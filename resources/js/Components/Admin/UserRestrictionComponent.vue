@@ -136,7 +136,6 @@ const addRestriction = () => {
         },
         onError: (errors) => {
             // Keep dialog open on error
-            console.log('Validation errors:', errors);
         },
         onFinish: () => isAdding.value = false
     });

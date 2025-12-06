@@ -749,7 +749,7 @@ const status = ref(props.status);
 const courses = ref(props.courses);
 const data = ref(props.course.data);
 const video_upload_slug = ref(props.video_upload_slug);
-console.log(data.value)
+
 const courseRequirements = courses;
 const showVideo = (slug) => {
     if (slug) {
@@ -774,7 +774,7 @@ const course = reactive({
     seasons: data.value.seasons,
     quiz: data.value.quiz
 });
-console.log(data.value)
+
 /********************************Seasons********************************/
 
 
@@ -913,7 +913,6 @@ const seasonActive = ref(null)
 watch(seasonActivePanel, (newVal) => {
     nextTick(() => {
         newVal.forEach(panelIndex => {
-            console.log('season:'+panelIndex);
             const container = lessonsContainers.value[panelIndex];
             if (!container) return;
 
@@ -940,7 +939,7 @@ const questionsContainers = ref(
 // Watch for changes in seasons' active status
 watch(() => course.seasons.map(s => s.is_active), (newActiveStates, oldActiveStates) => {
     if (!oldActiveStates) return;
-    
+
     newActiveStates.forEach((isActive, index) => {
         const wasActive = oldActiveStates[index];
         if (wasActive === true && isActive === false) {
@@ -958,7 +957,6 @@ const lessonActivePanels = ref(
     course.seasons.map(() => []) // هر فصل یک آرایه خالی برای ذخیره ایندکس درس‌های فعال
 );
 watch(lessonActivePanels, (newActiveLessonIndicesPerSeason) => { // نام متغیر را تغییر دادم برای وضوح بیشتر
-    console.log('Active lessons panels changed:', newActiveLessonIndicesPerSeason);
 
     nextTick(() => {
         // برای هر فصل
@@ -976,7 +974,6 @@ watch(lessonActivePanels, (newActiveLessonIndicesPerSeason) => { // نام مت�
                     return;
                 }
 
-                console.log(`فعال‌سازی sortable برای فصل ${seasonIndex + 1} - درس ${lessonIndex + 1}`);
 
                 const containerComponent = questionsContainers.value[seasonIndex]?.[lessonIndex];
                 if (!containerComponent) {
@@ -993,7 +990,6 @@ watch(lessonActivePanels, (newActiveLessonIndicesPerSeason) => { // نام مت�
                         handle: '.question-drag-handle',
                     });
                     targetEl._sortable = true;
-                    console.log(`Sortable فعال شد برای سوالات فصل ${seasonIndex + 1} - درس ${lessonIndex + 1}`);
                 }
             });
         });

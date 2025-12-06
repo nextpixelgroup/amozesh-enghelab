@@ -126,7 +126,7 @@ const page = usePage();
 
 const categories = ref(page.props.categories);
 const books = computed( () => page.props.books.data);
-console.log(books)
+
 const query = new URLSearchParams(page.url.split('?')[1])
 const filters = ref({
     category: query.get('category') ? query.get('category') : 'all',

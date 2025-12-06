@@ -959,8 +959,6 @@ function selectCorrectOption(question, optionKey) {
 }
 
 function removeQuestion(sIndex, lIndex, quIndex) {
-    console.log(sIndex, lIndex, quIndex)
-    console.log(course.seasons[sIndex].lessons[lIndex].quiz)
     course.seasons[sIndex].lessons[lIndex].quiz.questions.splice(quIndex, 1);
 }
 
@@ -973,7 +971,6 @@ useSortable(finalQuizContainers, course.quiz.questions, {
 })
 
 function addFinalQuizQuestions() {
-    console.log(course.quiz.questions)
     course.quiz.questions.push({
         id: crypto.randomUUID(),
         text: '',

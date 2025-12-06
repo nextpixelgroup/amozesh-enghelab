@@ -69,6 +69,4 @@ const props = defineProps({
 const activeSection = ref(''); // مثلاً 'lessons' یا 'requirements'
 
 
-console.log(props.course.data)
-
 </script>

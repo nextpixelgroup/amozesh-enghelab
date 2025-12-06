@@ -36,6 +36,7 @@ class WebAboutResource extends JsonResource
                 ->map(fn($user) => [
                     'title'  => $user->firstname.' '.$user->lastname,
                     'avatar' => $user->avatar?->url,
+                    'degree' => $user->teacher?->degree,
                     'url' => route('web.teachers.show',$user->slug),
                 ])
                 ->toArray();

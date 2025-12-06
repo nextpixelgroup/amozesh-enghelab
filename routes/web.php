@@ -56,7 +56,6 @@ Route::name('web.')->group(function () {
 
     Route::post('/comments/{comment}', [CommentController::class, 'reply'])->name('comments.reply');
 
-
     Route::get('/cart', [PaymentController::class, 'cart'])->name('cart');
     Route::post('/cart/{book:slug}/store', [PaymentController::class, 'store'])->name('cart.store');
     Route::post('/cart', [PaymentController::class, 'cart'])->name('cart');

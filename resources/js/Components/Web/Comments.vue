@@ -258,8 +258,6 @@ const submitComment = async () => {
 
         submitting.value = false;
 
-        // 2. لاگ بگیرید تا ببینید دقیقا چه چیزی از سرور می‌آید (برای دیباگ)
-        console.log('Response Received:', response);
 
         // 3. حذف شرط سخت‌گیرانه response.status === 200
         // اگر به اینجا رسیدیم یعنی درخواست موفق بوده (200 یا 201)
