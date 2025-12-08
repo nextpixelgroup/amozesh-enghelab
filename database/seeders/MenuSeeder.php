@@ -33,7 +33,7 @@ class MenuSeeder extends Seeder
             'order' => 2,
             'is_active' => true,
             'target' => '_self',
-            'type' => 'submenu',
+            'type' => 'header',
         ]);
 
         Menu::create([
@@ -43,7 +43,7 @@ class MenuSeeder extends Seeder
             'order' => 3,
             'is_active' => true,
             'target' => '_self',
-            'type' => 'submenu',
+            'type' => 'header',
         ]);
 
         Menu::create([
@@ -53,7 +53,7 @@ class MenuSeeder extends Seeder
             'order' => 4,
             'is_active' => true,
             'target' => '_self',
-            'type' => 'submenu',
+            'type' => 'header',
         ]);
 
         Menu::create([
@@ -63,7 +63,7 @@ class MenuSeeder extends Seeder
             'order' => 5,
             'is_active' => true,
             'target' => '_self',
-            'type' => 'submenu',
+            'type' => 'header',
         ]);
 
         Menu::create([
@@ -83,7 +83,7 @@ class MenuSeeder extends Seeder
             'order' => 7,
             'is_active' => true,
             'target' => '_self',
-            'type' => 'footer',
+            'type' => 'header',
         ]);
 
 
