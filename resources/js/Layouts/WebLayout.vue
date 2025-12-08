@@ -11,15 +11,13 @@
                             </Link>
                         </v-col>
                         <v-col cols="12" lg="8">
-                            <div class="zo-menu" v-if="menu">
+                            <div class="zo-menu" v-if="header">
                                 <ul>
-                                    <li v-for="(item,index) in menu" :key="index" >
-                                        <Link v-if="item.target === '_self'" :href="item.url" :target="item.target">{{ item.title }}</Link>
-                                        <a v-else :href="item.url" :target="item.target">{{ item.title }}</a>
+                                    <li v-for="(item,index) in header" :key="index" >
+                                        <a :href="item.url" :target="item.target">{{ item.title }}</a>
                                         <ul v-if="item.children.length">
-                                            <li v-for="(item,index) in menu" :key="index" >
-                                                <Link v-if="item.target === '_self'" :href="item.url" :target="item.target">{{ item.title }}</Link>
-                                                <a v-else :href="item.url" :target="item.target">{{ item.title }}</a>
+                                            <li v-for="(child,index) in item.children" :key="index" >
+                                                <a :href="child.url" :target="child.target">{{ child.title }}</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -55,28 +53,28 @@
                         </v-col>
                         <v-col class="v-col-lg-5 v-col-12">
                             <div class="zo-menus">
-                                <div class="zo-menu">
+                                <div class="zo-menu" v-if="footer1.length">
                                     <span>دوره‌ها و فروشگاه</span>
                                     <ul>
-                                        <li><a href="#">دوره‌ها</a></li>
-                                        <li><a href="#">فروشگاه</a></li>
-                                        <li><a href="#">پیگیری سفارش</a></li>
+                                        <li v-for="item in footer1" :key="footer1.id">
+                                            <a :href="item.url" :target="item.target">{{item.title}}</a>
+                                        </li>
                                     </ul>
                                 </div>
-                                <div class="zo-menu">
+                                <div class="zo-menu" v-if="footer2.length">
                                     <span>لینک‌های سریع</span>
                                     <ul>
-                                        <li><a href="#">تماس با ما</a></li>
-                                        <li><a href="#">درباره ما</a></li>
-                                        <li><a href="#">دستاوردها</a></li>
+                                        <li v-for="item in footer2" :key="footer2.id">
+                                            <a :href="item.url" :target="item.target">{{item.title}}</a>
+                                        </li>
                                     </ul>
                                 </div>
-                                <div class="zo-menu">
+                                <div class="zo-menu" v-if="footer3.length">
                                     <span>ارتباط با مجموعه</span>
                                     <ul>
-                                        <li><a href="#">تماس با ما</a></li>
-                                        <li><a href="#">درباره ما</a></li>
-                                        <li><a href="#">دستاوردها</a></li>
+                                        <li v-for="item in footer3" :key="footer3.id">
+                                            <a :href="item.url" :target="item.target">{{item.title}}</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -85,12 +83,12 @@
                             <div class="zo-social">
                                 <ul>
                                     <li>
-                                        <a href="#">
+                                        <a :href="social.soroush" target="_blank">
                                             <img src="/assets/img/site/social-1.svg" alt="" class="img-fluid">
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
+                                        <a :href="social.eitaa" target="_blank">
                                             <img src="/assets/img/site/social-2.svg" alt="" class="img-fluid">
                                         </a>
                                     </li>
@@ -115,6 +113,10 @@ import {Head, Link, usePage} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 const isMenuOpen = ref(false)
 const page = usePage()
-const menu = ref(page.props.menu)
+const header = ref(page.props.header)
+const footer1 = ref(page.props.footer1)
+const footer2 = ref(page.props.footer2)
+const footer3 = ref(page.props.footer3)
+const social = ref(page.props.social)
 </script>
 

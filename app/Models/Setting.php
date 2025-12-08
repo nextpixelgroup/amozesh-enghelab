@@ -51,7 +51,6 @@ class Setting extends Model
                 'description' => $description
             ]
         );
-
         // Clear cache
         cache()->forget("setting.{$key}");
     }

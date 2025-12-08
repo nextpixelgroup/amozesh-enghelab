@@ -117,7 +117,7 @@ const props = defineProps({
     title: {type: String, default: 'بارگذاری تصویر'},
     label: {type: String, default: 'فایل را اینجا رها کنید یا کلیک کنید'},
     accept: {type: String, default: 'image/*'},
-    maxSize: {type: Number, default: 5 * 1024 * 1024},
+    maxSize: {type: Number, default: 3 * 1024 * 1024},
     initialUrl: {type: String, default: ''},
     thumbnailText: {type: String, default: 'برای تغییر تصویر، ابتدا حذف کنید'},
     type: {type: String}
@@ -205,6 +205,7 @@ const uploadThumbnail = async () => {
 
         }
     } catch (error) {
+        console.log(error)
         const errorMessage = error.response?.data?.message || 'خطا در آپلود فایل!';
         showError(errorMessage);
     } finally {

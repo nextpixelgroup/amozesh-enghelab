@@ -21,22 +21,30 @@ class SettingMenuController extends Controller
             [
                 'type' => 'header',
                 'title' => 'هدر',
-                'items' => isset($query['header']) ? $query['header']->toArray() : []
+                'items' => isset($query['header'])
+                    ? collect($query['header']->toArray())->sortBy('order')->values()->all()
+                    : []
             ],
             [
                 'type' => 'footer-1',
                 'title' => 'فوتر اول',
-                'items' => isset($query['footer-1']) ? $query['footer-1']->toArray() : []
+                'items' => isset($query['footer-1'])
+                    ? collect($query['footer-1']->toArray())->sortBy('order')->values()->all()
+                    : []
             ],
             [
                 'type' => 'footer-2',
                 'title' => 'فوتر دوم',
-                'items' => isset($query['footer-2']) ? $query['footer-2']->toArray() : []
+                'items' => isset($query['footer-2'])
+                    ? collect($query['footer-2']->toArray())->sortBy('order')->values()->all()
+                    : []
             ],
             [
                 'type' => 'footer-3',
                 'title' => 'فوتر سوم',
-                'items' => isset($query['footer-3']) ? $query['footer-3']->toArray() : []
+                'items' => isset($query['footer-3'])
+                    ? collect($query['footer-3']->toArray())->sortBy('order')->values()->all()
+                    : []
             ]
         ];
         return inertia('Admin/Settings/Menus', compact('menus'));
@@ -44,7 +52,6 @@ class SettingMenuController extends Controller
 
     public function store(Request $request)
     {
-
         try {
             $maxOrder = Menu::where('type', $request->type)
                 ->whereNull('parent_id')
@@ -90,19 +97,19 @@ class SettingMenuController extends Controller
         try {
             DB::beginTransaction();
 
-            $menuType = $request->menu_type;
-            $items = $request->items;
+            $menuType = $request->data[0]['type'];
+            $items = $request->data[0]['items'];
 
             if (!is_array($items) || empty($items)) {
                 return redirectMessage('success', 'آیتمی وجود ندارد');
             }
 
             // Update each menu item's order
-            foreach ($items as $item) {
+            foreach ($items as $i => $item) {
                 Menu::where('id', $item['id'])
                     ->where('type', $menuType)
                     ->update([
-                        'order' => $item['order'],
+                        'order' => $i+1,
                         'parent_id' => $item['parent_id'] ?? null
                     ]);
             }

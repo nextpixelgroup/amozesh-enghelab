@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Contact;
 use App\Models\Menu;
 use App\Models\Ticket;
+use App\Services\SettingsService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -142,9 +143,25 @@ class HandleInertiaRequests extends Middleware
 
         }
         else{
-            $query = Menu::where('is_active', 1)->orderBy('order')->get()->groupBy('parent_id');
-            $shared['menu'] = buildMenuTree($query[null] ?? collect(), $query);
+            $menuTypes = ['header', 'footer-1', 'footer-2', 'footer-3'];
+            $allMenus = Menu::where('is_active', 1)
+                ->whereIn('type', $menuTypes)
+                ->orderBy('type')
+                ->orderBy('order')
+                ->get()
+                ->groupBy('type')
+                ->mapWithKeys(function ($menus, $type) {
+                    $grouped = $menus->groupBy('parent_id');
+                    return [$type => buildMenuTree($grouped->get(null, collect()), $grouped)];
+                });
 
+            $shared['header'] = $allMenus->get('header', []);
+            $shared['footer1'] = $allMenus->get('footer-1', []);
+            $shared['footer2'] = $allMenus->get('footer-2', []);
+            $shared['footer3'] = $allMenus->get('footer-3', []);
+
+            $setting = new SettingsService;
+            $shared['social'] = $setting->get('index.social');
         }
         return $shared;
     }

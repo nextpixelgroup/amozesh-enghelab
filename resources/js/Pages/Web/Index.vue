@@ -7,10 +7,10 @@
                     <swiper dir="rtl" :slides-per-view="1" :modules="[Navigation]" navigation>
                         <swiper-slide v-for="(slide,index) in slider">
                             <a :href="slide.url" :key="index">
-                                <img :src="slide.image" alt="">
+                                <img :src="slide.image.url" alt="">
                                 <div class="zo-caption">
                                     <strong>{{slide.title}}</strong>
-                                    <span>{{slide.subtitle}}</span>
+                                    <span>{{slide.description}}</span>
                                 </div>
                             </a>
                         </swiper-slide>
@@ -215,4 +215,5 @@ const props = defineProps({
 const popularCourses = ref(props.popularCourses.data)
 const latestCourses = ref(props.latestCourses.data)
 const bestsellerBooks = ref(props.bestsellerBooks.data)
+console.log(props.slider)
 </script>

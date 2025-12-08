@@ -11,6 +11,7 @@ use App\Models\Course;
 use App\Models\Page;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\SettingsService;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Collection;
 
@@ -18,20 +19,8 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $slider = [
-            [
-                'title' => 'دوره کتاب چهل حکمت نبوی (ص)',
-                'subtitle' => 'استاد: علیرضا عباسی',
-                'image' => '/assets/img/sample/slide.png',
-                'url' => '/courses',
-            ],
-            [
-                'title' => 'دوره انقلاب اسلامی',
-                'subtitle' => 'استاد: حسین محبی',
-                'image' => '/assets/img/sample/slide.png',
-                'url' => '/books',
-            ]
-        ];
+        $setting = new SettingsService;
+        $slider = $setting->get('index.slider');
 
         $limit = 4;
         $query = Course::query()

@@ -94,16 +94,20 @@ Route::name('admin.')->prefix('admin')->group(function () {
         /********* Setting *********/
         Route::get('/settings/general', [SettingController::class, 'general'])->name('settings.general');
         Route::get('/settings/menus', [SettingMenuController::class, 'index'])->name('settings.menus');
-        Route::post('/admin/settings/menus', [SettingMenuController::class, 'store'])->name('settings.menus.store');
-        Route::put('/admin/settings/{menu}/menus', [SettingMenuController::class, 'update'])->name('settings.menus.update');
-        Route::put('/admin/settings/menus/order', [SettingMenuController::class, 'order'])->name('settings.menus.order');
-        Route::delete('/admin/settings/{menu}/destroy', [SettingMenuController::class, 'destroy'])->name('settings.menus.destroy');
+        Route::post('/settings/menus', [SettingMenuController::class, 'store'])->name('settings.menus.store');
+        Route::put('/settings/{menu}/menus', [SettingMenuController::class, 'update'])->name('settings.menus.update');
+        Route::put('/settings/menus/order', [SettingMenuController::class, 'order'])->name('settings.menus.order');
+        Route::delete('/settings/{menu}/destroy', [SettingMenuController::class, 'destroy'])->name('settings.menus.destroy');
+        Route::put('/settings/slides/update', [SettingController::class, 'slideUpdate'])->name('settings.slides.update');
+        Route::delete('/settings/slides/{id}/destroy', [SettingController::class, 'slideDelete'])->name('settings.slides.destroy');
+        Route::put('/settings/social/update', [SettingController::class, 'socialUpdate'])->name('settings.social.update');
 
         /********* media & upload *********/
         Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');
         Route::post('upload/courses/image', [UploadController::class, 'courseImage'])->name('upload.courses.image');
         Route::post('upload/users/image', [UploadController::class, 'userImage'])->name('upload.users.image');
         Route::post('upload/pages/image', [UploadController::class, 'pageImage'])->name('upload.pages.image');
+        Route::post('upload/general/image', [UploadController::class, 'generalImage'])->name('upload.general.image');
 
         Route::delete('media/{media}/{type}', [UploadController::class, 'destroy'])->name('media.destroy');
 

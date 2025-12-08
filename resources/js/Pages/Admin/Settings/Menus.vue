@@ -12,6 +12,7 @@
                     size="small"
                     @click="addNewItem(menu)"
                     prepend-icon="mdi-plus"
+                    :disabled="isLoading"
                 >
                     افزودن آیتم
                 </v-btn>
@@ -46,6 +47,7 @@
                             color="primary"
                             variant="flat"
                             @click="editItem(menu, item, itemIndex)"
+                            :disabled="isLoading"
                             class="edit-btn mx-1"
                         >
                             <v-icon>mdi-pencil</v-icon>
@@ -55,6 +57,8 @@
                             size="small"
                             color="error"
                             variant="flat"
+                            :loading="deletingItemId === item.id"
+                            :disabled="isLoading"
                             @click="deleteItem(menu, itemIndex)"
                             class="delete-btn ml-2"
                         >
@@ -86,15 +90,34 @@
                         size="small"
                         prepend-icon="mdi-plus"
                         @click="addNewItem(menu)"
+                        :disabled="isLoading"
                     >
                         افزودن آیتم جدید
                     </v-btn>
                 </v-sheet>
             </v-card-text>
+            <v-card class="px-4 pb-4" v-if="typeSortable === menu.type">
+                <v-btn
+                    color="primary"
+                    size="small"
+                    @click="saveSortable(menu.type)"
+                    prepend-icon="mdi-pencil"
+                    class="me-auto"
+                    :loading="sortingMenuType === menu.type"
+                    :disabled="isLoading"
+                >
+                   ذخیره جابجایی
+                </v-btn>
+            </v-card>
         </v-card>
 
         <!-- Add/Edit Dialog -->
-        <v-dialog v-model="dialog" max-width="500">
+        <v-dialog
+            v-model="dialog"
+            max-width="500"
+            @update:model-value="onDialogClosed"
+
+        >
             <v-card>
                 <v-card-title>
                     {{ formTitle }}
@@ -103,6 +126,8 @@
                 <v-card-text>
                     <v-text-field
                         v-model="editedItem.title"
+                        variant="outlined"
+                        density="comfortable"
                         label="عنوان"
                         required
                         class="mb-3"
@@ -110,6 +135,8 @@
 
                     <v-text-field
                         v-model="editedItem.url"
+                        variant="outlined"
+                        density="comfortable"
                         label="لینک"
                         required
                         class="mb-3"
@@ -118,6 +145,8 @@
 
                     <v-select
                         v-model="editedItem.target"
+                        variant="outlined"
+                        density="comfortable"
                         :items="targets"
                         label="نحوه باز شدن لینک"
                         item-title="text"
@@ -137,7 +166,7 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="error" variant="text" @click="closeDialog">انصراف</v-btn>
-                    <v-btn color="primary" @click="saveItem">ذخیره</v-btn>
+                    <v-btn color="primary" @click="saveItem" :loading="isLoading" :disabled="isLoading">ذخیره</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -164,19 +193,12 @@ const menuItemsContainer = ref([])
 const formTitle = ref('')
 const dialog = ref(false)
 const editedIndex = ref(-1)
-const menus = ref([])
+const menus = computed(() => props.menus)
+const typeSortable = ref(false)
 
-watch(
-    () => props.menus,
-    (newMenus) => {
-        menus.value = newMenus.map(menu => ({
-            ...menu,
-            items: [...menu.items],
-        }))
-    },
-    { immediate: true, deep: true }
-)
 const isLoading = ref(false)
+const deletingItemId = ref(null);
+const sortingMenuType = ref(null);
 const errorMessage = ref('')
 
 const targets = [
@@ -204,7 +226,7 @@ onMounted(() => {
                     handle: '.drag-handle',
                     onEnd: () => {
                         console.log(menus.value[index].type)
-                        refreshSortable(menus.value[index].type);
+                        typeSortable.value = menus.value[index].type
                     },
                 })
             }
@@ -213,19 +235,45 @@ onMounted(() => {
 })
 
 
-function refreshSortable(type) {
-    alert(type)
-    /*router.put(
-        route('admin.settings.menus.order'),
-        {
-            menu_type: menus.value[index].type, // در صورت نیاز سمت سرور
-            items: orderedItems,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-        },
-    )*/
+async function saveSortable(type) {
+    try {
+        const findMenu = props.menus.find(menu => menu.type === type);
+        if (!findMenu) return;
+
+        // Create a deep copy of the menu items to avoid mutating the props directly
+        const menuData = JSON.parse(JSON.stringify({
+            ...findMenu,
+            items: [...findMenu.items]
+        }));
+
+        router.put(
+            route('admin.settings.menus.order'),
+            {
+                data: [menuData],
+            },
+            {
+                preserveState: false, // Let Inertia update the page props
+                preserveScroll: true,
+                onStart: () => {
+                    isLoading.value = true
+                    sortingMenuType.value = type;
+                },
+                onSuccess: () => {
+                    isLoading.value = false;
+                    sortingMenuType.value = null;
+                    typeSortable.value = false;
+                    // The page will be refreshed by Inertia due to preserveState: false
+                },
+                onError: (errors) => {
+                    isLoading.value = false;
+                    sortingMenuType.value = null;
+                    console.error('Error saving menu order:', errors);
+                }
+            },
+        );
+    } catch (error) {
+        console.error('Error in saveSortable:', error);
+    }
 }
 
 function addNewItem(menu) {
@@ -251,47 +299,61 @@ function editItem(menu, item, index) {
 
 async function deleteItem(menu, index) {
     const confirm = await $confirm('آیا از حذف این آیتم اطمینان دارید؟')
-    if (confirm) {
-        try {
-            isLoading.value = true
-            errorMessage.value = ''
+    if (!confirm) {
+        return;
+    }
 
-            // Make a copy of the item before removing it
-            const itemToDelete = { ...menu.items[index] }
+    try {
 
-            // Optimistic UI update
-            menu.items.splice(index, 1)
+        errorMessage.value = ''
 
-            // If it's a new item that hasn't been saved to the server yet
-            if (typeof itemToDelete.id === 'number' && itemToDelete.id < 0) {
-                return // No need to send to server
-            }
+        // Make a copy of the item before removing it
+        const itemToDelete = { ...menu.items[index] }
 
-            // Send delete request to server
-            router.delete(route('admin.settings.menus.destroy', { menu: itemToDelete.id }), {
-                preserveScroll: true,
-                preserveState: true,
-                onSuccess: () => {
+        // Optimistic UI update
+        //menu.items.splice(index, 1)
 
-                },
-                onError: (errors) => {
-                    // Revert the UI if the request fails
-                    menu.items.splice(index, 0, itemToDelete)
-                    errorMessage.value = 'خطا در حذف آیتم. لطفاً دوباره تلاش کنید.'
-                    console.error('Error deleting menu item:', errors)
-                }
-            })
-        } catch (error) {
-            console.error('Error deleting menu item:', error)
-            errorMessage.value = 'خطا در حذف آیتم. لطفاً دوباره تلاش کنید.'
-        } finally {
-            isLoading.value = false
+        // If it's a new item that hasn't been saved to the server yet
+        if (typeof itemToDelete.id === 'number' && itemToDelete.id < 0) {
+            return // No need to send to server
         }
+
+        // Send delete request to server
+        await router.delete(route('admin.settings.menus.destroy', { menu: itemToDelete.id }), {
+            preserveScroll: true,
+            preserveState: true,
+            onStart: () => {
+                isLoading.value = true
+                const itemId = menu.items[index].id;
+                deletingItemId.value = itemId;
+            },
+            onSuccess: () => {
+                deletingItemId.value = null;
+                isLoading.value = false
+            },
+            onError: (errors) => {
+                deletingItemId.value = null;
+                isLoading.value = false
+                // Revert the UI if the request fails
+                //menu.items.splice(index, 0, itemToDelete)
+                errorMessage.value = 'خطا در حذف آیتم. لطفاً دوباره تلاش کنید.'
+                console.error('Error deleting menu item:', errors)
+            }
+        })
+    } catch (error) {
+        console.error('Error deleting menu item:', error)
+        errorMessage.value = 'خطا در حذف آیتم. لطفاً دوباره تلاش کنید.'
+    }
+}
+
+function onDialogClosed(isOpen) {
+    if (!isOpen) {
+        closeDialog();
     }
 }
 
 function closeDialog() {
-    dialog.value = false
+    dialog.value = false;
     editedItem.value = {
         id: null,
         title: '',
@@ -300,14 +362,13 @@ function closeDialog() {
         icon: '',
         type: '',
         order: 0
-    }
-    editedIndex.value = -1
-    errorMessage.value = ''
+    };
+    editedIndex.value = -1;
+    errorMessage.value = '';
 }
 
-function saveItem() {
+async function saveItem() {
     try {
-        isLoading.value = true
         errorMessage.value = ''
 
         // Prepare the menu item data
@@ -328,34 +389,43 @@ function saveItem() {
                 id: -Date.now(), // Temporary negative ID for new items
             }
             // Send create request to server
-            router.post(route('admin.settings.menus.store'), {
+            await router.post(route('admin.settings.menus.store'), {
                 ...newItem,
             }, {
-                preserveState: true,
+                preserveState: false, // Let Inertia update the page props
                 preserveScroll: true,
                 onStart: () => {
+                    isLoading.value = true
                 },
-                onSuccess: (response) => {
-                    console.log(response)
-                    // Replace the temporary item with the server response
-
+                onSuccess: () => {
+                    isLoading.value = false;
+                    closeDialog();
                 },
                 onError: (errors) => {
-
-                    throw errors
+                    isLoading.value = false;
+                    closeDialog();
+                    throw errors;
                 }
             })
         } else {
-            // Update the item in the UI immediately (optimistic update)
-
             try {
                 // Send update request to server
-                router.put(route('admin.settings.menus.update', {
+                await router.put(route('admin.settings.menus.update', {
                     menu: menuData.id
                 }), menuData, {
+                    preserveState: false, // Let Inertia update the page props
+                    preserveScroll: true,
+                    onStart: () => {
+                        isLoading.value = true
+                    },
+                    onSuccess: () => {
+                        isLoading.value = false;
+                        closeDialog();
+                    },
                     onError: (errors) => {
-                        // Revert the UI if the request fails
-                        throw errors
+                        isLoading.value = false;
+                        closeDialog();
+                        throw errors;
                     }
                 })
             } catch (error) {
@@ -364,12 +434,10 @@ function saveItem() {
             }
         }
 
-        closeDialog();
+        // No need to manually close dialog as page will refresh due to preserveState: false
     } catch (error) {
-        console.error('Error saving menu item:', error)
-        errorMessage.value = 'خطا در ذخیره‌سازی. لطفاً دوباره تلاش کنید.'
-    } finally {
-        isLoading.value = false
+        console.error('Error saving menu item:', error);
+        errorMessage.value = 'خطا در ذخیره‌سازی. لطفاً دوباره تلاش کنید.';
     }
 }
 

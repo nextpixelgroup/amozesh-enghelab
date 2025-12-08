@@ -1,8 +1,32 @@
 <template>
     <SettingLayout>
-        hi
+        <SettingSliderManager
+            :slides="slides"
+            @saved="handleSlidesUpdated"
+            @deleted="handleSlidesUpdated"
+        />
+        <SettingSocialLinksManager
+            :social-links="social"
+            @saved="handleSocialLinksUpdated"
+        />
     </SettingLayout>
 </template>
-<script setup lang="ts">
-import SettingLayout from "@/Components/Admin/SettingLayout.vue";
+
+<script setup>
+import { usePage } from '@inertiajs/vue3'
+import SettingLayout from '@/Components/Admin/SettingLayout.vue'
+import SettingSliderManager from '@/Components/Admin/Settings/SettingSliderManager.vue'
+import SettingSocialLinksManager from "@/Components/Admin/Settings/SettingSocialLinksManager.vue";
+
+const page = usePage()
+const slides = page.props.slides ?? []
+const social = page.props.social ?? { soroush: '', eitaa: '' }
+
+const handleSlidesUpdated = (newSlides) => {
+    console.log('Slides updated:', newSlides)
+    // در صورت نیاز state والد را هم به‌روزرسانی کنید.
+}
+const handleSocialLinksUpdated = (newLinks) => {
+    console.log('Social links updated:', newLinks)
+}
 </script>
