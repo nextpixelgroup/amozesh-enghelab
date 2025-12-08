@@ -20,7 +20,7 @@ class PageSeeder extends Seeder
             'title' => 'درباره ما',
             'summary' => '',
             'content' => '',
-            'status' => 'published',
+            'status' => 'publish',
             'published_at' => now(),
         ]);
 
@@ -30,7 +30,7 @@ class PageSeeder extends Seeder
             'title' => 'تماس با ما',
             'summary' => '',
             'content' => '',
-            'status' => 'published',
+            'status' => 'publish',
             'published_at' => now(),
         ]);
     }
