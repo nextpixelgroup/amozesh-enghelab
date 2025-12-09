@@ -53,7 +53,7 @@
                         </v-col>
                         <v-col class="v-col-12">
                             <v-text-field
-                                v-model="course.intro_url"
+                                v-model="course.intro_filename"
                                 type="text"
                                 hide-details
                                 variant="outlined"
@@ -67,9 +67,9 @@
                                     <v-btn
                                         icon
                                         variant="text"
-                                        @click="showVideo(course.intro_url)"
+                                        @click="showVideo(course.intro_filename)"
                                         title="مشاهده"
-                                        :disabled="!course.intro_url"
+                                        :disabled="!course.intro_filename"
                                     >
                                         <v-icon>mdi-open-in-new</v-icon>
                                     </v-btn>
@@ -265,7 +265,7 @@
                                                         </v-col>
                                                         <v-col class="v-col-12">
                                                             <v-text-field
-                                                                v-model="lesson.video_url"
+                                                                v-model="lesson.video_filename"
                                                                 type="text"
                                                                 hide-details
                                                                 variant="outlined"
@@ -279,9 +279,9 @@
                                                                     <v-btn
                                                                         icon
                                                                         variant="text"
-                                                                        @click="showVideo(lesson.video_url)"
+                                                                        @click="showVideo(lesson.video_filename)"
                                                                         title="مشاهده"
-                                                                        :disabled="!lesson.video_url"
+                                                                        :disabled="!lesson.video_filename"
                                                                     >
                                                                         <v-icon>mdi-open-in-new</v-icon>
                                                                     </v-btn>
@@ -747,7 +747,7 @@ const course = reactive({
     must_complete_quizzes: null,
     status: 'pending',
     thumbnail_id: null,
-    intro_url: null,
+    intro_filename: null,
     poster_id: null,
     seasons: [
         {
@@ -761,7 +761,7 @@ const course = reactive({
                     title: '',
                     description: '',
                     duration: null,
-                    video_url: '',
+                    video_filename: '',
                     poster_id: null,
                     is_active: true,
                     has_quiz: false,
@@ -827,7 +827,7 @@ function addSeason() {
             title: '',
             description: '',
             duration: null,
-            video_url: '',
+            video_filename: '',
             poster_id: null,
             is_active: true,
             has_quiz: false,
@@ -880,7 +880,7 @@ function addLesson(sIndex) {
         title: '',
         description: '',
         duration: null,
-        video_url: '',
+        video_filename: '',
         poster_id: null,
         is_active: true,
         has_quiz: false,

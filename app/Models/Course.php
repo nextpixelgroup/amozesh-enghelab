@@ -17,7 +17,7 @@ class Course extends Model
     }
 
     protected $fillable = [
-        'user_id', 'title', 'slug', 'summary', 'description', 'thumbnail_id', 'intro_id', 'poster_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'views', 'published_at', 'duration'
+        'user_id', 'title', 'slug', 'summary', 'description', 'thumbnail_id', 'intro_url', 'intro_filename', 'poster_id', 'teacher_id', 'category_id', 'price', 'rate', 'must_complete_quizzes', 'status', 'views', 'published_at', 'duration'
     ];
 
     protected $casts = [
@@ -42,11 +42,6 @@ class Course extends Model
     public function thumbnail()
     {
         return $this->belongsTo(Media::class, 'thumbnail_id');
-    }
-
-    public function intro()
-    {
-        return $this->belongsTo(Media::class, 'intro_id');
     }
 
     public function poster()

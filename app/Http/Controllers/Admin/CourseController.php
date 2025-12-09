@@ -87,20 +87,12 @@ class CourseController extends Controller
     {
         try {
             // First handle the video upload outside of transaction
-            $introId = null;
-            if ($request->intro_url) {
-                $introId = $this->addVideoToMedia($request->intro_url);
-                if (is_a($introId, '\Illuminate\Http\RedirectResponse')) {
-                    return $introId; // Return the error response if video upload fails
-                }
-            }
 
             DB::beginTransaction();
 
             try {
                 // Create course with the already uploaded video ID
-                $course = $this->storeCourse($request, $introId);
-
+                $course = $this->storeCourse($request);
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processSeasons($course, $request->seasons);
 
@@ -127,6 +119,7 @@ class CourseController extends Controller
 
     public function edit(Course $course)
     {
+        $site_url = env('APP_URL').'/courses/';
         $categories = Category::where('type', 'course')->get()->map(fn ($item) => ['value' => $item->id, 'title' => $item->title]);
         $teachers = User::query()
             ->whereHas('roles', function($query) {
@@ -138,28 +131,19 @@ class CourseController extends Controller
 
         $video_upload_slug = video_upload_path();
         $course = new AdminCourseDetailsResource($course);
-
-        return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug', 'course'));
+        return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug', 'course', 'site_url'));
     }
 
     public function update(CourseUpdateRequest $request, Course $course)
     {
-        //dd($request->seasons);
+        //dd($request->all());
         try {
-            // Handle video upload outside of transaction
-            $introId = $course->intro_id;
-            if ($request->intro_url && $request->intro_url !== $course->intro?->path) {
-                $introId = $this->addVideoToMedia($request->intro_url);
-                if (is_a($introId, '\Illuminate\Http\RedirectResponse')) {
-                    return $introId; // Return the error response if video upload fails
-                }
-            }
 
             DB::beginTransaction();
 
             try {
                 // Update course with the uploaded video ID
-                $course = $this->updateCourse($request, $course, $introId);
+                $course = $this->updateCourse($request, $course);
 
                 // Process seasons, lessons, quizzes, questions, and options
                 $this->processUpdateSeasons($course, $request->seasons);
@@ -188,30 +172,32 @@ class CourseController extends Controller
         }
     }
 
-    private function storeCourse($request, $introId = null)
+    private function storeCourse($request)
     {
         $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
         $slug = makeSlugUnique($slug, Course::class);
 
         $args = [
-            'user_id'      => auth()->user()->id,
-            'title'        => $request->title,
-            'slug'         => $slug,
-            'summary'      => $request->summary,
-            'description'  => $request->description,
-            'thumbnail_id' => $request->thumbnail_id,
-            'intro_id'     => $introId,
-            'poster_id'    => $request->poster_id,
-            'teacher_id'   => $request->teacher,
-            'price'        => 0,
-            'rate'         => null,
+            'user_id'               => auth()->user()->id,
+            'title'                 => $request->title,
+            'slug'                  => $slug,
+            'summary'               => $request->summary,
+            'description'           => $request->description,
+            'thumbnail_id'          => $request->thumbnail_id,
+            'intro_filename'        => $request->intro_filename,
+            'intro_url'             => $request->intro_filename ? courseVideoUrl($request->intro_filename) : '',
+            'video_status'          => 'pending',
+            'poster_id'             => $request->poster_id,
+            'teacher_id'            => $request->teacher,
+            'price'                 => 0,
+            'rate'                  => null,
             'must_complete_quizzes' => $request->must_complete_quizzes,
-            'status'       => $request->status,
-            'published_at' => $request->published_at
-                ? verta()->parse($request->published_at)->datetime()
-                : now(),
+            'status'                => $request->status,
+            'published_at'          => $request->published_at ? verta()->parse($request->published_at)->datetime() : now(),
         ];
         $course = Course::create($args);
+
+
         $requirements = $request->requirements ? collect($request->requirements)->pluck('value')->toArray() : [];
         $course->requirements()->sync($requirements);
         $course->categories()->sync($request->category);
@@ -238,12 +224,12 @@ class CourseController extends Controller
             'teacher_id'            => $request->teacher,
             'must_complete_quizzes' => $request->must_complete_quizzes,
             'status'                => $request->status,
+            'intro_filename'             => $request->intro_filename,
+            'intro_url'        => $request->intro_filename ?  courseVideoUrl($request->intro_filename) : '',
         ];
 
         // Only update intro_id if a new video was uploaded
-        if ($introId !== null) {
-            $updateData['intro_id'] = $introId;
-        }
+
 
         // Update poster_id if provided
         if ($request->has('poster_id')) {
@@ -329,15 +315,16 @@ class CourseController extends Controller
     {
         $order = 1;
         foreach ($lessons as $lessonData) {
-            $video_id = $this->addVideoToMedia($lessonData['video_url']);
             $lesson = $season->lessons()->create([
-                'title'       => $lessonData['title'],
-                'description' => $lessonData['description'] ?? null,
-                'video_id'    => $video_id,
-                'poster_id'   => $lessonData['poster_id'],
-                'duration'    => $lessonData['duration'],
-                'order'       => $order,
-                'is_active'   => $lessonData['is_active'] ?? true,
+                'title'          => $lessonData['title'],
+                'description'    => $lessonData['description'] ?? null,
+                'video_id'       => null,
+                'poster_id'      => $lessonData['poster_id'],
+                'duration'       => $lessonData['duration'],
+                'order'          => $order,
+                'is_active'      => $lessonData['is_active'] ?? true,
+                'video_filename' => $lessonData['video_filename'],
+                'video_url'      => $lessonData['video_filename'] ? courseVideoUrl($lessonData['video_filename']) : null,
             ]);
             $order++;
             if ($lessonData['has_quiz'] == true && isset($lessonData['quiz']) && is_array($lessonData['quiz'])) {
@@ -352,34 +339,28 @@ class CourseController extends Controller
 
         $requestLessonIds = [];
         foreach ($lessons as $lessonData) {
-            $video_id = $this->addVideoToMedia($lessonData['video_url']);
+            $params = [
+                'title' => $lessonData['title'],
+                'description' => $lessonData['description'] ?? null,
+                'video_url' => $lessonData['video_filename'] ? courseVideoUrl($lessonData['video_filename']) : null,
+                'video_filename' => $lessonData['video_filename'],
+                'poster_id' => $lessonData['poster_id'],
+                'duration' => $lessonData['duration'],
+                'order' => $order,
+                'is_active' => $lessonData['is_active'] ?? true,
+            ];
             if(is_numeric($lessonData['id']) && $lessonData['id'] > 0){
                 $requestLessonIds[] = $lessonData['id'];
 
                 $lesson = CourseLesson::where('id',$lessonData['id'])->first();
 
 
-                $lesson->update([
-                    'title' => $lessonData['title'],
-                    'description' => $lessonData['description'] ?? null,
-                    'video_id' => $video_id,
-                    'poster_id' => $lessonData['poster_id'],
-                    'duration' => $lessonData['duration'],
-                    'order' => $order,
-                    'is_active' => $lessonData['is_active'] ?? true,
-                ]);
+                $lesson->update($params);
+
 
             }
             else {
-                $lesson = $season->lessons()->create([
-                    'title' => $lessonData['title'],
-                    'description' => $lessonData['description'] ?? null,
-                    'video_id' => $video_id,
-                    'poster_id' => $lessonData['poster_id'],
-                    'duration' => $lessonData['duration'],
-                    'order' => $order,
-                    'is_active' => $lessonData['is_active'] ?? true,
-                ]);
+                $lesson = $season->lessons()->create($params);
                 $requestLessonIds[] = $lesson->id;
             }
             $order++;
@@ -591,51 +572,4 @@ class CourseController extends Controller
         }
     }
 
-    private function addVideoToMedia($videoUrl)
-    {
-        if (empty($videoUrl)) {
-            return null;
-        }
-
-        try {
-            $domain = env('FTP_DOMAIN');
-            $video_slug = env('COURSE_VIDEO_UPLOAD_SLUG');
-            $http = env('FTP_SSL') ? 'https://' : 'http://';
-            $url = $http . $domain . '/' . $video_slug . ltrim($videoUrl, '/');
-
-            // Verify the video exists and get its details
-            $response = Http::timeout(30)->head($url);
-
-            if (!$response->successful()) {
-                throw new \Exception("ویدیو یافت نشد: " . $videoUrl);
-            }
-
-            $media = Media::where('file_name',$videoUrl)->first();
-            if(!$media) {
-                // Get file info
-                $fileName = basename($videoUrl);
-                $fileSize = $response->header('Content-Length', 0);
-                $mimeType = $response->header('Content-Type', 'video/mp4');
-
-                // Save to media table
-                $filenameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
-
-                return auth()->user()->media()->create([
-                    'file_type' => 'video',
-                    'alt' => $filenameWithoutExt,
-                    'file_name' => $fileName,
-                    'mime_type' => $mimeType,
-                    'ssl' => true,
-                    'domain' => $domain,
-                    'path' => $video_slug . ltrim($videoUrl, '/'),
-                    'size' => $fileSize,
-                ])->id;
-            }
-            return $media->id;
-
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
-
-    }
 }

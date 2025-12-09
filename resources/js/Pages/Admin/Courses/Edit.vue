@@ -24,7 +24,7 @@
                                 variant="outlined"
                                 density="comfortable"
                                 label="نامک"
-                                suffix="https://amozesh.enghelab.test/courses/"
+                                :suffix="site_url"
                                 dir="ltr"
                                 prepend-inner-icon="mdi-link"
                             >
@@ -33,7 +33,7 @@
                                         icon
                                         variant="text"
                                         :disabled="!course.slug"
-                                        @click=""
+                                        @click="openSlug"
                                         title="مشاهده"
                                     >
                                         <v-icon>mdi-open-in-new</v-icon>
@@ -54,7 +54,7 @@
                         </v-col>
                         <v-col class="v-col-12">
                             <v-text-field
-                                v-model="course.intro_url"
+                                v-model="course.intro_filename"
                                 type="text"
                                 hide-details
                                 variant="outlined"
@@ -68,9 +68,9 @@
                                     <v-btn
                                         icon
                                         variant="text"
-                                        @click="showVideo(course.intro_url)"
+                                        @click="showVideo(course.intro_filename)"
                                         title="مشاهده"
-                                        :disabled="!course.intro_url"
+                                        :disabled="!course.intro_filename"
                                     >
                                         <v-icon>mdi-open-in-new</v-icon>
                                     </v-btn>
@@ -271,7 +271,7 @@
                                                         </v-col>
                                                         <v-col class="v-col-12">
                                                             <v-text-field
-                                                                v-model="lesson.video_url"
+                                                                v-model="lesson.video_filename"
                                                                 type="text"
                                                                 hide-details
                                                                 variant="outlined"
@@ -285,9 +285,9 @@
                                                                     <v-btn
                                                                         icon
                                                                         variant="text"
-                                                                        @click="showVideo(lesson.video_url)"
+                                                                        @click="showVideo(lesson.video_filename)"
                                                                         title="مشاهده"
-                                                                        :disabled="!lesson.video_url"
+                                                                        :disabled="!lesson.video_filename"
                                                                     >
                                                                         <v-icon>mdi-open-in-new</v-icon>
                                                                     </v-btn>
@@ -730,6 +730,7 @@ const props = defineProps({
     courses: Object,
     video_upload_slug: String,
     course: Object,
+    site_url: String,
 })
 
 const isLoading = ref(false);
@@ -749,8 +750,16 @@ const status = ref(props.status);
 const courses = ref(props.courses);
 const data = ref(props.course.data);
 const video_upload_slug = ref(props.video_upload_slug);
-
+const site_url = ref(props.site_url)
 const courseRequirements = courses;
+
+const openSlug = () => {
+    if (course.slug) {
+        const fullUrl = `${site_url.value}${course.slug}`;
+        window.open(fullUrl, '_blank');
+    }
+};
+
 const showVideo = (slug) => {
     if (slug) {
         window.open(`${video_upload_slug.value}${slug}`, '_blank');
@@ -768,8 +777,7 @@ const course = reactive({
     must_complete_quizzes: data.value.must_complete_quizzes ? 1 : 0,
     status: data.value.status.value,
     thumbnail_id: data.value.thumbnail.id,
-    intro_url: data.value.intro_url,
-    intro_id: data.value.intro.id,
+    intro_filename: data.value.intro_filename,
     poster_id: data.value.poster.id,
     seasons: data.value.seasons,
     quiz: data.value.quiz
@@ -797,6 +805,7 @@ function addSeason() {
             description: '',
             duration: null,
             video_url: '',
+            video_filename: '',
             poster_id: null,
             is_active: true,
             has_quiz: false,
@@ -833,6 +842,7 @@ function addLesson(sIndex) {
         description: '',
         duration: null,
         video_url: '',
+        video_filename: '',
         is_active: true,
         has_quiz: false,
         poster_id: null,

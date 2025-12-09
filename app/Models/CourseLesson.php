@@ -9,7 +9,7 @@ class CourseLesson extends Model
 {
 
     protected $fillable = [
-        'season_id', 'title', 'description', 'video_id', 'poster_id', 'duration', 'order', 'is_active'
+        'season_id', 'title', 'description', 'video_url', 'video_filename', 'poster_id', 'duration', 'order', 'is_active'
     ];
 
     public function season()
@@ -26,12 +26,6 @@ class CourseLesson extends Model
     {
         return $this->season->course();
     }
-
-    public function video()
-    {
-        return $this->belongsTo(Media::class, 'video_id');
-    }
-
 
     public function poster()
     {

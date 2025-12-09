@@ -21,11 +21,8 @@ class AdminCourseDetailsResource extends JsonResource
                 'id'    => $this->thumbnail_id ?? null,
                 'url'   => $this->thumbnail?->url,
             ],
-            'intro' => [
-                'id'    => $this->intro_id ?? null,
-                'url'   => $this->intro?->url,
-            ],
-            'intro_url' => $this->intro?->file_name,
+            'intro_url' => $this->intro_url,
+            'intro_filename' => $this->intro_filename,
             'poster' => [
                 'id'    => $this->poster_id ?? null,
                 'url'   => $this->poster?->url,
@@ -76,7 +73,8 @@ class AdminCourseDetailsResource extends JsonResource
                             'title' => $lesson->title,
                             'description' => $lesson->description,
                             'is_active' => $lesson->is_active ? true : false,
-                            'video_url' => $lesson->video?->file_name,
+                            'video_url' => $lesson->video_url,
+                            'video_filename' => $lesson->video_filename,
                             'poster_id' => $lesson->poster_id,
                             'poster' => [
                                 'id' => $lesson->poster_id,

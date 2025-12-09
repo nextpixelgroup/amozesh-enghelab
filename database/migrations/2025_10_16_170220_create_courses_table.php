@@ -20,6 +20,9 @@ return new class extends Migration
             $table->text('summary')->fulltext(); // خلاصه
             $table->text('description')->fulltext(); // توضیحات
             $table->foreignId('thumbnail_id')->nullable()->constrained('media'); // تصویر شاخص
+            $table->text('intro_url')->nullable(); // آدرس کامل ویدیو اینترو
+            $table->string('intro_filename')->nullable(); // نام فایل ویدیو اینترو
+            $table->foreignId('poster_id')->nullable()->constrained('media'); // تصویر شاخص
             $table->foreignId('teacher_id')->nullable()->constrained('users');
             $table->unsignedBigInteger('price')->nullable()->default(0);
             $table->float('rate')->nullable()->default(0); // میانگین امتیاز

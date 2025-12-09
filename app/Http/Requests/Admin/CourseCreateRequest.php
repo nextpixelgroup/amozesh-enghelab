@@ -69,20 +69,14 @@ class CourseCreateRequest extends FormRequest
         ];
     }
 
-    /**
-     * Get custom messages for validator errors.
-     *
-     * @return array
-     */
     public function messages(): array
     {
-        return [
+        $messages = [
             // Course fields
             'title.required' => 'عنوان دوره الزامی است.',
             'title.min' => 'عنوان دوره باید حداقل ۳ کاراکتر باشد.',
             'title.max' => 'عنوان دوره نمی‌تواند بیشتر از ۱۰۰ کاراکتر باشد.',
             'slug.unique' => 'این آدرس قبلا استفاده شده است.',
-            //'slug.regex' => 'فرمت آدرس معتبر نیست. فقط از حروف، اعداد و خط تیره استفاده کنید.',
             'teacher.required' => 'انتخاب مدرس الزامی است.',
             'teacher.exists' => 'مدرس انتخاب شده معتبر نیست.',
             'published_at.required' => 'تاریخ انتشار الزامی است.',
@@ -95,22 +89,15 @@ class CourseCreateRequest extends FormRequest
             'status.required' => 'وضعیت دوره الزامی است.',
             'status.in' => 'وضعیت انتخاب شده معتبر نیست.',
 
-            // Seasons
+            // Seasons (عمومی)
             'seasons.required' => 'حداقل یک فصل برای دوره الزامی است.',
             'seasons.array' => 'فصل‌ها باید به صورت آرایه ارسال شوند.',
             'seasons.min' => 'حداقل یک فصل برای دوره الزامی است.',
-            'seasons.*.title.required' => 'عنوان فصل الزامی است.',
-            'seasons.*.title.min' => 'عنوان فصل باید حداقل ۳ کاراکتر باشد.',
-            'seasons.*.title.max' => 'عنوان فصل نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
-            'seasons.*.lessons.*.duration' => 'زمان ویدیو را وارد نمایید.',
             'seasons.*.is_active.required' => 'وضعیت فعال/غیرفعال کردن فصل الزامی است.',
             'seasons.*.is_active.boolean' => 'وضعیت فعال/غیرفعال کردن فصل معتبر نیست.',
-            'seasons.*.lessons.required' => 'حداقل یک درس برای هر فصل الزامی است.',
-            'seasons.*.lessons.array' => 'درس‌ها باید به صورت آرایه ارسال شوند.',
-            'seasons.*.lessons.min' => 'حداقل یک درس برای هر فصل الزامی است.',
 
-            // Lessons
-            'seasons.*.lessons.*.title.required' => 'عنوان درس الزامی است.',
+            // Lessons (عمومی)
+            'seasons.*.lessons.*.duration' => 'زمان ویدیو را وارد نمایید.',
             'seasons.*.lessons.*.title.min' => 'عنوان درس باید حداقل ۳ کاراکتر باشد.',
             'seasons.*.lessons.*.title.max' => 'عنوان درس نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
             'seasons.*.lessons.*.is_active.required' => 'وضعیت فعال/غیرفعال کردن درس الزامی است.',
@@ -119,7 +106,6 @@ class CourseCreateRequest extends FormRequest
             // Quiz
             'seasons.*.lessons.*.quiz.array' => 'آزمون باید به صورت آرایه ارسال شود.',
             'seasons.*.lessons.*.quiz.title.required_if' => 'عنوان آزمون الزامی است.',
-
             'seasons.*.lessons.*.quiz.title.min' => 'عنوان آزمون باید حداقل ۳ کاراکتر باشد.',
             'seasons.*.lessons.*.quiz.title.max' => 'عنوان آزمون نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
             'seasons.*.lessons.*.quiz.is_active.required_with' => 'وضعیت فعال/غیرفعال کردن آزمون الزامی است.',
@@ -131,7 +117,6 @@ class CourseCreateRequest extends FormRequest
             // Questions
             'seasons.*.lessons.*.quiz.questions.*.question.required_if' => 'متن سوال الزامی است.',
             'seasons.*.lessons.*.quiz.questions.*.question.min' => 'متن سوال باید حداقل ۳ کاراکتر باشد.',
-            //'seasons.*.lessons.*.quiz.questions.*.type.required' => 'نوع سوال الزامی است.',
             'seasons.*.lessons.*.quiz.questions.*.type.in' => 'نوع سوال معتبر نیست.',
 
             // Options
@@ -146,7 +131,37 @@ class CourseCreateRequest extends FormRequest
             'image.required' => 'تصویر دوره الزامی است.',
             'image.image' => 'فایل ارسالی باید تصویر باشد.',
             'image.mimes' => 'فرمت تصویر باید یکی از موارد jpeg, png, jpg, gif, svg باشد.',
-            'image.max' => 'حجم تصویر نباید بیشتر از ۲ مگابایت باشد.'
+            'image.max' => 'حجم تصویر نباید بیشتر از ۲ مگابایت باشد.',
         ];
+
+        $seasons = $this->input('seasons', []);
+
+        foreach ($seasons as $seasonIndex => $season) {
+            $seasonNumber = $seasonIndex + 1;
+
+            // پیام‌های اختصاصی فصل
+            $messages["seasons.{$seasonIndex}.title.required"] = "عنوان فصل {$seasonNumber} الزامی است.";
+            $messages["seasons.{$seasonIndex}.title.min"] = "عنوان فصل {$seasonNumber} باید حداقل ۳ کاراکتر باشد.";
+            $messages["seasons.{$seasonIndex}.title.max"] = "عنوان فصل {$seasonNumber} نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.";
+
+            $messages["seasons.{$seasonIndex}.lessons.required"] = "حداقل یک درس برای فصل {$seasonNumber} الزامی است.";
+            $messages["seasons.{$seasonIndex}.lessons.array"] = "درس‌های فصل {$seasonNumber} باید به صورت آرایه ارسال شوند.";
+            $messages["seasons.{$seasonIndex}.lessons.min"] = "حداقل یک درس برای فصل {$seasonNumber} الزامی است.";
+
+            // پیام‌های اختصاصی درس
+            foreach (($season['lessons'] ?? []) as $lessonIndex => $lesson) {
+                $lessonNumber = $lessonIndex + 1;
+
+                $messages["seasons.{$seasonIndex}.lessons.{$lessonIndex}.title.required"]
+                    = "عنوان درس {$lessonNumber} از فصل {$seasonNumber} الزامی است.";
+                $messages["seasons.{$seasonIndex}.lessons.{$lessonIndex}.title.min"]
+                    = "عنوان درس {$lessonNumber} از فصل {$seasonNumber} باید حداقل ۳ کاراکتر باشد.";
+                $messages["seasons.{$seasonIndex}.lessons.{$lessonIndex}.title.max"]
+                    = "عنوان درس {$lessonNumber} از فصل {$seasonNumber} نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.";
+            }
+        }
+
+        return $messages;
     }
+
 }

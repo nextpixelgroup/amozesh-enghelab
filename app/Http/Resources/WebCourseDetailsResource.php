@@ -22,7 +22,7 @@ class WebCourseDetailsResource extends JsonResource
                 'lessons' => function ($q) use ($userId) {
                     $q->where('is_active', 1)
                         ->orderBy('order') // ترتیب درس‌ها مهم است
-                        ->with(['video', 'poster']);
+                        ->with(['poster']);
                 },
                 'lessons.quiz' => function ($q) use ($userId) {
                     $q->where('is_active', 1)
@@ -69,9 +69,9 @@ class WebCourseDetailsResource extends JsonResource
                     'title' => $lesson->title,
                     'description' => $lesson->description,
                     'duration' => formatDurationTime($lesson->duration),
-                    'video' => $lesson->video?->url,
-                    'download_url' => $lesson->video?->url
-                        ? route('web.courses.download.video', $lesson->video?->file_name)
+                    'video' => $lesson->video_url,
+                    'download_url' => $lesson->video_url
+                        ? route('web.courses.download.video', $lesson->video_filename)
                         : '',
                     'poster' => $lesson->poster?->url,
                     'completed' => $lesson->completions()->exists(), // اگر برای این هم relation دارید بهتر است eager load شود
@@ -115,7 +115,7 @@ class WebCourseDetailsResource extends JsonResource
             'description' => $this->description,
             'rate' => number_format($this->rate,1),
             'user_rate' => $userId ? $this->ratings()->where('user_id',$userId)->first()?->rate : null,
-            'intro' => ['url' => $this->intro?->url, 'file_name' => $this->intro?->file_name],
+            'intro' => ['url' => $this->intro_url, 'file_name' => $this->intro_filename],
             'poster' => $this->poster->url ?? '/assets/img/shrine.jpg',
             'teacher' => [
                 'name' => $this->teacher->firstname.' '.$this->teacher->lastname,

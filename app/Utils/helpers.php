@@ -483,12 +483,6 @@ if (!function_exists('formatFileSize')) {
 }
 
 
-function video_upload_path($path = '')
-{
-    $http = env('FTP_SSL') ? 'https://' : 'http://';
-    return $http.env('FTP_DOMAIN').'/'.env('COURSE_VIDEO_UPLOAD_SLUG').$path;
-}
-
 function formatDurationTime($minutes)
 {
     if($minutes == null) return 0;
@@ -510,4 +504,18 @@ function buildMenuTree($items, $grouped)
         }
         return $item;
     });
+}
+
+
+
+function video_upload_path($path = '')
+{
+    $http = env('FTP_SSL') ? 'https://' : 'http://';
+    return $http.env('FTP_DOMAIN').'/'.env('COURSE_VIDEO_UPLOAD_SLUG').$path;
+}
+function courseVideoUrl($filename = '')
+{
+    $ssl = env('FTP_SSL') ? 'https://' : 'http://';
+    $filename = trim($filename, '/');
+    return $ssl.env('FTP_DOMAIN').'/'.env('COURSE_VIDEO_UPLOAD_SLUG').$filename;
 }
