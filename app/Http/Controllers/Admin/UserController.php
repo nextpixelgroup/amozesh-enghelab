@@ -122,7 +122,7 @@ class UserController extends Controller
                 ]);
                 if($user){
                     $user->teacherDetails()->create([
-                        'image_id' => $request->image_id,
+                        //'image_id' => $request->image_id,
                         'academic_title' => $request->academic_title,
                         'job_title' => $request->job_title,
                         'degree' => $request->degree,
@@ -232,7 +232,7 @@ class UserController extends Controller
                     $user->syncRoles($request->role);
                     if($request->role == 'teacher' && $user->teacherDetails()->exists()){
                         $user->teacherDetails()->update([
-                            'image_id' => $request->image_id,
+                            //'image_id' => $request->image_id,
                             'academic_title' => $request->academic_title,
                             'job_title' => $request->job_title,
                             'degree' => $request->degree,
@@ -244,7 +244,7 @@ class UserController extends Controller
                     }
                     else{
                         $user->teacherDetails()->create([
-                            'image_id' => $request->image_id,
+                            //'image_id' => $request->image_id,
                             'academic_title' => $request->academic_title,
                             'job_title' => $request->job_title,
                             'degree' => $request->degree,

@@ -151,24 +151,13 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="12" lg="6">
+                <v-col cols="12" lg="12">
                     <ImageUploader
                         v-model:model-value="form.avatar_id"
                         :initial-url="form.avatar?.url"
                         upload-route="admin.upload.users.image"
                         label="فقط فایل تصویری آپلود کنید"
                         title="بارگذاری آواتار"
-                        accept="image/*"
-                        type="user"
-                    />
-                </v-col>
-                <v-col cols="12" lg="6">
-                    <ImageUploader
-                        v-model:model-value="form.image_id"
-                        upload-route="admin.upload.users.image"
-                        :initial-url="form.image?.url"
-                        label="فقط فایل تصویری آپلود کنید"
-                        title="بارگذاری تصویر پس‌زمینه"
                         accept="image/*"
                         type="user"
                     />
