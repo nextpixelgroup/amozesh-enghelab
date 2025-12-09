@@ -123,7 +123,8 @@ class WebCourseDetailsResource extends JsonResource
                 'courses' => number_format($this->teacher->teachingCourses->count()),
                 'bio' => $this->teacher->bio,
                 'avatar' => $this->teacher->avatar->url ?? '/assets/img/default-teacher.svg',
-                'slug' => $this->teacher->slug
+                'slug' => $this->teacher->slug,
+                'url' => $this->teacher->slug ? route('web.teachers.show',$this->teacher->slug) : '#',
             ],
             'published_at' => verta()->instance($this->published_at)->format('l j F Y'),
             'category' => $this->categories?->first()?->title,

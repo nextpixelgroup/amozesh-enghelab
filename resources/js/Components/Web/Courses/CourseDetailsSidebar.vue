@@ -86,7 +86,7 @@
                         <img :src="course.teacher.avatar" alt="">
                     </div>
                     <div>
-                        <a :href="route('web.teachers.show',course.teacher.slug)" target="_blank"><span>{{ course.teacher.name }}</span></a>
+                        <a :href="course.teacher.url" target="_blank"><span>{{ course.teacher.name }}</span></a>
                         <div class="zo-social">
                             <img src="/assets/img/site/eitaa-grey.svg" alt="">
                             <img src="/assets/img/site/soroosh-grey.svg" alt="">
