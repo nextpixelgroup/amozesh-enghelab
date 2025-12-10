@@ -57,7 +57,7 @@ class Course extends Model
 
     public function categories(): MorphToMany
     {
-        return $this->morphToMany(Category::class, 'categorizable');
+        return $this->morphToMany(Category::class, 'categorizable')->withTimestamps()->orderBy('updated_at','DESC');
     }
 
     public function seasons()

@@ -148,9 +148,14 @@ watch(
 
 function cloneSlides(list) {
     return (list ?? []).map(slide => ({
-        ...slide,
+        id: slide.id ?? null,
+        title: slide.title ?? '',
+        description: slide.description ?? '',
+        link: slide.link ?? '',
+        target: slide.target ?? '_self',
         image: {
-            ...(slide.image ?? {}),
+            id: slide.image?.id ?? null,
+            url: slide.image?.url ?? '',
         },
     }))
 }
@@ -192,19 +197,19 @@ const removeSlide = async (id, index) => {
 
 const saveSlides = async () => {
     const form = useForm({
-        slides: slidesLocal.value,
+        slides: slidesLocal.value.map(slide => ({
+            ...slide,
+            image: {
+                id: slide.image?.id ?? null,
+                url: slide.image?.url ?? '',
+            }
+        })),
     })
 
-    form.transform(data => ({
-        ...data,
-        slides: data.slides.map(slide => ({
-            ...slide,
-            image_id: slide.image?.id ?? null,
-        })),
-    }))
-
     await form.put(route('admin.settings.slides.update'), {
-        onStart: () => (isSaving.value = true),
+        onStart: () => {
+            isSaving.value = true
+        },
         onSuccess: (response) => {
             slidesLocal.value = cloneSlides(response.props.slides)
             expandAllPanels()

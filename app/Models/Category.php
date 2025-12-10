@@ -10,6 +10,8 @@ class Category extends Model
 {
     use SoftDeletes;
 
+    public $timestamps = true;
+
     protected $fillable = ['title', 'slug', 'icon', 'description', 'type'];
 
     /**

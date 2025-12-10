@@ -16,13 +16,14 @@ class SettingController extends Controller
     {
         $setting = new SettingsService;
         $setting = $setting->getGroup('setting');
-        $slides = $setting?['index.slider'] : [];
-        $social = $setting?['index.social'] : [];
+        $slides = isset($setting['index.slider']) ? $setting['index.slider'] : [];
+        $social = isset($setting['index.social']) ? $setting['index.social'] : [];
         return inertia('Admin/Settings/General', compact('slides', 'social'));
     }
 
     public function slideUpdate(Request $request)
     {
+
         try {
             $slides = $request->slides;
             $setting = new SettingsService;
