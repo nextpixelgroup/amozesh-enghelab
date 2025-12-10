@@ -116,7 +116,7 @@ class WebCourseDetailsResource extends JsonResource
             'rate' => number_format($this->rate,1),
             'user_rate' => $userId ? $this->ratings()->where('user_id',$userId)->first()?->rate : null,
             'intro' => ['url' => $this->intro_url, 'file_name' => $this->intro_filename],
-            'poster' => $this->poster->url ?? '/assets/img/shrine.jpg',
+            'poster' => $this->poster->url ?? '/assets/img/site/books-pattern.png',
             'teacher' => [
                 'name' => $this->teacher->firstname.' '.$this->teacher->lastname,
                 'students' => number_format($this->teacher->studentsCount),
