@@ -175,7 +175,7 @@
                                 size="small"
                                 class="ml-2 season-drag-handle"
                             ></v-btn>
-                            {{ season.title || `سرفصل ${sIndex + 1}` }}
+                            {{ `سرفصل ${sIndex + 1}${season.title ? ` - ${season.title}` : ''}` }}
                         </v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-text-field
@@ -223,7 +223,7 @@
                                                     size="small"
                                                     class="ml-2 lesson-drag-handle"
                                                 ></v-btn>
-                                                {{ lesson.title || `درس ${lIndex + 1}` }}
+                                                {{ `درس ${lIndex + 1}${lesson.title ? ` - ${lesson.title}` : ''}` }}
                                             </v-expansion-panel-title>
                                             <v-expansion-panel-text>
                                                 <v-card flat>
