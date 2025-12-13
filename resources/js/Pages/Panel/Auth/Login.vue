@@ -89,7 +89,7 @@ const sendCode = () => {
               isLoading.value = true;
             },
             onSuccess: () => {
-                startCountdown(5)
+                startCountdown(90)
                 step.value = 2;
                 isLoading.value = false;
             },

@@ -73,7 +73,7 @@ class AuthController extends Controller
 
             // ایجاد/به‌روزرسانی OTP
             if(env('APP_ENV') == 'production'){
-                $code = rand(1000, 9999);
+                $code = rand(10000, 99999);
             }
             else {
                 $code = 12345;
