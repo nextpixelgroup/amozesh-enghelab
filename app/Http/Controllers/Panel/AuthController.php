@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendOtpJob;
 use App\Models\OTP;
 use App\Models\Restriction;
 use App\Models\User;
@@ -71,20 +72,25 @@ class AuthController extends Controller
             }
 
             // ایجاد/به‌روزرسانی OTP
-            //$code = rand(1000, 9999);
-            $code = 12345;
+            if(env('APP_ENV') == 'production'){
+                $code = rand(1000, 9999);
+            }
+            else {
+                $code = 12345;
+            }
             $otp->code = $code;
             $otp->attempts = 0;
             $otp->expires_at = now()->addMinutes(5);
             $otp->save();
-
-            // اینجا میشه SMS ارسال کرد
+            if(env('APP_ENV') == 'production'){
+                SendOtpJob::dispatch($mobile,$code);
+            }
 
             return redirectMessage('success', 'کد تأیید ارسال شد.');
 
         } catch (Exception $e) {
             $error = log_error($e);
-            return redirectMessage('error', "خطایی پیش آمد. کد خطا:");
+            return redirectMessage('error', "خطایی پیش آمد.(کد خطا:$error->id)");
         }
     }
 

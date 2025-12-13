@@ -140,7 +140,25 @@ class HandleInertiaRequests extends Middleware
             $shared['contactCount'] = Contact::where('read_at', null)->count();
         }
         elseif (str_starts_with($request->path(), 'panel')) {
+            $menuTypes = ['header', 'footer-1', 'footer-2', 'footer-3'];
+            $allMenus = Menu::where('is_active', 1)
+                ->whereIn('type', $menuTypes)
+                ->orderBy('type')
+                ->orderBy('order')
+                ->get()
+                ->groupBy('type')
+                ->mapWithKeys(function ($menus, $type) {
+                    $grouped = $menus->groupBy('parent_id');
+                    return [$type => buildMenuTree($grouped->get(null, collect()), $grouped)];
+                });
 
+            $shared['header'] = $allMenus->get('header', []);
+            $shared['footer1'] = $allMenus->get('footer-1', []);
+            $shared['footer2'] = $allMenus->get('footer-2', []);
+            $shared['footer3'] = $allMenus->get('footer-3', []);
+
+            $setting = new SettingsService;
+            $shared['social'] = $setting->get('index.social');
         }
         else{
             $menuTypes = ['header', 'footer-1', 'footer-2', 'footer-3'];

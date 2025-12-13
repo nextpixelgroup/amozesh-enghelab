@@ -43,7 +43,7 @@ class ContactController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'mobile' => $request->mobile,
-                'message' => $request->message,
+                'message' => strip_tags($request->input('message')),
             ]);
 
             return redirectMessage('success', 'پیام با موفقیت ارسال شد. کارشناسان ما به زودی با شما تماس خواهند گرفت');
