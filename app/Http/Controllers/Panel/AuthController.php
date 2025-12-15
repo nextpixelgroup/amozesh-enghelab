@@ -71,12 +71,9 @@ class AuthController extends Controller
                 $otp->login = $mobile;
             }
 
-            // ایجاد/به‌روزرسانی OTP
+            $code = 12345;
             if(env('APP_ENV') == 'production'){
                 $code = rand(10000, 99999);
-            }
-            else {
-                $code = 12345;
             }
             $otp->code = $code;
             $otp->attempts = 0;

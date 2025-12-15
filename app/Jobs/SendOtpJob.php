@@ -16,7 +16,7 @@ class SendOtpJob implements ShouldQueue
      */
     public function __construct(public string $mobile, public int $code)
     {
-        //
+        $this->onConnection('redis')->onQueue('otp');
     }
 
     /**

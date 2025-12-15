@@ -53,7 +53,7 @@
                         </v-col>
                         <v-col class="v-col-lg-5 v-col-12">
                             <div class="zo-menus">
-                                <div class="zo-menu" v-if="footer1.length">
+                                <div class="zo-menu" v-if="footer1">
                                     <span>دوره‌ها و فروشگاه</span>
                                     <ul>
                                         <li v-for="item in footer1" :key="footer1.id">
@@ -61,7 +61,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="zo-menu" v-if="footer2.length">
+                                <div class="zo-menu" v-if="footer2">
                                     <span>لینک‌های سریع</span>
                                     <ul>
                                         <li v-for="item in footer2" :key="footer2.id">
@@ -69,7 +69,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="zo-menu" v-if="footer3.length">
+                                <div class="zo-menu" v-if="footer3">
                                     <span>ارتباط با مجموعه</span>
                                     <ul>
                                         <li v-for="item in footer3" :key="footer3.id">
@@ -83,12 +83,12 @@
                             <div class="zo-social">
                                 <ul>
                                     <li>
-                                        <a :href="social.soroush" target="_blank">
+                                        <a :href="social?.soroush" target="_blank">
                                             <img src="/assets/img/site/social-1.svg" alt="" class="img-fluid">
                                         </a>
                                     </li>
                                     <li>
-                                        <a :href="social.eitaa" target="_blank">
+                                        <a :href="social?.eitaa" target="_blank">
                                             <img src="/assets/img/site/social-2.svg" alt="" class="img-fluid">
                                         </a>
                                     </li>

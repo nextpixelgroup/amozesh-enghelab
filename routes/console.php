@@ -17,4 +17,4 @@ Schedule::job(new StatCourseDurationsJob())->everyFifteenMinutes();
 Schedule::job(new StatCourseRatingsJob())->everyFifteenMinutes();
 Schedule::job(new StatCourseStudentsJob())->everyFifteenMinutes();
 Schedule::job(new StatCourseSeasonsJob())->everyFifteenMinutes();
-Schedule::job(new CancelExpiredOrders())->everyMinute();
+Schedule::job(new CancelExpiredOrders())->everyTwoMinutes();

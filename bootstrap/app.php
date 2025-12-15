@@ -26,7 +26,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'video/chunk',
+            'video/complete',
+        ]);
         $middleware->alias([
             'admin' => IsAdmin::class,
             'client' => IsClient::class,
