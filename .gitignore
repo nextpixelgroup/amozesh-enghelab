@@ -24,3 +24,5 @@ Homestead.yaml
 Thumbs.db
 app/Http/Controllers/TestController.php
 bootstrap/ssr/*
+rr
+.rr.yaml

@@ -15,12 +15,15 @@
         "kavenegar/laravel": "^1.3",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.40",
+        "laravel/octane": "^2.13",
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.30",
         "league/flysystem-ftp": "^3.29",
         "php-ffmpeg/php-ffmpeg": "^1.3",
         "shetabit/payment": "^6.3",
         "spatie/laravel-permission": "^6.21",
+        "spiral/roadrunner-cli": "^2.6.0",
+        "spiral/roadrunner-http": "^3.3.0",
         "tightenco/ziggy": "^2.6"
     },
     "require-dev": {
