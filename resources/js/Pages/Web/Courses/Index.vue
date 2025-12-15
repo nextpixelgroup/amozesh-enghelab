@@ -25,37 +25,34 @@
                         <v-col lg="6" cols="12">
                             <h1>دوره‌های آموزشی</h1>
                             <p>
-                                در این بخش توضیحات مربوط به دوره‌ها یا اطلاعاتی کلی که اعتماد ساز در زمینه دوره‌ها
-                                باشد قرار می‌گیرد. همچنین می‌توانید متن توضیحاتی مربوط به اساتید یا دوره‌هایی که در
-                                گذشته برگزار شده قرار دهید که اعداد و آماری که در مقابل نمایش داده شده است، بهتر درک
-                                شود.
+                                در این بخش توضیحات مربوط به دوره‌ها یا اطلاعاتی کلی که اعتماد ساز در زمینه دوره‌ها باشد قرار می‌گیرد. همچنین می‌توانید متن توضیحاتی مربوط به اساتید یا دوره‌هایی که در گذشته برگزار شده قرار دهید که اعداد و آماری که در مقابل نمایش داده شده است، بهتر درک شود.
                             </p>
                         </v-col>
                         <v-col lg="6" cols="12">
                             <div class="zo-stats">
-                                <v-row class="align-center">
-                                    <v-col md="6" cols="12">
+                                <v-row dense class="align-center">
+                                    <v-col cols="6">
                                         <div class="zo-stat">
                                             <img src="/assets/img/site/stat-course.svg" alt="" class="img-fluid" />
                                             <strong>{{stats.courses}}</strong>
                                             <span>دوره‌های آموزشی</span>
                                         </div>
                                     </v-col>
-                                    <v-col md="6" cols="12">
+                                    <v-col cols="6">
                                         <div class="zo-stat">
                                             <img src="/assets/img/site/stat-star.svg" alt="" class="img-fluid" />
                                             <strong>{{stats.ratings}}</strong>
                                             <span>میانگین امتیازات دوره‌ها</span>
                                         </div>
                                     </v-col>
-                                    <v-col md="6" cols="12">
+                                    <v-col cols="6">
                                         <div class="zo-stat">
                                             <img src="/assets/img/site/stat-students.svg" alt="" class="img-fluid" />
                                             <strong>{{stats.students}}</strong>
                                             <span>کل شرکت کنندگان</span>
                                         </div>
                                     </v-col>
-                                    <v-col md="6" cols="12">
+                                    <v-col cols="6">
                                         <div class="zo-stat">
                                             <img src="/assets/img/site/stat-lessons.svg" alt="" class="img-fluid" />
                                             <strong>{{stats.seasons}}</strong>
@@ -279,6 +276,14 @@ watch(() => page.props.courses, (newVal) => {
 .zo-courses-section .zo-stats .zo-stat span {
     display: block;
     color: var(--White)
+}
+
+@media (max-width: 575px) {
+
+    .zo-courses-section .zo-stats .v-col-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }
 
 .zo-courses-section .zo-title {
