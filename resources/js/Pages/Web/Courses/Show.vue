@@ -7,7 +7,7 @@
                 </v-col>
                 <v-col cols="12" lg="9">
                     <v-card flat class="zo-card">
-                        <div class="zo-space">
+                        <div class="zo-content">
                             <div class="zo-nav">
                                 <ul>
                                     <li v-if="course.data.description">

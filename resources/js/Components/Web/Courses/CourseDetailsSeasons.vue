@@ -1,5 +1,5 @@
 <template>
-    <div class="zo-info-section" id="lessons">
+    <div class="zo-sessions-details-section" id="lessons">
         <v-row dense class="align-center">
             <v-col cols="12" md="3">
                 <strong>محتوای دوره</strong>
@@ -40,7 +40,8 @@
                     </v-col>
                 </v-row>
             </v-expansion-panel-title>
-            <CourseDetailsLessons :lessons="season.lessons" :mustCompleteQuizzes="course.must_complete_quizzes" :isEnrolled="isEnrolled"/>
+            <CourseDetailsLessons :lessons="season.lessons" :mustCompleteQuizzes="course.must_complete_quizzes"
+                                  :isEnrolled="isEnrolled"/>
         </v-expansion-panel>
     </v-expansion-panels>
 </template>
@@ -48,6 +49,7 @@
 
 import {ref} from "vue";
 import CourseDetailsLessons from "@/Components/Web/Courses/CourseDetailsLessons.vue";
+
 const props = defineProps({
     course: {
         type: Object,

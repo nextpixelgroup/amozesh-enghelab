@@ -197,168 +197,9 @@ figure {
     border-top: 1px dashed rgb(240, 240, 240)
 }
 
-.zo-header-section {
-    width: 100%;
-    display: inline-block;
-    background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
-    color: var(--White)
-}
-
-.zo-header-section .zo-menu ul {
-    display: flex;
-    gap: 5px
-}
-
-.zo-header-section .zo-menu ul li {
-    display: inline-block;
-    position: relative;
-}
-
-.zo-header-section .zo-menu ul li:before {
-    content: '';
-    width: 1px;
-    height: 15px;
-    position: absolute;
-    top: 2.5px;
-    right: -2.5px;
-    background: var(--Secondary)
-}
-
-.zo-header-section .zo-menu ul li:first-child:before {
-    display: none
-}
-
-.zo-header-section .zo-menu ul li a {
-    padding: 1.5px 10px;
-    color: var(--White)
-}
-
-.zo-courses-section .zo-content {
-    font-size: .90rem
-}
-
-.zo-courses-section .zo-content h1 {
-    margin: 0 0 15px;
-    font-size: 1.875rem;
-    color: var(--Primary)
-}
-
-.zo-courses-section .zo-content p {
-    text-align: justify
-}
-
-.zo-courses-section .zo-stats .zo-stat {
-    width: 100%;
-    display: inline-block;
-    padding: 15px;
-    background: rgb(245, 245, 245);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .075)
-}
-
-.zo-courses-section .zo-stats .zo-stat img {
-    display: block;
-    margin: 0 0 10px
-}
-
-.zo-courses-section .zo-stats .zo-stat strong {
-    font-size: 1.25rem;
-    color: var(--Primary)
-}
-
-.zo-courses-section .zo-stats .zo-stat span {
-    display: block;
-    color: var(--Primary)
-}
-
-.zo-courses-section .zo-title {
-    display: block;
-    position: relative;
-    top: 30px;
-    font-size: 1.125rem;
-    color: var(--Secondary)
-}
-
-.zo-courses-section .zo-col {
-    width: 20%;
-    padding: 5px
-}
-
-@media (max-width: 1140px) {
-
-    .zo-courses-section .zo-col {
-        width: 50%
-    }
-}
-
-@media (max-width: 575px) {
-
-    .zo-courses-section .zo-col {
-        width: 100%
-    }
-}
-
-.zo-courses-section .zo-actions .zo-sort,
-.zo-books-section .zo-actions .zo-sort {
-    text-align: left
-}
-
-.zo-courses-section .zo-actions .zo-sort button,
-.zo-books-section .zo-actions .zo-sort button {
-    border-radius: 0.75rem;
-}
-
-.zo-courses-section .zo-actions .zo-select .v-field,
-.zo-books-section .zo-actions .zo-select .v-field {
-    background: var(--Secondary);
-    color: var(--White);
-    box-shadow: none
-}
-
-.zo-courses-section .zo-actions .zo-search,
-.zo-books-section .zo-actions .zo-search {
-    display: flex;
-    gap: 10px;
-    position: relative;
-}
-
-.zo-courses-section .zo-actions .zo-search .zo-select .v-field .v-field__input,
-.zo-books-section .zo-actions .zo-search .zo-select .v-field .v-field__input {
-    height: 40px;
-    min-height: 40px;
-    padding: 0 15px
-}
-
-.zo-courses-section .zo-actions .zo-search .zo-input,
-.zo-books-section .zo-actions .zo-search .zo-input {
-    width: 300px;
-    position: relative
-}
-
-.zo-courses-section .zo-actions .zo-search .zo-input .v-field,
-.zo-books-section .zo-actions .zo-search .zo-input .v-field {
-    background: rgb(240, 240, 240);
-    box-shadow: none
-}
-
-.zo-courses-section .zo-actions .zo-search .zo-input .v-field .v-field__input,
-.zo-books-section .zo-actions .zo-search .zo-input .v-field .v-field__input {
-    height: 40px;
-    min-height: 40px;
-    padding: 0 15px
-}
-
-.zo-courses-section .zo-actions .zo-search .zo-input .zo-icon,
-.zo-books-section .zo-actions .zo-search .zo-input .zo-icon {
-    position: absolute;
-    top: 7.5px;
-    left: 7.5px
-}
-
 .zo-courses-section .zo-course {
     width: 100%;
     display: inline-block;
-    margin: 0 0 5px;
     padding: 10px;
     position: relative;
     background: var(--White);
@@ -385,42 +226,51 @@ figure {
 
 .zo-courses-section .zo-course figure .zo-thumbnail img {
     width: 100%;
+    height: 245px;
     object-fit: cover;
-    border-radius: 0.75rem
+    border-radius: 0.5rem
 }
 
-.zo-courses-section .zo-course .zo-content {
+.zo-courses-section .zo-course .zo-details {
     width: 100%;
     display: inline-block;
+    padding: 0;
     color: var(--Sub)
 }
 
-.zo-courses-section .zo-course .zo-content h2 {
+.zo-courses-section .zo-course .zo-details h2 {
     display: block;
     margin: 0 0 5px;
     font-size: 0.95rem;
-    color: var(--Primary)
+    color: var(--Primary);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
 }
 
-.zo-courses-section .zo-course .zo-content .zo-prof {
+.zo-courses-section .zo-course .zo-details .zo-prof {
     display: block;
-    margin: 0 0 10px
+    margin: 0 0 10px;
+    font-size: .875rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
 }
 
-.zo-courses-section .zo-course .zo-content ul {
+.zo-courses-section .zo-course .zo-details ul {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     margin: 0 0 10px
 }
 
-.zo-courses-section .zo-course .zo-content ul li {
+.zo-courses-section .zo-course .zo-details ul li {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.zo-courses-section .zo-course .zo-content .zo-price {
+.zo-courses-section .zo-course .zo-details .zo-price {
     display: flex;
     justify-content: space-between;
     gap: 15px;
@@ -428,11 +278,11 @@ figure {
     color: var(--Sub)
 }
 
-.zo-courses-section .zo-course .zo-content .zo-price strong {
+.zo-courses-section .zo-course .zo-details .zo-price strong {
     color: var(--Primary)
 }
 
-.zo-courses-section .zo-course .zo-content .zo-more {
+.zo-courses-section .zo-course .zo-details .zo-more {
     width: 100%;
     height: 45px;
     display: flex;
@@ -445,130 +295,6 @@ figure {
 
 .zo-courses-section .zo-course:hover .zo-more {
     opacity: .90
-}
-
-.zo-footer-section {
-    width: 100%;
-    display: inline-block;
-    margin: 60px 0 0;
-    padding: 5px 0;
-    background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
-    color: var(--White)
-}
-
-.zo-footer-section .zo-about {
-    display: flex;
-    align-items: center;
-    gap: 15px
-}
-
-.zo-footer-section .zo-about p {
-    margin: 0
-}
-
-.zo-footer-section .zo-menus {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 30px 0 0
-}
-
-.zo-footer-section .zo-menus .zo-menu span {
-    display: block;
-    margin: 0 0 5px;
-    font-family: 'Estedad-Medium';
-}
-
-.zo-footer-section .zo-menus .zo-menu ul li {
-    width: 100%;
-    display: inline-block;
-    padding: 2.5px 35px 2.5px 0;
-    position: relative
-}
-
-.zo-footer-section .zo-menus .zo-menu ul li:before {
-    content: '';
-    width: 30px;
-    height: 15px;
-    position: absolute;
-    top: 7.5px;
-    right: 0;
-    background: var(--Primary) url(/public/assets/img/site/footer-menu.svg);
-    background-size: contain
-}
-
-.zo-footer-section .zo-menus .zo-menu ul li a {
-    color: var(--White)
-}
-
-.zo-footer-section .zo-social {
-    display: flex;
-    justify-content: flex-end;
-    margin: 95px 0 0
-}
-
-.zo-footer-section .zo-social ul {
-    display: flex;
-    gap: 20px
-}
-
-.zo-footer-section .zo-social ul li {
-    display: inline-block;
-    position: relative
-}
-
-.zo-footer-section .zo-social ul li:before {
-    content: '';
-    width: 5px;
-    height: 5px;
-    position: absolute;
-    top: 10px;
-    right: -13.5px;
-    background: var(--Secondary);
-    border-radius: 50%
-}
-
-.zo-footer-section .zo-social ul li:first-child:before {
-    display: none
-}
-
-.zo-copyright-section {
-    width: 100%;
-    padding: 5px 0;
-    background: var(--Secondary);
-    color: var(--Primary);
-    text-align: center
-}
-
-@media (max-width: 1140px) {
-
-    .zo-footer-section {
-        padding: 30px 0
-    }
-
-    .zo-footer-section .zo-about {
-        flex-direction: column;
-        text-align: center
-    }
-
-    .zo-footer-section .zo-menus {
-        flex-direction: column;
-        padding: 0;
-        text-align: center
-    }
-
-    .zo-footer-section .zo-menus .zo-menu ul li {
-        padding: 2.5px 0
-    }
-
-    .zo-footer-section .zo-menus .zo-menu ul li:before {
-        display: none
-    }
-
-    .zo-footer-section .zo-social {
-        justify-content: center;
-        margin: 15px 0 0
-    }
 }
 
 
@@ -587,16 +313,25 @@ figure {
     font-size: .95rem;
 }
 
+/*------------------------------------------ Course ------------------------------------------*/
+
 .zo-course-section .zo-card {
     border-radius: 0.75rem;
     box-shadow: 0 5px 30px rgba(0, 0, 0, .085)
 }
 
-.zo-course-section .zo-card .zo-space {
+.zo-course-section .zo-card .zo-content {
     padding: 30px
 }
 
-.zo-course-section .zo-nav {
+@media (max-width: 990px) {
+
+    .zo-course-section .zo-card .zo-content {
+        padding: 15px
+    }
+}
+
+.zo-course-section .zo-card .zo-content .zo-nav {
     width: 100%;
     display: inline-block;
     margin: 0 0 30px;
@@ -604,121 +339,64 @@ figure {
     border-bottom: 1px dashed rgb(240, 240, 240)
 }
 
-.zo-course-section .zo-nav ul {
+.zo-course-section .zo-card .zo-content .zo-nav ul {
     display: flex;
     align-items: center;
     gap: 2.5px
 }
 
-.zo-course-section .zo-nav ul li {
+.zo-course-section .zo-card .zo-content .zo-nav ul li {
     display: inline-block;
 }
 
-.zo-course-section .zo-nav ul li a {
+.zo-course-section .zo-card .zo-content .zo-nav ul li a {
     padding: 5px 15px;
     color: var(--Text)
 }
 
-.zo-course-section .zo-nav ul li a:hover {
+.zo-course-section .zo-card .zo-content .zo-nav ul li a:hover {
     background: rgb(225, 225, 225, .25);
     border-top-left-radius: 10px;
     border-bottom-right-radius: 10px
 }
 
-.zo-course-section .zo-nav ul li a.zo-active {
+.zo-course-section .zo-card .zo-content .zo-nav ul li a.zo-active {
     background: var(--Secondary);
     color: var(--White);
     border-top-left-radius: 10px;
     border-bottom-right-radius: 10px
 }
 
-.zo-course-section .zo-text-section {
-    width: 100%;
-    display: inline-block;
-    margin: 0 0 30px
+@media (max-width: 960px) {
+
+    .zo-course-section .zo-card .zo-content .zo-nav {
+        display: none
+    }
 }
 
-.zo-course-section .zo-text-section .zo-title {
-    display: block;
-    margin: 0 0 15px;
-    font-size: 1.125rem;
-    color: var(--Secondary);
-}
-
-.zo-course-section .zo-text-section p {
-    margin: 0 0 10px
-}
-
-.zo-course-section .zo-text-section h1 {
-    margin: 0 0 10px;
-    font-size: 1.25rem
-}
-
-.zo-course-section .zo-text-section h2 {
-    margin: 0 0 10px;
-    font-size: 1.15rem
-}
-
-.zo-course-section .zo-text-section h3 {
-    font-size: 1.10rem
-}
-
-.zo-course-section .zo-text-section h4 {
-    font-size: 1.05rem
-}
-
-.zo-course-section .zo-text-section h5 {
-    font-size: 1rem
-}
-
-.zo-course-section .zo-text-section h6 {
-    font-size: .95rem
-}
-
-.zo-course-section .zo-text-section ul {
-    padding: 0 0 15px
-}
-
-.zo-course-section .zo-text-section ul li {
-    width: 100%;
-    display: inline-block;
-    padding: 1.5px 10px 1.5px 0;
-    position: relative
-}
-
-.zo-course-section .zo-text-section ul li:before {
-    content: '';
-    width: 5px;
-    height: 5px;
-    position: absolute;
-    top: 9.5px;
-    right: 0;
-    background: var(--Secondary);
-}
-
-.zo-course-section .zo-info-section {
+.zo-course-section .zo-card .zo-content .zo-sessions-details-section {
     padding: 30px 0 15px
 }
 
-.zo-course-section .zo-info-section strong {
+.zo-course-section .zo-card .zo-content .zo-sessions-details-section strong {
     font-size: 1.125rem;
-    color: var(--Secondary);
+    color: var(--Secondary)
 }
 
-.zo-course-section .zo-info-section ul {
+.zo-course-section .zo-card .zo-content .zo-sessions-details-section ul {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 15px
 }
 
-.zo-course-section .zo-info-section ul li {
+.zo-course-section .zo-card .zo-content .zo-sessions-details-section ul li {
     display: inline-block;
     padding: 0 10px;
     position: relative;
 }
 
-.zo-course-section .zo-info-section ul li:before {
+.zo-course-section .zo-card .zo-content .zo-sessions-details-section ul li:before {
     content: '';
     width: 5px;
     height: 5px;
@@ -729,8 +407,32 @@ figure {
     border-radius: 50%
 }
 
-.zo-course-section .zo-info-section ul li:last-child:before {
+.zo-course-section .zo-card .zo-content .zo-sessions-details-section ul li:last-child:before {
     display: none
+}
+
+@media (max-width: 990px) {
+
+    .zo-course-section .zo-card .zo-content .zo-sessions-details-section {
+        padding: 15px 0
+    }
+
+    .zo-course-section .zo-card .zo-content .zo-sessions-details-section ul {
+        flex-wrap: wrap;
+        gap: 5px
+    }
+
+    .zo-course-section .zo-card .zo-content .zo-sessions-details-section ul li {
+        width: 100%;
+        padding: 0 10px 0 0
+    }
+
+    .zo-course-section .zo-card .zo-content .zo-sessions-details-section ul li:before,
+    .zo-course-section .zo-card .zo-content .zo-sessions-details-section ul li:last-child:before {
+        display: block;
+        left: auto;
+        right: 0
+    }
 }
 
 .zo-course-section .zo-curriculum-section {
@@ -813,7 +515,8 @@ figure {
 }
 
 .zo-course-section .zo-curriculum-section .zo-topic-section .zo-title p {
-    color: var(--Sub)
+    color: var(--Sub);
+    line-height: 1.5
 }
 
 .zo-course-section .zo-curriculum-section .zo-topic-section .zo-info {
@@ -842,6 +545,13 @@ figure {
 
 .zo-course-section .zo-curriculum-section .zo-topic-section .zo-info li:last-child:before {
     display: none
+}
+
+@media (max-width: 960px) {
+
+    .zo-course-section .zo-curriculum-section .zo-topic-section .zo-meta {
+        justify-content: flex-start
+    }
 }
 
 .zo-course-section .zo-curriculum-section .zo-lessons-section {
@@ -939,8 +649,19 @@ figure {
     padding: 5px 25px
 }
 
+@media (max-width: 960px) {
+
+    .zo-course-section .zo-lessons-section .zo-lesson-section .zo-subinfo {
+        justify-content: flex-start
+    }
+}
+
+.zo-course-section .zo-swiper {
+    padding: 0 15px 0 0
+}
+
 .zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-wrapper {
-    padding: 45px 0 0
+    padding: 60px 0 0
 }
 
 .zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev {
@@ -950,7 +671,7 @@ figure {
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 0;
+    top: 25px;
     left: 30px;
     right: auto;
     transform: rotate(180deg);
@@ -968,7 +689,7 @@ figure {
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 0;
+    top: 25px;
     left: 75px;
     right: auto;
     border: 1px solid var(--Primary);
@@ -987,6 +708,25 @@ figure {
 .zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-next svg {
     width: 10px;
     color: var(--Primary)
+}
+
+.zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-next svg {
+    transform: rotate(0)
+}
+
+@media (max-width: 960px) {
+
+    .zo-course-section .zo-swiper {
+        padding: 0 15px
+    }
+
+    .zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev {
+        left: 0
+    }
+
+    .zo-course-section .zo-swiper .swiper.swiper-rtl .swiper-button-next {
+        left: 45px
+    }
 }
 
 .zo-course-section .zo-prerequisites-courses-section {
@@ -1017,56 +757,6 @@ figure {
 
 .zo-course-section .zo-prerequisites-courses-section .zo-courses-section .zo-course figure .zo-category {
     bottom: 15px
-}
-
-.zo-course-section .zo-related-courses-section {
-    margin: -30px 0 0;
-    padding: 0 30px 0 0
-}
-
-.zo-course-section .zo-comments-section {
-    width: 100%;
-    display: inline-block
-}
-
-.zo-course-section .zo-comments-section .zo-title {
-    display: block;
-    margin: 0 0 5px;
-    font-size: 1.125rem;
-    color: var(--Secondary)
-}
-
-.zo-course-section .zo-comments-section .zo-label {
-    display: block;
-    margin: 0 0 5px;
-    padding: 0 10px 5px 0;
-    position: relative;
-    font-size: 1rem
-}
-
-.zo-course-section .zo-comments-section .zo-label:before {
-    content: '';
-    width: 3.5px;
-    height: 75%;
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: var(--Primary);
-    border-radius: 300px
-}
-
-.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined {
-    background: rgb(245, 245, 245)
-}
-
-.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__start,
-.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__end {
-    border: 0
-}
-
-.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__notch::before,
-.zo-course-section .zo-comments-section .v-text-field .v-field--variant-outlined .v-field__outline__notch::after {
-    border: 0
 }
 
 
@@ -1104,7 +794,7 @@ figure {
 
 .zo-books-section .zo-book {
     width: 100%;
-    height: 500px;
+    height: 665px;
     display: inline-block;
     background: url(../../public/assets/img/site/frame.svg) no-repeat;
     background-size: contain;
@@ -1113,13 +803,13 @@ figure {
 
 .zo-books-section .zo-book img {
     display: block;
-    margin: 60px auto 0;
+    margin: 120px auto 0;
     box-shadow: -10px 10px 20px 0 rgba(0, 0, 0, .25)
 }
 
 .zo-books-section .zo-book .zo-content {
     width: 85%;
-    margin: 0 auto;
+    margin: 90px auto 0;
     padding: 15px 0 0;
     color: var(--Primary)
 }
