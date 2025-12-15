@@ -13,23 +13,16 @@
             </div>
         </div>
     </div>
-
-    <v-dialog
-        v-model="dialog"
-        max-width="800"
-    >
+    <v-dialog v-model="dialog" max-width="800">
         <v-card>
             <template v-slot:actions>
-                <CustomVideoPlayer :filename="course.intro.file_name"
-                                   :poster="course.poster"
-                                   :src="course.intro.url"
-                                   :autoplay="true"/>
+                <CustomVideoPlayer :filename="course.intro.file_name" :poster="course.poster" :src="course.intro.url" :autoplay="true" />
             </template>
         </v-card>
     </v-dialog>
 </template>
 <script setup>
-import {ref} from "vue";
+import { ref } from "vue";
 import CustomVideoPlayer from "@/Components/CustomVideoPlayer.vue";
 
 const props = defineProps({
@@ -39,6 +32,7 @@ const props = defineProps({
     }
 })
 const dialog = ref(false)
+
 </script>
 <style scoped>
 .zo-intro-section {
@@ -58,7 +52,8 @@ const dialog = ref(false)
 
 .zo-intro-section .zo-thumbnail img {
     width: 100%;
-    border-radius: .75rem
+    border-radius: .75rem;
+    object-fit: cover
 }
 
 .zo-intro-section .zo-content {
@@ -87,4 +82,16 @@ const dialog = ref(false)
     right: 0;
     background: rgb(200, 160, 100)
 }
+
+@media (max-width: 960px) {
+
+    .zo-intro-section .zo-content {
+        display: none
+    }
+
+    .zo-intro-section .zo-thumbnail img {
+        height: 250px
+    }
+}
+
 </style>

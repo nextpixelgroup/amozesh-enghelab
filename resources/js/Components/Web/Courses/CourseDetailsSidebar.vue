@@ -1,117 +1,92 @@
 <template>
-    <v-card flat class="zo-card">
-        <div class="zo-content">
-            <div class="zo-thumbnail">
-                <img :src="course.thumbnail" alt="" class="rounded-lg">
-            </div>
-            <div class="zo-price">
-                رایگان
-            </div>
-            <v-btn block flat variant="elevated" :class="`zo-add ${isEnrolled ? 'added' : ''}`" @click="!isEnrolled && enrollInCourse()" :disabled="isEnroll" :loading="isEnroll">
-                <img src="/assets/img/site/click.svg" alt="">
-                {{ isEnrolled ? 'شما عضو دوره هستید' : 'ثبت نام در این دوره' }}
-            </v-btn>
-            <div class="zo-progress" v-if="isEnrolled">
-                <span class="zo-name">پیشرفت شما</span>
-                <span class="zo-percent">{{ course.progress }}٪ کامل شده</span>
-                <v-progress-linear v-model="progress" color="secondary" height="10" rounded></v-progress-linear>
-            </div>
-            <div class="zo-users">
-                <div class="zo-name">
-                    <img src="/assets/img/site/c-gap-green.svg" alt="">
-                    <span>کل شرکت کنندگان</span>
+    <div class="zo-sidebar-section">
+        <v-card flat class="zo-card">
+            <div class="zo-content">
+                <div class="zo-thumbnail">
+                    <img :src="course.thumbnail" alt="" class="rounded-lg">
                 </div>
-                <div class="zo-stat">{{ course.students }}</div>
-            </div>
-            <div class="zo-info">
-                <ul>
-                    <li>
-                        <div>
-                            <img src="/assets/img/site/c-clock.svg" alt="">
-                            <span>شروع دوره</span>
-                        </div>
-                        <strong>{{ course.published_at }}</strong>
-                    </li>
-                    <li>
-                        <div>
-                            <img src="/assets/img/site/c-calendar.svg" alt="">
-                            <span>تعداد جلسات</span>
-                        </div>
-                        <strong>{{ course.stats.lessons }} جلسه</strong>
-                    </li>
-                    <li>
-                        <div>
-                            <img src="/assets/img/site/c-file.svg" alt="">
-                            <span>دسته</span>
-                        </div>
-                        <strong>{{ course.category }}</strong>
-                    </li>
-                    <li>
-                        <div>
-                            <img src="/assets/img/site/c-star.svg" alt="">
-                            <span>امتیاز دوره</span>
-                        </div>
-                        <strong>{{ rate }}</strong>
-                    </li>
-                </ul>
-            </div>
-            <div class="zo-rating" v-if="isEnrolled">
-                <v-icon
-                    v-for="n in 5"
-                    :key="n"
-                    :color="n <= (hover || user_rate) ? '#c8a064' : 'grey lighten-1'"
-                    @mouseover="!isRatingLoading ? hover = n : null"
-                    @mouseleave="!isRatingLoading ? hover = 0 : null"
-                    @click="submitRating(n)"
-                    :disabled="isRatingLoading"
-                    class="mx-1"
-                    size="21"
-                >
-                    mdi-star
-                </v-icon>
-                <v-progress-circular
-                    v-if="isRatingLoading"
-                    indeterminate
-                    color="#c8a064"
-                    size="20"
-                    width="2"
-                    class="ms-2"
-                    :disabled="isRatingLoading"
-                ></v-progress-circular>
-            </div>
-            <div class="zo-prof" id="about-teacher">
-                <strong class="zo-title">درباره مدرس</strong>
-                <div class="zo-name">
-                    <div class="zo-avatar">
-                        <img :src="course.teacher.avatar" alt="">
+                <div class="zo-price">رایگان</div>
+                <v-btn block flat variant="elevated" :class="`zo-add ${isEnrolled ? 'added' : ''}`" @click="!isEnrolled && enrollInCourse()" :disabled="isEnroll" :loading="isEnroll">
+                    <img src="/assets/img/site/click.svg" alt="">
+                    {{ isEnrolled ? 'شما عضو دوره هستید' : 'ثبت نام در این دوره' }}
+                </v-btn>
+                <div class="zo-progress" v-if="isEnrolled">
+                    <span class="zo-name">پیشرفت شما</span>
+                    <span class="zo-percent">{{ course.progress }}٪ کامل شده</span>
+                    <v-progress-linear v-model="progress" color="secondary" height="10" rounded></v-progress-linear>
+                </div>
+                <div class="zo-users">
+                    <div class="zo-name">
+                        <img src="/assets/img/site/c-gap-green.svg" alt="">
+                        <span>کل شرکت کنندگان</span>
                     </div>
-                    <div>
-                        <a :href="course.teacher.url" target="_blank"><span>{{ course.teacher.name }}</span></a>
-                        <div class="zo-social">
-                            <img src="/assets/img/site/eitaa-grey.svg" alt="">
-                            <img src="/assets/img/site/soroosh-grey.svg" alt="">
+                    <div class="zo-stat">{{ course.students }}</div>
+                </div>
+                <div class="zo-info">
+                    <ul>
+                        <li>
+                            <div>
+                                <img src="/assets/img/site/c-clock.svg" alt="">
+                                <span>شروع دوره</span>
+                            </div>
+                            <strong>{{ course.published_at }}</strong>
+                        </li>
+                        <li>
+                            <div>
+                                <img src="/assets/img/site/c-calendar.svg" alt="">
+                                <span>تعداد جلسات</span>
+                            </div>
+                            <strong>{{ course.stats.lessons }} جلسه</strong>
+                        </li>
+                        <!--
+                        <li>
+                            <div>
+                                <img src="/assets/img/site/c-file.svg" alt="">
+                                <span>دسته</span>
+                            </div>
+                            <strong>{{ course.category }}</strong>
+                        </li>
+                        -->
+                        <li>
+                            <div>
+                                <img src="/assets/img/site/c-star.svg" alt="">
+                                <span>امتیاز دوره</span>
+                            </div>
+                            <strong>{{ rate }}</strong>
+                        </li>
+                    </ul>
+                </div>
+                <div class="zo-rating" v-if="isEnrolled">
+                    <v-icon v-for="n in 5" :key="n" :color="n <= (hover || user_rate) ? '#c8a064' : 'grey lighten-1'" @mouseover="!isRatingLoading ? hover = n : null" @mouseleave="!isRatingLoading ? hover = 0 : null" @click="submitRating(n)" :disabled="isRatingLoading" size="20">
+                        mdi-star
+                    </v-icon>
+                    <v-progress-circular v-if="isRatingLoading" indeterminate color="#c8a064" size="20" width="2" class="ms-2" :disabled="isRatingLoading"></v-progress-circular>
+                </div>
+                <div class="zo-prof" id="about-teacher">
+                    <strong>درباره مدرس</strong>
+                    <div class="zo-name">
+                        <div class="zo-avatar">
+                            <img :src="course.teacher.avatar" alt="">
+                        </div>
+                        <div>
+                            <a :href="course.teacher.url" target="_blank"><span>{{ course.teacher.name }}</span></a>
+                            <ul>
+                                <li>
+                                    <img src="/assets/img/site/c-lessons.svg" alt="">
+                                    <span>{{ course.teacher.courses }} دوره</span>
+                                </li>
+                                <li>
+                                    <img src="/assets/img/site/c-gap-grey.svg" alt="">
+                                    <span>{{ course.teacher.students }} دانشجو</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <ul>
-                    <li>
-                        <img src="/assets/img/site/c-lessons.svg" alt="">
-                        <span>{{ course.teacher.courses }} دوره</span>
-                    </li>
-                    <li>
-                        <img src="/assets/img/site/c-gap-grey.svg" alt="">
-                        <span>{{ course.teacher.students }} دانشجو</span>
-                    </li>
-                </ul>
-                <p>{{ course.teacher.bio }}</p>
             </div>
-        </div>
-    </v-card>
-    <ShowMessage
-        v-model:show="message.isShow"
-        :message="message.text"
-        :type="message.type"
-    />
+        </v-card>
+    </div>
+    <ShowMessage v-model:show="message.isShow" :message="message.text" :type="message.type" />
 </template>
 <script setup>
 import { computed, ref } from "vue";
@@ -132,7 +107,7 @@ const props = defineProps({
 
 const progress = computed(() => props.course.progress)
 const user_rate = ref(props.course.user_rate)
-const rate = ref( props.course.rate)
+const rate = ref(props.course.rate)
 const hover = ref(0)
 const isEnroll = ref(false);
 const isRatingLoading = ref(false)
@@ -167,16 +142,15 @@ const enrollInCourse = () => {
 
 const submitRating = async (n) => {
     isRatingLoading.value = true;
-    const response = await axios.post(route('web.courses.rating', { course: props.course.slug }), {rate: n});
-    if(response.data.status === 'success'){
+    const response = await axios.post(route('web.courses.rating', { course: props.course.slug }), { rate: n });
+    if (response.data.status === 'success') {
         isRatingLoading.value = false;
         rate.value = response.data.data.rate;
         user_rate.value = n;
         message.value.isShow = true;
         message.value.text = response.data.message;
         message.value.type = 'success';
-    }
-    else {
+    } else {
         isRatingLoading.value = false;
         message.value.isShow = true;
         message.value.text = response.data.message || 'خطایی رخ داد';
@@ -186,19 +160,20 @@ const submitRating = async (n) => {
 
 </script>
 <style scoped>
-.zo-content {
+.zo-sidebar-section .zo-content {
     padding: 20px
 }
 
-.zo-content .zo-thumbnail {
+.zo-sidebar-section .zo-content .zo-thumbnail {
     margin: 0 0 15px
 }
 
-.zo-content .zo-thumbnail img {
-    width: 100%
+.zo-sidebar-section .zo-content .zo-thumbnail img {
+    display: block;
+    margin: auto
 }
 
-.zo-content .zo-price {
+.zo-sidebar-section .zo-content .zo-price {
     width: 100%;
     height: 55px;
     display: flex;
@@ -211,7 +186,7 @@ const submitRating = async (n) => {
     text-align: center
 }
 
-.zo-content .zo-add {
+.zo-sidebar-section .zo-content .zo-add {
     min-height: 55px;
     display: flex;
     align-items: center;
@@ -219,39 +194,39 @@ const submitRating = async (n) => {
     gap: 5px;
     background: rgb(50, 180, 55);
     color: rgb(255, 255, 255);
-    border-radius: 0.75rem
+    border-radius: .5rem
 }
 
-.zo-content .zo-add.added {
+.zo-sidebar-section .zo-content .zo-add.added {
     cursor: auto;
-    background: rgb(50, 126, 180);
+    background: rgb(5, 105, 60)
 }
 
-.zo-content .zo-add img {
+.zo-sidebar-section .zo-content .zo-add img {
     margin: 0 0 0 10px
 }
 
-.zo-content .zo-progress {
+.zo-sidebar-section .zo-content .zo-progress {
     width: 100%;
     margin: 15px 0;
     padding: 15px 20px;
     background: rgb(5, 105, 60);
     color: rgb(255, 255, 255);
-    border-radius: .75rem
+    border-radius: .5rem
 }
 
-.zo-content .zo-progress .zo-name {
+.zo-sidebar-section .zo-content .zo-progress .zo-name {
     display: block;
     margin: 0 0 10px
 }
 
-.zo-content .zo-progress .zo-percent {
+.zo-sidebar-section .zo-content .zo-progress .zo-percent {
     display: block;
     margin: 0 0 2.5px;
     font-size: .90rem
 }
 
-.zo-content .zo-users {
+.zo-sidebar-section .zo-content .zo-users {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -262,77 +237,76 @@ const submitRating = async (n) => {
     border-radius: .75rem
 }
 
-.zo-content .zo-users .zo-name {
+.zo-sidebar-section .zo-content .zo-users .zo-name {
     display: flex;
     align-items: center;
     gap: 5px
 }
 
-.zo-content .zo-info {
+.zo-sidebar-section .zo-content .zo-info {
     width: 100%;
     display: inline-block;
     padding: 0 0 10px;
-    border-bottom: 1px dashed rgb(240, 240, 240);
+    border-bottom: 1px dashed rgb(240, 240, 240)
 }
 
-.zo-content .zo-info ul li {
+.zo-sidebar-section .zo-content .zo-info ul li {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0
+    padding: 10px 0;
+    font-size: .95rem
 }
 
-.zo-content .zo-info ul li div {
+.zo-sidebar-section .zo-content .zo-info ul li div {
     display: flex;
     align-items: center;
     gap: 5px
 }
 
-.zo-content .zo-rating {
+.zo-sidebar-section .zo-content .zo-info ul li strong {
+    text-align: left
+}
+
+.zo-sidebar-section .zo-content .zo-rating {
     display: flex;
     justify-content: center;
     margin: 30px 0 0
 }
 
-.zo-content .zo-prof {
+.zo-sidebar-section .zo-content .zo-prof {
     margin: 15px 0 0
 }
 
-.zo-content .zo-prof .zo-title {
+.zo-sidebar-section .zo-content .zo-prof strong {
     display: block;
     margin: 0 0 5px;
     font-size: 1.125rem;
     color: var(--Secondary);
 }
 
-.zo-content .zo-prof .zo-name {
+.zo-sidebar-section .zo-content .zo-prof .zo-name {
     display: flex;
     align-items: center;
     gap: 15px;
     margin: 0 0 15px
 }
 
-.zo-content .zo-prof .zo-name .zo-avatar img {
+.zo-sidebar-section .zo-content .zo-prof .zo-name .zo-avatar img {
     width: 70px;
     height: 70px;
     object-fit: cover;
     border-radius: 50%
 }
 
-.zo-content .zo-prof .zo-name .zo-social {
-    display: flex;
-    gap: 10px;
-    margin: 5px 0 0
-}
-
-.zo-content .zo-prof ul {
+.zo-sidebar-section .zo-content .zo-prof ul {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin: 0 0 15px
+    gap: 5px;
+    margin: 10px 0 0
 }
 
-.zo-content .zo-prof ul li {
+.zo-sidebar-section .zo-content .zo-prof ul li {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -340,9 +314,26 @@ const submitRating = async (n) => {
     color: rgb(120, 125, 135)
 }
 
-.zo-content .zo-prof p {
+.zo-sidebar-section .zo-content .zo-prof p {
     font-size: .90rem;
     color: rgb(120, 125, 135)
+}
+
+@media (max-width: 575px) {
+
+    .zo-sidebar-section .zo-content {
+        padding: 15px
+    }
+
+    .zo-sidebar-section .zo-content .zo-info ul li {
+        display: block
+    }
+
+    .zo-sidebar-section .zo-content .zo-info ul li strong {
+        display: block;
+        padding: 10px 0 0;
+        text-align: right
+    }
 }
 
 </style>

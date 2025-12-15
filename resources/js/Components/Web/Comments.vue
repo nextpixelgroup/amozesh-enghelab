@@ -4,12 +4,7 @@
         <v-card>
             <v-card-title>ثبت پاسخ</v-card-title>
             <v-card-text>
-                <v-textarea
-                    v-model="replyText"
-                    variant="outlined"
-                    rows="4"
-                    placeholder="پاسخ خود را بنویسید..."
-                />
+                <v-textarea v-model="replyText" variant="outlined" rows="4" placeholder="پاسخ خود را بنویسید..." />
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -18,30 +13,21 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
-
-    <div class="zo-space" id="comments" >
+    <div class="zo-space" id="comments">
         <div class="zo-comments-section">
             <strong class="zo-title">نظرات کاربران</strong>
+            <!--
             <div class="zo-label" v-if="user">ثبت دیدگاه</div>
-
+            -->
             <!-- فرم ارسال نظر -->
             <v-row dense v-if="user">
                 <v-col cols="12">
-                    <v-textarea
-                        v-model="comment.body"
-                        hide-details
-                        variant="outlined"
-                        density="comfortable"
-                        rows="3"
-                        placeholder="* سوال یا دیدگاه خود را بنویسید"
-                        prepend-inner-icon="mdi-text-long"
-                    ></v-textarea>
+                    <v-textarea v-model="comment.body" hide-details variant="outlined" density="comfortable" rows="3" placeholder="* سوال یا دیدگاه خود را بنویسید" prepend-inner-icon="mdi-text-long"></v-textarea>
                 </v-col>
                 <v-col cols="12" class="text-end">
-                    <v-btn flat color="secondary" @click="submitComment" :loading="submitting" :disabled="submitting">ارسال دیدگاه</v-btn>
+                    <v-btn flat color="secondary" @click="submitComment" :loading="submitting" :disabled="submitting">ارسال نظر</v-btn>
                 </v-col>
             </v-row>
-
             <!-- لیست نظرات -->
             <v-row dense class="mt-4">
                 <v-col cols="12">
@@ -50,12 +36,11 @@
                         <v-progress-circular indeterminate color="#c8a064"></v-progress-circular>
                         <div class="mt-2 text-grey">در حال بارگذاری نظرات...</div>
                     </div>
-
                     <!-- نمایش نظرات -->
                     <div v-else>
                         <div class="zo-stats" v-if="comments.total_comments_count > 0">
                             <!-- فرض بر این است که تعداد کل در دیتای دریافتی موجود است یا طول آرایه را می‌گیرید -->
-                            <span>{{ comments.total_comments_count }} دیدگاه</span>
+                            <span>{{ comments.total_comments_count }} نظر</span>
                         </div>
                         <ul v-if="comments.data && comments.data.length > 0">
                             <li v-for="(commentItem, index) in comments.data" :key="commentItem.id">
@@ -74,15 +59,13 @@
                                         </v-col>
                                         <v-col lg="3" v-if="user">
                                             <div class="text-end">
-                                                <v-btn flat density="compact" variant="text" color="primary"
-                                                       icon="mdi-reply" @click="openReplyDialog(commentItem.id)">
+                                                <v-btn flat density="compact" variant="text" color="primary" icon="mdi-reply" @click="openReplyDialog(commentItem.id)">
                                                 </v-btn>
                                             </div>
                                         </v-col>
                                     </v-row>
                                     <p>{{ commentItem.body }}</p>
                                 </div>
-
                                 <!-- پاسخ‌ها -->
                                 <ul v-if="commentItem.replies && commentItem.replies.length">
                                     <li class="zo-support" v-for="(reply, rIndex) in commentItem.replies" :key="reply.id">
@@ -106,196 +89,230 @@
                                 </ul>
                             </li>
                         </ul>
-
-                        <Pagination
-                            v-model="currentPage"
-                            :length="lastPage"
-                            @changePage="fetchComments"
-                        />
+                        <Pagination v-model="currentPage" :length="lastPage" @changePage="fetchComments" />
                     </div>
                 </v-col>
             </v-row>
         </div>
     </div>
-
-    <ShowMessage
-        v-model:show="message.isShow"
-        :message="message.text"
-        :type="message.type"
-    />
+    <ShowMessage v-model:show="message.isShow" :message="message.text" :type="message.type" />
 </template>
-
 <script setup>
-import {ref, onMounted, computed} from "vue";
+import { ref, onMounted } from "vue";
 import { route } from "ziggy-js";
-import axios from "axios"; // مطمئن شوید axios ایمپورت شده است
+import axios from "axios";
 import ShowMessage from "@/Components/ShowMessage.vue";
 import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
-    item: {
-        type: Object,
-        required: true
-    },
-    user: {
-        type: Object,
-    },
-    type: {
-        type: String,
-        required: true
-    }
-    // comments prop removed as requested
-})
+    item: { type: Object, required: true },
+    user: { type: Object },
+    type: { type: String, required: true }
+});
 
-// استیت‌ها
-const comments = ref({ data: [], meta: {} });
-const lastPage = computed( () => comments.value?.meta.last_page)
-const currentPage = ref(comments.value?.meta.current_page)
+/* =======================
+   State
+======================= */
+const comments = ref({
+    data: [],
+    meta: {},
+    total_comments_count: 0
+});
+
+const currentPage = ref(1);
+const lastPage = ref(1);
 
 const loadingComments = ref(true);
-const comment = ref({
-    body: '',
-});
-const message = ref({
-    isShow: false,
-    text: '',
-    type: '',
-})
-const replyDialog = ref(false);
-const replyText = ref("");
-const activeCommentId = ref(null);
 const submitting = ref(false);
 const replying = ref(false);
 
-// --- متد دریافت کامنت‌ها ---
-const fetchComments = async (page = 1) => {
+const comment = ref({ body: "" });
+
+const replyDialog = ref(false);
+const replyText = ref("");
+const activeCommentId = ref(null);
+
+const message = ref({
+    isShow: false,
+    text: "",
+    type: ""
+});
+
+/* =======================
+   Fetch comments
+======================= */
+const fetchComments = async (page = currentPage.value) => {
     loadingComments.value = true;
 
-    // اگر ورودی عدد نبود (مثلا ایونت کلیک بود)، همان صفحه جاری بماند
-    const targetPage = typeof page === 'number' ? page : currentPage.value;
-
     try {
-        // ارسال پارامتر page به سمت سرور
-        const response = await axios.get(route(`web.comments.${props.type}.index`, props.item.slug), {
-            params: {
-                page: targetPage
-            }
-        });
+        const response = await axios.get(
+            route(`web.comments.${props.type}.index`, props.item.slug),
+            { params: { page } }
+        );
 
-        // ذخیره کل دیتا (شامل data, meta, total_comments_count)
-        comments.value = response.data.data;
+        const data = response.data.data;
 
-        // --- آپدیت کردن وضعیت صفحه‌بندی ---
-        if (comments.value.meta) {
-            currentPage.value = comments.value.meta.current_page;
-            lastPage.value = comments.value.meta.last_page;
-        }
+        comments.value.data = data.data;
+        comments.value.meta = data.meta;
+        comments.value.total_comments_count = data.total_comments_count ?? 0;
+
+        currentPage.value = data.meta.current_page;
+        lastPage.value = data.meta.last_page;
 
     } catch (error) {
-        console.error("Error fetching comments:", error);
-        // ... مدیریت خطا
+        console.error("Fetch comments error:", error);
     } finally {
         loadingComments.value = false;
     }
-}
+};
 
-// فراخوانی متد دریافت اطلاعات به محض لود شدن کامپوننت
-onMounted(() => {
-    fetchComments();
-});
+onMounted(fetchComments);
 
-function openReplyDialog(id) {
-    activeCommentId.value = id;
-    replyDialog.value = true;
-}
-
-async function submitReply() {
-    if (!replyText.value.trim()) return;
-    replying.value = true;
-    try {
-        // ۱. اضافه کردن await
-        const response = await axios.post(route(`web.comments.reply`, activeCommentId.value), {
-            body: replyText.value
-        });
-
-        if(response.data.status === 'success'){
-            message.value.isShow = true;
-            message.value.text = response.data.message;
-            message.value.type = 'success';
-
-            // ۲. بستن دیالوگ و پاک کردن متن
-            replyDialog.value = false;
-            replyText.value = "";
-
-        }
-        else {
-            message.value.isShow = true;
-            message.value.text = response.data.message || 'خطایی رخ داد';
-            message.value.type = 'error';
-        }
-    }
-    catch (error) {
-        console.error(error);
-        message.value.isShow = true;
-        message.value.text = 'خطایی در برقراری ارتباط رخ داد';
-        message.value.type = 'error';
-    }
-
-    replying.value = false;
-}
-
-
+/* =======================
+   Submit comment
+======================= */
 const submitComment = async () => {
-    // 1. چک کردن خالی نبودن (اختیاری ولی توصیه شده)
     if (!comment.value.body.trim()) return;
 
+    submitting.value = true;
+
     try {
-        submitting.value = true;
+        const response = await axios.post(
+            route(`web.comments.${props.type}.store`, props.item.slug),
+            { body: comment.value.body }
+        );
 
-        const response = await axios.post(route(`web.comments.${props.type}.store`, props.item.slug), {
-            body: comment.value.body,
-        });
+        if (response.data.status === "success") {
+            comment.value.body = "";
+            message.value = {
+                isShow: true,
+                text: response.data.message,
+                type: "success"
+            };
 
-        submitting.value = false;
-
-
-        // 3. حذف شرط سخت‌گیرانه response.status === 200
-        // اگر به اینجا رسیدیم یعنی درخواست موفق بوده (200 یا 201)
-
-        if(response.data.status === 'success'){
-            comment.value.body = ''; // پاک کردن تکست‌اریا
-            message.value.isShow = true;
-            message.value.text = response.data.message;
-            message.value.type = 'success';
-
-        }
-        else {
-            // حالتی که درخواست 200 است اما منطق بیزنس خطا داده (مثلا کلمات ممنوعه)
-            message.value.isShow = true;
-            message.value.text = response.data.message || 'عملیات انجام نشد';
-            message.value.type = 'error'; // یا warning
-        }
-
-    }
-    catch (error) {
-        submitting.value = false;
-        console.error("Submit Error:", error);
-
-        message.value.isShow = true;
-        message.value.type = 'error';
-
-        // هندل کردن دقیق ارور ولیدیشن (422)
-        if (error.response && error.response.data && error.response.data.message) {
-            message.value.text = error.response.data.message;
+            await fetchComments(1);
         } else {
-            message.value.text = 'خطایی در ثبت دیدگاه رخ داده است';
+            message.value = {
+                isShow: true,
+                text: response.data.message || "عملیات ناموفق",
+                type: "error"
+            };
         }
-    }
-}
 
+    } catch (error) {
+        message.value = {
+            isShow: true,
+            text: error.response?.data?.message || "خطا در ثبت دیدگاه",
+            type: "error"
+        };
+    } finally {
+        submitting.value = false;
+    }
+};
+
+/* =======================
+   Reply
+======================= */
+const openReplyDialog = (id) => {
+    activeCommentId.value = id;
+    replyText.value = "";
+    replyDialog.value = true;
+};
+
+const submitReply = async () => {
+    if (!replyText.value.trim() || !activeCommentId.value) return;
+
+    replying.value = true;
+
+    try {
+        const response = await axios.post(
+            route("web.comments.reply", activeCommentId.value),
+            { body: replyText.value }
+        );
+
+        if (response.data.status === "success") {
+            message.value = {
+                isShow: true,
+                text: response.data.message,
+                type: "success"
+            };
+
+            replyDialog.value = false;
+            replyText.value = "";
+            activeCommentId.value = null;
+
+            await fetchComments(currentPage.value);
+        } else {
+            message.value = {
+                isShow: true,
+                text: response.data.message || "خطا در ثبت پاسخ",
+                type: "error"
+            };
+        }
+
+    } catch (error) {
+        message.value = {
+            isShow: true,
+            text: "خطا در برقراری ارتباط",
+            type: "error"
+        };
+    } finally {
+        replying.value = false;
+    }
+};
 </script>
 
 <style scoped>
+.zo-comments-section {
+    width: 100%;
+    display: inline-block;
+    padding: 15px
+}
+
+.zo-comments-section .zo-title {
+    display: block;
+    margin: 0 0 5px;
+    font-size: 1.125rem;
+    color: var(--Secondary)
+}
+
+.zo-comments-section .zo-label {
+    display: block;
+    margin: 0 0 5px;
+    padding: 0 10px 5px 0;
+    position: relative;
+    font-size: 1rem
+}
+
+.zo-comments-section .zo-label:before {
+    content: '';
+    width: 3.5px;
+    height: 75%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--Primary);
+    border-radius: 300px
+}
+
+.zo-comments-section :deep(.v-text-field .v-field--variant-outlined) {
+    background: rgb(245, 245, 245)
+}
+
+.zo-comments-section :deep(.v-text-field .v-field--variant-outlined .v-field__outline__start),
+.zo-comments-section :deep(.v-text-field .v-field--variant-outlined .v-field__outline__end) {
+    border: 0
+}
+
+.zo-comments-section :deep(.v-text-field .v-field--variant-outlined .v-field__outline__notch::before),
+.zo-comments-section :deep(.v-text-field .v-field--variant-outlined .v-field__outline__notch::after) {
+    border: 0
+}
+
+.zo-comments-section :deep(.v-textarea .v-field--no-label textarea) {
+    resize: none
+}
+
 .zo-comments-section .zo-stats {
     width: 100%;
     padding: 0 0 5px;
@@ -318,18 +335,20 @@ const submitComment = async () => {
 }
 
 .zo-comments-section ul {
-    list-style: none; /* حذف بولت‌های پیش‌فرض */
+    list-style: none;
     padding: 0;
 }
 
 .zo-comments-section ul li {
     width: 100%;
-    display: block; /* تغییر از inline-block به block برای اطمینان از چیدمان صحیح */
+    display: block;
 }
 
 .zo-comments-section ul li .zo-comment {
     width: 100%;
-    padding: 15px
+    margin: 0 0 5px;
+    padding: 15px;
+    border-radius: .5rem
 }
 
 .zo-comments-section ul li ul {
@@ -337,7 +356,8 @@ const submitComment = async () => {
 }
 
 .zo-comments-section ul li ul li.zo-support .zo-comment {
-    background: rgb(245, 245, 245)
+    position: relative;
+    background: rgb(245, 245, 245);
 }
 
 .zo-comments-section ul li .zo-comment .zo-name {
@@ -356,7 +376,7 @@ const submitComment = async () => {
 .zo-comments-section ul li .zo-comment .zo-name strong {
     display: block;
     font-family: 'Estedad-Medium';
-    font-weight: normal
+    white-space: nowrap
 }
 
 .zo-comments-section ul li .zo-comment .zo-name small {
@@ -364,6 +384,15 @@ const submitComment = async () => {
 }
 
 .zo-comments-section ul li .zo-comment p {
-    white-space: pre-line
+    white-space: pre-line;
+    text-align: justify
+}
+
+@media (max-width: 960px) {
+
+    .zo-comments-section ul li .zo-comment .zo-name .zo-avatar img {
+        width: 45px;
+        height: 45px
+    }
 }
 </style>
