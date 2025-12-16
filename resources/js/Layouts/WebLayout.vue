@@ -209,7 +209,7 @@ const display = useDisplay();
     width: 100%;
     display: inline-block;
     margin: 60px 0 0;
-    padding: 5px 0;
+    padding: 5px 0 25px;
     background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
     color: var(--White)
 }
@@ -307,6 +307,10 @@ const display = useDisplay();
 
     .zo-footer-section .zo-about {
         flex-direction: column;
+        text-align: center
+    }
+
+    .zo-footer-section .zo-about p {
         text-align: center
     }
 

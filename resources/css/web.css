@@ -182,8 +182,20 @@ figure {
 }
 
 .zo-title-section strong {
-    font-family: 'Estedad-Medium';
     text-align: center
+}
+
+@media (max-width: 990px) {
+
+    .zo-title-section {
+        gap: 0;
+        padding: 0;
+        font-size: 1.15rem
+    }
+
+    .zo-title-section img {
+        max-width: 30px
+    }
 }
 
 .swiper-pagination {
@@ -809,22 +821,25 @@ figure {
 
 .zo-books-section .zo-book {
     width: 100%;
-    height: 665px;
     display: inline-block;
+    padding: 60px 15px 15px;
+    border: 2px solid var(--Secondary);
+    border-radius: 200px 200px 0 0;
+    /*
     background: url(../../public/assets/img/site/frame.svg) no-repeat;
     background-size: contain;
     background-position: center
+    */
 }
 
 .zo-books-section .zo-book img {
     display: block;
-    margin: 120px auto 0;
+    margin: 0 auto;
     box-shadow: -10px 10px 20px 0 rgba(0, 0, 0, .25)
 }
 
 .zo-books-section .zo-book .zo-content {
-    width: 85%;
-    margin: 90px auto 0;
+    width: 100%;
     padding: 15px 0 0;
     color: var(--Primary)
 }
@@ -1509,328 +1524,6 @@ figure {
 .zo-book-section .zo-card .zo-content .zo-add {
     height: 40px !important;
     padding: 0 25px !important
-}
-
-
-
-
-
-
-
-
-
-.zo-home-section .zo-university-section .zo-title-section {
-    margin: 0 0 -15px
-}
-
-.zo-home-section .zo-university-section .zo-swiper .swiper-wrapper {
-    padding: 30px 0
-}
-
-.zo-home-section .zo-university-section .zo-swiper .swiper-wrapper .swiper-slide .zo-university {
-    padding: 0 15px
-}
-
-.zo-contact-section .zo-content {
-    padding: 0 0 0 15px;
-}
-
-.zo-contact-section .zo-content span {
-    color: var(--Sub);
-}
-
-.zo-contact-section .zo-content h1 {
-    display: block;
-    margin: 5px 0 10px;
-    font-size: 1.5rem
-}
-
-.zo-contact-section .zo-content p {
-    text-align: justify
-}
-
-.zo-contact-section .zo-content .zo-social {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 15px 0
-}
-
-.zo-contact-section .zo-content .zo-social li {
-    display: inline-block;
-}
-
-.zo-contact-section .zo-content .zo-social li .v-btn {
-    min-width: 45px;
-    min-height: 45px;
-    padding: 0;
-    border-radius: 50%
-}
-
-.zo-contact-section .zo-send {
-    padding: 0 35px;
-    border-radius: 300px
-}
-
-.zo-map-section {
-    width: 100%;
-    display: inline-block;
-    margin: 30px 0 0;
-    padding: 30px;
-    background: rgba(5, 105, 60, .025);
-    text-align: center;
-    border-radius: 20px
-}
-
-.zo-map-section .zo-info {
-    width: 100%;
-    display: inline-block;
-    margin: 0 0 30px;
-}
-
-.zo-map-section .zo-info i {
-    font-size: 1.5rem;
-    color: var(--Primary)
-}
-
-.zo-map-section .zo-info strong {
-    display: block;
-    padding: 5px 0;
-}
-
-.zo-map-section .zo-info span {
-    color: var(--Sub);
-}
-
-.zo-map-section .zo-info a {
-    display: inline-block;
-    padding: 0 5px;
-    color: var(--Sub);
-}
-
-.zo-map-section .zo-info a:hover {
-    color: var(--Primary);
-}
-
-.zo-map-section .zo-map {
-    overflow: hidden;
-    border-radius: 15px;
-}
-
-@media (max-width: 1200px) {
-
-    .zo-contact-section .zo-content {
-        padding: 0
-    }
-}
-
-.zo-home-section .zo-title-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin: 0 0 15px;
-    padding: 0 15px;
-    font-size: 1.25rem;
-    text-align: center
-}
-
-@media (max-width: 757px) {
-
-    .zo-home-section .zo-title-section strong {
-        font-size: 1.15rem
-    }
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .swiper-slide {
-    position: relative;
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .swiper-slide img {
-    width: 100%
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .zo-caption {
-    position: absolute;
-    bottom: 60px;
-    right: 60px;
-    color: var(--White);
-    z-index: 15
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .zo-caption strong {
-    display: block;
-    padding: 0 15px 0 0;
-    position: relative;
-    font-size: 1.75rem
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .zo-caption strong:before {
-    content: '';
-    width: 2.5px;
-    height: 75%;
-    position: absolute;
-    top: 7.5px;
-    right: 0;
-    background: var(--Secondary)
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .zo-caption span {
-    display: block;
-    padding: 0 15px 0 0;
-    font-size: 1.25rem
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    left: 15px;
-    right: auto;
-    background: var(--Secondary);
-    transform: translateY(-50%) rotate(180deg);
-    border: 1px solid var(--Secondary);
-    border-top-right-radius: 300px;
-    border-bottom-right-radius: 300px;
-    cursor: pointer;
-    z-index: 15
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .swiper.swiper-rtl .swiper-button-next {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    background: var(--Secondary);
-    border: 1px solid var(--Secondary);
-    border-top-right-radius: 300px;
-    border-bottom-right-radius: 300px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    z-index: 15
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev.swiper-button-disabled,
-.zo-home-section .zo-slider-section .zo-swiper .swiper.swiper-rtl .swiper-button-next.swiper-button-disabled {
-    opacity: .5;
-}
-
-.zo-home-section .zo-slider-section .zo-swiper .swiper.swiper-rtl .swiper-button-prev svg,
-.zo-home-section .zo-slider-section .zo-swiper .swiper.swiper-rtl .swiper-button-next svg {
-    width: 10px;
-    color: var(--White)
-}
-
-.zo-home-section .zo-carousel-section .zo-title {
-    width: 100%;
-    display: inline-block;
-    margin: 0 0 10px;
-    position: relative
-}
-
-.zo-home-section .zo-carousel-section .zo-title strong {
-    display: block;
-    margin: 0 0 2.5px;
-    padding: 0 15px 0 0;
-    position: relative;
-    font-size: 1.25rem
-}
-
-.zo-home-section .zo-carousel-section .zo-title strong:before {
-    content: '';
-    width: 2.5px;
-    height: 75%;
-    position: absolute;
-    top: 5px;
-    right: 0;
-    background: var(--Primary)
-}
-
-.zo-home-section .zo-carousel-section .zo-title span {
-    display: block;
-    padding: 0 15px 0 0;
-    color: var(--Sub)
-}
-
-.zo-home-section .zo-stats-section {
-    width: 100%;
-    display: inline-block;
-    padding: 60px 0
-}
-
-.zo-home-section .zo-stats-section .zo-content {
-    padding: 0 0 0 30px
-}
-
-.zo-home-section .zo-stats-section .zo-content h3 {
-    margin: 0 0 5px;
-    font-size: 1.25rem;
-    color: var(--Primary)
-}
-
-.zo-home-section .zo-stats-section .zo-content p {
-    text-align: justify
-}
-
-.zo-home-section .zo-stats-section .zo-stats .zo-stat {
-    width: 100%;
-    display: inline-block;
-    padding: 15px;
-    background: rgb(245, 245, 245);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .075)
-}
-
-.zo-home-section .zo-stats-section .zo-stats .zo-stat img {
-    display: block;
-    margin: 0 0 10px
-}
-
-.zo-home-section .zo-stats-section .zo-stats .zo-stat strong {
-    font-size: 1.15rem;
-    color: var(--Primary)
-}
-
-.zo-home-section .zo-stats-section .zo-stats .zo-stat span {
-    display: block;
-    color: var(--Primary)
-}
-
-@media (max-width: 990px) {
-
-    .zo-home-section .zo-stats-section .zo-content {
-        padding: 0
-    }
-}
-
-.zo-home-section .zo-about-section h3 {
-    display: block;
-    margin: 0 0 10px;
-    font-size: 1.5rem
-}
-
-.zo-home-section .zo-about-section .zo-content {
-    padding: 0 0 0 15px;
-    text-align: justify
-}
-
-.zo-home-section .zo-about-section a {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin: 15px 0;
-    padding: 10px 25px;
-    background: var(--Primary);
-    color: var(--White);
-    border-radius: .5rem
 }
 
 .zo-path-about-section {

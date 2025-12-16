@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Welcome" />
     <WebLayout>
         <div class="zo-about-section">
