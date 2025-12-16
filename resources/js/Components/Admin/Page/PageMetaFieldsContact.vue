@@ -31,14 +31,14 @@
     </v-col>
     <v-col cols="12">
         <label class="zo-label">تصویر</label>
-
         <ImageUploader
             v-model:model-value="mapImageId"
             :initialUrl="localMeta?.mapImage?.url"
             upload-route="admin.upload.pages.image"
             label="فقط فایل تصویری آپلود کنید"
             accept="image/*"
-            type="page"
+            type="mapImage"
+            :page-id="pageId"
         />
     </v-col>
 </template>
@@ -54,6 +54,10 @@ const props = defineProps({
         required: true,
         default: () => ({})
     },
+    pageId: {
+        type: Number,
+        required: true
+    }
 });
 const mapImageId = computed({
     get: () => localMeta.value.mapImage?.id ?? null,

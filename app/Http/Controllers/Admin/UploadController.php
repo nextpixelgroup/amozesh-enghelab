@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Models\Page;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -111,25 +112,29 @@ class UploadController extends Controller
 
     }
 
-    public function destroy(Media $media, $type)
+    public function destroy(Media $media, $type, Request $request)
     {
-        if($type == 'course'){
+        if($type === 'course'){
             $media->courseThumbnail()->update(['thumbnail_id' => null]);
         }
-        elseif($type == 'book'){
+        elseif($type === 'book'){
             $media->bookThumbnail()->update(['thumbnail_id' => null]);
         }
-        elseif($type == 'lesson'){
+        elseif($type === 'lesson'){
 
             $media->lessonPoster()->update(['poster_id' => null]);
         }
-        elseif($type == 'page'){
+        elseif($type === 'page'){
 
-            $media->pageThumbnail()->update(['poster_id' => null]);
+            $media->pageThumbnail()->update(['thumbnail_id' => null]);
         }
-        elseif($type == 'pageSection1Thumbnail'){
-
-            $media->pageThumbnail()->update(['poster_id' => null]);
+        elseif($type === 'section1Thumbnail'){
+            $page = Page::find($request->pageId);
+            $page->updateMeta($type, ['id' => null, 'url' => '']);
+        }
+        elseif($type === 'mapImage'){
+            $page = Page::find($request->pageId);
+            $page->updateMeta($type, ['id' => null, 'url' => '']);
         }
         else{
             return responseJSon('error', 'نوع فایل مشخص نشده است');

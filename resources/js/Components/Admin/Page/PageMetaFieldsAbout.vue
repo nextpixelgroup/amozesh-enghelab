@@ -60,7 +60,8 @@
                 upload-route="admin.upload.pages.image"
                 label="فقط فایل تصویری آپلود کنید"
                 accept="image/*"
-                type="page"
+                type="section1Thumbnail"
+                :page-id="pageId"
             />
         </v-col>
 
@@ -114,6 +115,10 @@ const props = defineProps({
     teachers: {
         type: Array,
         default: () => []
+    },
+    pageId: {
+        type: Number,
+        required: true
     }
 });
 
