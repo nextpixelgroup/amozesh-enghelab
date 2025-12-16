@@ -1,364 +1,294 @@
 <template>
-    <div class="video-recorder p-6 max-w-4xl mx-auto">
-
-        <!-- وضعیت سیستم -->
-        <div v-if="recoveryMode" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
-            <p class="font-bold">بازیابی اطلاعات</p>
-            <p>یک ویدیوی نیمه‌کاره پیدا شد. در حال آپلود خودکار باقیمانده فایل‌ها...</p>
+    <div class="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+        <!-- هدر و وضعیت -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">ضبط ویدیو</h2>
+            <div class="text-sm font-mono">
+                <span v-if="state === 'recording'" class="text-red-600 animate-pulse">● ضبط: {{ formatTime(timer) }}</span>
+                <span v-else-if="state === 'uploading'" class="text-blue-600">در حال آپلود... ({{ uploadProgress }}%)</span>
+                <span v-else-if="state === 'processing'" class="text-yellow-600">در حال پردازش نهایی...</span>
+                <span v-else-if="state === 'completed'" class="text-green-600">آپلود موفقیت‌آمیز!</span>
+                <span v-else class="text-gray-500">آماده ضبط</span>
+            </div>
         </div>
 
-        <!-- بخش نمایش ویدیو -->
-        <div class="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800">
-            <video ref="preview" autoplay muted playsinline class="w-full h-full object-cover transform -scale-x-100"></video>
+        <!-- کادر نمایش ویدیو -->
+        <div class="relative aspect-video bg-black rounded-lg overflow-hidden mb-4">
+            <video ref="videoPreview" autoplay muted playsinline class="w-full h-full object-cover"></video>
 
-            <!-- Overlay تایمر -->
-            <div v-if="isRecording" class="absolute top-4 right-4 flex items-center gap-2 bg-red-600/90 text-white px-4 py-1.5 rounded-full backdrop-blur-sm shadow-lg">
-                <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                <span class="font-mono font-bold text-lg">{{ formattedTime }}</span>
-            </div>
-
-            <!-- Overlay وضعیت آپلود -->
-            <div v-if="pendingChunks > 0" class="absolute bottom-4 left-4 bg-black/60 text-white px-3 py-1 rounded text-xs backdrop-blur-sm">
-                <span v-if="!isOnline" class="text-red-400 font-bold mr-1">⚠️ آفلاین</span>
-                <span>{{ pendingChunks }} بسته در صف آپلود</span>
+            <!-- لایه محافظ هنگام آپلود -->
+            <div v-if="state === 'uploading' || state === 'processing'" class="absolute inset-0 bg-black/70 flex items-center justify-center flex-col text-white">
+                <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p>لطفاً صبر کنید...</p>
+                <p class="text-sm opacity-70 mt-2">چانک‌های باقی‌مانده: {{ pendingChunksCount }}</p>
             </div>
         </div>
 
         <!-- دکمه‌های کنترل -->
-        <div class="flex flex-col items-center gap-4 mt-8">
+        <div class="flex gap-4">
+            <button
+                v-if="state === 'idle' || state === 'completed'"
+                @click="startRecording"
+                class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold transition flex items-center justify-center gap-2"
+            >
+                <span>شروع ضبط</span>
+            </button>
 
-            <div class="flex gap-4">
-                <button
-                    v-if="!isRecording"
-                    @click="startRecording"
-                    class="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-medium text-white transition-all duration-200 bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                    :disabled="isProcessing || recoveryMode"
-                >
-                    <span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
-                    <span class="relative flex items-center gap-2">
-             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.818v6.364a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-             شروع ضبط
-          </span>
-                </button>
+            <button
+                v-if="state === 'recording'"
+                @click="stopRecording"
+                class="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 rounded-lg font-bold transition"
+            >
+                توقف و ارسال
+            </button>
+        </div>
 
-                <button
-                    v-else
-                    @click="stopRecording"
-                    class="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-medium text-white transition-all duration-200 bg-red-600 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
-                >
-          <span class="relative flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" /></svg>
-            پایان ضبط
-          </span>
-                </button>
-            </div>
-
-            <!-- وضعیت متنی -->
-            <div class="h-6 text-sm font-medium text-gray-600 transition-all duration-300">
-                {{ statusMessage }}
-            </div>
+        <!-- نمایش خطا -->
+        <div v-if="errorMessage" class="mt-4 p-3 bg-red-100 text-red-700 rounded border border-red-200 text-sm">
+            {{ errorMessage }}
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import localforage from 'localforage';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
+import localforage from 'localforage';
 import {route} from "ziggy-js";
 
-// --- تنظیمات حیاتی ---
-const VIDEO_CONFIG = {
-    mimeType: 'video/webm;codecs=vp8,opus',
-    videoBitsPerSecond: 1000000, // 1 Mbps
-    width: 1280,
-    height: 720
-};
-const CHUNK_DURATION = 1000; // هر 1 ثانیه تکه کن
-const BATCH_SIZE = 10; // هر 10 تکه یکبار ذخیره کن
+// --- تنظیمات LocalForage ---
+localforage.config({
+    name: 'VideoUploadApp',
+    storeName: 'upload_chunks'
+});
 
 // --- State Variables ---
-const preview = ref(null);
-const isRecording = ref(false);
-const isProcessing = ref(false);
-const recoveryMode = ref(false); // حالت بازیابی ویدیوی قبلی
-const recordingTime = ref(0);
-const statusMessage = ref('آماده برای ضبط');
-const pendingChunks = ref(0);
-const isOnline = ref(navigator.onLine);
+const videoPreview = ref(null);
+const stream = ref(null);
+const mediaRecorder = ref(null);
+const state = ref('idle'); // 'idle', 'recording', 'uploading', 'processing', 'completed'
+const timer = ref(0);
+const timerInterval = ref(null);
+const errorMessage = ref('');
+const uploadProgress = ref(0);
+const pendingChunksCount = ref(0);
 
-// --- Internal Variables ---
-let mediaRecorder = null;
-let stream = null;
-let timerInterval = null;
-let currentVideoId = null;
-let chunkSequence = 0;
-let localBuffer = []; // بافر موقت رم قبل از ریختن در DB
-let uploaderInterval = null;
+// متغیرهای داخلی آپلود
+let videoUuid = null;
+let chunkCounter = 0;
+let isUploaderRunning = false;
 
-// --- Config LocalForage ---
-localforage.config({
-    name: 'VideoRecorderDB',
-    storeName: 'upload_queue'
-});
-
-// ==========================================================
-// Lifecycle Hooks
-// ==========================================================
-onMounted(async () => {
-    // گوش دادن به وضعیت اینترنت
-    window.addEventListener('online', () => { isOnline.value = true; });
-    window.addEventListener('offline', () => { isOnline.value = false; });
-
-    // جلوگیری از بستن تب اگر آپلود مانده است
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // بررسی فایل‌های جامانده از قبل (Recovery Mode)
-    await checkPendingUploads();
-});
-
-onUnmounted(() => {
-    if (uploaderInterval) clearInterval(uploaderInterval);
-    window.removeEventListener('beforeunload', handleBeforeUnload);
-    if (stream) stream.getTracks().forEach(track => track.stop());
-});
-
-const handleBeforeUnload = (e) => {
-    if (pendingChunks.value > 0 || isRecording.value) {
-        e.preventDefault();
-        e.returnValue = ''; // استاندارد مرورگر برای نمایش هشدار
-    }
-};
-
-// ==========================================================
-// Core Recording Functions
-// ==========================================================
+// --- 1. شروع ضبط ---
 const startRecording = async () => {
     try {
-        stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: {
-                width: { ideal: VIDEO_CONFIG.width },
-                height: { ideal: VIDEO_CONFIG.height },
-                frameRate: { ideal: 24 }
-            }
+        errorMessage.value = '';
+        state.value = 'recording';
+        timer.value = 0;
+        chunkCounter = 0;
+        uploadProgress.value = 0;
+
+        // پاکسازی دیتابیس قدیمی برای اطمینان
+        await localforage.clear();
+
+        // درخواست دسترسی به مدیا
+        stream.value = await navigator.mediaDevices.getUserMedia({
+            video: { width: 1280, height: 720 }, // HD Resolution
+            audio: true
         });
 
-        preview.value.srcObject = stream;
+        videoPreview.value.srcObject = stream.value;
 
-        // ایجاد ID جدید
-        currentVideoId = uuidv4();
+        // دریافت UUID جدید از سرور
+        const initRes = await axios.post(route('web.video.init'));
+        videoUuid = initRes.data.uuid;
 
-        // ذخیره ID در LocalStorage برای اطلاع از اینکه کدام ویدیو فعال است
-        localStorage.setItem('active_video_id', currentVideoId);
+        // تنظیمات MediaRecorder با سازگاری بیشتر
+        const options = {
+            mimeType: 'video/webm;codecs=vp8,opus', // VP8 has better compatibility than VP9
+            videoBitsPerSecond: 2000000, // 2 Mbps
+            audioBitsPerSecond: 128000,  // 128 Kbps
+            audioChannelCount: 1,        // Mono audio for better compatibility
+            audio: true,
+            video: {
+                width: 1280,
+                height: 720,
+                frameRate: { ideal: 30, max: 30 } // Limit frame rate for better performance
+            }
+        };
 
-        chunkSequence = 0;
-        localBuffer = [];
-        recordingTime.value = 0;
+        // ایجاد MediaRecorder با تنظیمات
+        mediaRecorder.value = new MediaRecorder(stream.value, options);
 
-        // اطلاع به سرور
-        await axios.post(route('web.video.init'), { video_id: currentVideoId });
+        // هندلر دریافت داده (هر ۵ ثانیه یا موقع توقف)
+        mediaRecorder.value.ondataavailable = handleDataAvailable;
 
-        mediaRecorder = new MediaRecorder(stream, VIDEO_CONFIG);
-        mediaRecorder.ondataavailable = handleDataAvailable;
-        mediaRecorder.start(CHUNK_DURATION);
+        // شروع ضبط با تکه‌های ۵ ثانیه‌ای
+        const chunkDuration = 5000; // 5 seconds
+        mediaRecorder.value.start(chunkDuration);
 
-        isRecording.value = true;
-        statusMessage.value = 'در حال ضبط...';
         startTimer();
 
-        // اطمینان از روشن بودن آپلودر
-        startUploaderWorker();
-
-    } catch (error) {
-        console.error('Camera Error:', error);
-        alert('دسترسی به دوربین امکان‌پذیر نیست.');
+    } catch (err) {
+        console.error(err);
+        errorMessage.value = 'دسترسی به دوربین/میکروفون امکان‌پذیر نیست یا خطای سرور رخ داده.';
+        state.value = 'idle';
     }
 };
 
-const stopRecording = async () => {
-    if (!mediaRecorder) return;
-
-    isProcessing.value = true;
-    mediaRecorder.stop(); // این باعث تریگر شدن آخرین dataavailable می‌شود
-    stopTimer();
-
-    // بستن دوربین
-    stream.getTracks().forEach(track => track.stop());
-    preview.value.srcObject = null;
-    isRecording.value = false;
-
-    // فلاش کردن باقیمانده بافر به DB
-    await saveBatchToDB(true); // true = force save
-
-    statusMessage.value = 'ضبط تمام شد. آپلود در پس‌زمینه ادامه دارد...';
-
-    // پاک کردن فلگ ویدیوی فعال چون ضبط تمام شده (آپلود شاید مانده باشد)
-    localStorage.removeItem('active_video_id');
-};
-
-// ==========================================================
-// Data Handling & Storage
-// ==========================================================
+// --- 2. مدیریت داده‌ها و ذخیره در IndexedDB ---
 const handleDataAvailable = async (event) => {
     if (event.data && event.data.size > 0) {
-        localBuffer.push(event.data);
+        const currentChunkIndex = chunkCounter++;
 
-        // اگر بافر پر شد، ذخیره کن
-        if (localBuffer.length >= BATCH_SIZE) {
-            await saveBatchToDB();
-        }
+        const chunkData = {
+            uuid: videoUuid,
+            index: currentChunkIndex,
+            blob: event.data,
+            retries: 0
+        };
+
+        // ذخیره در IndexedDB (برای پایداری)
+        // کلید طوری ساخته شده که ترتیب داشته باشد
+        await localforage.setItem(`chunk_${String(currentChunkIndex).padStart(5, '0')}`, chunkData);
+
+        // فراخوانی آپلودر
+        processUploadQueue();
     }
 };
 
-const saveBatchToDB = async (force = false) => {
-    if (localBuffer.length === 0) return;
-    if (!force && localBuffer.length < BATCH_SIZE) return;
+// --- 3. توقف ضبط ---
+const stopRecording = () => {
+    if (mediaRecorder.value && state.value === 'recording') {
+        // فراخوانی stop باعث می‌شود آخرین تکه دیتا (Final Blob) تولید شود
+        // و متد ondataavailable برای آخرین بار صدا زده شود
+        mediaRecorder.value.stop();
+        stopStream();
+        stopTimer();
 
-    const blob = new Blob(localBuffer, { type: 'video/webm' });
-
-    // ساخت کلید ترکیبی که هم یکتا باشد هم قابل سورت شدن
-    // videoId + sequence
-    const itemKey = `${currentVideoId}_${String(chunkSequence).padStart(5, '0')}`;
-
-    const batchData = {
-        id: itemKey,
-        videoId: currentVideoId,
-        sequence: chunkSequence,
-        blob: blob,
-        timestamp: Date.now()
-    };
-
-    await localforage.setItem(itemKey, batchData);
-
-    localBuffer = [];
-    chunkSequence++;
-    await updatePendingCount();
-};
-
-// ==========================================================
-// Background Uploader Worker
-// ==========================================================
-const checkPendingUploads = async () => {
-    await updatePendingCount();
-    if (pendingChunks.value > 0) {
-        recoveryMode.value = true;
-        startUploaderWorker();
+        // تغییر وضعیت به "در حال آپلود"
+        // ما هنوز finish نمی‌زنیم، صبر می‌کنیم صف خالی شود
+        state.value = 'uploading';
     }
 };
 
-const startUploaderWorker = () => {
-    if (uploaderInterval) return; // اگر روشن است، دوباره نساز
-
-    console.log("Uploader Worker Started");
-
-    uploaderInterval = setInterval(async () => {
-        // شرط توقف: اگر اینترنت نیست، کاری نکن
-        if (!navigator.onLine) {
-            statusMessage.value = 'اینترنت قطع است. در انتظار اتصال...';
-            return;
-        }
-
-        try {
-            const keys = await localforage.keys();
-
-            // اگر صف خالی است
-            if (keys.length === 0) {
-                if (recoveryMode.value) {
-                    recoveryMode.value = false;
-                    statusMessage.value = 'آپلودهای معوقه تکمیل شد.';
-                    // اینجا ممکن است نیاز باشد فینیش را برای ویدیوی ریکاوری شده صدا بزنید
-                    // اما چون total_chunks را نداریم، بهتر است سرور تایم‌اوت هندل کند
-                    // یا آخرین sequence را ذخیره کنیم. برای سادگی اینجا رد می‌شویم.
-                }
-
-                // اگر ضبط تمام شده و صف هم خالی است، فینیش را بزن
-                if (!isRecording.value && isProcessing.value) {
-                    await finishUploadProcess();
-                }
-                return;
-            }
-
-            // مرتب‌سازی کلیدها تا به ترتیب ارسال شوند
-            keys.sort();
-            const key = keys[0];
-            const item = await localforage.getItem(key);
-
-            if (!item) {
-                await localforage.removeItem(key); // آیتم خراب
-                return;
-            }
-
-            statusMessage.value = `در حال آپلود بخش ${item.sequence + 1}...`;
-
-            const formData = new FormData();
-            formData.append('video_id', item.videoId);
-            formData.append('sequence', item.sequence);
-            formData.append('file', item.blob);
-
-            await axios.post(route('web.video.uploadChunk'), formData);
-
-            // موفقیت: حذف از DB
-            await localforage.removeItem(key);
-            await updatePendingCount();
-
-        } catch (error) {
-            console.error('Upload Retry Error:', error);
-            // اینجا می‌توان منطق Exponential Backoff گذاشت
-        }
-    }, 2000); // هر 2 ثانیه تلاش کن
-};
-
-const finishUploadProcess = async () => {
-    // جلوگیری از اجرای چندباره
-    if(pendingChunks.value > 0) return;
-
-    // توقف ورکر موقت
-    clearInterval(uploaderInterval);
-    uploaderInterval = null;
+// --- 4. صف آپلود (Worker) ---
+const processUploadQueue = async () => {
+    if (isUploaderRunning) return; // جلوگیری از اجرای همزمان
+    isUploaderRunning = true;
 
     try {
-        // برای اطمینان از اینکه کدام ویدیو را فینیش می‌زنیم
-        // در حالت ضبط عادی currentVideoId داریم
-        if (currentVideoId) {
-            await axios.post(route('web.video.finish'), {
-                video_id: currentVideoId,
-                total_chunks: chunkSequence
-            });
-            statusMessage.value = 'ویدیو با موفقیت ذخیره و ارسال شد.';
-            alert('عملیات با موفقیت انجام شد!');
+        // دریافت همه کلیدها
+        const keys = await localforage.keys();
+        pendingChunksCount.value = keys.length;
+
+        // اگر کلیدی هست، یعنی چیزی برای آپلود داریم
+        if (keys.length > 0) {
+            // مرتب‌سازی کلیدها برای رعایت ترتیب (حیاتی)
+            const sortedKeys = keys.sort();
+            const nextKey = sortedKeys[0];
+            const chunkData = await localforage.getItem(nextKey);
+
+            if (chunkData) {
+                // آپلود چانک
+                await uploadChunkToServer(chunkData);
+
+                // حذف از دیتابیس بعد از موفقیت
+                await localforage.removeItem(nextKey);
+
+                // محاسبه درصد پیشرفت (تخمینی)
+                // فرمول دقیق‌تر نیاز به دانستن تعداد کل دارد که هنوز نمی‌دانیم، پس نمایشی است
+                uploadProgress.value = Math.min(95, uploadProgress.value + 5);
+            }
+
+            // فراخوانی بازگشتی برای چانک بعدی
+            isUploaderRunning = false;
+            processUploadQueue();
+
+        } else {
+            // صف خالی است. حالا چک می‌کنیم که آیا ضبط تمام شده؟
+            if (state.value === 'uploading') {
+                // صف خالی شده و کاربر دکمه توقف را زده است -> پایان کار
+                await finishUpload();
+            }
+            isUploaderRunning = false;
         }
-
-        isProcessing.value = false;
-
-    } catch (e) {
-        console.error("Finish Error:", e);
-        // اگر فیل شد، دوباره ورکر را روشن کن شاید نت قطع شده
-        startUploaderWorker();
+    } catch (err) {
+        console.error("Upload Loop Error:", err);
+        // در صورت خطا، بعد از ۲ ثانیه دوباره تلاش کن
+        setTimeout(() => {
+            isUploaderRunning = false;
+            processUploadQueue();
+        }, 2000);
     }
-}
+};
 
-// ==========================================================
-// Helpers
-// ==========================================================
-const updatePendingCount = async () => {
-    pendingChunks.value = await localforage.length();
-}
+// --- 5. آپلود یک تکه به سرور ---
+const uploadChunkToServer = async (chunkData) => {
+    const formData = new FormData();
+    formData.append('uuid', chunkData.uuid);
+    formData.append('chunk_index', chunkData.index);
+    formData.append('chunk', chunkData.blob);
+
+    // استفاده از Axios برای آپلود
+    await axios.post(route('web.video.chunk'), formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+};
+
+// --- 6. پایان نهایی ---
+const finishUpload = async () => {
+    state.value = 'processing';
+    try {
+        await axios.post(route('web.video.finish'), {
+            uuid: videoUuid,
+            total_chunks: chunkCounter // تعداد کل چانک‌های تولید شده
+        });
+
+        state.value = 'completed';
+        uploadProgress.value = 100;
+
+        // پاکسازی نهایی دیتابیس
+        await localforage.clear();
+
+    } catch (err) {
+        console.error(err);
+        errorMessage.value = 'خطا در پردازش نهایی ویدیو.';
+        state.value = 'idle'; // اجازه تلاش مجدد
+    }
+};
+
+// --- Utility Functions ---
+const stopStream = () => {
+    if (stream.value) {
+        stream.value.getTracks().forEach(track => track.stop());
+        stream.value = null;
+    }
+};
 
 const startTimer = () => {
-    timerInterval = setInterval(() => {
-        recordingTime.value++;
+    timerInterval.value = setInterval(() => {
+        timer.value++;
     }, 1000);
 };
 
 const stopTimer = () => {
-    clearInterval(timerInterval);
+    clearInterval(timerInterval.value);
 };
 
-const formattedTime = computed(() => {
-    const m = Math.floor(recordingTime.value / 60).toString().padStart(2, '0');
-    const s = (recordingTime.value % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
+const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const secs = (seconds % 60).toString().padStart(2, '0');
+    return `${mins}:${secs}`;
+};
+
+// --- Lifecycle ---
+onMounted(() => {
+    // اینجا می‌توانید کدی برای "ادامه آپلود" در صورت رفرش شدن صفحه بنویسید
+    // با چک کردن localforage.keys()
+});
+
+onBeforeUnmount(() => {
+    stopStream();
+    stopTimer();
 });
 </script>

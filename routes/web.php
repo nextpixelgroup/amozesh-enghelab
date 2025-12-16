@@ -68,7 +68,7 @@ Route::name('web.')->group(function () {
 
     Route::get('/video/record', [TestController::class, 'record'])->name('record');
     Route::post('/video/init', [TestController::class, 'init'])->name('video.init');
-    Route::post('/video/chunk', [TestController::class, 'uploadChunk'])->name('video.uploadChunk');
+    Route::post('/video/chunk', [TestController::class, 'uploadChunk'])->name('video.chunk');
     Route::post('/video/finish', [TestController::class, 'finish'])->name('video.finish');
 
 

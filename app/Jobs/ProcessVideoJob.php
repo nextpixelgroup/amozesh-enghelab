@@ -2,73 +2,147 @@
 
 namespace App\Jobs;
 
+use App\Models\Video;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Video;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Process;
 
 class ProcessVideoJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $videoId;
-    protected $chunkPath;
+    public $video;
+    public $totalChunks;
+    public $timeout = 3600; // افزایش تایم‌اوت برای ویدیوهای طولانی
 
-    public function __construct($videoId, $chunkPath)
+    public function __construct(Video $video, $totalChunks)
     {
-        $this->videoId = $videoId;
-        $this->chunkPath = $chunkPath;
+        $this->video = $video;
+        $this->totalChunks = $totalChunks;
     }
 
     public function handle()
     {
-        // مسیر فیزیکی پوشه‌ها
-        $chunkDir = storage_path("app/{$this->chunkPath}");
-        $finalPath = storage_path("app/public/videos/{$this->videoId}.mp4"); // خروجی نهایی
-        $tempRawPath = storage_path("app/temp/{$this->videoId}.webm"); // فایل خام ادغام شده
+        $uuid = $this->video->id;
+        $tempPath = storage_path("app/temp_uploads/{$uuid}");
+        $outputDir = storage_path("app/public/videos");
+        $finalVideoPath = "{$outputDir}/{$uuid}.mp4";
+        $thumbnailPath = "{$outputDir}/{$uuid}.jpg";
 
-        // ساخت پوشه‌ها اگر نیستند
-        if (!file_exists(dirname($tempRawPath))) mkdir(dirname($tempRawPath), 0777, true);
-        if (!file_exists(dirname($finalPath))) mkdir(dirname($finalPath), 0777, true);
+        if (!File::exists($outputDir)) {
+            File::makeDirectory($outputDir, 0755, true);
+        }
 
-        // 1. ادغام تکه‌ها (Merge)
-        $files = glob("{$chunkDir}/*.tmp");
-        sort($files); // مطمئن می‌شویم ترتیب 0, 1, 2 رعایت شود
+        try {
+            // 1. ساخت لیست فایل‌ها
+            $listFile = "{$tempPath}/list.txt";
+            $fileContent = "";
+            $chunksFound = 0;
 
-        $outputHandle = fopen($tempRawPath, 'wb');
-        foreach ($files as $file) {
-            $chunkHandle = fopen($file, 'rb');
-            while (!feof($chunkHandle)) {
-                fwrite($outputHandle, fread($chunkHandle, 1024 * 1024));
+            // چک کردن چانک‌ها
+            for ($i = 0; $i < $this->totalChunks; $i++) {
+                $chunkFile = "{$tempPath}/{$i}.tmp";
+                if (File::exists($chunkFile)) {
+                    $fileContent .= "file '{$chunkFile}'\n";
+                    $chunksFound++;
+                } else {
+                    Log::warning("Chunk missing in merge process: {$chunkFile}");
+                }
             }
-            fclose($chunkHandle);
-            unlink($file); // حذف تکه
-        }
-        fclose($outputHandle);
-        rmdir($chunkDir); // حذف پوشه خالی شده
 
-        // 2. تبدیل با FFmpeg (اختیاری ولی توصیه شده برای سازگاری موبایل)
-        // اگر FFMpeg روی سرور نصب نیست، می‌توانید فایل webm را نگه دارید
-        // اما mp4 استانداردتر است.
+            if ($chunksFound === 0) {
+                throw new \Exception("No chunks found to merge for video {$uuid}");
+            }
 
-        $command = "ffmpeg -y -i {$tempRawPath} -c:v libx264 -preset fast -crf 28 -c:a aac -b:a 128k {$finalPath} 2>&1";
-        exec($command, $output, $returnCode);
+            File::put($listFile, $fileContent);
 
-        if ($returnCode === 0) {
-            // موفقیت
-            unlink($tempRawPath); // حذف فایل خام
+            // 2. FFmpeg command for concatenation and conversion
+            $command = [
+                'ffmpeg',
+                '-f', 'concat',
+                '-safe', '0',
+                '-i', $listFile,
+                
+                // Input options
+                '-fflags', '+genpts',
+                
+                // Video codec options
+                '-c:v', 'libx264',
+                '-preset', 'veryfast',
+                '-crf', '23',
+                '-pix_fmt', 'yuv420p',
+                '-r', '30',
+                '-vsync', 'cfr',  // Changed from vfr to cfr for better compatibility
+                
+                // Audio codec options
+                '-c:a', 'aac',
+                '-b:a', '128k',
+                '-ar', '44100',
+                '-ac', '2',
+                
+                // Output options
+                '-movflags', '+faststart',
+                '-y',  // Overwrite output file if exists
+                $finalVideoPath
+            ];
 
-            Video::where('id', $this->videoId)->update([
+            $this->runProcess($command);
+
+            // 3. دریافت مدت زمان واقعی
+            $duration = $this->getVideoDuration($finalVideoPath);
+            Log::info("Processed Video Duration: {$duration} seconds");
+
+            // 4. ساخت تامنیل هوشمند
+            $seekTime = ($duration > 1) ? '00:00:01.000' : '00:00:00.000';
+            $thumbCommand = [
+                'ffmpeg',
+                '-ss', $seekTime,
+                '-i', $finalVideoPath,
+                '-vframes', '1',
+                '-q:v', '2',
+                '-y',
+                $thumbnailPath
+            ];
+
+            $this->runProcess($thumbCommand);
+
+            // 5. آپدیت نهایی
+            $this->video->update([
                 'status' => 'completed',
-                'path' => "videos/{$this->videoId}.mp4"
+                'path' => "videos/{$uuid}.mp4",
+                'thumbnail' => "videos/{$uuid}.jpg",
+                'duration' => $duration,
+                'size' => File::size($finalVideoPath),
             ]);
-        } else {
-            // شکست
-            Video::where('id', $this->videoId)->update(['status' => 'failed']);
-            \Log::error("FFmpeg failed for {$this->videoId}", $output);
+
+        } catch (\Exception $e) {
+            Log::error("Video Processing Failed: " . $e->getMessage());
+            $this->video->update(['status' => 'failed']);
+            throw $e;
+        } finally {
+            if (File::exists($tempPath)) {
+                File::deleteDirectory($tempPath);
+            }
         }
+    }
+
+    private function runProcess(array $command)
+    {
+        $result = Process::timeout(3600)->run($command);
+        if ($result->failed()) {
+            throw new \Exception("FFmpeg Error: " . $result->errorOutput());
+        }
+    }
+
+    private function getVideoDuration($path)
+    {
+        $command = ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', $path];
+        $result = Process::run($command);
+        return $result->successful() && is_numeric(trim($result->output())) ? (float) trim($result->output()) : 0;
     }
 }
