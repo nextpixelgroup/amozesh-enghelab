@@ -102,17 +102,35 @@ const startRecording = async () => {
         const initRes = await axios.post(route('web.video.init'));
         videoUuid = initRes.data.uuid;
 
+
         // تنظیمات MediaRecorder با سازگاری بیشتر
         const options = {
-            mimeType: 'video/webm;codecs=vp8,opus', // VP8 has better compatibility than VP9
-            videoBitsPerSecond: 2000000, // 2 Mbps
-            audioBitsPerSecond: 128000,  // 128 Kbps
-            audioChannelCount: 1,        // Mono audio for better compatibility
-            audio: true,
+            mimeType: 'video/webm;codecs=vp9,opus',  // Using VP9 for better compression
+            videoBitsPerSecond: 1500000,  // 1.5 Mbps (good balance for 720p)
+            audioBitsPerSecond: 48000,    // 48 Kbps (good quality for voice)
+            audioChannelCount: 1,         // Mono audio
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true,
+                channelCount: 1,
+                sampleRate: 24000,        // Lower sample rate
+                sampleSize: 16
+            },
             video: {
                 width: 1280,
                 height: 720,
-                frameRate: { ideal: 30, max: 30 } // Limit frame rate for better performance
+                frameRate: {
+                    ideal: 24,            // 24fps is sufficient for most cases
+                    max: 30
+                },
+                // Advanced constraints for better compression
+                advanced: [{
+                    width: 1280,
+                    height: 720,
+                    aspectRatio: 16/9,
+                    frameRate: { max: 24 }
+                }]
             }
         };
 

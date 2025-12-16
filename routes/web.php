@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\IndexController;
 use App\Http\Controllers\Web\PathController;
 use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Web\TeacherController;
+use App\Http\Controllers\Web\VideoController;
 use App\Models\CartItem;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -66,10 +67,11 @@ Route::name('web.')->group(function () {
     Route::get('/paying', [PaymentController::class, 'paying'])->name('paying');
     Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
-    Route::get('/video/record', [TestController::class, 'record'])->name('record');
-    Route::post('/video/init', [TestController::class, 'init'])->name('video.init');
-    Route::post('/video/chunk', [TestController::class, 'uploadChunk'])->name('video.chunk');
-    Route::post('/video/finish', [TestController::class, 'finish'])->name('video.finish');
+    Route::get('/video/record', [VideoController::class, 'record'])->name('record');
+    Route::post('/video/init', [VideoController::class, 'init'])->name('video.init');
+    Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
+    Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');
+    Route::get('/video/stream/{uuid}', [VideoController::class, 'stream'])->name('video.stream');
 
 
 
