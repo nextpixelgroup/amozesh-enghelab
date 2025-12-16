@@ -756,37 +756,6 @@ figure {
     }
 }
 
-.zo-course-section .zo-prerequisites-courses-section {
-    margin: 0 0 30px;
-    padding: 0 30px
-}
-
-.zo-course-section .zo-prerequisites-courses-section .zo-title {
-    display: block;
-    margin: 0 0 5px;
-    position: relative;
-    top: 0;
-    font-size: 1.125rem;
-    color: var(--Secondary)
-}
-
-.zo-course-section .zo-prerequisites-courses-section .zo-courses-section .zo-course figure {
-    margin: 0
-}
-
-.zo-course-section .zo-prerequisites-courses-section .zo-courses-section .zo-course figure .zo-thumbnail img {
-    height: 170px
-}
-
-.zo-course-section .zo-prerequisites-courses-section .zo-courses-section .zo-course .zo-content ul {
-    gap: 0
-}
-
-.zo-course-section .zo-prerequisites-courses-section .zo-courses-section .zo-course figure .zo-category {
-    bottom: 15px
-}
-
-
 .zo-breadcrumbs-section {
     width: 100%;
     display: inline-block;

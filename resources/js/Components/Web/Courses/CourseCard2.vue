@@ -6,16 +6,15 @@
                     <div class="zo-thumbnail">
                         <img :src="course.thumbnail" class="img-fluid"/>
                     </div>
-                    <div class="zo-category">
-                        <img src="/assets/img/site/c-cat.svg"
-                             class="img-fluid"/>
-                        <span>{{ course.category }}</span>
-                    </div>
                 </figure>
             </v-col>
             <v-col cols="12" lg="6">
-                <div class="zo-content">
-                    <h2>{{ course.title }}</h2>
+                <div class="zo-details">
+                    <v-tooltip :text="course.title" location="top">
+                        <template v-slot:activator="{ props }">
+                            <h2 v-bind="props">{{ course.title }}</h2>
+                        </template>
+                    </v-tooltip>
                     <span class="zo-prof">{{ course.teacher }}</span>
                     <ul>
                         <li>
@@ -47,3 +46,12 @@ const props = defineProps({
     }
 })
 </script>
+<style scoped>
+    .zo-courses-section .zo-course figure {
+        margin: 0
+    }
+    
+    .zo-courses-section .zo-course figure .zo-thumbnail img {
+        height: 170px
+    }
+</style>

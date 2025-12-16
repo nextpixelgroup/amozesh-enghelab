@@ -22,3 +22,38 @@ const props = defineProps({
     }
 })
 </script>
+<style scoped>
+    
+.zo-prerequisites-courses-section {
+    margin: 0 0 30px;
+    padding: 0 30px
+}
+
+.zo-prerequisites-courses-section .zo-title {
+    display: block;
+    margin: 0 0 5px;
+    position: relative;
+    top: 0;
+    font-size: 1.125rem;
+    color: var(--Secondary)
+}
+
+.zo-prerequisites-courses-section .zo-courses-section .zo-course figure {
+    margin: 0
+}
+
+.zo-prerequisites-courses-section .zo-courses-section .zo-course figure .zo-thumbnail img {
+    height: 170px
+}
+
+.zo-prerequisites-courses-section .zo-courses-section .zo-course .zo-content ul {
+    gap: 0
+}
+
+@media (max-width: 960px) {
+
+    .zo-prerequisites-courses-section {
+        padding: 0 15px
+    }
+}
+</style>
