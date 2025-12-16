@@ -108,7 +108,7 @@ class PageController extends Controller
                             'url' => $media->url,
                         ];
                     }
-                    $page->updateMeta('section1Thumbnail', $mapImage);
+                    $page->updateMeta('mapImage', $mapImage);
                 }
                 return redirectMessage('success',  "با موفقیت ویرایش شد.");
             }

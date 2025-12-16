@@ -51,10 +51,12 @@
                             v-model="form.meta"
                             :institutions="institutions"
                             :teachers="teachers"
+                            :page-id="page.id"
                         />
                         <PageMetaFieldsContact
                             v-if="form.type === 'contact'"
                             v-model="form.meta"
+                            :page-id="page.id"
                         />
                     </v-row>
                 </v-card>

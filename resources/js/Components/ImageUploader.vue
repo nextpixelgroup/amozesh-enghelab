@@ -120,7 +120,12 @@ const props = defineProps({
     maxSize: {type: Number, default: 3 * 1024 * 1024},
     initialUrl: {type: String, default: ''},
     thumbnailText: {type: String, default: 'برای تغییر تصویر، ابتدا حذف کنید'},
-    type: {type: String}
+    type: {type: String},
+    pageId: {
+        type: Number,
+        required: false,
+        default: null
+    }
 });
 const thumbnailText = ref(props.thumbnailText);
 const emit = defineEmits([
@@ -214,13 +219,11 @@ const uploadThumbnail = async () => {
 };
 
 const removeThumbnail = async () => {
-
     const confirm = await $confirm("آیا از حذف این تصویر اطمینان دارید؟");
-
     if(confirm) {
         isRemoving.value = true;
         thumbnailText.value = 'درحال حذف لطفا منتظر بمانید...';
-        const response = await axios.delete(route('admin.media.destroy', {media: props.modelValue, type: props.type}), [], {
+        const response = await axios.delete(route('admin.media.destroy', {media: props.modelValue, type: props.type, pageId: props.pageId}), [], {
             headers: {'Content-Type': 'multipart/form-data'},
         });
         if (response.status === 200) {
