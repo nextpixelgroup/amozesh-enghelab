@@ -17,7 +17,6 @@ class BookController extends Controller
     {
         $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'special')->orderBy('created_at', 'desc')->paginate(15);
         $section1 = WebBooksResource::collection($query);
-
         $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'popular')->orderBy('created_at', 'desc')->paginate(15);
         $section2 = WebBooksResource::collection($query);
         $section3 = WebBooksResource::collection($query)->response()->getData(true);

@@ -282,7 +282,7 @@ watch(() => page.props.courses, (newVal) => {
 
     .zo-courses-section .zo-stats .v-col-6 {
         flex: 0 0 100%;
-        max-width: 100%;
+        max-width: 100%
     }
 }
 

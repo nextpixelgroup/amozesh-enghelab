@@ -180,3 +180,97 @@ const sendMessage = () => {
 }
 
 </script>
+<style scoped>
+    .zo-contact-section .zo-content {
+    padding: 0 0 0 15px;
+}
+
+.zo-contact-section .zo-content span {
+    color: var(--Sub);
+}
+
+.zo-contact-section .zo-content h1 {
+    display: block;
+    margin: 5px 0 10px;
+    font-size: 1.5rem
+}
+
+.zo-contact-section .zo-content p {
+    text-align: justify
+}
+
+.zo-contact-section .zo-content .zo-social {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0
+}
+
+.zo-contact-section .zo-content .zo-social li {
+    display: inline-block;
+}
+
+.zo-contact-section .zo-content .zo-social li .v-btn {
+    min-width: 45px;
+    min-height: 45px;
+    padding: 0;
+    border-radius: 50%
+}
+
+.zo-contact-section .zo-send {
+    padding: 0 35px;
+    border-radius: 300px
+}
+
+.zo-map-section {
+    width: 100%;
+    display: inline-block;
+    margin: 30px 0 0;
+    padding: 30px;
+    background: rgba(5, 105, 60, .025);
+    text-align: center;
+    border-radius: 20px
+}
+
+.zo-map-section .zo-info {
+    width: 100%;
+    display: inline-block;
+    margin: 0 0 30px;
+}
+
+.zo-map-section .zo-info i {
+    font-size: 1.5rem;
+    color: var(--Primary)
+}
+
+.zo-map-section .zo-info strong {
+    display: block;
+    padding: 5px 0;
+}
+
+.zo-map-section .zo-info span {
+    color: var(--Sub);
+}
+
+.zo-map-section .zo-info a {
+    display: inline-block;
+    padding: 0 5px;
+    color: var(--Sub);
+}
+
+.zo-map-section .zo-info a:hover {
+    color: var(--Primary);
+}
+
+.zo-map-section .zo-map {
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+@media (max-width: 1200px) {
+
+    .zo-contact-section .zo-content {
+        padding: 0
+    }
+}
+</style>
