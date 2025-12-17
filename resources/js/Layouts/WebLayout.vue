@@ -50,17 +50,17 @@
                                             <img src="/assets/img/site/search.svg" alt="" class="img-fluid">
                                         </a>
                                     </div>
-                                    <div class="zo-panel d-none d-lg-block">
-                                        <a href="#">ورود/عضویت</a>
-                                    </div>
-                                    <div class="zo-cart">
-                                        <a href="#">
-                                            <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
+                                    <div class="zo-profile" v-if="isAuth">
+                                        <a :href="route('panel.courses.index')">
+                                            <img src="/assets/img/site/profile.svg" alt="" class="img-fluid">
                                         </a>
                                     </div>
-                                    <div class="zo-profile">
+                                    <div class="zo-panel d-none d-lg-block" v-else>
+                                        <a :href="route('panel.login')">ورود/عضویت</a>
+                                    </div>
+                                    <div class="zo-cart" v-if="showCart">
                                         <a href="#">
-                                            <img src="/assets/img/site/profile.svg" alt="" class="img-fluid">
+                                            <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
                                         </a>
                                     </div>
                                     <v-app-bar-nav-icon variant="text" class="d-block d-lg-none" @click.stop="drawer = !drawer" />
@@ -173,6 +173,8 @@ const footer1 = ref(page.props.footer1 || []);
 const footer2 = ref(page.props.footer2 || []);
 const footer3 = ref(page.props.footer3 || []);
 const social = ref(page.props.social || {});
+const showCart = ref(page.props.showCart || false);
+const isAuth = ref(page.props.isAuth || false);
 
 const drawer = ref(false);
 const searchDialog = ref(false);
