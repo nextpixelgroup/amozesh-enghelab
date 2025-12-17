@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\Panel\AuthController;
+use App\Http\Controllers\Panel\BookmarkController;
+use App\Http\Controllers\Panel\CertificateController;
 use App\Http\Controllers\Panel\CourseController;
+use App\Http\Controllers\Panel\OrderController;
+use App\Http\Controllers\Panel\ProfileController;
+use App\Http\Controllers\Panel\TicketController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -13,7 +18,11 @@ Route::name('panel.')->prefix('panel')->group(function () {
 
     Route::middleware(['auth', 'client'])->group(function () {
         Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-        Route::get('/orders', [CourseController::class, 'index'])->name('orders.index');
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
+        Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
+        Route::get('/supports', [TicketController::class, 'index'])->name('supports.index');
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
 
 
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

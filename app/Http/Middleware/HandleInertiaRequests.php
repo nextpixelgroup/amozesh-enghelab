@@ -116,7 +116,7 @@ class HandleInertiaRequests extends Middleware
                     'route' => 'admin.comments.index'
                 ],
                 [
-                    'title' => 'پیام ها',
+                    'title' => 'پشتیبانی',
                     'icon' => 'mdi-message-text-fast',
                     'route' => 'admin.tickets.index'
                 ],
