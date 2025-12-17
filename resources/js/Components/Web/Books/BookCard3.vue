@@ -11,8 +11,10 @@
         </div>
         <div class="zo-text">
             <v-tooltip :text="book.title" location="top">
-                <template v-slot:activator="{ props }">
-                    <h2>{{book.title}}</h2>
+                <template #activator="{ props }">
+                    <h2 v-bind="props">
+                        {{ book.title }}
+                    </h2>
                 </template>
             </v-tooltip>
             <div class="zo-sub">

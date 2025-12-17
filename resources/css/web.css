@@ -833,6 +833,9 @@ figure {
     display: block;
     margin: 0 0 35px;
     font-size: 1rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
 }
 
 .zo-books-section .zo-book .zo-content .zo-meta {
@@ -944,7 +947,6 @@ figure {
 }
 
 .zo-home-books-section .zo-selected-books-section .zo-book .zo-content {
-    max-width: 80%;
     color: var(--White)
 }
 
@@ -952,6 +954,9 @@ figure {
     display: block;
     margin: 0 0 35px;
     font-size: 1rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
 }
 
 .zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta {

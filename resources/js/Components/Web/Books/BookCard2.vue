@@ -7,8 +7,10 @@
         <v-col md="6" cols="12">
             <div class="zo-content">
                 <v-tooltip :text="book.title" location="top">
-                    <template v-slot:activator="{ props }">
-                        <h2>{{book.title}}</h2>
+                    <template #activator="{ props }">
+                        <h2 v-bind="props">
+                            {{ book.title }}
+                        </h2>
                     </template>
                 </v-tooltip>
                 <div class="zo-meta">
