@@ -19,7 +19,8 @@ Route::name('panel.')->prefix('panel')->group(function () {
     Route::middleware(['auth', 'client'])->group(function () {
         Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-        Route::get('/bookmarks', [BookmarkController::class, 'index'])->name('bookmarks.index');
+        Route::get('/bookmarks/books', [BookmarkController::class, 'books'])->name('bookmarks.books');
+        Route::get('/bookmarks/courses', [BookmarkController::class, 'courses'])->name('bookmarks.courses');
         Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
         Route::get('/supports', [TicketController::class, 'index'])->name('supports.index');
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

@@ -7,8 +7,13 @@ use Illuminate\Http\Request;
 
 class BookmarkController extends Controller
 {
-    public function index()
+    public function books()
     {
-        return inertia('Panel/Bookmarks/Index');
+        return inertia('Panel/Bookmarks/Books');
+    }
+
+    public function courses()
+    {
+        return inertia('Panel/Bookmarks/Courses');
     }
 }
