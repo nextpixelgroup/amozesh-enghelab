@@ -3,7 +3,7 @@
         <v-container>
             <v-row>
                 <v-col cols="12">
-                    <swiper class="zo-swiper" dir="rtl" :slides-per-view="1" :space-between="5" :modules="[Navigation]" :navigation="{ nextEl: '.zo-next-3', prevEl: '.zo-prev-3' }">
+                    <swiper class="zo-swiper" dir="rtl" :slides-per-view="1" :space-between="25" :modules="[Navigation]" :navigation="{ nextEl: '.zo-next-3', prevEl: '.zo-prev-3' }">
                         <swiper-slide v-for="(item,index) in books" :key="`section4-${index}`">
                             <BookCard3 :book="item"/>
                         </swiper-slide>

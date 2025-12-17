@@ -9,20 +9,19 @@
             <v-row dense>
                 <v-col cols="12">
                     <div class="zo-swiper">
-                        <swiper dir="rtl" :space-between="5" :modules="[Navigation]" :navigation="{ nextEl: '.zo-next-1', prevEl: '.zo-prev-1' }" :breakpoints="{
+                        <swiper dir="rtl" :space-between="15" :modules="[Navigation]" :navigation="{ nextEl: '.zo-next-1', prevEl: '.zo-prev-1' }" :breakpoints="{
                                   0: { slidesPerView: 1 },
-                                  755: { slidesPerView: 2 },
-                                  990: { slidesPerView: 3 },
-                                  1100: { slidesPerView: 4 },
+                                  960: { slidesPerView: 3 },
+                                  1280: { slidesPerView: 4 },
                                 }">
                             <swiper-slide v-for="(item,index) in books" :key="`section3-${index}`">
                                 <BookCard :book="item"/>
                             </swiper-slide>
                         </swiper>
-                        <button class="zo-prev zo-prev-1">
+                        <button class="zo-prev zo-prev-1 d-lg-flex d-none">
                             <i class="mdi mdi-chevron-left"></i>
                         </button>
-                        <button class="zo-next zo-next-1">
+                        <button class="zo-next zo-next-1 d-lg-flex d-none">
                             <i class="mdi mdi-chevron-right"></i>
                         </button>
                     </div>

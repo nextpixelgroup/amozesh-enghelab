@@ -9,7 +9,7 @@
                 <img src="/assets/img/site/c-cat.svg" alt="" class="img-fluid"/>
                 <span>{{ course.category }}</span>
             </div>
-            -->
+        -->
     </figure>
     <div class="zo-details">
         <v-tooltip :text="course.title" location="top">

@@ -24,8 +24,8 @@
                     <v-container class="zo-container">
                         <v-row dense class="align-center">
                             <v-col cols="4" lg="2">
-                                <Link :href="route('web.index')">
-                                <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
+                                <Link :href="route('web.index')" class="zo-logo">
+                                    <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
                                 </Link>
                             </v-col>
                             <v-col cols="12" lg="7" class="d-lg-block d-none">
@@ -205,6 +205,10 @@ const display = useDisplay();
     display: inline-block;
     background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
     color: var(--White)
+}
+
+.zo-header-section .zo-logo {
+    display: flex
 }
 
 .zo-header-section .zo-container .zo-menu ul {
