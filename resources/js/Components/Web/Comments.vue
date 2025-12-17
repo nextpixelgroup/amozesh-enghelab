@@ -13,8 +13,7 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
-    <div class="zo-space" id="comments">
-        <div class="zo-comments-section">
+        <div class="zo-comments-section" id="comments">
             <strong class="zo-title">نظرات کاربران</strong>
             <!--
             <div class="zo-label" v-if="user">ثبت دیدگاه</div>
@@ -94,7 +93,6 @@
                 </v-col>
             </v-row>
         </div>
-    </div>
     <ShowMessage v-model:show="message.isShow" :message="message.text" :type="message.type" />
 </template>
 <script setup>

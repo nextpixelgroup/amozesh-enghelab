@@ -114,24 +114,33 @@
                                     <div class="zo-subtitle">درباره کتاب</div>
                                     <div v-html="book.content"></div>
                                 </div>
-                                <div class="zo-swiper">
-                                    <swiper
-                                        dir="rtl"
-                                        :slides-per-view="3.5"
-                                        :space-between="35"
-                                        :modules="[Navigation]"
-                                        navigation
-                                    >
-                                        <swiper-slide
-                                            v-for="(item, index) in related.data"
-                                            :key="index"
-                                        >
-                                            <BookCard :book="item"/>
-                                        </swiper-slide>
-                                    </swiper>
+                                </div>
+                                <div class="zo-books-section">
+                                    <div class="zo-swiper">
+                                        <swiper dir="rtl" :modules="[Navigation]" :breakpoints="{
+                                            0: {
+                                                slidesPerView: 1.25,
+                                                spaceBetween: 10
+                                            },
+                                            990: {
+                                                slidesPerView: 1.5,
+                                                spaceBetween: 15
+                                            },
+                                            1260: {
+                                                slidesPerView: 2.5,
+                                                spaceBetween: 15
+                                            }
+                                        }">
+                                            <swiper-slide
+                                                v-for="(item, index) in related.data"
+                                                :key="index"
+                                            >
+                                                <BookCard :book="item"/>
+                                            </swiper-slide>
+                                        </swiper>
+                                    </div>
                                 </div>
                                 <Comments :user="user" :item="book" type="book"/>
-                            </div>
                         </v-card>
                     </v-col>
                     <v-col cols="12" lg="3">
@@ -317,3 +326,229 @@ const updateQty = () => {
 }
 
 </script>
+<style scoped>
+.zo-book-section .zo-card {
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, .085)
+}
+
+.zo-book-section .zo-card .zo-content {
+    padding: 20px
+}
+
+.zo-book-section .zo-card .zo-content .zo-thumbnail {
+    padding: 90px 15px 30px;
+    text-align: center;
+    border: 2px solid var(--Secondary);
+    border-radius: 200px 200px 0 0
+}
+
+.zo-book-section .zo-card .zo-content .zo-title {
+    margin: 15px 0 0
+}
+
+.zo-book-section .zo-card .zo-content .zo-title h1 {
+    margin: 0 0 5px;
+    font-family: 'Estedad-Bold';
+    font-size: 1.25rem
+}
+
+.zo-book-section .zo-card .zo-content .zo-sub {
+    display: block;
+    margin: 0 0 5px;
+    color: var(--Sub)
+}
+
+.zo-book-section .zo-card .zo-content .zo-excerpt {
+    margin: 0 0 15px;
+    font-size: .95rem;
+    text-align: justify
+}
+
+.zo-book-section .zo-card .zo-content .zo-stars {
+    display: inline-block;
+    padding: 12.5px 15px;
+    background: rgb(245, 245, 245);
+    border: 1px solid rgb(240, 240, 240);
+    border-radius: .5rem
+}
+
+.zo-book-section .zo-card .zo-content .zo-stars span {
+    display: inline-block;
+    padding: 0 0 0 5px;
+    font-size: .90rem
+}
+
+.zo-book-section .zo-card .zo-content .zo-stars i {
+    font-size: .95rem
+}
+
+.zo-book-section .zo-card .zo-content .zo-info {
+    width: 100%;
+    display: inline-block;
+    margin: 15px 0 25px;
+    padding: 15px 0;
+    border-top: 1px dashed rgb(240, 240, 240);
+    border-bottom: 1px dashed rgb(240, 240, 240)
+}
+
+.zo-book-section .zo-card .zo-content .zo-info ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.zo-book-section .zo-card .zo-content .zo-info ul li {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    gap: 5px
+}
+
+.zo-book-section .zo-card .zo-content .zo-info ul li:first-child {
+    width: 40%;
+}
+
+.zo-book-section .zo-card .zo-content .zo-info ul li img {
+    width: 25px;
+}
+
+.zo-book-section .zo-card .zo-content .zo-info ul li div span {
+    display: inline-block;
+    padding: 0 0 0 10px;
+    color: var(--Sub)
+}
+
+.zo-book-section .zo-card .zo-content .zo-nav {
+    width: 100%;
+    display: inline-block;
+    margin: 0 0 30px;
+    padding: 0 0 25px;
+    border-bottom: 1px dashed rgb(240, 240, 240)
+}
+
+.zo-book-section .zo-card .zo-content .zo-nav ul {
+    display: flex;
+    align-items: center;
+    gap: 2.5px;
+}
+
+.zo-book-section .zo-card .zo-content .zo-nav ul li {
+    display: inline-block;
+}
+
+.zo-book-section .zo-card .zo-content .zo-nav ul li a {
+    padding: 5px 15px;
+    color: var(--Text);
+}
+
+.zo-book-section .zo-card .zo-content .zo-nav ul li a:hover {
+    background: rgb(225, 225, 225, .25);
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px
+}
+
+.zo-book-section .zo-card .zo-content .zo-nav ul li a.zo-active {
+    background: var(--Secondary);
+    color: var(--White);
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 10px
+}
+
+.zo-book-section .zo-card .zo-content .zo-subtitle {
+    display: block;
+    margin: 0 0 15px;
+    font-size: 1.125rem;
+    color: var(--Secondary);
+}
+
+.zo-book-section .zo-card .zo-content .zo-text {
+    width: 100%;
+    display: inline-block;
+    margin: 0 0 30px;
+    text-align: justify
+}
+
+.zo-book-section .zo-card .zo-content .zo-text p {
+    margin: 0 0 10px;
+    text-align: justify
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0 0 15px;
+    padding: 15px 10px;
+    background: rgb(245, 245, 245);
+    border: 1px dashed rgb(215, 215, 215);
+    border-radius: 0.375rem
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 0 0 35px;
+    position: relative
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-label:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 90%;
+    border-left: 1px solid rgb(215, 215, 215)
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-price {
+    width: 100%;
+    display: inline-block
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-price .zo-regular {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5px
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-price .zo-sale {
+    display: flex;
+    align-items: center;
+    flex-direction: column
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-sale del {
+    position: relative;
+    text-decoration: none
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-sale del:before {
+    content: '';
+    width: 115%;
+    height: 1px;
+    position: absolute;
+    top: 10px;
+    left: -5px;
+    background: rgba(0, 0, 0, .5);
+    transform: rotate(10deg)
+}
+
+.zo-book-section .zo-card .zo-content .zo-price-section .zo-sale div {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5px
+}
+
+.zo-book-section .zo-card .zo-content .zo-add {
+    height: 40px !important;
+    padding: 0 25px !important
+}
+
+.zo-book-section .zo-books-section {
+    margin: 0 0 30px;
+    padding: 0 15px 0 0
+}
+</style>

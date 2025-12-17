@@ -181,7 +181,7 @@ const sendMessage = () => {
 
 </script>
 <style scoped>
-    .zo-contact-section .zo-content {
+.zo-contact-section .zo-content {
     padding: 0 0 0 15px;
 }
 
@@ -189,13 +189,13 @@ const sendMessage = () => {
     color: var(--Sub);
 }
 
-.zo-contact-section .zo-content h1 {
+.zo-contact-section .zo-content :deep(h1) {
     display: block;
     margin: 5px 0 10px;
     font-size: 1.5rem
 }
 
-.zo-contact-section .zo-content p {
+.zo-contact-section .zo-content :deep(p) {
     text-align: justify
 }
 
