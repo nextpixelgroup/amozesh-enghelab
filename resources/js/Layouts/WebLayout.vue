@@ -79,9 +79,17 @@
                         </v-btn>
                     </div>
                     <v-card class="pa-5">
-                        <v-form class="zo-form">
-                            <v-text-field variant="outlined" color="primary" hide-details label="جستجو دوره‌های آموزشی"></v-text-field>
-                            <v-btn flat size="large" color="primary" class="zo-button">جستجو</v-btn>
+                        <v-form class="zo-form" @submit.prevent="search">
+                            <v-text-field v-model="searchText" variant="outlined" color="primary" hide-details label="جستجو دوره‌های آموزشی"></v-text-field>
+                            <v-btn
+                                type="submit"
+                                flat
+                                size="large"
+                                color="primary"
+                                class="zo-button"
+                                :disabled="isLoading"
+                                :loading="isLoading"
+                            >جستجو</v-btn>
                         </v-form>
                     </v-card>
                 </div>
@@ -162,7 +170,7 @@
 <script setup>
 import { ref } from 'vue'
 import FlashMessage from "@/Components/FlashMessage.vue";
-import { Head, Link, usePage } from "@inertiajs/vue3";
+import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import { useDisplay } from 'vuetify';
 
@@ -178,9 +186,13 @@ const isAuth = ref(page.props.isAuth || false);
 
 const drawer = ref(false);
 const searchDialog = ref(false);
-
+const isLoading = ref(false);
 const display = useDisplay();
-
+const searchText = ref('');
+const search = () => {
+    isLoading.value = true
+    window.location.href = route('web.courses.index', { search: searchText.value });
+}
 </script>
 <style scoped>
 .zo-drawer-section ul {
