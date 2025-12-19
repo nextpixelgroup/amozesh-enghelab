@@ -100,3 +100,8 @@ const props = defineProps({
 })
 const path = ref(props.path.data);
 </script>
+<style scoped>
+    .zo-path-section .zo-title-section {
+        justify-content: flex-start
+    }
+</style>

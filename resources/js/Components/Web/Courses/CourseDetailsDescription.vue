@@ -28,29 +28,29 @@ const props = defineProps({
     margin: 0 0 10px
 }
 
-.zo-description-section h1 {
+.zo-description-section :deep(h1) {
     margin: 0 0 10px;
     font-size: 1.25rem
 }
 
-.zo-description-section h2 {
+.zo-description-section :deep(h2) {
     margin: 0 0 10px;
     font-size: 1.15rem
 }
 
-.zo-description-section h3 {
+.zo-description-section :deep(h3) {
     font-size: 1.10rem
 }
 
-.zo-description-section h4 {
+.zo-description-section :deep(h4) {
     font-size: 1.05rem
 }
 
-.zo-description-section h5 {
+.zo-description-section :deep(h5) {
     font-size: 1rem
 }
 
-.zo-description-section h6 {
+.zo-description-section :deep(h6) {
     font-size: .95rem
 }
 

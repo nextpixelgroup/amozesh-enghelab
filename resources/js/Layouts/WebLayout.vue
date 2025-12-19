@@ -183,6 +183,7 @@ const display = useDisplay();
 
 </script>
 <style scoped>
+
 .zo-drawer-section ul {
     padding: 15px
 }
@@ -261,6 +262,39 @@ const display = useDisplay();
 .zo-header-section .zo-container .zo-actions .zo-search a,
 .zo-header-section .zo-container .zo-actions .zo-profile a {
     display: flex;
+    position: relative;
+}
+
+.zo-header-section .zo-container .zo-actions .zo-search a {
+    padding: 0 0 0 15px
+}
+
+.zo-header-section .zo-container .zo-actions .zo-search a:before {
+    content: '';
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--Secondary);
+}
+
+.zo-header-section .zo-container .zo-actions .zo-cart a {
+    padding: 0 15px 0 0
+}
+
+.zo-header-section .zo-container .zo-actions .zo-cart a:before {
+    content: '';
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--Secondary);
+}
+
+.zo-header-section .zo-container .zo-actions .zo-profile a {
+    padding: 0 10px
 }
 
 .zo-header-section .zo-container .zo-actions .zo-cart a img,
