@@ -67,11 +67,13 @@ Route::name('web.')->group(function () {
     Route::get('/paying', [PaymentController::class, 'paying'])->name('paying');
     Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
-    Route::get('/video/record', [VideoController::class, 'record'])->name('record');
-    Route::post('/video/init', [VideoController::class, 'init'])->name('video.init');
-    Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
-    Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');
-    Route::get('/video/stream/{uuid}', [VideoController::class, 'stream'])->name('video.stream');
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/video/record', [VideoController::class, 'record'])->name('record');
+        Route::post('/video/init', [VideoController::class, 'init'])->name('video.init');
+        Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
+        Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');
+        Route::get('/video/stream/{uuid}', [VideoController::class, 'stream'])->name('video.stream');
+    });
 
 
 

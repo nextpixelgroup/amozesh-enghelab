@@ -96,6 +96,27 @@
                     >
                         <strong>راهنما:</strong> برای شروع ضبط روی دکمه قرمز کلیک کنید. حداکثر زمان ضبط ۱۰ دقیقه می‌باشد.
                     </v-alert>
+
+                    <!-- Internet Connection Status -->
+                    <v-alert
+                        v-if="!isOnline"
+                        type="error"
+                        border="left"
+                        class="mt-4 text-right"
+                        dense
+                        outlined
+                        transition="scale-transition"
+                    >
+                        <v-row align="center">
+                            <v-col cols="auto">
+                                <v-icon>mdi-wifi-off</v-icon>
+                            </v-col>
+                            <v-col>
+                                <strong>خطا در اتصال به اینترنت</strong>
+                                <div class="text-caption">لطفا اتصال اینترنت خود را بررسی کنید.</div>
+                            </v-col>
+                        </v-row>
+                    </v-alert>
                 </v-card-text>
 
                 <!-- Upload Progress -->
@@ -123,7 +144,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue';
 import axios from 'axios';
 import localforage from 'localforage';
 import {route} from "ziggy-js";
@@ -148,6 +169,7 @@ const pendingChunksCount = ref(0);
 const canRecord = ref(false);
 const isLoading = ref(false);
 const isRecording = ref(false);
+const isOnline = ref(navigator.onLine);
 
 // متغیرهای داخلی آپلود
 let videoUuid = null;
@@ -467,7 +489,16 @@ const formatTime = (seconds) => {
 };
 
 // --- Lifecycle ---
+// Handle online/offline events
+const updateOnlineStatus = () => {
+    isOnline.value = navigator.onLine;
+};
+
 onMounted(async () => {
+    // Add event listeners for online/offline status
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
     // Initialize camera access
     try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -493,5 +524,11 @@ onMounted(async () => {
 onBeforeUnmount(() => {
     stopStream();
     stopTimer();
+});
+
+onUnmounted(() => {
+    // Clean up event listeners
+    window.removeEventListener('online', updateOnlineStatus);
+    window.removeEventListener('offline', updateOnlineStatus);
 });
 </script>

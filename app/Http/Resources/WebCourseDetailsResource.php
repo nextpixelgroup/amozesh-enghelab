@@ -14,7 +14,8 @@ class WebCourseDetailsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $userId = auth()->id();
+        $user = auth()->user();
+        $userId = $user->id;
 
         $seasons = $this->seasons()
             ->where('is_active', 1)
@@ -33,7 +34,7 @@ class WebCourseDetailsResource extends JsonResource
                 // بارگذاری وضعیت پاس شدن آزمون توسط کاربر جاری
                 'lessons.quiz.quizCompletions' => function ($q) use ($userId) {
                     $q->where('user_id', $userId);
-                }
+                },
             ])
             ->get();
         $lessonCompletions = $this->lessonCompletions->count();
@@ -107,6 +108,7 @@ class WebCourseDetailsResource extends JsonResource
                 'lessons' => $processedLessons,
             ];
         });
+
         $data = [
             'id' => $this->id,
             'slug' => $this->slug,
@@ -137,9 +139,15 @@ class WebCourseDetailsResource extends JsonResource
                 'lessons' => $seasons->sum(fn($season) => $season->lessons->count()),
                 'duration' => formatDurationTime($seasons->sum(fn($season) => $season->lessons->sum('duration')))
             ],
-            'progress' => $lessonCount > 0 ? round(($lessonCompletions / $lessonCount) * 100) : 0
+            'progress' => $lessonCount > 0 ? round(($lessonCompletions / $lessonCount) * 100) : 0,
+            'hasCompletedCourse' => $user->id ? $user->hasCompletedCourse($this->resource) : false,
+            'quiz' => [
+                'hasQuiz' => $this->quiz && $this->quiz->is_active,
+                'hasQuizCompleted' => $this->quiz && $this->quiz->quizCompletions->isNotEmpty(),
+                'url' => '',
+            ]
         ];
-
+        //dd($data);
         //dd($data['seasons']);
         return $data;
 

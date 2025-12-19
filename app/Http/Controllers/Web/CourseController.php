@@ -12,8 +12,11 @@ use App\Models\Course;
 use App\Models\CourseLesson;
 use App\Models\CourseStudent;
 use App\Models\Setting;
+use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CourseController extends Controller
@@ -72,7 +75,6 @@ class CourseController extends Controller
         $isEnrolled = false;
         if($user) $isEnrolled = $user->isEnrolledIn($courseRequest);
         $pageTitle = $courseRequest->title;
-
         /*$comments = Comment::whereNull('parent_id')
         ->with(['children' => function ($query) {
             $query->orderBy('created_at', 'asc');
@@ -206,7 +208,7 @@ class CourseController extends Controller
 
         // Check if all lessons in the course are completed
         $course = $lesson->course;
-        
+
         // Count only active lessons in active seasons
         $totalLessons = $course->seasons()
             ->where('is_active', true)
@@ -215,7 +217,7 @@ class CourseController extends Controller
             }])
             ->get()
             ->sum('lessons_count');
-            
+
         $completedLessons = $user->lessonCompletions()
             ->where('course_id', $course->id)
             ->whereHas('lesson', function($query) {
@@ -235,6 +237,25 @@ class CourseController extends Controller
                     'has_passed' => true,
                     'progress' => 100
                 ]);
+            }
+        }
+
+        if($course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
+            $uuid = (string) Str::uuid();
+
+
+            $video = Video::create([
+                'id' => $uuid,
+                'status' => 'pending',
+                // 'user_id' => auth()->id(), // اگر نیاز به احراز هویت دارید
+            ]);
+
+            // ۳. ایجاد پوشه موقت برای ذخیره چانک‌ها
+            // این کار باعث می‌شود ریسک خطای همزمانی در ساخت پوشه از بین برود
+            $tempPath = storage_path("app/temp_uploads/{$uuid}");
+
+            if (!File::exists($tempPath)) {
+                File::makeDirectory($tempPath, 0755, true);
             }
         }
 

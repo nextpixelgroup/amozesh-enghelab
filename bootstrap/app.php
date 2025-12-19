@@ -46,7 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
             } elseif (str_starts_with($request->path(), 'panel')) {
                 return route('panel.login'); // Make sure this route exists
             }
-            return route('login'); // Fallback to default login route
+            return route('panel.login'); // Fallback to default login route
         });
 
 
