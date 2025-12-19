@@ -116,7 +116,6 @@ class VideoController extends Controller
     {
         // ۱. پیدا کردن ویدیو
         $video = Video::where('id', $uuid)->firstOrFail();
-
         // ۲. چک کردن دسترسی (Security Check)
         // مثلا فقط صاحب ویدیو یا ادمین بتواند ببیند
         // if ($request->user()->id !== $video->user_id) {
@@ -125,9 +124,8 @@ class VideoController extends Controller
 
         // ۳. ساخت مسیر کامل فایل
         // توجه: مسیر path در دیتابیس 'private_videos/UUID.mp4' ذخیره شده است
-        $path = storage_path('app/public/' . $video->path);
-
-        if (!file_exists($path)) {
+        $path = storage_path('app/private/' . $video->path);
+        if (!file_exists($path) || !$video->path) {
             abort(404);
         }
 
