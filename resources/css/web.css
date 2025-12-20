@@ -1019,7 +1019,7 @@ figure {
 @media (max-width: 960px) {
 
     .zo-home-books-section .zo-selected-books-section .zo-book img {
-        margin:  auto
+        margin: auto
     }
 
     .zo-home-books-section .zo-selected-books-section .zo-book .zo-content {
@@ -1442,6 +1442,41 @@ figure {
     width: 100%;
     display: block;
     padding: 5px 0 0;
+}
+
+.zo-dashboard-section .zo-card {
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, .085)
+}
+
+.zo-dashboard-section .zo-header .zo-info {
+    display: flex;
+    align-items: center;
+    gap: 15px
+}
+
+.zo-dashboard-section .zo-header .zo-info strong {
+    font-family: 'Estedad-Bold'
+}
+
+.zo-dashboard-section .zo-header .zo-info .zo-icon {
+    width: 75px;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5, 105, 60, .10);
+    color: rgb(5, 105, 60);
+    border: 2px solid rgb(5, 105, 60);
+    border-radius: 50%
+}
+
+.zo-dashboard-section .zo-header .zo-info .zo-icon i {
+    font-size: 1.5rem
+}
+
+.zo-dashboard-section .zo-header .zo-action {
+    padding: 0 25px
 }
 
 b,
