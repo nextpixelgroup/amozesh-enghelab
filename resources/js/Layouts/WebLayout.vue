@@ -25,7 +25,7 @@
                         <v-row dense class="align-center">
                             <v-col cols="4" lg="2">
                                 <Link :href="route('web.index')" class="zo-logo">
-                                    <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
+                                <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
                                 </Link>
                             </v-col>
                             <v-col cols="12" lg="7" class="d-lg-block d-none">
@@ -51,17 +51,35 @@
                                         </a>
                                     </div>
                                     <div class="zo-profile" v-if="isAuth">
-                                        <a :href="route('panel.profile.index')">
-                                            <img src="/assets/img/site/profile.svg" alt="" class="img-fluid">
-                                        </a>
+                                        <v-tooltip bottom>
+                                            <template #activator="{ props }">
+                                                <a :href="route('panel.profile.index')" v-bind="props">
+                                                    <img src="/assets/img/site/profile.svg" alt="" class="img-fluid">
+                                                </a>
+                                            </template>
+                                            <span>پروفایل کاربری</span>
+                                        </v-tooltip>
                                     </div>
                                     <div class="zo-panel d-none d-lg-block" v-else>
                                         <a :href="route('panel.login')">ورود/عضویت</a>
                                     </div>
                                     <div class="zo-cart" v-if="showCart">
-                                        <a href="#">
-                                            <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
-                                        </a>
+                                        <v-tooltip bottom>
+                                            <template #activator="{ props }">
+                                                <a href="#" v-bind="props">
+                                                    <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
+                                                </a>
+                                            </template>
+                                            <span>سبد خرید</span>
+                                        </v-tooltip>
+                                    </div>
+                                    <div class="zo-exit">
+                                        <v-tooltip bottom>
+                                            <template #activator="{ props }">
+                                                <v-btn v-bind="props" flat color="transparent" density="compact" icon="mdi-logout"></v-btn>
+                                            </template>
+                                            <span>خروج از حساب کاربری</span>
+                                        </v-tooltip>
                                     </div>
                                     <v-app-bar-nav-icon variant="text" class="d-block d-lg-none" @click.stop="drawer = !drawer" />
                                 </div>
@@ -81,15 +99,7 @@
                     <v-card class="pa-5">
                         <v-form class="zo-form" @submit.prevent="search">
                             <v-text-field v-model="searchText" variant="outlined" color="primary" hide-details label="جستجو دوره‌های آموزشی"></v-text-field>
-                            <v-btn
-                                type="submit"
-                                flat
-                                size="large"
-                                color="primary"
-                                class="zo-button"
-                                :disabled="isLoading"
-                                :loading="isLoading"
-                            >جستجو</v-btn>
+                            <v-btn type="submit" flat size="large" color="primary" class="zo-button" :disabled="isLoading" :loading="isLoading">جستجو</v-btn>
                         </v-form>
                     </v-card>
                 </div>
@@ -170,7 +180,7 @@
 <script setup>
 import { ref } from 'vue'
 import FlashMessage from "@/Components/FlashMessage.vue";
-import {Head, Link, router, usePage} from "@inertiajs/vue3";
+import { Head, Link, router, usePage } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import { useDisplay } from 'vuetify';
 
@@ -193,9 +203,9 @@ const search = () => {
     isLoading.value = true
     window.location.href = route('web.courses.index', { search: searchText.value });
 }
+
 </script>
 <style scoped>
-
 .zo-drawer-section ul {
     padding: 15px
 }
