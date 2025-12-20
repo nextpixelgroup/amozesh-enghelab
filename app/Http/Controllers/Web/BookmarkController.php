@@ -30,8 +30,23 @@ class BookmarkController extends Controller
         ]);
     }
 
-    public function destroy(Bookmark $bookmark)
+    public function courseDestroy(Course $course)
     {
+        $bookmark = Bookmark::where('user_id', auth()->id())
+            ->where('bookmarkable_type', get_class($course))
+            ->where('bookmarkable_id', $course->id)
+            ->firstOrFail();
+        Gate::authorize('delete', $bookmark);
+        $bookmark->delete();
+        return sendJson('success','از لیست علاقه‌مندی حذف شد');
+    }
+
+    public function bookDestroy(Book $book)
+    {
+        $bookmark = Bookmark::where('user_id', auth()->id())
+            ->where('bookmarkable_type', get_class($book))
+            ->where('bookmarkable_id', $book->id)
+            ->firstOrFail();
         Gate::authorize('delete', $bookmark);
         $bookmark->delete();
         return sendJson('success','از لیست علاقه‌مندی حذف شد');

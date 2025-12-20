@@ -293,6 +293,12 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function bookmarkedCourses()
+    {
+        return $this->morphedByMany(Course::class, 'bookmarkable', 'bookmarks')
+            ->withTimestamps();
+    }
+
     protected function genderObject(): Attribute
     {
         return Attribute::make(

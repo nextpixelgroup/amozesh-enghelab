@@ -3,6 +3,7 @@
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Web\AboutController;
 use App\Http\Controllers\Web\BookController;
+use App\Http\Controllers\Web\BookmarkController;
 use App\Http\Controllers\Web\CommentController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\CourseController;
@@ -68,6 +69,13 @@ Route::name('web.')->group(function () {
     Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
     Route::middleware(['auth'])->group(function () {
+
+        Route::post('/bookmarks/course/{course}/store', [BookmarkController::class, 'courseStore'])->name('bookmark.course.store');
+        Route::post('/bookmarks/book/{book}/store', [BookmarkController::class, 'bookStore'])->name('bookmark.book.store');
+        Route::delete('/bookmarks/course/{course}/destroy', [BookmarkController::class, 'courseDestroy'])->name('bookmark.course.destroy');
+        Route::delete('/bookmarks/book/{book}/destroy', [BookmarkController::class, 'bookDestroy'])->name('bookmark.book.destroy');
+
+
         Route::get('/video/record/{uuid}', [VideoController::class, 'record'])->name('video.record');
         Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
         Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');

@@ -4,16 +4,11 @@
             <div class="zo-content">
                 <div class="zo-thumbnail">
                     <div class="zo-bookmark">
-                        <v-tooltip text="افزودن به علاقه مندی">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" icon="mdi-bookmark-outline" color="primary" size="large"></v-btn>
-                            </template>
-                        </v-tooltip>
-                        <v-tooltip text="حذف از علاقه مندی">
-                            <template v-slot:activator="{ props }">
-                                <v-btn v-bind="props" icon="mdi-bookmark" color="primary" size="large"></v-btn>
-                            </template>
-                        </v-tooltip>
+                        <BookmarkTemplate
+                            :id="course.id"
+                            :isBookmarked="course.isBookmarked"
+                            type="course"
+                        />
                     </div>
                     <img :src="course.thumbnail" alt="" class="rounded-lg">
                 </div>
@@ -105,6 +100,7 @@ import { computed, ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import ShowMessage from "@/Components/ShowMessage.vue";
+import BookmarkTemplate from "@/Components/Web/BookmarkTemplate.vue";
 
 const props = defineProps({
     course: {

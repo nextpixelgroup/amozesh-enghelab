@@ -146,7 +146,8 @@ class WebCourseDetailsResource extends JsonResource
                 'hasQuiz' => $this->quiz && $this->quiz->is_active,
                 'hasQuizCompleted' => $this->quiz && $this->quiz->quizCompletions->isNotEmpty(),
                 'url' => '',
-            ]
+            ],
+            'isBookmarked' => $user->id ? (bool)$user->bookmarkedCourses()->where('bookmarkable_id', $this->id)->exists() : false
         ];
         if(
             $user->id &&
