@@ -218,8 +218,10 @@ const search = () => {
 .zo-header-section {
     width: 100%;
     display: inline-block;
+    position: relative;
     background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
-    color: var(--White)
+    color: var(--White);
+    z-index: 15
 }
 
 .zo-header-section .zo-logo {

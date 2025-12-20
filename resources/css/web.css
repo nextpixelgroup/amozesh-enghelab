@@ -1391,6 +1391,58 @@ figure {
     }
 }
 
+.zo-dashboard-section {
+    width: 100%;
+    display: inline-block;
+    padding: 0 0 15px;
+    position: relative;
+}
+
+.zo-dashboard-section .zo-nav {
+    width: 100%;
+    display: inline-block;
+    background: var(--Primary) url(/public/assets/img/site/footer-pattern.png);
+    color: var(--White);
+    border-top: 1px solid rgba(255, 255, 255, .05);
+}
+
+.zo-dashboard-section .zo-nav nav ul {
+    display: flex;
+    justify-content: center
+}
+
+.zo-dashboard-section .zo-nav nav ul li {
+    width: 25%;
+    display: inline-block;
+    padding: 0 2.5px;
+    text-align: center
+}
+
+.zo-dashboard-section .zo-nav nav ul li a {
+    display: block;
+    padding: 25px 0;
+    color: var(--White)
+}
+
+.zo-dashboard-section .zo-nav nav ul li a:hover {
+    background: rgba(255, 255, 255, 0.05)
+}
+
+.zo-dashboard-section .zo-nav nav ul li a.zo-active {
+    background: var(--Secondary) url(/public/assets/img/site/footer-pattern.png);
+    color: var(--White);
+}
+
+.zo-dashboard-section .zo-nav nav ul li a i {
+    font-size: 2rem
+}
+
+.zo-dashboard-section .zo-nav nav ul li a span {
+    width: 100%;
+    display: block;
+    padding: 5px 0 0;
+}
+
 b,
 th,
 strong {
