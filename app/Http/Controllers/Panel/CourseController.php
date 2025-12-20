@@ -15,7 +15,7 @@ class CourseController extends Controller
     {
 
         $userId = auth()->id();
-        $query = Course::with(['lessons', 'thumbnail', 'categories', 'teacher'])
+        $query = Course::with(['thumbnail', 'teacher'])
             ->where('status', 'publish')
             ->whereHas('students', function($q) use ($userId) {
                 $q->where('user_id', $userId);
@@ -31,7 +31,7 @@ class CourseController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->limit(1);
             }, 'desc')
-            ->paginate(env('COURSES_PER_PAGE'));
+            ->get();
         $courses = WebCoursesResource::collection($query);
         return Inertia::render('Panel/Courses/Index', compact('courses'));
     }

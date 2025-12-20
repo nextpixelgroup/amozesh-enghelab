@@ -62,6 +62,11 @@ class Book extends Model
         return $this->morphMany(CartItem::class, 'item');
     }
 
+    public function bookmarks()
+    {
+        return $this->morphMany(Bookmark::class, 'bookmarkable');
+    }
+
     /**
      * Get all comments for the book.
      */

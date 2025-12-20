@@ -98,6 +98,11 @@ class User extends Authenticatable
         return ['super-admin', 'admin', 'content-manager'];
     }
 
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
     public function institution()
     {
         return $this->belongsTo(User::class);

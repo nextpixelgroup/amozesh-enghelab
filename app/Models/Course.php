@@ -24,6 +24,11 @@ class Course extends Model
         'must_complete_quizzes' => 'boolean',
     ];
 
+    public function bookmarks()
+    {
+        return $this->morphMany(Bookmark::class, 'bookmarkable');
+    }
+
     public function video()
     {
         return $this->hasMany(Video::class);
