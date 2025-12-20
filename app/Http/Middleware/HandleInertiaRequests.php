@@ -140,6 +140,35 @@ class HandleInertiaRequests extends Middleware
             $shared['contactCount'] = Contact::where('read_at', null)->count();
         }
         else{
+
+            $shared['menuItems'] = [
+                [
+                    'title' => 'پروفایل کاربری',
+                    'icon' => 'mdi-account-circle',
+                    'url' => route('panel.profile.index'),
+                ],
+                [
+                    'title' => 'آموزش‌های من',
+                    'icon' => 'mdi-human-male-board',
+                    'url' => route('panel.courses.index'),
+                ],
+                [
+                    'title' => 'علاقه‌مندی‌ها',
+                    'icon' => 'mdi-bookmark',
+                    'url' => route('panel.bookmarks.courses'),
+                ],
+                [
+                    'title' => 'سفارش‌ها',
+                    'icon' => 'mdi-cart',
+                    'url' => route('panel.orders.index'),
+                ],
+                [
+                    'title' => 'ارتباط با پشتیبان',
+                    'icon' => 'mdi-phone-in-talk',
+                    'url' => route('panel.supports.index'),
+                ],
+            ];
+
             $menuTypes = ['header', 'footer-1', 'footer-2', 'footer-3'];
             $allMenus = Menu::where('is_active', 1)
                 ->whereIn('type', $menuTypes)

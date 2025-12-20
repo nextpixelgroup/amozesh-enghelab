@@ -6,34 +6,13 @@
                     <v-col cols="12">
                         <nav>
                             <ul>
-                                <li>
-                                    <a href="#" class="zo-active">
-                                        <i class="mdi mdi-account-circle"></i>
-                                        <span>پروفایل کاربری</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="mdi mdi-human-male-board"></i>
-                                        <span>آموزش‌های من</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="mdi mdi-bookmark"></i>
-                                        <span>علاقه‌مندی‌ها</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="mdi mdi-cart"></i>
-                                        <span>سفارش‌ها</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="mdi mdi-phone-in-talk"></i>
-                                        <span>ارتباط پشتیبان</span>
+                                <li v-for="(item, index) in menuItems" :key="index">
+                                    <a
+                                        :href="item.url"
+                                        :class="{'zo-active': isActive(item.url)}"
+                                    >
+                                        <i :class="`mdi ${item.icon}`"></i>
+                                        <span>{{ item.title }}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -45,5 +24,22 @@
         <slot />
     </div>
 </template>
+
 <script setup>
+import { usePage } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
+import { route } from "ziggy-js";
+
+const page = usePage();
+const menuItems = ref(page.props.menuItems);
+
+const isActive = (menuUrl) => {
+    if (!menuUrl) return false;
+
+    const currentUrl = window.location.pathname;
+    const menuPath = new URL(menuUrl, window.location.origin).pathname;
+
+    return currentUrl === menuPath ||
+        currentUrl.startsWith(menuPath) && menuPath !== '/';
+};
 </script>

@@ -149,6 +149,9 @@ import axios from 'axios';
 import localforage from 'localforage';
 import {route} from "ziggy-js";
 import VideoLayout from "@/Layouts/VideoLayout.vue";
+const props = defineProps({
+    uuid: String
+})
 
 // --- تنظیمات LocalForage ---
 localforage.config({
@@ -172,7 +175,8 @@ const isRecording = ref(false);
 const isOnline = ref(navigator.onLine);
 
 // متغیرهای داخلی آپلود
-let videoUuid = null;
+let videoUuid = ref(props.uuid);
+
 let chunkCounter = 0;
 let isUploaderRunning = false;
 
@@ -197,8 +201,8 @@ const startRecording = async () => {
         videoPreview.value.srcObject = stream.value;
 
         // دریافت UUID جدید از سرور
-        const initRes = await axios.post(route('web.video.init'));
-        videoUuid = initRes.data.uuid;
+        const initRes = await axios.post(route('web.video.init',videoUuid.value));
+
 
 
         // تنظیمات MediaRecorder با سازگاری بیشتر
@@ -288,7 +292,7 @@ const handleDataAvailable = async (event) => {
         const currentChunkIndex = chunkCounter++;
 
         const chunkData = {
-            uuid: videoUuid,
+            uuid: videoUuid.value,
             index: currentChunkIndex,
             blob: event.data,
             retries: 0
@@ -447,7 +451,7 @@ const finishUpload = async () => {
     state.value = 'processing';
     try {
         await axios.post(route('web.video.finish'), {
-            uuid: videoUuid,
+            uuid: videoUuid.value,
             total_chunks: chunkCounter // تعداد کل چانک‌های تولید شده
         });
 

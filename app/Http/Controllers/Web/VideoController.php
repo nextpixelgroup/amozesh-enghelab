@@ -13,31 +13,21 @@ use Illuminate\Support\Str;
 class VideoController extends Controller
 {
 
-    public function record()
+    public function record($uuid)
     {
-        return inertia('Record');
+        return inertia('Record', compact('uuid'));
     }
 
-    public function init(Request $request)
+    public function init(Request $request, $uuid)
     {
-        // ۱. تولید UUID یکتا
-        $uuid = (string) Str::uuid();
 
-        // ۲. ایجاد رکورد در دیتابیس
-        // فرض بر این است که مدل Video شما فیلد id یا uuid دارد
-        $video = Video::create([
-            'id' => $uuid, // اگر کلید اصلی شما UUID نیست، این را در ستون مربوطه ذخیره کنید
-            'status' => 'uploading', // وضعیت اولیه
-            // 'user_id' => auth()->id(), // اگر نیاز به احراز هویت دارید
-        ]);
-
-        // ۳. ایجاد پوشه موقت برای ذخیره چانک‌ها
-        // این کار باعث می‌شود ریسک خطای همزمانی در ساخت پوشه از بین برود
         $tempPath = storage_path("app/temp_uploads/{$uuid}");
 
         if (!File::exists($tempPath)) {
             File::makeDirectory($tempPath, 0755, true);
         }
+
+        Video::where('id', $uuid)->update(['status' => 'recording']);
 
         // ۴. بازگشت UUID به فرانت
         return response()->json([
@@ -102,6 +92,8 @@ class VideoController extends Controller
 
         // اگر همه چیز کامل بود، جاب سنگین را صدا بزن
         // در اینجا یک رکورد اولیه در دیتابیس می‌سازیم
+
+        $video->update(['status' => 'pending_process']);
 
         // ارسال به صف برای پردازش FFmpeg
         ProcessVideoJob::dispatch($video, $totalChunks);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -147,7 +148,18 @@ class WebCourseDetailsResource extends JsonResource
                 'url' => '',
             ]
         ];
-        //dd($data);
+        if(
+            $user->id &&
+            $user->hasCompletedCourse($this->resource) &&
+            $this->quiz && $this->quiz->is_active &&
+            $this->quiz->quizCompletions->isEmpty()
+        ){
+            $video = Video::where('user_id', $user->id)->where('course_id', $this->id)->first();
+            if($video){
+                $data['quiz']['url'] = route('web.video.record', $video->id);
+            }
+        }
+
         //dd($data['seasons']);
         return $data;
 

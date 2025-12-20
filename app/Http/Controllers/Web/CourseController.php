@@ -243,20 +243,14 @@ class CourseController extends Controller
         if($course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
             $uuid = (string) Str::uuid();
 
-
             $video = Video::create([
-                'id' => $uuid,
-                'status' => 'pending',
-                // 'user_id' => auth()->id(), // اگر نیاز به احراز هویت دارید
+                'id'        => $uuid,
+                'user_id'   => $user->id,
+                'course_id' => $course->id,
+                'quiz_id'   => $course->quiz->id,
+                'status'    => 'pending',
             ]);
 
-            // ۳. ایجاد پوشه موقت برای ذخیره چانک‌ها
-            // این کار باعث می‌شود ریسک خطای همزمانی در ساخت پوشه از بین برود
-            $tempPath = storage_path("app/temp_uploads/{$uuid}");
-
-            if (!File::exists($tempPath)) {
-                File::makeDirectory($tempPath, 0755, true);
-            }
         }
 
         return redirectMessage('success', 'این درس را با موفقیت به پایان رسانده‌اید.');

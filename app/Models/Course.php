@@ -24,6 +24,11 @@ class Course extends Model
         'must_complete_quizzes' => 'boolean',
     ];
 
+    public function video()
+    {
+        return $this->hasMany(Video::class);
+    }
+
     public function paths()
     {
         return $this->belongsToMany(Path::class, 'path_items', 'course_id', 'path_id');

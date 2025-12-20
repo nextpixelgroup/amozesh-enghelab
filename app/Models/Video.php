@@ -20,6 +20,7 @@ class Video extends Model
     protected $fillable = [
         'id',           // مهم: باید اینجا باشد چون دستی پر می‌شود
         'user_id',
+        'course_id',
         'quiz_id',
         'status',
         'path',
@@ -39,7 +40,11 @@ class Video extends Model
         return $this->belongsTo(Quiz::class);
     }
 
-    // اسکوپ‌های کمکی برای کوئری زدن راحت‌تر
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');

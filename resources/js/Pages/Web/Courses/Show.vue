@@ -17,6 +17,14 @@
                 <v-card-actions class="justify-center pb-4">
                     <v-btn
                         color="primary"
+                        :href="course.data.quiz.url"
+                        large
+                        rounded
+                    >
+                        آزمون پایان دوره
+                    </v-btn>
+                    <v-btn
+                        color="primary"
                         @click="showCompletionDialog = false"
                         large
                         rounded

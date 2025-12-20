@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
+use Throwable;
 
 class ProcessVideoJob implements ShouldQueue
 {
@@ -65,7 +66,7 @@ class ProcessVideoJob implements ShouldQueue
                     // آزاد سازی حافظه متغیر در لوپ
                     unset($chunkContent);
                 } else {
-                    Log::warning("Chunk missing during binary merge: {$chunkFile}");
+                   // Chunk missing during binary merge: {$chunkFile}
                 }
             }
 
@@ -75,7 +76,6 @@ class ProcessVideoJob implements ShouldQueue
                 throw new \Exception("No chunks found to merge for video {$uuid}");
             }
 
-            Log::info("Binary merge completed. {$chunksFound} chunks merged into {$mergedSourcePath}");
 
             // =========================================================
             // مرحله ۲: تبدیل فایل ادغام شده به MP4 با FFmpeg
@@ -114,7 +114,6 @@ class ProcessVideoJob implements ShouldQueue
 
             // دریافت مدت زمان
             $duration = $this->getVideoDuration($finalVideoPath);
-            Log::info("Final Duration: {$duration}");
 
             // ساخت تامنیل
             // اگر ویدیو خیلی کوتاه بود (زیر ۱ ثانیه)، از فریم اول عکس بگیر
@@ -144,9 +143,6 @@ class ProcessVideoJob implements ShouldQueue
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Video Processing Failed [{$uuid}]: " . $e->getMessage());
-            $this->video->update(['status' => 'failed']);
-
             // پرتاب مجدد خطا برای اینکه جاب در صف به عنوان failed ثبت شود
             throw $e;
         } finally {
@@ -163,7 +159,6 @@ class ProcessVideoJob implements ShouldQueue
         $result = Process::timeout(3600)->run($command);
 
         if ($result->failed()) {
-            Log::error("FFmpeg Command Failed: " . $result->errorOutput());
             throw new \Exception("FFmpeg Error: " . $result->errorOutput());
         }
     }
@@ -173,5 +168,14 @@ class ProcessVideoJob implements ShouldQueue
         $command = ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', $path];
         $result = Process::run($command);
         return $result->successful() && is_numeric(trim($result->output())) ? (float) trim($result->output()) : 0;
+    }
+
+    public function failed(Throwable $exception)
+    {
+        $this->video->update([
+            'status' => 'failed',
+        ]);
+        log_error($exception);
+
     }
 }
