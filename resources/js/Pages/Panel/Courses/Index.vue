@@ -25,7 +25,6 @@ import { route } from "ziggy-js";
 import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
 
 // ------------------- reactive state -------------------
-const leaving = ref(false);
 const page = usePage();
 
 const query = new URLSearchParams(page.url.split('?')[1]);

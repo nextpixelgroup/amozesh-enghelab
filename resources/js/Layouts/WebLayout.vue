@@ -1,10 +1,11 @@
 <template>
 
-    <Head :title="`انقلاب | ${page.props.pageTitle}`" />
+    <Head :title="`انقلاب | ${page.props.pageTitle}`"/>
     <div>
         <v-app>
             <!-- Drawer -->
-            <v-navigation-drawer v-model="drawer" :location="display.mobile ? 'left' : undefined" temporary class="zo-drawer-section">
+            <v-navigation-drawer v-model="drawer" :location="display.mobile ? 'left' : undefined" temporary
+                                 class="zo-drawer-section">
                 <div class="zo-menu" v-if="header?.length">
                     <ul>
                         <li v-for="(item,index) in header" :key="item.id || index">
@@ -25,7 +26,7 @@
                         <v-row dense class="align-center">
                             <v-col cols="4" lg="2">
                                 <Link :href="route('web.index')" class="zo-logo">
-                                <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
+                                    <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
                                 </Link>
                             </v-col>
                             <v-col cols="12" lg="7" class="d-lg-block d-none">
@@ -60,6 +61,23 @@
                                             <span>پروفایل کاربری</span>
                                         </v-tooltip>
                                     </div>
+                                    <div class="zo-exit" v-if="isAuth">
+                                        <v-tooltip bottom>
+                                            <template #activator="{ props }">
+                                                <v-btn
+                                                    v-bind="props"
+                                                    flat
+                                                    color="transparent"
+                                                    density="compact"
+                                                    icon="mdi-logout"
+                                                    @click="logout"
+                                                    :loading="leaving"
+                                                    :disabled="leaving"
+                                                ></v-btn>
+                                            </template>
+                                            <span>خروج از حساب کاربری</span>
+                                        </v-tooltip>
+                                    </div>
                                     <div class="zo-panel d-none d-lg-block" v-else>
                                         <a :href="route('panel.login')">ورود/عضویت</a>
                                     </div>
@@ -73,15 +91,8 @@
                                             <span>سبد خرید</span>
                                         </v-tooltip>
                                     </div>
-                                    <div class="zo-exit">
-                                        <v-tooltip bottom>
-                                            <template #activator="{ props }">
-                                                <v-btn v-bind="props" flat color="transparent" density="compact" icon="mdi-logout"></v-btn>
-                                            </template>
-                                            <span>خروج از حساب کاربری</span>
-                                        </v-tooltip>
-                                    </div>
-                                    <v-app-bar-nav-icon variant="text" class="d-block d-lg-none" @click.stop="drawer = !drawer" />
+                                    <v-app-bar-nav-icon variant="text" class="d-block d-lg-none"
+                                                        @click.stop="drawer = !drawer"/>
                                 </div>
                             </v-col>
                         </v-row>
@@ -98,15 +109,18 @@
                     </div>
                     <v-card class="pa-5">
                         <v-form class="zo-form" @submit.prevent="search">
-                            <v-text-field v-model="searchText" variant="outlined" color="primary" hide-details label="جستجو دوره‌های آموزشی"></v-text-field>
-                            <v-btn type="submit" flat size="large" color="primary" class="zo-button" :disabled="isLoading" :loading="isLoading">جستجو</v-btn>
+                            <v-text-field v-model="searchText" variant="outlined" color="primary" hide-details
+                                          label="جستجو دوره‌های آموزشی"></v-text-field>
+                            <v-btn type="submit" flat size="large" color="primary" class="zo-button"
+                                   :disabled="isLoading" :loading="isLoading">جستجو
+                            </v-btn>
                         </v-form>
                     </v-card>
                 </div>
             </v-dialog>
             <!-- Main -->
             <main class="flex-grow">
-                <slot />
+                <slot/>
             </main>
             <!-- Footer -->
             <footer>
@@ -175,14 +189,14 @@
             </footer>
         </v-app>
     </div>
-    <FlashMessage />
+    <FlashMessage/>
 </template>
 <script setup>
-import { ref } from 'vue'
+import {ref} from 'vue'
 import FlashMessage from "@/Components/FlashMessage.vue";
-import { Head, Link, router, usePage } from "@inertiajs/vue3";
-import { route } from "ziggy-js";
-import { useDisplay } from 'vuetify';
+import {Head, Link, router, usePage} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+import {useDisplay} from 'vuetify';
 
 const page = usePage();
 
@@ -199,9 +213,17 @@ const searchDialog = ref(false);
 const isLoading = ref(false);
 const display = useDisplay();
 const searchText = ref('');
+const leaving = ref(false)
 const search = () => {
     isLoading.value = true
-    window.location.href = route('web.courses.index', { search: searchText.value });
+    window.location.href = route('web.courses.index', {search: searchText.value});
+}
+
+const logout = () => {
+    leaving.value = true
+    router.post(route('panel.logout'), {}, {
+        onFinish: () => (leaving.value = false)
+    })
 }
 
 </script>
