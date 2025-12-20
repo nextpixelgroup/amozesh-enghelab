@@ -252,6 +252,7 @@ watch(() => props.modelValue, (newVal) => {
 </script>
 
 <style scoped>
+
 .thumbnail-box {
     display: flex;
     flex-direction: row;

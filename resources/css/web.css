@@ -1421,7 +1421,8 @@ figure {
 .zo-dashboard-section .zo-nav nav ul li a {
     display: block;
     padding: 25px 0;
-    color: var(--White)
+    color: var(--White);
+    border-radius: .5rem
 }
 
 .zo-dashboard-section .zo-nav nav ul li a:hover {
@@ -1446,6 +1447,11 @@ figure {
 b,
 th,
 strong {
+    font-weight: normal !important
+}
+
+.v-file-upload-title {
+    font-size: 1rem !important;
     font-weight: normal !important
 }
 
