@@ -7,7 +7,7 @@
                         <div class="zo-header mb-3">
                         <v-row class="align-center">
                             <v-col cols="12">
-                                <div class="zo-info d-lg-flex d-sm-none">
+                                <div class="zo-info">
                                     <div class="zo-icon elevation-4">
                                         <i class="mdi mdi-human-male-board"></i>
                                     </div>
