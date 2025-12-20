@@ -28,6 +28,7 @@ class BookmarkController extends Controller
             'bookmarkable_id' => $book->id,
             'bookmarkable_type' => get_class($book)
         ]);
+        return sendJson('success','به لیست علاقه‌مندی افزوده شد');
     }
 
     public function courseDestroy(Course $course)

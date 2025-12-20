@@ -299,6 +299,12 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function bookmarkedBooks()
+    {
+        return $this->morphedByMany(Book::class, 'bookmarkable', 'bookmarks')
+            ->withTimestamps();
+    }
+
     protected function genderObject(): Attribute
     {
         return Attribute::make(

@@ -54,8 +54,8 @@ if (props.type === 'course'){
     removeBookmarkRoute.value = route('web.bookmark.course.destroy', { course: props.id })
 }
 else if(props.type === 'book'){
-    addBookmarkRoute.value = route('web.bookmark.book.store', { course: props.id })
-    removeBookmarkRoute.value = route('web.bookmark.book.destroy', { course: props.id })
+    addBookmarkRoute.value = route('web.bookmark.book.store', { book: props.id })
+    removeBookmarkRoute.value = route('web.bookmark.book.destroy', { book: props.id })
 }
 
 const addBookmark = async () => {
