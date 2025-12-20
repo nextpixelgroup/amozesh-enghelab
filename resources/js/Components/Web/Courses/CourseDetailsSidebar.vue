@@ -3,6 +3,18 @@
         <v-card flat class="zo-card">
             <div class="zo-content">
                 <div class="zo-thumbnail">
+                    <div class="zo-bookmark">
+                        <v-tooltip text="افزودن به علاقه مندی">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" icon="mdi-bookmark-outline" color="primary" size="large"></v-btn>
+                            </template>
+                        </v-tooltip>
+                        <v-tooltip text="حذف از علاقه مندی">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" icon="mdi-bookmark" color="primary" size="large"></v-btn>
+                            </template>
+                        </v-tooltip>
+                    </div>
                     <img :src="course.thumbnail" alt="" class="rounded-lg">
                 </div>
                 <div class="zo-price">رایگان</div>
@@ -165,7 +177,14 @@ const submitRating = async (n) => {
 }
 
 .zo-sidebar-section .zo-content .zo-thumbnail {
-    margin: 0 0 15px
+    margin: 0 0 15px;
+    position: relative
+}
+
+.zo-sidebar-section .zo-content .zo-thumbnail .zo-bookmark {
+    position: absolute;
+    top: 15px;
+    left: 15px
 }
 
 .zo-sidebar-section .zo-content .zo-thumbnail img {

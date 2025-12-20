@@ -30,6 +30,18 @@
                                 <v-row>
                                     <v-col lg="5" cols="12">
                                         <div class="zo-thumbnail">
+                                            <div class="zo-bookmark">
+                                                <v-tooltip text="افزودن به علاقه مندی">
+                                                    <template v-slot:activator="{ props }">
+                                                        <v-btn v-bind="props" icon="mdi-bookmark-outline" color="primary" size="large"></v-btn>
+                                                    </template>
+                                                </v-tooltip>
+                                                <v-tooltip text="حذف از علاقه مندی">
+                                                    <template v-slot:activator="{ props }">
+                                                        <v-btn v-bind="props" icon="mdi-bookmark" color="primary" size="large"></v-btn>
+                                                    </template>
+                                                </v-tooltip>
+                                            </div>
                                             <img :src="book.thumbnail" alt="">
                                         </div>
                                     </v-col>
@@ -341,6 +353,17 @@ const updateQty = () => {
     text-align: center;
     border: 2px solid var(--Secondary);
     border-radius: 200px 200px 0 0
+}
+
+.zo-book-section .zo-card .zo-content .zo-thumbnail {
+    margin: 0 0 15px;
+    position: relative
+}
+
+.zo-book-section .zo-card .zo-content .zo-thumbnail .zo-bookmark {
+    position: absolute;
+    top: -10px;
+    right: -5px
 }
 
 .zo-book-section .zo-card .zo-content .zo-title {
