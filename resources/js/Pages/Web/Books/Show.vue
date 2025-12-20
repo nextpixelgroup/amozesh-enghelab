@@ -31,16 +31,11 @@
                                     <v-col lg="5" cols="12">
                                         <div class="zo-thumbnail">
                                             <div class="zo-bookmark">
-                                                <v-tooltip text="افزودن به علاقه مندی">
-                                                    <template v-slot:activator="{ props }">
-                                                        <v-btn v-bind="props" icon="mdi-bookmark-outline" color="primary" size="large"></v-btn>
-                                                    </template>
-                                                </v-tooltip>
-                                                <v-tooltip text="حذف از علاقه مندی">
-                                                    <template v-slot:activator="{ props }">
-                                                        <v-btn v-bind="props" icon="mdi-bookmark" color="primary" size="large"></v-btn>
-                                                    </template>
-                                                </v-tooltip>
+                                                <BookmarkTemplate
+                                                    :id="book.id"
+                                                    :isBookmarked="book.isBookmarked"
+                                                    type="book"
+                                                />
                                             </div>
                                             <img :src="book.thumbnail" alt="">
                                         </div>
@@ -243,6 +238,7 @@ import {Navigation} from "swiper/modules";
 import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
 import {Swiper, SwiperSlide} from "swiper/vue";
 import BookCard from "@/Components/Web/Books/BookCard.vue";
+import BookmarkTemplate from "@/Components/Web/BookmarkTemplate.vue";
 
 
 
