@@ -234,6 +234,10 @@ figure {
     border-radius: 0.75rem
 }
 
+.zo-courses-section .zo-course.zo-done {
+    filter: grayscale(1)
+}
+
 .zo-courses-section .zo-course figure {
     margin: 0 0 15px;
     position: relative
@@ -253,7 +257,7 @@ figure {
 
 .zo-courses-section .zo-course figure .zo-thumbnail img {
     width: 100%;
-    height: 245px;
+    height: 265px;
     object-fit: cover;
     border-radius: 0.5rem
 }
@@ -1472,7 +1476,9 @@ figure {
 }
 
 .zo-dashboard-section .zo-header .zo-info .zo-icon i {
-    font-size: 1.5rem
+    display: flex;
+    font-size: 1.5rem;
+    line-height: 1
 }
 
 .zo-dashboard-section .zo-header .zo-action {
