@@ -2,7 +2,7 @@
     <WebLayout>
         <PanelLayout>
             <v-container>
-                <v-row>
+                <v-row class="justify-center">
                     <v-col cols="12">
                         <div class="zo-header mb-3">
                             <div class="zo-info d-lg-flex d-sm-none">
@@ -16,7 +16,7 @@
                             </div>
                         </div>
                     </v-col>
-                    <v-col cols="12">
+                    <v-col cols="12" lg="9">
                         <p class="mb-3">
                             <v-text-field label="موضوع درخواست" variant="outlined" density="comfortable" prepend-inner-icon="mdi-text-short" hide-details type="text" />
                         </p>
