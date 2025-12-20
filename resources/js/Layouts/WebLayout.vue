@@ -51,7 +51,7 @@
                                         </a>
                                     </div>
                                     <div class="zo-profile" v-if="isAuth">
-                                        <a :href="route('panel.courses.index')">
+                                        <a :href="route('panel.profile.index')">
                                             <img src="/assets/img/site/profile.svg" alt="" class="img-fluid">
                                         </a>
                                     </div>

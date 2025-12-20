@@ -21,7 +21,7 @@ class AuthController extends Controller
     public function index()
     {
         if(auth()->check()){
-            return redirect()->route('panel.courses.index');
+            return redirect()->route('panel.profile.index');
         }
         return Inertia::render('Panel/Auth/Index');
     }
@@ -29,7 +29,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if(auth()->check()){
-            return redirect()->route('panel.courses.index');
+            return redirect()->route('panel.profile.index');
         }
         return Inertia::render('Panel/Auth/Login');
     }
@@ -162,7 +162,7 @@ class AuthController extends Controller
             // لاگین کردن کاربر
             Auth::login($user);
             if(!$redirect){
-                $redirect = route('panel.courses.index');
+                $redirect = route('panel.profile.index');
             }
             return redirectMessage('success', 'ورود با موفقیت انجام شد.', redirect: $redirect);
 
