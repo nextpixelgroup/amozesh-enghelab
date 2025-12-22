@@ -75,7 +75,6 @@ Route::name('web.')->group(function () {
         Route::delete('/bookmarks/course/{course}/destroy', [BookmarkController::class, 'courseDestroy'])->name('bookmark.course.destroy');
         Route::delete('/bookmarks/book/{book}/destroy', [BookmarkController::class, 'bookDestroy'])->name('bookmark.book.destroy');
 
-
         Route::get('/video/record/{uuid}', [VideoController::class, 'record'])->name('video.record');
         Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
         Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');

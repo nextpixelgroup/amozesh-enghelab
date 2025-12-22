@@ -1,5 +1,5 @@
 <template>
-    <Link :href="course.url" :class="['zo-course', randomDoneClass]">
+    <Link :href="course.url" :class="['zo-course', progress === 100 ? 'zo-done' : '']">
         <figure>
             <div class="zo-thumbnail">
                 <img :src="course.thumbnail" alt="" class="img-fluid" />
@@ -44,10 +44,7 @@ const props = defineProps({
     }
 })
 
-const randomDoneClass = ref(Math.random() > 0.5 ? 'zo-done' : '');
-
-const progress = ref(Math.floor(Math.random() * 101))
-
+const progress = ref(props.course.progress)
 const progressTextClass = computed(() => {
     return progress.value > 50 ? 'text-white' : 'text-dark';
 })

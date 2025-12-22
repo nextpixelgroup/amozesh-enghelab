@@ -136,6 +136,12 @@ class UploadController extends Controller
             $page = Page::find($request->pageId);
             $page->updateMeta($type, ['id' => null, 'url' => '']);
         }
+        elseif($type === 'userAvatar'){
+            $media->userAvatar()->update(['avatar_id' => null]);
+        }
+        elseif($type === 'userNationalCardImage'){
+            $media->userNationalCardImage()->update(['national_card_image_id' => null]);
+        }
         else{
             return responseJSon('error', 'نوع فایل مشخص نشده است');
         }

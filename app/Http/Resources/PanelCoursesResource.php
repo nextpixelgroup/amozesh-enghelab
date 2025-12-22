@@ -6,7 +6,7 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class WebCoursesResource extends JsonResource
+class PanelCoursesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,11 @@ class WebCoursesResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        //dd($this->lessons()->sum('duration'));
+        $lessonCompletions = $this->lessonCompletions->count();
+        $lessonCount = $this->seasons->sum(fn($season) => $season->lessons->count());
         $students = $this->students()->count();
-        //$user = auth()->user();
-        return [
+        $user = auth()->user();
+        $data = [
             'thumbnail' => $this->thumbnail ? $this->thumbnail->url : asset('assets/img/default.svg'),
             'title' => $this->title,
             'category' => $this->categories->count() ? $this->categories->first()->title : '',
@@ -28,6 +29,9 @@ class WebCoursesResource extends JsonResource
             'students' => $students ? number_format($students) : '0',
             'price' => $this->price > 0 ? number_format($this->price) : 'رایگان',
             'url' => route('web.courses.show',$this->slug),
+            'passed' => $user ? $user->hasCompletedCourse($this->resource) : false,
+            'progress' => $lessonCount > 0 ? round(($lessonCompletions / $lessonCount) * 100) : 0,
         ];
+        return $data;
     }
 }

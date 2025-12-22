@@ -42,6 +42,8 @@ class User extends Authenticatable
         'national_card_image_id',
         'tel',
         'institution_id',
+        'province',
+        'city',
     ];
 
 

@@ -159,7 +159,7 @@
                         label="فقط فایل تصویری آپلود کنید"
                         title="بارگذاری آواتار"
                         accept="image/*"
-                        type="user"
+                        type="userAvatar"
                     />
                 </v-col>
                 <v-col cols="12" lg="6">

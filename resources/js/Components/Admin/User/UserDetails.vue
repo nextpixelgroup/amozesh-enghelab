@@ -52,10 +52,25 @@
                     <v-select v-model="form.institution_id" label="موسسه و دانشگاه" variant="outlined" density="comfortable" :items="institutions" item-title="title" item-value="value" prepend-inner-icon="mdi-school" hide-details clearable />
                 </v-col>
                 <v-col cols="6">
-                    <ImageUploader v-model:model-value="form.avatar_id" :initial-url="form.avatar?.url" upload-route="admin.upload.users.image" label="فقط فایل تصویری آپلود کنید" title="بارگذاری آواتار" accept="image/*" type="user" />
+                    <ImageUploader
+                        v-model:model-value="form.avatar_id"
+                        :initial-url="form.avatar?.url"
+                        upload-route="admin.upload.users.image"
+                        label="فقط فایل تصویری آپلود کنید"
+                        title="بارگذاری آواتار"
+                        accept="image/*"
+                        type="userAvatar" />
                 </v-col>
                 <v-col cols="6">
-                    <ImageUploader v-model:model-value="form.national_card_image_id" :initial-url="form.national_card_image?.url" upload-route="admin.upload.users.image" label="فقط فایل تصویری آپلود کنید" title="بارگذاری تصویر کارت ملی" accept="image/*" type="user" />
+                    <ImageUploader
+                        v-model:model-value="form.national_card_image_id"
+                        :initial-url="form.national_card_image?.url"
+                        upload-route="admin.upload.users.image"
+                        label="فقط فایل تصویری آپلود کنید"
+                        title="بارگذاری تصویر کارت ملی"
+                        accept="image/*"
+                        type="userNationalCardImage"
+                    />
                 </v-col>
             </v-row>
         </v-card>

@@ -18,7 +18,11 @@ class IsClient
     {
         $user = Auth::user();
         if (!$user) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return redirectMessage('error','لطفا وارد شوید', redirect: route('panel.login'));
+        }
+        elseif ($user->isRestricted()){
+            Auth::logout();
+            return redirectMessage('error', 'حساب شما مسدود شده است لطفا با پشتیبانی تماس بگیرید.', redirect: route('panel.login'));
         }
 
         /*$allowedRoles = ['client','super-admin'];

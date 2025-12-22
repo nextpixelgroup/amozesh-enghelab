@@ -37,6 +37,7 @@ class AuthController extends Controller
     public function sendCode(Request $request)
     {
         try {
+
             $validator = Validator::make(
                 $request->all(),
                 [
@@ -58,7 +59,9 @@ class AuthController extends Controller
 
             $otp = OTP::where('login', $mobile)->first();
             $user = User::where('mobile',$mobile)->first();
-
+            if($user->isRestricted()){
+                return redirectMessage('error', 'حساب شما مسدود شده است لطفا با پشتیبانی تماس بگیرید.');
+            }
             // بررسی مسدود بودن به خاطر تلاش ناموفق
             if ($user && $otp && $otp->attempts >= $maxAttempts) {
                 // چون ممکنه کاربر لاگین نکرده باشه، مسدودیت بر اساس موبایل میشه نه user_id

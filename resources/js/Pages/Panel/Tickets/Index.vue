@@ -18,13 +18,33 @@
                     </v-col>
                     <v-col cols="12" lg="9">
                         <p class="mb-3">
-                            <v-text-field label="موضوع درخواست" variant="outlined" density="comfortable" prepend-inner-icon="mdi-text-short" hide-details type="text" />
+                            <v-text-field
+                                v-model="form.subject"
+                                label="موضوع درخواست"
+                                variant="outlined"
+                                density="comfortable"
+                                prepend-inner-icon="mdi-text-short"
+                                hide-details
+                                type="text"
+                            />
                         </p>
                         <p class="mb-3">
-                            <v-textarea label="متن..." variant="outlined" density="comfortable" prepend-inner-icon="mdi-text" hide-details type="textarea"></v-textarea>
+                            <v-textarea
+                                v-model="form.message"
+                                label="متن..."
+                                variant="outlined"
+                                density="comfortable"
+                                prepend-inner-icon="mdi-text"
+                                hide-details
+                                type="textarea"
+                            ></v-textarea>
                         </p>
                         <p class="text-end">
-                            <v-btn color="primary" type="submit">
+                            <v-btn
+                                color="primary"
+                                type="submit"
+                                @click="submitTicket"
+                            >
                                 ارسال درخواست
                             </v-btn>
                         </p>
@@ -37,5 +57,32 @@
 <script setup>
 import WebLayout from "@/Layouts/WebLayout.vue";
 import PanelLayout from "@/Layouts/PanelLayout.vue";
+import {ref} from "vue";
+import {router, useForm} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+const isLoading = ref(false)
+const form = useForm({
+    subject: '',
+    message: '',
+});
+const submitTicket = () => {
+    form.post(route('panel.supports.store'), {
+        preserveState: true,
+        preserveScroll: true,
+        onStart: () => {
+            isLoading.value = true;
+        },
+        onSuccess: () => {
+            isLoading.value = false;
+            form.reset();
+        },
+        onFinish: () => {
+            isLoading.value = false;
+        },
+        onError: () => {
+            isLoading.value = false;
+        }
+    })
+}
 
 </script>

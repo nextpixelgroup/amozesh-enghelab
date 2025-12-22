@@ -38,6 +38,16 @@ class Media extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function userAvatar()
+    {
+        return $this->hasOne(User::class, 'avatar_id', 'id');
+    }
+
+    public function userNationalCardImage()
+    {
+        return $this->hasOne(User::class, 'national_card_image_id', 'id');
+    }
+
     public function courseThumbnail()
     {
         return $this->hasOne(Course::class, 'thumbnail_id', 'id');

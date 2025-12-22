@@ -7,13 +7,13 @@
                         <nav>
                             <ul>
                                 <li v-for="(item, index) in menuItems" :key="index">
-                                    <a
+                                    <Link
                                         :href="item.url"
                                         :class="{'zo-active': isActive(item.url)}"
                                     >
                                         <i :class="`mdi ${item.icon}`"></i>
                                         <span>{{ item.title }}</span>
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </nav>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { usePage } from "@inertiajs/vue3";
+import {Link, usePage} from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 import { route } from "ziggy-js";
 

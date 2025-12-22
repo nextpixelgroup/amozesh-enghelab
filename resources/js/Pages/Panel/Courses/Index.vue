@@ -21,7 +21,7 @@
                     </div>
                         <v-row dense class="align-center">
                             <v-col v-for="(course, index) in courses" :key="index" cols="12" sm="6" md="4" lg="3">
-                                <CourseCard :course="course" />
+                                <CourseCard3 :course="course" />
                             </v-col>
                         </v-row>
                     </v-container>
@@ -37,7 +37,7 @@ import PanelLayout from '@/Layouts/PanelLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Link, router, usePage } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
-import CourseCard from "@/Components/Web/Courses/CourseCard3.vue";
+import CourseCard3 from "@/Components/Web/Courses/CourseCard3.vue";
 
 // ------------------- reactive state -------------------
 const page = usePage();

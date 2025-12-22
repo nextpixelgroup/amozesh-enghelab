@@ -114,6 +114,7 @@ const isRemoving = ref(false);
 const props = defineProps({
     modelValue: [String, Number, null],
     uploadRoute: {type: String, required: true, default: ''},
+    removeRoute: {type: String, required: false, default: 'admin.media.destroy'},
     title: {type: String, default: 'بارگذاری تصویر'},
     label: {type: String, default: 'فایل را اینجا رها کنید یا کلیک کنید'},
     accept: {type: String, default: 'image/*'},
@@ -140,7 +141,7 @@ const thumbnailUrl = ref(props.initialUrl);
 const progress = ref(0);
 const fileUploading = ref(false);
 const fileUploaded = ref(!!props.initialUrl);
-
+const removeRoute = ref(null);
 watch(() => props.initialUrl, (newUrl) => {
     if (newUrl) {
         thumbnailUrl.value = newUrl;
@@ -221,20 +222,26 @@ const uploadThumbnail = async () => {
 const removeThumbnail = async () => {
     const confirm = await $confirm("آیا از حذف این تصویر اطمینان دارید؟");
     if(confirm) {
+
+        removeRoute.value = route(props.removeRoute, {
+            media: props.modelValue,
+            type: props.type,
+            pageId: props.pageId
+        });
         isRemoving.value = true;
         thumbnailText.value = 'درحال حذف لطفا منتظر بمانید...';
-        const response = await axios.delete(route('admin.media.destroy', {media: props.modelValue, type: props.type, pageId: props.pageId}), [], {
+        const response = await axios.delete(removeRoute.value, [], {
             headers: {'Content-Type': 'multipart/form-data'},
         });
         if (response.status === 200) {
+            isRemoving.value = false;
+            thumbnailText.value = 'برای تغییر تصویر، ابتدا حذف کنید'
             if (response.data.status == 'success') {
                 thumbnail.value = null;
                 thumbnailUrl.value = '';
                 fileUploaded.value = false;
                 emit('update:modelValue', null);
                 emit('removed', thumbnailUrl.value);
-                isRemoving.value = false;
-                thumbnailText.value = 'برای تغییر تصویر، ابتدا حذف کنید'
             } else {
                 showError(response.data.message);
             }

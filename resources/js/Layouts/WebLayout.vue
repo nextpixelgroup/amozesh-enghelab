@@ -190,16 +190,28 @@
         </v-app>
     </div>
     <FlashMessage/>
+    <ConfirmDialog ref="confirmRef" />
 </template>
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 import FlashMessage from "@/Components/FlashMessage.vue";
 import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import {useDisplay} from 'vuetify';
+import ConfirmDialog from "@/Components/ConfirmDialog.vue";
 
 const page = usePage();
+const confirmRef = ref(null)
 
+/* Global Confirm */
+onMounted(() => {
+    window.$confirm = async (message, options = {}) =>
+        await confirmRef.value.open({
+            msg: message,
+            ttl: options.title || 'تأیید عملیات',
+            color: options.color || 'red',
+        })
+})
 const header = ref(page.props.header || []);
 const footer1 = ref(page.props.footer1 || []);
 const footer2 = ref(page.props.footer2 || []);

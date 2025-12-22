@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\WebCoursesResource;
+use App\Http\Resources\PanelCoursesResource;
 use App\Models\Category;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -32,7 +32,7 @@ class CourseController extends Controller
                     ->limit(1);
             }, 'desc')
             ->get();
-        $courses = WebCoursesResource::collection($query);
+        $courses = PanelCoursesResource::collection($query);
         return Inertia::render('Panel/Courses/Index', compact('courses'));
     }
 }
