@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PathController;
+use App\Http\Controllers\Admin\QuizController;
 use App\Http\Controllers\Admin\RestrictionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SettingMenuController;
@@ -67,6 +68,12 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::put('/orders/{order}/update', [OrderController::class, 'update'])->name('orders.update');
+
+        /********* quizzes *********/
+        Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+        Route::get('/quizzes/{video}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+        Route::get('/video/url/{video}', [QuizController::class, 'url'])->name('video.url');
+        Route::get('/video/poster/{video}', [QuizController::class, 'poster'])->name('video.poster');
 
         /********* comments *********/
         Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');

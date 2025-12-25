@@ -8,6 +8,7 @@ use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class VideoController extends Controller
@@ -15,25 +16,62 @@ class VideoController extends Controller
 
     public function record($uuid)
     {
-        return inertia('Record', compact('uuid'));
+        $video = Video::with('quiz.questions.options')->where('id', $uuid)->first();
+        $quiz = [];
+        if($video->quiz->is_active){
+            $quiz = [
+                //'id' => $video->quiz->id,
+                'title' => $video->quiz->title,
+                'description' => $video->quiz->description,
+                'questions' => $video->quiz->questions->map( function($question) {
+                    return [
+                        'id' => $question->id,
+                        'question' => $question->question_text,
+                        'options' => $question->options->map( function ($option) {
+                            return [
+                                'id' => $option->id,
+                                'option' => $option->option_text,
+                            ];
+                        })->toArray(),
+                    ];
+                })->toArray(),
+            ];
+        }
+        $video = [
+            'status' => $video->status,
+        ];
+        return inertia('Record', compact('uuid', 'quiz', 'video'));
     }
 
     public function init(Request $request, $uuid)
     {
 
-        $tempPath = storage_path("app/temp_uploads/{$uuid}");
+        try {
+            $video = Video::findOrFail($uuid);
 
-        if (!File::exists($tempPath)) {
-            File::makeDirectory($tempPath, 0755, true);
+            if ($video->path && Storage::exists($video->path)) {
+                Storage::delete($video->path);
+                Storage::delete($video->thumbnail);
+            }
+
+            $video->update([
+                'status' => 'recording',
+                'path' => null,
+                'thumbnail' => null,
+                'duration' => 0,
+                'completed_at' => null,
+            ]);
+            $chunksPath = storage_path("app/temp_uploads/{$uuid}");
+
+            if (File::exists($chunksPath)) {
+                File::deleteDirectory($chunksPath);
+            }
+            return response()->json(['status' => 'success', 'uuid' => $uuid]);
+
+        } catch (\Exception $e) {
+            log_error($e);
+            return response()->json(['status' => 'error', 'message' => 'Failed to initialize recording'], 500);
         }
-
-        Video::where('id', $uuid)->update(['status' => 'recording']);
-
-        // ۴. بازگشت UUID به فرانت
-        return response()->json([
-            'uuid' => $uuid,
-            'message' => 'Session initialized'
-        ]);
     }
 
     // ... متدهای uploadChunk و finish که قبلا داشتید
@@ -104,26 +142,5 @@ class VideoController extends Controller
         return response()->json(['status' => 'completed', 'video_id' => $uuid]);
     }
 
-    public function stream(Request $request, $uuid)
-    {
-        // ۱. پیدا کردن ویدیو
-        $video = Video::where('id', $uuid)->firstOrFail();
-        // ۲. چک کردن دسترسی (Security Check)
-        // مثلا فقط صاحب ویدیو یا ادمین بتواند ببیند
-        // if ($request->user()->id !== $video->user_id) {
-        //     abort(403);
-        // }
 
-        // ۳. ساخت مسیر کامل فایل
-        // توجه: مسیر path در دیتابیس 'private_videos/UUID.mp4' ذخیره شده است
-        $path = storage_path('app/private/' . $video->path);
-        if (!file_exists($path) || !$video->path) {
-            abort(404);
-        }
-
-        // ۴. پخش فایل (Stream)
-        // متد file() در لاراول به صورت خودکار هدرهای Range را مدیریت می‌کند
-        // که برای جلو/عقب زدن ویدیو ضروری است.
-        return response()->file($path);
-    }
 }

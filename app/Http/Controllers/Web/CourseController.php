@@ -238,20 +238,22 @@ class CourseController extends Controller
                     'progress' => 100
                 ]);
             }
+
+            if($course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
+                $uuid = (string) Str::uuid();
+
+                $video = Video::create([
+                    'id'        => $uuid,
+                    'user_id'   => $user->id,
+                    'course_id' => $course->id,
+                    'quiz_id'   => $course->quiz->id,
+                    'status'    => 'pending',
+                ]);
+
+            }
         }
 
-        if($course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
-            $uuid = (string) Str::uuid();
 
-            $video = Video::create([
-                'id'        => $uuid,
-                'user_id'   => $user->id,
-                'course_id' => $course->id,
-                'quiz_id'   => $course->quiz->id,
-                'status'    => 'pending',
-            ]);
-
-        }
 
         return redirectMessage('success', 'این درس را با موفقیت به پایان رسانده‌اید.');
     }

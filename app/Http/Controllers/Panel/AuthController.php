@@ -59,7 +59,7 @@ class AuthController extends Controller
 
             $otp = OTP::where('login', $mobile)->first();
             $user = User::where('mobile',$mobile)->first();
-            if($user->isRestricted()){
+            if($user && $user->isRestricted()){
                 return redirectMessage('error', 'حساب شما مسدود شده است لطفا با پشتیبانی تماس بگیرید.');
             }
             // بررسی مسدود بودن به خاطر تلاش ناموفق
@@ -82,7 +82,7 @@ class AuthController extends Controller
             $otp->attempts = 0;
             $otp->expires_at = now()->addMinutes(5);
             $otp->save();
-            if(env('APP_ENV') == 'production'){
+            if(env('APP_ENV') === 'production'){
                 SendOtpJob::dispatch($mobile,$code);
             }
 
@@ -160,6 +160,7 @@ class AuthController extends Controller
                     'mobile' => $mobile,
                     'password' => bcrypt(Str::random(50)), // رمز موقت
                 ]);
+                $user->assignRole($request->role);
             }
 
             // لاگین کردن کاربر

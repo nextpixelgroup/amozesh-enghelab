@@ -383,7 +383,7 @@
                                                                                 prepend-inner-icon="mdi-text-short"
                                                                             />
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option1.is_correct"
@@ -399,7 +399,7 @@
                                                                                 />
                                                                             </div>
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option2.is_correct"
@@ -415,7 +415,7 @@
                                                                                 />
                                                                             </div>
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option3.is_correct"
@@ -431,7 +431,7 @@
                                                                                 />
                                                                             </div>
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option4.is_correct"

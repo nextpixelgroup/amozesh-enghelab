@@ -315,7 +315,7 @@
                                                             >
                                                             </v-checkbox>
                                                         </v-col>
-                                                        <v-col class="v-col-12" v-if="lesson.quiz.is_active">
+                                                        <v-col class="v-col-12" v-show="lesson.quiz.is_active">
                                                             <v-text-field
                                                                 v-model="lesson.quiz.title"
                                                                 hide-details
@@ -326,7 +326,7 @@
                                                                 prepend-inner-icon="mdi-text-short"
                                                             />
                                                         </v-col>
-                                                        <v-col class="v-col-12" v-if="lesson.quiz.is_active">
+                                                        <v-col class="v-col-12" v-show="lesson.quiz.is_active">
                                                             <v-textarea
                                                                 v-model="lesson.quiz.description"
                                                                 hide-details
@@ -339,7 +339,7 @@
                                                             />
                                                         </v-col>
                                                     </v-row>
-                                                    <v-expansion-panel-text v-if="lesson.quiz.is_active">
+                                                    <v-expansion-panel-text v-show="lesson.quiz.is_active">
                                                         <v-expansion-panels
                                                             multiple
                                                             class="mb-3 questions-container"
@@ -390,7 +390,7 @@
                                                                                 prepend-inner-icon="mdi-text-short"
                                                                             />
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option1.is_correct"
@@ -406,7 +406,7 @@
                                                                                 />
                                                                             </div>
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option2.is_correct"
@@ -422,7 +422,7 @@
                                                                                 />
                                                                             </div>
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option3.is_correct"
@@ -438,7 +438,7 @@
                                                                                 />
                                                                             </div>
                                                                         </v-col>
-                                                                        <v-col class="v-col-12 v-col-lg-3">
+                                                                        <v-col class="v-col-12 v-col-lg-6">
                                                                             <div class="zo-option">
                                                                                 <v-radio
                                                                                     v-model="question.option4.is_correct"
@@ -782,7 +782,7 @@ const course = reactive({
     seasons: data.value.seasons,
     quiz: data.value.quiz
 });
-
+console.log(course)
 /********************************Seasons********************************/
 
 
@@ -808,17 +808,17 @@ function addSeason() {
             video_filename: '',
             poster_id: null,
             is_active: true,
-            has_quiz: false,
+            //has_quiz: true,
             quiz: {
                 id: crypto.randomUUID(),
                 title: '',
                 description: '',
-                is_active: true,
+                is_active: false,
                 questions: [
                     {
                         id: crypto.randomUUID(),
                         text: '',
-                        is_active: true,
+                        is_active: false,
                         option1: {text: '', is_correct: false},
                         option2: {text: '', is_correct: false},
                         option3: {text: '', is_correct: false},
@@ -843,8 +843,8 @@ function addLesson(sIndex) {
         duration: null,
         video_url: '',
         video_filename: '',
-        is_active: true,
-        has_quiz: false,
+        is_active: false,
+        //has_quiz: true,
         poster_id: null,
         quiz: {
             questions: [
@@ -870,7 +870,7 @@ function removeLesson(sIndex, lIndex) {
 
 
 function addQuestion(sIndex, lIndex) {
-    course.seasons[sIndex].lessons[lIndex].quiz.questions.push({
+    course.seasons[sIndex].lessons[lIndex].quiz?.questions.push({
         id: crypto.randomUUID(),
         text: '',
         is_active: true,

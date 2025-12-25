@@ -9,7 +9,7 @@
                                 <li v-for="(item, index) in menuItems" :key="index">
                                     <Link
                                         :href="item.url"
-                                        :class="{'zo-active': isActive(item.url)}"
+                                        :class="{'zo-active': isActive(item.slug)}"
                                     >
                                         <i :class="`mdi ${item.icon}`"></i>
                                         <span>{{ item.title }}</span>
@@ -33,13 +33,21 @@ import { route } from "ziggy-js";
 const page = usePage();
 const menuItems = ref(page.props.menuItems);
 
-const isActive = (menuUrl) => {
-    if (!menuUrl) return false;
+const isActive = (slug) => {
+    if (!slug) return false;
 
-    const currentUrl = window.location.pathname;
-    const menuPath = new URL(menuUrl, window.location.origin).pathname;
+    const currentPath = window.location.pathname; // e.g., /panel/bookmarks/courses
 
-    return currentUrl === menuPath ||
-        currentUrl.startsWith(menuPath) && menuPath !== '/';
+    if (Array.isArray(slug)) {
+        return slug.some(s => {
+            const slugPath = `panel/${s}`.replace(/\/+$/, '');
+            return currentPath === `/${slugPath}` ||
+                currentPath.startsWith(`/${slugPath}/`);
+        });
+    }
+
+    const slugPath = `panel/${slug}`.replace(/\/+$/, '');
+    return currentPath === `/${slugPath}` ||
+        currentPath.startsWith(`/${slugPath}/`);
 };
 </script>

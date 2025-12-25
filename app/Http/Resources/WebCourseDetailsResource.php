@@ -16,7 +16,10 @@ class WebCourseDetailsResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = auth()->user();
-        $userId = $user->id;
+        $userId = null;
+        if($user) {
+            $userId = $user->id;
+        }
 
         $seasons = $this->seasons()
             ->where('is_active', 1)
@@ -38,15 +41,22 @@ class WebCourseDetailsResource extends JsonResource
                 },
             ])
             ->get();
-        $lessonCompletions = $this->lessonCompletions->count();
+        $lessonCompletions = $userId
+            ? $this->lessons()
+                ->whereHas('completions', function($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                })
+                ->count()
+            : 0;
         $lessonCount = $seasons->sum(fn($season) => $season->lessons->count());
+
         // 2. متغیرهای زنجیره‌ای برای کنترل قفل بودن دروس
         // چون map اسکوپ جدید می‌سازد، این‌ها را باید با use (&...) پاس بدهیم
         $canShowNextVideo = true;
         $lockedReasonMessage = null;
-        $processedSeasons = $seasons->map(function ($season) use (&$canShowNextVideo, &$lockedReasonMessage) {
+        $processedSeasons = $seasons->map(function ($season) use (&$canShowNextVideo, &$lockedReasonMessage, $userId) {
 
-            $processedLessons = $season->lessons->map(function ($lesson) use (&$canShowNextVideo, &$lockedReasonMessage) {
+            $processedLessons = $season->lessons->map(function ($lesson) use (&$canShowNextVideo, &$lockedReasonMessage, $userId) {
 
                 // وضعیت پاس شدن آزمون همین درس
                 // چون eager load کردیم، نیازی به exists() نیست، چک می‌کنیم کالکشن خالی نباشد
@@ -76,8 +86,9 @@ class WebCourseDetailsResource extends JsonResource
                         ? route('web.courses.download.video', $lesson->video_filename)
                         : '',
                     'poster' => $lesson->poster?->url,
-                    'completed' => $lesson->completions()->exists(), // اگر برای این هم relation دارید بهتر است eager load شود
-                    // مقادیر محاسبه شده
+                    'completed' => $userId
+                        ? $lesson->completions()->where('user_id', $userId)->exists()
+                        : false,
                     'can_show_video' => $currentLessonCanShow,
                     'locked_reason' => $currentLessonCanShow ? null : $currentLockedReason,
 
@@ -141,26 +152,25 @@ class WebCourseDetailsResource extends JsonResource
                 'duration' => formatDurationTime($seasons->sum(fn($season) => $season->lessons->sum('duration')))
             ],
             'progress' => $lessonCount > 0 ? round(($lessonCompletions / $lessonCount) * 100) : 0,
-            'hasCompletedCourse' => $user->id ? $user->hasCompletedCourse($this->resource) : false,
+            'hasCompletedCourse' => $userId ? $user->hasCompletedCourse($this->resource) : false,
             'quiz' => [
                 'hasQuiz' => $this->quiz && $this->quiz->is_active,
                 'hasQuizCompleted' => $this->quiz && $this->quiz->quizCompletions->isNotEmpty(),
                 'url' => '',
             ],
-            'isBookmarked' => $user->id ? (bool)$user->bookmarkedCourses()->where('bookmarkable_id', $this->id)->exists() : false
+            'isBookmarked' => $userId ? (bool)$user->bookmarkedCourses()->where('bookmarkable_id', $this->id)->exists() : false
         ];
         if(
-            $user->id &&
+            $userId &&
             $user->hasCompletedCourse($this->resource) &&
             $this->quiz && $this->quiz->is_active &&
             $this->quiz->quizCompletions->isEmpty()
         ){
-            $video = Video::where('user_id', $user->id)->where('course_id', $this->id)->first();
+            $video = Video::where('user_id', $userId)->where('course_id', $this->id)->first();
             if($video){
                 $data['quiz']['url'] = route('web.video.record', $video->id);
             }
         }
-
         //dd($data['seasons']);
         return $data;
 

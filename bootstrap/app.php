@@ -70,7 +70,7 @@ return Application::configure(basePath: dirname(__DIR__))
                //dd(get_class($e));
                 //dd($request->url());
                 if($e instanceof AuthenticationException){
-                    return sendJson('error', 'unauthenticated');
+                    return sendJson('error', 'ابتدا وارد سایت شوید');
                 }
                 elseif($e instanceof ValidationException){
                     return sendJson('error', collect($e->errors())->first()[0]);

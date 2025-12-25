@@ -2,7 +2,7 @@
     <ShowMessage
         v-model:show="isError"
         :message="errorMessage"
-        type="error"
+        :type="typeMessage"
     />
 
     <!-- اگر فایل آپلود شده است -->
@@ -154,9 +154,11 @@ watch(() => props.initialUrl, (newUrl) => {
 
 const errorMessage = ref('');
 const isError = ref(false)
-const showError = (message) => {
+const typeMessage = ref('')
+const showError = (message, type = 'error') => {
     errorMessage.value = message;
     isError.value = true;
+    typeMessage.value = type;
     console.error('Upload Error:', message);
     setTimeout(() => {
         isError.value = false;
@@ -202,6 +204,7 @@ const uploadThumbnail = async () => {
 
             emit('update:modelValue', result.data.id);
             emit('uploaded', {url: result.data.url, id: result.data.id, file});
+            showError(result.message,'success');
         }
         else{
             thumbnail.value = null;
@@ -236,14 +239,13 @@ const removeThumbnail = async () => {
         if (response.status === 200) {
             isRemoving.value = false;
             thumbnailText.value = 'برای تغییر تصویر، ابتدا حذف کنید'
+            showError(response.data.message, 'success');
             if (response.data.status == 'success') {
                 thumbnail.value = null;
                 thumbnailUrl.value = '';
                 fileUploaded.value = false;
                 emit('update:modelValue', null);
                 emit('removed', thumbnailUrl.value);
-            } else {
-                showError(response.data.message);
             }
         }
     }

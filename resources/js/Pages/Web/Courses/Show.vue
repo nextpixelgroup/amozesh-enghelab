@@ -1,6 +1,6 @@
 <template>
     <WebLayout>
-        {{course.data}}
+        {{course.data.quiz}}
         <!-- Completion Dialog -->
         <v-dialog
             v-model="showCompletionDialog"
@@ -75,7 +75,7 @@
                     </v-card>
                 </v-col>
                 <v-col cols="12" lg="3">
-                    <CourseDetailsSidebar :course="course.data" :isEnrolled="isEnrolled"/>
+                    <CourseDetailsSidebar :user="user" :course="course.data" :isEnrolled="isEnrolled"/>
                 </v-col>
             </v-row>
         </v-container>
@@ -105,6 +105,7 @@ const props = defineProps({
     user: Object,
 })
 const activeSection = ref(''); // مثلاً 'lessons' یا 'requirements'
+console.log(props.course)
 // Watch for course data changes
 watch(() => props.course, (newVal) => {
     if (newVal?.data?.hasCompletedCourse) {

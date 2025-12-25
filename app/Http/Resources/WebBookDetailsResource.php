@@ -50,7 +50,7 @@ class WebBookDetailsResource extends JsonResource
             'url'            => route('web.books.show',$this->slug),
             'qty'            => $qty,
             'cartItemId'     => $cartItemId,
-            'isBookmarked'   => $user->id ? (bool)$user->bookmarkedBooks()->where('bookmarkable_id', $this->id)->exists() : false
+            'isBookmarked'   => $user ? (bool)$user->bookmarkedBooks()->where('bookmarkable_id', $this->id)->exists() : false
 
         ];
     }

@@ -49,19 +49,19 @@ class CourseUpdateRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:255',
-                'required_if:seasons.*.lessons.*.has_quiz,true'
+                'required_if:seasons.*.lessons.*.quiz.is_active,true'
             ],
             'seasons.*.lessons.*.quiz.description'                      => 'nullable|string',
             'seasons.*.lessons.*.quiz.is_active'                        => [
                 'boolean',
-                'required_if:seasons.*.lessons.*.has_quiz,true'
+                'required_if:seasons.*.lessons.*.quiz.is_active,true'
             ],
-            'seasons.*.lessons.*.quiz.questions'                        => 'required_with:seasons.*.lessons.*.quiz|array|min:1',
+            //'seasons.*.lessons.*.quiz.questions'                        => 'required_with:seasons.*.lessons.*.quiz|array|min:1',
             'seasons.*.lessons.*.quiz.questions.*.text'             => [
                 'nullable',
                 'string',
                 'min:3',
-                'required_if:seasons.*.lessons.*.has_quiz,true'
+                'required_if:seasons.*.lessons.*.quiz.is_active,true'
             ],
             //'seasons.*.lessons.*.quiz.questions.*.type'                 => 'required|in:true_false,multiple_option,descriptive',
             'seasons.*.lessons.*.quiz.questions.*.explanation'          => 'nullable|string',
@@ -125,6 +125,9 @@ class CourseUpdateRequest extends FormRequest
             'seasons.*.lessons.*.quiz.questions.min' => 'حداقل یک سوال برای آزمون الزامی است.',
 
             // Questions
+
+            'seasons.*.lessons.*.quiz.questions.*.text.required_if' => 'متن سوال الزامی است.',
+
             'seasons.*.lessons.*.quiz.questions.*.question.required_if' => 'متن سوال الزامی است.',
             'seasons.*.lessons.*.quiz.questions.*.question.min' => 'متن سوال باید حداقل ۳ کاراکتر باشد.',
             'seasons.*.lessons.*.quiz.questions.*.type.in' => 'نوع سوال معتبر نیست.',

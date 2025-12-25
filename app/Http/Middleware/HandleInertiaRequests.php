@@ -111,6 +111,11 @@ class HandleInertiaRequests extends Middleware
                     'route' => 'admin.orders.index'
                 ],
                 [
+                    'title' => 'آزمون‌ها',
+                    'icon' => 'mdi-help-box-multiple',
+                    'route' => 'admin.quizzes.index'
+                ],
+                [
                     'title' => 'نظرها',
                     'icon' => 'mdi-forum',
                     'route' => 'admin.comments.index'
@@ -146,26 +151,31 @@ class HandleInertiaRequests extends Middleware
                     'title' => 'پروفایل کاربری',
                     'icon' => 'mdi-account-circle',
                     'url' => route('panel.profile.index'),
+                    'slug' => 'profile'
                 ],
                 [
                     'title' => 'آموزش‌های من',
                     'icon' => 'mdi-human-male-board',
                     'url' => route('panel.courses.index'),
+                    'slug' => 'courses'
                 ],
                 [
                     'title' => 'علاقه‌مندی‌ها',
                     'icon' => 'mdi-bookmark',
                     'url' => route('panel.bookmarks.courses'),
+                    'slug' => ['bookmarks/courses', 'bookmarks/books']
                 ],
                 [
                     'title' => 'سفارش‌ها',
                     'icon' => 'mdi-cart',
                     'url' => route('panel.orders.index'),
+                    'slug' => 'orders'
                 ],
                 [
                     'title' => 'ارتباط با پشتیبان',
                     'icon' => 'mdi-phone-in-talk',
                     'url' => route('panel.supports.index'),
+                    'slug' => 'supports'
                 ],
             ];
 

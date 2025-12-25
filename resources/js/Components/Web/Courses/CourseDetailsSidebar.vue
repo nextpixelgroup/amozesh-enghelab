@@ -5,6 +5,7 @@
                 <div class="zo-thumbnail">
                     <div class="zo-bookmark">
                         <BookmarkTemplate
+                            v-if="user"
                             :id="course.id"
                             :isBookmarked="course.isBookmarked"
                             type="course"
@@ -109,6 +110,10 @@ const props = defineProps({
     },
     isEnrolled: {
         type: Boolean,
+        required: true
+    },
+    user: {
+        type: Object,
         required: true
     }
 })

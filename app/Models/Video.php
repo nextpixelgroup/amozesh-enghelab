@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\VideoStatusEnum;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -48,5 +50,29 @@ class Video extends Model
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
+    }
+
+    public function statusObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $status = VideoStatusEnum::fromKey($attributes['status'])->value;
+                return [
+                    'value' => $attributes['status'],
+                    'title' => $status,
+                ];
+            }
+        );
+    }
+
+    protected function createdAtObject(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $value = $attributes['created_at'];
+                $label = verta()->instance($value)->format('Y/m/d H:i');
+                return ['value' => $value, 'title' => $label];
+            }
+        );
     }
 }

@@ -1,13 +1,15 @@
 <template>
     <VideoLayout>
         <v-container class="record-container">
+            <!-- کارت اصلی ضبط ویدیو -->
             <v-card class="mx-auto" max-width="800" elevation="4">
                 <v-card-title class="text-h5 font-weight-bold primary--text d-flex justify-center py-4">
                     <v-icon large color="primary" class="me-2">mdi-video</v-icon>
-                    ضبط ویدیوی جدید
+                    {{ isAllowedToRecord ? 'ضبط ویدیوی جدید' : 'وضعیت آزمون' }}
                 </v-card-title>
 
-                <v-card-text class="text-center">
+                <!-- حالت مجاز: نمایش ریکوردر -->
+                <v-card-text class="text-center" v-if="isAllowedToRecord">
                     <!-- Video Preview -->
                     <div class="video-preview mb-6" :class="{ 'has-video': stream }">
                         <video
@@ -42,7 +44,6 @@
 
                     <!-- Controls -->
                     <div class="d-flex justify-center flex-wrap gap-3">
-                        <!-- Record Button -->
                         <v-btn
                             v-if="!isRecording"
                             x-large
@@ -57,7 +58,6 @@
                             شروع ضبط
                         </v-btn>
 
-                        <!-- Stop Button -->
                         <v-btn
                             v-else
                             x-large
@@ -71,7 +71,6 @@
                             توقف ضبط
                         </v-btn>
 
-                        <!-- Cancel Button -->
                         <v-btn
                             v-if="isRecording"
                             x-large
@@ -119,6 +118,15 @@
                     </v-alert>
                 </v-card-text>
 
+                <!-- حالت غیر مجاز: نمایش پیام خطا -->
+                <v-card-text v-else class="text-center py-10">
+                    <v-icon size="80" color="orange darken-2" class="mb-4">mdi-lock-alert</v-icon>
+                    <h2 class="text-h5 font-weight-bold mb-3">امکان شرکت در آزمون وجود ندارد</h2>
+                    <v-alert type="warning" variant="tonal" class="text-right mx-auto" max-width="500">
+                        در صورتی که فکر می‌کنید اشتباهی رخ داده است، لطفاً با پشتیبانی تماس بگیرید.
+                    </v-alert>
+                </v-card-text>
+
                 <!-- Upload Progress -->
                 <v-progress-linear
                     v-if="uploadProgress > 0"
@@ -128,6 +136,71 @@
                     class="mb-0"
                 ></v-progress-linear>
             </v-card>
+
+            <!-- بخش سوالات آزمون (فقط اگر مجاز باشد و در حال ضبط باشد) -->
+            <v-slide-y-transition>
+                <v-card
+                    v-if="isAllowedToRecord && isRecording && currentQuestion"
+                    class="mx-auto mt-4"
+                    max-width="800"
+                    elevation="4"
+                    border
+                >
+                    <v-toolbar color="grey-lighten-4" density="compact">
+                        <v-toolbar-title class="text-body-1 font-weight-bold">
+                            سوال {{ currentQuestionIndex + 1 }} از {{ quiz.questions.length }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text class="text-right py-4">
+                        <!-- متن سوال -->
+                        <div class="text-h6 mb-4 font-weight-bold text-wrap">
+                            {{ currentQuestion.question ? currentQuestion.question : `متن سوال شماره ${currentQuestionIndex + 1}` }}
+                        </div>
+
+                        <v-divider class="mb-4"></v-divider>
+
+                        <!-- گزینه‌ها -->
+                        <v-list density="compact" class="bg-transparent">
+                            <v-list-item
+                                v-for="(option, idx) in currentQuestion.options"
+                                :key="option.id"
+                                class="mb-2 rounded border"
+                                :prepend-icon="`mdi-numeric-${idx+1}-box-outline`"
+                            >
+                                <v-list-item-title class="text-wrap py-2" style="white-space: normal; line-height: 1.6;">
+                                    {{ option.option }}
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions class="justify-space-between pa-4">
+                        <v-btn
+                            variant="outlined"
+                            color="secondary"
+                            @click="prevQuestion"
+                            :disabled="currentQuestionIndex === 0"
+                        >
+                            <v-icon right>mdi-chevron-right</v-icon>
+                            سوال قبلی
+                        </v-btn>
+
+                        <v-btn
+                            variant="elevated"
+                            color="primary"
+                            @click="nextQuestion"
+                            :disabled="currentQuestionIndex === quiz.questions.length - 1"
+                        >
+                            سوال بعدی
+                            <v-icon left>mdi-chevron-left</v-icon>
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-slide-y-transition>
 
             <!-- Error Alert -->
             <v-alert
@@ -144,14 +217,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, onUnmounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount, onUnmounted, computed } from 'vue';
 import axios from 'axios';
 import localforage from 'localforage';
 import {route} from "ziggy-js";
 import VideoLayout from "@/Layouts/VideoLayout.vue";
+
 const props = defineProps({
-    uuid: String
+    uuid: String,
+    quiz: Object,
+    video: Object,
 })
+
+// --- Computed Property برای بررسی وضعیت ---
+const isAllowedToRecord = computed(() => {
+    return props.video?.status === 'pending';
+});
 
 // --- تنظیمات LocalForage ---
 localforage.config({
@@ -163,7 +244,7 @@ localforage.config({
 const videoPreview = ref(null);
 const stream = ref(null);
 const mediaRecorder = ref(null);
-const state = ref('idle'); // 'idle', 'recording', 'uploading', 'processing', 'completed'
+const state = ref('idle');
 const timer = ref(0);
 const timerInterval = ref(null);
 const errorMessage = ref('');
@@ -174,14 +255,37 @@ const isLoading = ref(false);
 const isRecording = ref(false);
 const isOnline = ref(navigator.onLine);
 
+// --- متغیرهای مربوط به سوالات ---
+const currentQuestionIndex = ref(0);
+
+const currentQuestion = computed(() => {
+    if (props.quiz && props.quiz.questions && props.quiz.questions.length > 0) {
+        return props.quiz.questions[currentQuestionIndex.value];
+    }
+    return null;
+});
+
+const nextQuestion = () => {
+    if (props.quiz?.questions && currentQuestionIndex.value < props.quiz.questions.length - 1) {
+        currentQuestionIndex.value++;
+    }
+};
+
+const prevQuestion = () => {
+    if (currentQuestionIndex.value > 0) {
+        currentQuestionIndex.value--;
+    }
+};
+
 // متغیرهای داخلی آپلود
 let videoUuid = ref(props.uuid);
-
 let chunkCounter = 0;
 let isUploaderRunning = false;
 
 // --- 1. شروع ضبط ---
 const startRecording = async () => {
+    if (!isAllowedToRecord.value) return; // اطمینان از اینکه در توابع هم چک می‌شود
+
     try {
         errorMessage.value = '';
         state.value = 'recording';
@@ -189,92 +293,73 @@ const startRecording = async () => {
         chunkCounter = 0;
         uploadProgress.value = 0;
 
-        // پاکسازی دیتابیس قدیمی برای اطمینان
+        currentQuestionIndex.value = 0;
+
         await localforage.clear();
 
-        // درخواست دسترسی به مدیا
         stream.value = await navigator.mediaDevices.getUserMedia({
-            video: { width: 1280, height: 720 }, // HD Resolution
+            video: { width: 1280, height: 720 },
             audio: true
         });
 
         videoPreview.value.srcObject = stream.value;
 
-        // دریافت UUID جدید از سرور
-        const initRes = await axios.post(route('web.video.init',videoUuid.value));
+        const initRes = await axios.post(route('web.video.init', videoUuid.value));
 
-
-
-        // تنظیمات MediaRecorder با سازگاری بیشتر
         const options = {
             mimeType: 'video/webm;codecs=vp9,opus',
-            videoBitsPerSecond: 1000000,  // 1 Mbps (optimized for 720p)
-            audioBitsPerSecond: 128000,   // 128 Kbps (good quality with opus)
-            audioChannelCount: 1,         // Mono audio is sufficient for voice
+            videoBitsPerSecond: 1000000,
+            audioBitsPerSecond: 128000,
+            audioChannelCount: 1,
             audio: {
                 echoCancellation: true,
                 noiseSuppression: true,
                 autoGainControl: true,
                 channelCount: 1,
-                sampleRate: 24000,        // 24kHz is sufficient for voice
+                sampleRate: 24000,
                 sampleSize: 16,
                 volume: 1.0
             },
             video: {
                 width: 1280,
                 height: 720,
-                frameRate: {
-                    min: 15,             // Minimum acceptable frame rate
-                    ideal: 24,            // Target frame rate
-                    max: 24               // Cap at 24fps for consistency
-                },
-                // VP9 specific optimizations
-                bitrateMode: 'variable',  // Better compression for static scenes
-                latencyMode: 'realtime',  // Optimize for real-time encoding
-                // Advanced constraints for better compression
+                frameRate: { min: 15, ideal: 24, max: 24 },
+                bitrateMode: 'variable',
+                latencyMode: 'realtime',
                 advanced: [
-                    // Prefer hardware acceleration if available
                     { width: 1280, height: 720 },
-                    // Fallback to lower resolution if needed
                     { width: 854, height: 480 },
-                    // Optimize for screen content if needed
                     { aspectRatio: 16/9 }
                 ]
             },
-            // Additional VP9 encoder settings
             vp9: {
-                cqLevel: 30,              // Quality level (0-63, lower is better quality)
-                cpuUsed: 4,               // Speed/quality tradeoff (0-8, lower is better quality)
-                frameParallel: true,      // Enable frame parallel decoding
-                rowMt: true,              // Enable row-based multi-threading
-                tileColumns: 2,           // Enable tiling for parallel encoding
-                tileRows: 1,              // 2x1 tiling
-                noiseSensitivity: 0,      // Disable noise sensitivity for better compression
-                aqMode: 2,                // Adaptive quantization mode (2 is good for most content)
-                lagInFrames: 0            // Disable lag for real-time encoding
+                cqLevel: 30,
+                cpuUsed: 4,
+                frameParallel: true,
+                rowMt: true,
+                tileColumns: 2,
+                tileRows: 1,
+                noiseSensitivity: 0,
+                aqMode: 2,
+                lagInFrames: 0
             },
-            // Opus audio settings
             opus: {
-                complexity: 6,            // Quality/speed tradeoff (0-10, higher is better quality)
-                frameDuration: 60,        // 60ms frame size (good balance between latency and efficiency)
-                application: 'voip',      // Optimize for voice
-                signal: 'voice',          // Optimize for voice
-                inbandFec: true,          // Enable forward error correction
-                packetLossPerc: 10,       // Expected packet loss percentage
-                useinbandfec: 1,          // Enable in-band FEC
-                usedtx: 0,                // Disable DTX for continuous transmission
-                maxaveragebitrate: 128000 // Maximum bitrate
+                complexity: 6,
+                frameDuration: 60,
+                application: 'voip',
+                signal: 'voice',
+                inbandFec: true,
+                packetLossPerc: 10,
+                useinbandfec: 1,
+                usedtx: 0,
+                maxaveragebitrate: 128000
             }
         };
 
-        // ایجاد MediaRecorder با تنظیمات
         mediaRecorder.value = new MediaRecorder(stream.value, options);
-
-        // هندلر دریافت داده (هر ۵ ثانیه یا موقع توقف)
         mediaRecorder.value.ondataavailable = handleDataAvailable;
 
-        // شروع ضبط با تکه‌های ۵ ثانیه‌ای
-        const chunkDuration = 5000; // 5 seconds
+        const chunkDuration = 5000;
         mediaRecorder.value.start(chunkDuration);
         isRecording.value = true;
         startTimer();
@@ -286,23 +371,17 @@ const startRecording = async () => {
     }
 };
 
-// --- 2. مدیریت داده‌ها و ذخیره در IndexedDB ---
+// --- 2. مدیریت داده‌ها ---
 const handleDataAvailable = async (event) => {
     if (event.data && event.data.size > 0) {
         const currentChunkIndex = chunkCounter++;
-
         const chunkData = {
             uuid: videoUuid.value,
             index: currentChunkIndex,
             blob: event.data,
             retries: 0
         };
-
-        // ذخیره در IndexedDB (برای پایداری)
-        // کلید طوری ساخته شده که ترتیب داشته باشد
         await localforage.setItem(`chunk_${String(currentChunkIndex).padStart(5, '0')}`, chunkData);
-
-        // فراخوانی آپلودر
         processUploadQueue();
     }
 };
@@ -310,15 +389,10 @@ const handleDataAvailable = async (event) => {
 // --- 3. توقف ضبط ---
 const stopRecording = () => {
     if (mediaRecorder.value && state.value === 'recording') {
-        // فراخوانی stop باعث می‌شود آخرین تکه دیتا (Final Blob) تولید شود
-        // و متد ondataavailable برای آخرین بار صدا زده شود
         mediaRecorder.value.stop();
         isRecording.value = false;
         stopStream();
         stopTimer();
-
-        // تغییر وضعیت به "در حال آپلود"
-        // ما هنوز finish نمی‌زنیم، صبر می‌کنیم صف خالی شود
         state.value = 'uploading';
     }
 };
@@ -326,19 +400,18 @@ const stopRecording = () => {
 const cancelRecording = async () => {
     const confirm = await $confirm('آیا از لغو ضبط ویدیو اطمینان دارید؟ تمام ویدیوی ضبط شده حذف خواهد شد.')
     if (confirm) {
-        // Stop any ongoing recording
         if (mediaRecorder.value && state.value === 'recording') {
             mediaRecorder.value.stop();
         }
 
-        // Reset all states
         state.value = 'idle';
         isRecording.value = false;
         isLoading.value = false;
         timer.value = 0;
         stopTimer();
 
-        // Clear any pending chunks
+        currentQuestionIndex.value = 0;
+
         try {
             const keys = await localforage.keys();
             await Promise.all(keys.map(key => localforage.removeItem(key)));
@@ -348,18 +421,19 @@ const cancelRecording = async () => {
             console.error('Error clearing local storage:', error);
         }
 
-        // Stop all tracks in the stream
         if (stream.value) {
             stream.value.getTracks().forEach(track => track.stop());
             stream.value = null;
         }
 
-        // Reinitialize the camera
         initializeCamera();
     }
 };
 
 const initializeCamera = async () => {
+    // اگر کاربر مجاز نباشد، دوربین را روشن نمی‌کنیم
+    if (!isAllowedToRecord.value) return;
+
     try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({
             video: {
@@ -382,50 +456,37 @@ const initializeCamera = async () => {
     }
 };
 
-// --- 4. صف آپلود (Worker) ---
+// --- 4. صف آپلود ---
 const processUploadQueue = async () => {
-    if (isUploaderRunning) return; // جلوگیری از اجرای همزمان
+    if (isUploaderRunning) return;
     isUploaderRunning = true;
 
     try {
-        // دریافت همه کلیدها
         const keys = await localforage.keys();
         pendingChunksCount.value = keys.length;
 
-        // اگر کلیدی هست، یعنی چیزی برای آپلود داریم
         if (keys.length > 0) {
-            // مرتب‌سازی کلیدها برای رعایت ترتیب (حیاتی)
             const sortedKeys = keys.sort();
             const nextKey = sortedKeys[0];
             const chunkData = await localforage.getItem(nextKey);
 
             if (chunkData) {
-                // آپلود چانک
                 await uploadChunkToServer(chunkData);
-
-                // حذف از دیتابیس بعد از موفقیت
                 await localforage.removeItem(nextKey);
-
-                // محاسبه درصد پیشرفت (تخمینی)
-                // فرمول دقیق‌تر نیاز به دانستن تعداد کل دارد که هنوز نمی‌دانیم، پس نمایشی است
                 uploadProgress.value = Math.min(95, uploadProgress.value + 5);
             }
 
-            // فراخوانی بازگشتی برای چانک بعدی
             isUploaderRunning = false;
             processUploadQueue();
 
         } else {
-            // صف خالی است. حالا چک می‌کنیم که آیا ضبط تمام شده؟
             if (state.value === 'uploading') {
-                // صف خالی شده و کاربر دکمه توقف را زده است -> پایان کار
                 await finishUpload();
             }
             isUploaderRunning = false;
         }
     } catch (err) {
         console.error("Upload Loop Error:", err);
-        // در صورت خطا، بعد از ۲ ثانیه دوباره تلاش کن
         setTimeout(() => {
             isUploaderRunning = false;
             processUploadQueue();
@@ -433,14 +494,13 @@ const processUploadQueue = async () => {
     }
 };
 
-// --- 5. آپلود یک تکه به سرور ---
+// --- 5. آپلود تکه ---
 const uploadChunkToServer = async (chunkData) => {
     const formData = new FormData();
     formData.append('uuid', chunkData.uuid);
     formData.append('chunk_index', chunkData.index);
     formData.append('chunk', chunkData.blob);
 
-    // استفاده از Axios برای آپلود
     await axios.post(route('web.video.chunk'), formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     });
@@ -452,19 +512,18 @@ const finishUpload = async () => {
     try {
         await axios.post(route('web.video.finish'), {
             uuid: videoUuid.value,
-            total_chunks: chunkCounter // تعداد کل چانک‌های تولید شده
+            total_chunks: chunkCounter
         });
 
         state.value = 'completed';
         uploadProgress.value = 100;
 
-        // پاکسازی نهایی دیتابیس
         await localforage.clear();
 
     } catch (err) {
         console.error(err);
         errorMessage.value = 'خطا در پردازش نهایی ویدیو.';
-        state.value = 'idle'; // اجازه تلاش مجدد
+        state.value = 'idle';
     }
 };
 
@@ -493,35 +552,35 @@ const formatTime = (seconds) => {
 };
 
 // --- Lifecycle ---
-// Handle online/offline events
 const updateOnlineStatus = () => {
     isOnline.value = navigator.onLine;
 };
 
 onMounted(async () => {
-    // Add event listeners for online/offline status
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 
-    // Initialize camera access
-    try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                frameRate: { ideal: 30, max: 30 }
-            },
-            audio: true
-        });
+    // چک کردن وضعیت قبل از راه‌اندازی دوربین
+    if (isAllowedToRecord.value) {
+        try {
+            const mediaStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    frameRate: { ideal: 30, max: 30 }
+                },
+                audio: true
+            });
 
-        if (videoPreview.value) {
-            videoPreview.value.srcObject = mediaStream;
-            stream.value = mediaStream;
-            canRecord.value = true;
+            if (videoPreview.value) {
+                videoPreview.value.srcObject = mediaStream;
+                stream.value = mediaStream;
+                canRecord.value = true;
+            }
+        } catch (err) {
+            console.error('Error accessing media devices:', err);
+            errorMessage.value = 'دسترسی به دوربین یا میکروفون ممکن نیست. لطفاً مجوزهای لازم را تأیید کنید.';
         }
-    } catch (err) {
-        console.error('Error accessing media devices:', err);
-        errorMessage.value = 'دسترسی به دوربین یا میکروفون ممکن نیست. لطفاً مجوزهای لازم را تأیید کنید.';
     }
 });
 
@@ -531,8 +590,13 @@ onBeforeUnmount(() => {
 });
 
 onUnmounted(() => {
-    // Clean up event listeners
     window.removeEventListener('online', updateOnlineStatus);
     window.removeEventListener('offline', updateOnlineStatus);
 });
 </script>
+
+<style scoped>
+.v-list-item--variant-text .v-list-item__overlay {
+    background: transparent;
+}
+</style>

@@ -28,11 +28,13 @@
                         <p>{{ lesson.quiz.description }}</p>
                         <v-divider class="my-5"></v-divider>
                         <div class="zo-question" v-for="(question, qIndex) in lesson.quiz.questions">
+                            <!-- اضافه کردن readonly برای جلوگیری از تغییر پاسخ‌ها در حالت مشاهده نتیجه -->
                             <v-radio-group
                                 v-model="selectedAnswers[question.id]"
                                 :label="`${qIndex+1}- ${question.text}`"
+                                :readonly="!!lesson.quiz.completed"
                             >
-                                <v-radio v-for="(option, oIndex) in question.options" :label="option.text" :value="option.id" :key="option.id" selected></v-radio>
+                                <v-radio v-for="(option, oIndex) in question.options" :label="option.text" :value="option.id" :key="option.id"></v-radio>
                             </v-radio-group>
                         </div>
                         <div class="text-center" v-if="!lesson.quiz.completed">
@@ -52,8 +54,10 @@
         </v-dialog>
     </div>
 </template>
+
 <script setup>
-import {ref, shallowRef} from 'vue'
+// اضافه کردن watch به ایمپورت‌ها
+import {ref, shallowRef, watch} from 'vue'
 import {router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 
@@ -69,6 +73,23 @@ const widgets = shallowRef(false)
 const selectedAnswers = ref({});
 
 const isLoading = ref(false)
+
+// --- شروع کد اضافه شده ---
+// این بخش چک می‌کند اگر آزمون کامل شده بود، جواب‌های کاربر را در فرم پر می‌کند
+watch(() => props.lesson, (newVal) => {
+    if (newVal?.quiz?.completed && newVal.quiz.questions) {
+        newVal.quiz.questions.forEach(question => {
+            // پیدا کردن گزینه‌ای که selected برابر true دارد
+            const selectedOption = question.options.find(opt => opt.selected);
+
+            // اگر گزینه‌ای پیدا شد، آی‌دی آن را به عنوان جواب انتخاب شده ست می‌کنیم
+            if (selectedOption) {
+                selectedAnswers.value[question.id] = selectedOption.id;
+            }
+        });
+    }
+}, { immediate: true, deep: true });
+// --- پایان کد اضافه شده ---
 
 const submitQuiz = () => {
     router.post(route('web.courses.lesson.quiz.store', props.lesson.id),
@@ -90,7 +111,9 @@ const submitQuiz = () => {
     )
 }
 </script>
+
 <style>
+/* استایل‌ها بدون تغییر باقی ماندند */
 .zo-content {
     font-size: 1rem
 }

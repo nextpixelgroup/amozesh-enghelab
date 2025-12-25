@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Verta;
 
@@ -364,10 +365,7 @@ class CourseController extends Controller
                 $requestLessonIds[] = $lesson->id;
             }
             $order++;
-
-            if ($lessonData['has_quiz'] == true && isset($lessonData['quiz']) && is_array($lessonData['quiz'])) {
-                $this->processUpdateQuiz($lesson, $lessonData['quiz']);
-            }
+            $this->processUpdateQuiz($lesson, $lessonData['quiz']);
 
         }
         $lessonsToDelete = array_diff($existingLessons, $requestLessonIds);
@@ -392,25 +390,26 @@ class CourseController extends Controller
 
     private function processUpdateQuiz($lesson, $quizData)
     {
-        if(is_numeric($quizData['id']) && $quizData['id'] > 0){
-            $quiz = Quiz::find($quizData['id']);
-            $quiz->update([
-                'lesson_id'   => $lesson->id,
-                'title'       => $quizData['title'] ?? 'Quiz',
-                'description' => $quizData['description'] ?? null,
-                'is_active'   => $quizData['is_active'] ?? true,
-            ]);
-        }
-        else {
-            $quiz = Quiz::create([
-                'lesson_id' => $lesson->id,
-                'title' => $quizData['title'] ?? 'Quiz',
-                'description' => $quizData['description'] ?? null,
-                'is_active' => $quizData['is_active'] ?? true,
-            ]);
-        }
+        if(isset($quizData['id'])) {
+            if (is_numeric($quizData['id']) && $quizData['id'] > 0) {
+                $quiz = Quiz::find($quizData['id']);
+                $quiz->update([
+                    'lesson_id' => $lesson->id,
+                    'title' => $quizData['title'],
+                    'description' => $quizData['description'] ?? null,
+                    'is_active' => $quizData['is_active'],
+                ]);
+            } elseif($quizData['title'] && $quizData['description']){
+                $quiz = Quiz::create([
+                    'lesson_id' => $lesson->id,
+                    'title' => $quizData['title'],
+                    'description' => $quizData['description'] ?? null,
+                    'is_active' => $quizData['is_active'],
+                ]);
+            }
 
-        if (isset($quizData['questions']) && is_array($quizData['questions'])) {
+        }
+        if (isset($quizData['questions']) && is_array($quizData['questions']) && count($quizData['questions'])) {
             $this->processUpdateQuestions($quiz, $quizData['questions']);
         }
     }

@@ -10,6 +10,8 @@ enum VideoStatusEnum: string
     case pending_process = 'درحال پردازش';
     case completed = 'تکمیل شده';
     case failed = 'ناموفق';
+    case confirmed = 'تایید شده';
+    case rejected = 'رد شده';
 
     public static function fromKey(string $key): ?self
     {

@@ -73,7 +73,7 @@ class ProcessVideoJob implements ShouldQueue
             fclose($mergedFileHandle);
 
             if ($chunksFound === 0) {
-                throw new \Exception("No chunks found to merge for video {$uuid}");
+                throw new \Exception("No chunks found to merge for video $uuid");
             }
 
 

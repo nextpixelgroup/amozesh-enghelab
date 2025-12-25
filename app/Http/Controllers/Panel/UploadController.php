@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Media;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class UploadController extends Controller
 {
@@ -29,11 +30,14 @@ class UploadController extends Controller
 
     public function destroy(Media $media, $type, Request $request)
     {
+        if (Gate::denies('delete', $media)) {
+            return responseJSon('error', 'شما اجازه حذف این فایل را ندارید');
+        }
         if($type === 'nationalCardImage'){
-            $media->userAvatar()->update(['national_card_image_id' => null]);
+            $media->userNationalCardImage()->update(['national_card_image_id' => null]);
         }
         elseif($type === 'avatar'){
-            $media->userNationalCardImage()->update(['avatar_id' => null]);
+            $media->userAvatar()->update(['avatar_id' => null]);
         }
         else{
             return responseJSon('error', 'نوع فایل مشخص نشده است');

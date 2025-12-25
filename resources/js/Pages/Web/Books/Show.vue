@@ -32,6 +32,7 @@
                                         <div class="zo-thumbnail">
                                             <div class="zo-bookmark">
                                                 <BookmarkTemplate
+                                                    v-if="props.user"
                                                     :id="book.id"
                                                     :isBookmarked="book.isBookmarked"
                                                     type="book"

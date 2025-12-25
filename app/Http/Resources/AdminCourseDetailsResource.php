@@ -81,14 +81,14 @@ class AdminCourseDetailsResource extends JsonResource
                                 'url' => $lesson->poster?->url,
                             ],
                             'duration' => $lesson->duration,
-                            'has_quiz' => $lesson->quiz ? true : false,
-                            'quiz' => [
+                            //'has_quiz' => $lesson->quiz ? true : false,
+                            'quiz' => $lesson->quiz ? [
                                 'id' => $lesson->quiz ? $lesson->quiz->id : Str::uuid(),
                                 'has_quiz' => $lesson->quiz ? true : false,
                                 'title' => $lesson->quiz?->title ?? '',
                                 'description' => $lesson->quiz?->description ?? '',
                                 'is_active' =>  $lesson->quiz?->is_active ? true : false,
-                                'questions' => $lesson->quiz?->questions ? $lesson->quiz?->questions->sortBy('order')->values()->map(function ($question) {
+                                'questions' => $lesson->quiz?->questions->sortBy('order')->values()->map(function ($question) {
                                     return [
                                         'id' => $question->id,
                                         'text' => $question->question_text,
@@ -98,18 +98,15 @@ class AdminCourseDetailsResource extends JsonResource
                                         'option3' => ['text' => $question->options[2]->option_text, 'is_correct' => $question->options[2]->is_correct],
                                         'option4' => ['text' => $question->options[3]->option_text, 'is_correct' => $question->options[3]->is_correct],
                                     ];
-                                }) : [
-                                    [
-                                        'id' => Str::uuid(),
-                                        'text' => '',
-                                        'is_active' => true,
-                                        'option1' => ['text' => '', 'is_correct' => false],
-                                        'option2' => ['text' => '', 'is_correct' => false],
-                                        'option3' => ['text' => '', 'is_correct' => false],
-                                        'option4' => ['text' => '', 'is_correct' => false],
-                                    ]
-                                ]
-                            ],
+                                })
+                            ] :  [ // ساختار خالی برای وقتی آزمون ندارد
+
+                                'id' => Str::uuid(),
+                                'is_active' => false,
+                                'title' => '',
+                                'description' => '',
+                                'questions' => []
+                            ]
                         ];
                     }) : [],
                 ];

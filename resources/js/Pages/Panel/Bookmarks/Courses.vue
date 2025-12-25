@@ -19,6 +19,38 @@
                                 </v-col>
                             </v-row>
                         </div>
+                        <div class="d-flex justify-center mb-8">
+                            <Link
+                                :href="route('panel.bookmarks.courses')"
+                                class="text-decoration-none"
+                            >
+                                <v-btn
+                                    variant="flat"
+                                    color="primary"
+                                    class="px-6 mx-2"
+                                    size="large"
+                                    rounded="lg"
+                                >
+                                    <v-icon start>mdi-play-circle-outline</v-icon>
+                                    دوره‌ها
+                                </v-btn>
+                            </Link>
+                            <Link
+                                :href="route('panel.bookmarks.books')"
+                                class="text-decoration-none"
+                            >
+                                <v-btn
+                                    variant="tonal"
+                                    color=""
+                                    class="px-6 mx-2"
+                                    size="large"
+                                    rounded="lg"
+                                >
+                                    <v-icon start>mdi-book-open-page-variant</v-icon>
+                                    کتب
+                                </v-btn>
+                            </Link>
+                        </div>
                         <v-row dense class="align-center">
                             <v-col v-for="(course, index) in courses.data" :key="index" cols="12" sm="6" md="4" lg="3">
                                 <CourseCard :course="course" />
@@ -34,6 +66,8 @@
 import WebLayout from "@/Layouts/WebLayout.vue";
 import PanelLayout from "@/Layouts/PanelLayout.vue";
 import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
+import {route} from "ziggy-js";
+import {Link} from "@inertiajs/vue3";
 defineProps({
     courses : {
         type: Object,

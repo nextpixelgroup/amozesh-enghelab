@@ -79,7 +79,6 @@ Route::name('web.')->group(function () {
         Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
         Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
         Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');
-        Route::get('/video/stream/{uuid}', [VideoController::class, 'stream'])->name('video.stream');
     });
 
 
