@@ -1,6 +1,5 @@
 <template>
     <WebLayout>
-        {{course.data.quiz}}
         <!-- Completion Dialog -->
         <v-dialog
             v-model="showCompletionDialog"

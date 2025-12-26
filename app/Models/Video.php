@@ -20,7 +20,8 @@ class Video extends Model
 
     // 3. فیلدهای قابل پر شدن
     protected $fillable = [
-        'id',           // مهم: باید اینجا باشد چون دستی پر می‌شود
+        'id',
+        'uuid',
         'user_id',
         'course_id',
         'quiz_id',
@@ -35,6 +36,10 @@ class Video extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function notes(){
+        return $this->hasMany(VideoNote::class);
     }
 
     public function quiz()

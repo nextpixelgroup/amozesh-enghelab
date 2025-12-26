@@ -14,40 +14,46 @@ use Illuminate\Support\Str;
 class VideoController extends Controller
 {
 
-    public function record($uuid)
+    public function index($uuid)
     {
-        $video = Video::with('quiz.questions.options')->where('id', $uuid)->first();
-        $quiz = [];
-        if($video->quiz->is_active){
-            $quiz = [
-                //'id' => $video->quiz->id,
-                'title' => $video->quiz->title,
-                'description' => $video->quiz->description,
-                'questions' => $video->quiz->questions->map( function($question) {
-                    return [
-                        'id' => $question->id,
-                        'question' => $question->question_text,
-                        'options' => $question->options->map( function ($option) {
-                            return [
-                                'id' => $option->id,
-                                'option' => $option->option_text,
-                            ];
-                        })->toArray(),
-                    ];
-                })->toArray(),
+        $video = Video::with('quiz.questions.options')->where('uuid', $uuid)->first();
+        if($video) {
+            $quiz = [];
+            if ($video->quiz->is_active) {
+                $quiz = [
+                    //'id' => $video->quiz->id,
+                    'title' => $video->quiz->title,
+                    'description' => $video->quiz->description,
+                    'questions' => $video->quiz->questions->map(function ($question) {
+                        return [
+                            'id' => $question->id,
+                            'question' => $question->question_text,
+                            'options' => $question->options->map(function ($option) {
+                                return [
+                                    'id' => $option->id,
+                                    'option' => $option->option_text,
+                                ];
+                            })->toArray(),
+                        ];
+                    })->toArray(),
+                ];
+            }
+            $video = [
+                'status' => $video->status,
             ];
+
+            return inertia('Web/Video/Index', compact('uuid', 'quiz', 'video'));
         }
-        $video = [
-            'status' => $video->status,
-        ];
-        return inertia('Record', compact('uuid', 'quiz', 'video'));
+        else{
+            return redirect()->route('web.404');
+        }
     }
 
     public function init(Request $request, $uuid)
     {
 
         try {
-            $video = Video::findOrFail($uuid);
+            $video = Video::where('uuid',$uuid)->first();
 
             if ($video->path && Storage::exists($video->path)) {
                 Storage::delete($video->path);
@@ -112,7 +118,7 @@ class VideoController extends Controller
     public function finish(Request $request)
     {
         $uuid = $request->input('uuid');
-        $video = Video::where('id',$uuid)->first();
+        $video = Video::where('uuid',$uuid)->first();
         $totalChunks = $request->input('total_chunks');
 
         // چک کردن تعداد چانک‌های دریافت شده از Redis

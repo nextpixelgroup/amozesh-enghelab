@@ -74,6 +74,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::get('/quizzes/{video}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
         Route::get('/video/url/{video}', [QuizController::class, 'url'])->name('video.url');
         Route::get('/video/poster/{video}', [QuizController::class, 'poster'])->name('video.poster');
+        Route::put('/quizzes/{video}', [QuizController::class, 'update'])->name('quizzes.update');
 
         /********* comments *********/
         Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');

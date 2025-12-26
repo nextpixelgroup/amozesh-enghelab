@@ -168,7 +168,7 @@ class WebCourseDetailsResource extends JsonResource
         ){
             $video = Video::where('user_id', $userId)->where('course_id', $this->id)->first();
             if($video){
-                $data['quiz']['url'] = route('web.video.record', $video->id);
+                $data['quiz']['url'] = route('web.video.record', $video->uuid);
             }
         }
         //dd($data['seasons']);

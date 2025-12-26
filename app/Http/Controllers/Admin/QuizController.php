@@ -25,6 +25,20 @@ class QuizController extends Controller
         return inertia('Admin/Quizzes/Edit', compact('quiz'));
     }
 
+    public function update(Request $request, Video $video)
+    {
+        $user = auth()->user();
+        if($request->filled('status')){
+            $video->update(['status' => $request->input('status')]);
+        }
+        if($request->filled('note')){
+            $video->notes()->create([
+                'user_id' => $user->id,
+                'note' => $request->input('note'),
+            ]);
+        }
+    }
+
     public function url($uuid)
     {
         $video = Video::where('id', $uuid)->firstOrFail();

@@ -243,7 +243,7 @@ class CourseController extends Controller
                 $uuid = (string) Str::uuid();
 
                 $video = Video::create([
-                    'id'        => $uuid,
+                    'uuid'      => $uuid,
                     'user_id'   => $user->id,
                     'course_id' => $course->id,
                     'quiz_id'   => $course->quiz->id,

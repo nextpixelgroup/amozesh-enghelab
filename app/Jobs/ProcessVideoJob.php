@@ -29,7 +29,7 @@ class ProcessVideoJob implements ShouldQueue
 
     public function handle()
     {
-        $uuid = $this->video->id;
+        $uuid = $this->video->uuid;
         // مسیر فایل‌های موقت
         $tempPath = storage_path("app/temp_uploads/{$uuid}");
         // مسیر خروجی نهایی

@@ -27,6 +27,9 @@ if(env('APP_ENV') === 'production') {
 
 Route::name('web.')->group(function () {
 
+    Route::get('404', function (){
+        return inertia('Web/404');
+    })->name('404');
     Route::get('/', [IndexController::class, 'index'])->name('index');
     Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
@@ -75,7 +78,7 @@ Route::name('web.')->group(function () {
         Route::delete('/bookmarks/course/{course}/destroy', [BookmarkController::class, 'courseDestroy'])->name('bookmark.course.destroy');
         Route::delete('/bookmarks/book/{book}/destroy', [BookmarkController::class, 'bookDestroy'])->name('bookmark.book.destroy');
 
-        Route::get('/video/record/{uuid}', [VideoController::class, 'record'])->name('video.record');
+        Route::get('/video/record/{uuid}', [VideoController::class, 'index'])->name('video.record');
         Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
         Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
         Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');

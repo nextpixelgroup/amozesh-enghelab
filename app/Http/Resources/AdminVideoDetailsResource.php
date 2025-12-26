@@ -97,6 +97,7 @@ class AdminVideoDetailsResource extends JsonResource
             'video' => [
                 'url' => route('admin.video.url',$this->id),
                 'poster' => route('admin.video.poster',$this->id),
+                'status' => $this->status,
             ],
             'finalQuiz' => $quizData,
             'quizzes' => $quizzes,

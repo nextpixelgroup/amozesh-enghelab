@@ -75,7 +75,7 @@
         <v-card-actions class="justify-space-between pa-4 bg-grey-lighten-5">
             <v-btn
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 @click="prevQuestion"
                 :disabled="currentQuestionIndex === 0"
             >

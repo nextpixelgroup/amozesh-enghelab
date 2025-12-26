@@ -2,7 +2,7 @@
     <AdminLayout>
         <v-container fluid class="px-4 px-md-8">
 
-            <!-- بخش 1: ویدیو (تمام عرض) -->
+            <!-- بخش 1: ویدیو -->
             <v-row>
                 <v-col cols="12">
                     <v-card class="rounded-lg overflow-hidden" elevation="3">
@@ -25,7 +25,7 @@
                 <!-- ستون چپ: سوالات (8 از 12) -->
                 <v-col cols="12" md="8">
 
-                    <!-- 1. آزمون نهایی (Final Quiz) -->
+                    <!-- 1. آزمون نهایی -->
                     <div class="mb-6">
                         <div class="d-flex align-center mb-2">
                             <v-icon color="primary" class="mr-2">mdi-school</v-icon>
@@ -44,7 +44,7 @@
 
                     <v-divider class="my-6"></v-divider>
 
-                    <!-- 2. آزمون‌های دروس (Lesson Quizzes) -->
+                    <!-- 2. آزمون‌های دروس -->
                     <div v-if="quizzesList && quizzesList.length > 0">
                         <div class="d-flex align-center mb-4">
                             <v-icon color="primary" class="mr-2">mdi-notebook-check-outline</v-icon>
@@ -53,10 +53,25 @@
 
                         <!-- حلقه روی تمام آزمون‌های دروس -->
                         <div v-for="(quizItem, index) in quizzesList" :key="quizItem.id" class="mb-8">
-                            <div class="text-subtitle-1 font-weight-bold mb-2 text-grey-darken-3">
-                                {{ index + 1 }}. {{ quizItem.title }}
+
+                            <!-- هدر هر آزمون شامل عنوان و نتیجه -->
+                            <div class="d-flex align-center justify-space-between mb-2">
+                                <div class="text-subtitle-1 font-weight-bold text-grey-darken-3">
+                                    {{ index + 1 }}. {{ quizItem.title }}
+                                </div>
+
+                                <!-- نمایش نتیجه تکی برای این آزمون -->
+                                <v-chip
+                                    class="font-weight-bold"
+                                    :color="getQuizColor(quizItem)"
+                                    variant="flat"
+                                    size="small"
+                                >
+                                    <v-icon start icon="mdi-check-decagram"></v-icon>
+                                    {{ calculateQuizStats(quizItem).correct }} از {{ calculateQuizStats(quizItem).total }} صحیح
+                                </v-chip>
                             </div>
-                            <!-- استفاده از همان کامپوننت نمایش دهنده سوالات -->
+
                             <QuizViewer
                                 :quiz="quizItem"
                                 :title="quizItem.title"
@@ -97,11 +112,52 @@
 
                             <v-divider></v-divider>
 
-                            <v-card-actions class="pa-4">
-                                <v-btn block variant="outlined" color="primary" :href="courseInfo.link" target="_blank">
+                            <v-card-actions class="pa-4 d-flex flex-column gap-2">
+                                <v-btn block variant="outlined" color="primary" :href="courseInfo.link" target="_blank" class="mb-3">
                                     <v-icon start>mdi-open-in-new</v-icon>
                                     مشاهده دوره
                                 </v-btn>
+
+                                <!-- >>> بخش جدید: آمار کلی سوالات دروس <<< -->
+                                <v-card variant="tonal" color="grey-lighten-2" class="w-100 pa-3 rounded-lg border">
+                                    <div class="d-flex align-center mb-3">
+                                        <v-icon color="grey-darken-3" class="mr-2">mdi-chart-bar</v-icon>
+                                        <span class="font-weight-bold text-grey-darken-3">آمار کلی سوالات دروس</span>
+                                    </div>
+
+                                    <div class="d-flex justify-space-between align-center mb-2">
+                                        <span class="text-body-2 text-grey-darken-2">کل سوالات:</span>
+                                        <v-chip size="x-small" color="back" variant="flat" class="font-weight-bold">
+                                            {{ overallStats.total }}
+                                        </v-chip>
+                                    </div>
+
+                                    <div class="d-flex justify-space-between align-center mb-2">
+                                        <span class="text-body-2 text-grey-darken-2">پاسخ‌های صحیح:</span>
+                                        <v-chip size="x-small" color="success" variant="flat" class="font-weight-bold">
+                                            {{ overallStats.correct }}
+                                        </v-chip>
+                                    </div>
+
+                                    <div class="d-flex justify-space-between align-center">
+                                        <span class="text-body-2 text-grey-darken-2">پاسخ‌های غلط:</span>
+                                        <v-chip size="x-small" color="error" variant="flat" class="font-weight-bold">
+                                            {{ overallStats.wrong }}
+                                        </v-chip>
+                                    </div>
+
+                                    <!-- نمایش درصد موفقیت (اختیاری) -->
+                                    <v-progress-linear
+                                        v-if="overallStats.total > 0"
+                                        :model-value="(overallStats.correct / overallStats.total) * 100"
+                                        :color="getProgressColor(overallStats.correct / overallStats.total)"
+                                        height="6"
+                                        rounded
+                                        class="mt-3"
+                                    ></v-progress-linear>
+                                </v-card>
+                                <!-- >>> پایان بخش آمار <<< -->
+
                             </v-card-actions>
                         </v-card>
 
@@ -119,22 +175,38 @@
                             <v-divider></v-divider>
 
                             <v-card-text class="pa-4">
+
+                                <!-- نمایش وضعیت فعلی (ذخیره شده در دیتابیس) -->
+                                <div class="d-flex align-center justify-space-between pa-3 rounded-lg border mb-4"
+                                     :class="currentStatusInfo.bg"
+                                     style="border-style: dashed !important;">
+            <span class="text-body-2 font-weight-bold text-grey-darken-3">
+                وضعیت فعلی:
+            </span>
+                                    <v-chip
+                                        :color="currentStatusInfo.color"
+                                        variant="elevated"
+                                        elevation="1"
+                                        size="small"
+                                        class="font-weight-bold px-3"
+                                    >
+                                        <v-icon start size="x-small">{{ currentStatusInfo.icon }}</v-icon>
+                                        {{ currentStatusInfo.title }}
+                                    </v-chip>
+                                </div>
+                                <!-- فرم تغییر وضعیت -->
                                 <v-select
                                     v-model="adminForm.status"
                                     :items="statusOptions"
                                     item-title="title"
                                     item-value="value"
-                                    label="وضعیت ویدیو"
+                                    label="انتخاب وضعیت جدید"
                                     variant="outlined"
                                     density="comfortable"
                                     hide-details="auto"
                                     class="mb-4"
-                                >
-                                    <template v-slot:selection="{ item }">
-                                        <v-icon :color="item.raw.color" start size="small">{{ item.raw.icon }}</v-icon>
-                                        <span :class="`text-${item.raw.color}`">{{ item.title }}</span>
-                                    </template>
-                                </v-select>
+                                    clearable
+                                />
 
                                 <v-textarea
                                     v-model="adminForm.note"
@@ -143,22 +215,24 @@
                                     rows="3"
                                     density="comfortable"
                                     hide-details="auto"
+                                    placeholder="دلیل تایید یا رد را بنویسید..."
                                 ></v-textarea>
                             </v-card-text>
 
                             <v-card-actions class="pa-4 pt-0">
                                 <v-btn
                                     block
-                                    color="blue-grey-darken-1"
+                                    color="primary"
                                     variant="flat"
                                     size="large"
                                     :loading="isSaving"
-                                    @click="saveAdminDecision"
+                                    @click="save"
                                 >
                                     ذخیره تغییرات
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
+
                     </div>
                 </v-col>
 
@@ -168,33 +242,11 @@
 </template>
 
 <script setup lang="ts">
-/**
- * برای تمیز نگه داشتن کد و قابلیت استفاده مجدد برای هر تعداد آزمون،
- * بخش نمایش آزمون را به یک کامپوننت داخلی تبدیل کردیم.
- * در Vue 3 می‌توان کامپوننت‌ها را داخل فایل اصلی تعریف کرد (اگر بیلد سیستم اجازه دهد)
- * یا همینجا به عنوان یک آبجکت ایمپورت کرد.
- * اما بهترین کار در اینجا استفاده از یک کامپوننت جداگانه است.
- *
- * *راه حل:* من کامپوننت `QuizViewer` را در پایین همین اسکریپت به صورت یک کامپوننت محلی تعریف می‌کنم
- * یا اگر از SFC استفاده می‌کنید، بهتر است آن را در فایل `QuizViewer.vue` بسازید.
- *
- * در اینجا برای سادگی کپی پیست شما، من لاجیک را به فایل اصلی برمی‌گردانم اما با استفاده از یک کامپوننت DefineComponent.
- */
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import QuizViewer from "@/Components/Admin/Quiz/QuizViewer.vue";
 import { ref, computed, reactive } from "vue";
-// import QuizViewer from "./QuizViewer.vue"; // اگر فایل جدا ساختید
-
-// -----------------------------------------------------------------
-// تعریف کامپوننت داخلی QuizViewer برای نمایش هر آزمون
-// -----------------------------------------------------------------
-import { defineComponent, h } from 'vue';
-
-// نکته: اگر این بخش کار نکرد، بهتر است محتویات QuizViewer که در پایینتر توضیح میدهم را در یک فایل جداگانه مثلا Components/QuizViewer.vue ذخیره کنید و ایمپورت کنید.
-// اما اینجا برای یکپارچگی کد در پاسخ، فرض میکنیم QuizViewer ایمپورت شده است.
-// برای اینکه کد شما کار کند، من کد QuizViewer را در انتهای پاسخ به صورت جداگانه قرار می‌دهم که باید بسازید.
-import QuizViewer from "@/Components/Admin/Quiz/QuizViewer.vue"; // فرض بر این است که فایل ساخته شده
-// -----------------------------------------------------------------
-
+import {useForm} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
 
 const props = defineProps({
     quiz: {
@@ -205,13 +257,146 @@ const props = defineProps({
 
 // --- استخراج داده‌ها ---
 const quizData = ref(props.quiz.data);
-
-// 1. اطلاعات دوره
 const courseInfo = computed(() => quizData.value?.course || {});
-
-// 2. داده‌های آزمون‌ها
 const finalQuizData = computed(() => quizData.value?.finalQuiz || null);
 const quizzesList = computed(() => quizData.value?.quizzes || []);
+
+const currentStatusInfo = computed(() => {
+    // اگر video.status وجود نداشته باشد، وضعیت پیش‌فرض 'pending' در نظر گرفته می‌شود.
+    const status = quizData.value?.video?.status || 'pending';
+
+    switch (status) {
+        // --- وضعیت‌های نهایی ---
+        case 'approved':
+            return {
+                title: 'تایید شده',
+                color: 'success',
+                icon: 'mdi-check-circle',
+                bg: 'bg-green-lighten-5'
+            };
+        case 'rejected':
+            return {
+                title: 'رد شده',
+                color: 'error',
+                icon: 'mdi-close-circle',
+                bg: 'bg-red-lighten-5'
+            };
+        case 'completed': // وضعیت جدید: تکمیل موفقیت‌آمیز فرآیند (مانند پردازش)
+            return {
+                title: 'تکمیل شده',
+                color: 'info',
+                icon: 'mdi-check-all',
+                bg: 'bg-green-lighten-5'
+            };
+        case 'failed': // وضعیت جدید: ناموفق در فرآیند (مانند پردازش ویدیو)
+            return {
+                title: 'ناموفق',
+                color: 'error',
+                icon: 'mdi-alert-octagon',
+                bg: 'bg-red-lighten-5'
+            };
+
+        // --- وضعیت‌های میانی و در حال انتظار ---
+        case 'recording': // وضعیت جدید: در حال ضبط
+            return {
+                title: 'در حال ضبط',
+                color: 'primary',
+                icon: 'mdi-record-rec',
+                bg: 'bg-indigo-lighten-5'
+            };
+        case 'pending_process': // وضعیت جدید: در حال پردازش (مانند انکدینگ ویدیو)
+            return {
+                title: 'در حال پردازش',
+                color: 'info',
+                icon: 'mdi-cog-sync',
+                bg: 'bg-cyan-lighten-5'
+            };
+        case 'review': // وضعیت جدید: در حال بررسی (بازبینی انسانی یا فنی)
+            return {
+                title: 'در حال بررسی',
+                color: 'warning',
+                icon: 'mdi-eye-settings',
+                bg: 'bg-orange-lighten-5'
+            };
+
+        case 'pending': // وضعیت پیشین: در انتظار اقدام بعدی یا شروع فرآیند
+        default:
+            return {
+                title: 'در انتظار', // عنوان 'در حال بررسی' به 'در انتظار' تغییر داده شد
+                color: 'warning',
+                icon: 'mdi-clock',
+                bg: 'bg-orange-lighten-5'
+            };
+    }
+});
+const getProgressColor = (ratio: number) => {
+    if (ratio >= 0.6) return 'success';  // Green for 50% or more
+    if (ratio >= 0.25) return 'warning';    // Blue for 25% to 49.99%
+    return 'error';                    // Yellow for less than 25%
+};
+// ----------------------------------------------------------------------
+// منطق محاسبه آمار سوالات
+// ----------------------------------------------------------------------
+
+/**
+ * محاسبه آمار برای یک آزمون خاص
+ * @param quiz آبجکت آزمون شامل آرایه questions
+ */
+const calculateQuizStats = (quiz: any) => {
+    if (!quiz || !quiz.questions) return { total: 0, correct: 0, wrong: 0 };
+
+    const questions = quiz.questions;
+    const total = questions.length;
+    let correct = 0;
+
+    questions.forEach((q: any) => {
+        // پیدا کردن گزینه انتخاب شده کاربر
+        // فرض بر این است که q.userSelected شناسه (ID) گزینه انتخاب شده است
+        // و options آرایه‌ای از گزینه‌هاست که فیلد is_correct دارد
+        if (q.userSelected) {
+            const selectedOption = q.options.find((opt: any) => opt.id === q.userSelected);
+            if (selectedOption && selectedOption.is_correct) {
+                correct++;
+            }
+        }
+    });
+
+    const wrong = total - correct; // شامل نزده‌ها هم به عنوان غلط حساب می‌شود (یا می‌توانید نزده را جدا کنید)
+    return { total, correct, wrong };
+};
+
+/**
+ * تعیین رنگ بج (Chip) بر اساس عملکرد
+ */
+const getQuizColor = (quiz: any) => {
+    const stats = calculateQuizStats(quiz);
+    if (stats.total === 0) return 'grey';
+    const percent = stats.correct / stats.total;
+    if (percent >= 0.7) return 'success'; // عالی
+    if (percent >= 0.4) return 'warning'; // متوسط
+    return 'error'; // ضعیف
+};
+
+/**
+ * محاسبه آمار کلی تمام آزمون‌های لیست (quizzesList)
+ */
+const overallStats = computed(() => {
+    let total = 0;
+    let correct = 0;
+    let wrong = 0;
+
+    if (quizzesList.value) {
+        quizzesList.value.forEach((quiz: any) => {
+            const stats = calculateQuizStats(quiz);
+            total += stats.total;
+            correct += stats.correct;
+            wrong += stats.wrong;
+        });
+    }
+
+    return { total, correct, wrong };
+});
+// ----------------------------------------------------------------------
 
 
 // --- فرم ادمین ---
@@ -221,20 +406,31 @@ const statusOptions = [
     { title: 'رد شده', value: 'rejected', icon: 'mdi-close-circle-outline', color: 'error' }
 ];
 
-const adminForm = reactive({
-    status: quizData.value.video?.status || 'pending',
+const adminForm = useForm({
+    status: '',
     note: quizData.value.video?.admin_note || ''
 });
 
 const isSaving = ref(false);
 
-const saveAdminDecision = () => {
-    isSaving.value = true;
-    console.log("Saving...", adminForm);
-    setTimeout(() => {
-        isSaving.value = false;
-        alert('وضعیت ذخیره شد');
-    }, 800);
+const save = () => {
+    adminForm.put(route('admin.quizzes.update',{video: quizData.value.id}), {
+        preserveState: true,
+        preserveScroll: true,
+        onStart: () => {
+            isSaving.value = true;
+        },
+        onSuccess: () => {
+            isSaving.value = false;
+        },
+        onError: () => {
+            isSaving.value = false;
+        },
+        onFinish: () => {
+            isSaving.value = false;
+        }
+    });
+
 };
 </script>
 

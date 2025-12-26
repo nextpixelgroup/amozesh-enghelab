@@ -18,7 +18,6 @@
                     hide-slider
                     :model-value="null"
                 >
-
                     <v-tab
                         v-for="(item, index) in tabs"
                         :key="index"
