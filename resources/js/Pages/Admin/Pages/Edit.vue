@@ -87,7 +87,9 @@
                                 accept="image/*"
                                 type="page"
                             />
-
+                            <div class="text-caption text-grey text-center mt-2">
+                                سایز پیشنهادی: ۱۹۲۰x۶۰۰ پیکسل
+                            </div>
                         </v-col>
                         <v-col class="v-col-12">
                             <v-btn

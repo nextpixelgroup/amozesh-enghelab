@@ -95,8 +95,8 @@ class AdminVideoDetailsResource extends JsonResource
         $data = [
             'id' => $this->id,
             'video' => [
-                'url' => route('admin.video.url',$this->id),
-                'poster' => route('admin.video.poster',$this->id),
+                'url' => $this->path ? route('admin.video.url',$this->id) : '',
+                'poster' => $this->thumbnail ? route('admin.video.poster',$this->id) : '',
                 'status' => $this->status,
                 'notes' => $this->notes()->orderBy('created_at', 'desc')->get()->map(function ($note) {
                     return [

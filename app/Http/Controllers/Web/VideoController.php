@@ -7,6 +7,7 @@ use App\Jobs\ProcessVideoJob;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,6 +18,7 @@ class VideoController extends Controller
     public function index($uuid)
     {
         $video = Video::with('quiz.questions.options')->where('uuid', $uuid)->first();
+        Gate::authorize('view', $video);
         if($video) {
             $quiz = [];
             if ($video->quiz->is_active) {
@@ -39,7 +41,7 @@ class VideoController extends Controller
                 ];
             }
             $video = [
-                'status' => $video->status,
+                'status' => $video->statusObject,
             ];
 
             return inertia('Web/Video/Index', compact('uuid', 'quiz', 'video'));

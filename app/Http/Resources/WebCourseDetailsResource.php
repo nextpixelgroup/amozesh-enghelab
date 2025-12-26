@@ -155,7 +155,7 @@ class WebCourseDetailsResource extends JsonResource
             'hasCompletedCourse' => $userId ? $user->hasCompletedCourse($this->resource) : false,
             'quiz' => [
                 'hasQuiz' => $this->quiz && $this->quiz->is_active,
-                'hasQuizCompleted' => $this->quiz && $this->quiz->quizCompletions->isNotEmpty(),
+                //'videoCompleted' => $user ? $this->video()->where('user_id',$user->id)->first() : null,
                 'url' => '',
             ],
             'isBookmarked' => $userId ? (bool)$user->bookmarkedCourses()->where('bookmarkable_id', $this->id)->exists() : false
@@ -169,6 +169,7 @@ class WebCourseDetailsResource extends JsonResource
             $video = Video::where('user_id', $userId)->where('course_id', $this->id)->first();
             if($video){
                 $data['quiz']['url'] = route('web.video.record', $video->uuid);
+                $data['quiz']['completed'] = $video->status !== 'pending';
             }
         }
         //dd($data['seasons']);

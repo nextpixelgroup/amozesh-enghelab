@@ -1,10 +1,9 @@
 <template>
     <AdminLayout>
         <v-container fluid class="px-4 px-md-8">
-
             <v-row>
                 <v-col cols="12">
-                    <v-card class="rounded-lg overflow-hidden" elevation="3">
+                    <v-card class="rounded-lg overflow-hidden" elevation="3"  v-if="quizData?.video.url">
                         <video
                             :poster="quizData?.video?.poster"
                             controls
@@ -15,6 +14,35 @@
                             مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
                         </video>
                     </v-card>
+                    <v-card
+                        v-else
+                        class="rounded-lg d-flex align-center justify-center text-center pa-10"
+                        elevation="3"
+                        style="height: 300px; background-color: #f5f5f5;"
+                    >
+                        <div class="pa-5">
+
+                            <!-- آیکون بزرگ ویدیو -->
+                            <v-icon
+                                icon="mdi-video-off-outline"
+                                size="80"
+                                color="grey-darken-1"
+                                class="mb-4"
+                            ></v-icon>
+
+                            <!-- عنوان وضعیت -->
+                            <div class="text-h6 font-weight-bold text-grey-darken-2 mb-2">
+                                ویدیویی یافت نشد
+                            </div>
+
+                            <!-- توضیحات -->
+                            <p class="text-body-2 text-medium-emphasis">
+                                تا کنون، اقدامی جهت شرکت در آزمون نهایی صورت نگرفته است.
+                            </p>
+
+                        </div>
+                    </v-card>
+
                 </v-col>
             </v-row>
 
@@ -73,7 +101,7 @@
                     </div>
 
                     <v-alert v-else type="info" variant="tonal">
-                        هیچ آزمون درسی مرتبطی یافت نشد.
+                        هیچ آزمون درسی یافت نشد.
                     </v-alert>
 
                 </v-col>
@@ -85,7 +113,7 @@
                             <v-img
                                 v-if="courseInfo.image"
                                 :src="courseInfo.image"
-                                height="180"
+                                max-height="350"
                                 cover
                                 class="align-end"
                                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"

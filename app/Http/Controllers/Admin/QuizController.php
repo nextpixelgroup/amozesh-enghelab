@@ -14,7 +14,7 @@ class QuizController extends Controller
     public function index(Request $request)
     {
         $query = Video::query()->with(['quiz', 'course', 'user']);
-        $quizzes = AdminVideosResource::collection($query->paginate(env('PER_PAGE')));
+        $quizzes = AdminVideosResource::collection($query->orderBy('created_at', 'desc')->paginate(env('PER_PAGE')));
         $status = enumFormated(VideoStatusEnum::cases());
         return inertia('Admin/Quizzes/List', compact('quizzes', 'status'));
     }

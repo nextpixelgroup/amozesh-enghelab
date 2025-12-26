@@ -29,7 +29,7 @@ class Course extends Model
         return $this->morphMany(Bookmark::class, 'bookmarkable');
     }
 
-    public function video()
+    public function videos()
     {
         return $this->hasMany(Video::class);
     }

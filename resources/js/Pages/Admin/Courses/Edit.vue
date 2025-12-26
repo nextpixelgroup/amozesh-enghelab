@@ -694,6 +694,9 @@
                         accept="image/*"
                         type="course"
                     />
+                    <div class="text-caption text-grey text-center mt-2">
+                        سایز پیشنهادی: ۱۹۲۰x۶۰۰ پیکسل
+                    </div>
                     <v-btn block
                            size="large"
                            color="primary"

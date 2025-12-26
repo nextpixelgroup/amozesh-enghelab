@@ -56,7 +56,7 @@
                 <thead>
                 <tr>
                     <th class="text-center">شناسه</th>
-                    <th class="text-center">عنوان</th>
+                    <th class="text-center">دوره</th>
                     <th class="text-center">کاربر</th>
                     <th class="text-center">تاریخ</th>
                     <th class="text-center">وضعیت</th>

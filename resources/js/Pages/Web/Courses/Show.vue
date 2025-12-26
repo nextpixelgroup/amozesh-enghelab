@@ -107,7 +107,7 @@ const activeSection = ref(''); // مثلاً 'lessons' یا 'requirements'
 console.log(props.course)
 // Watch for course data changes
 watch(() => props.course, (newVal) => {
-    if (newVal?.data?.hasCompletedCourse) {
+    if (newVal?.data?.hasCompletedCourse && newVal?.data?.quiz.completed === false) {
         showCompletionDialog.value = true;
     }
 }, { immediate: true, deep: true });

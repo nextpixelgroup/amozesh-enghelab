@@ -20,7 +20,6 @@
                                 </v-avatar>
                                 <div>
                                     <div class="text-body-2 font-weight-bold">پیام‌رسان سروش پلاس</div>
-                                    <div class="text-caption text-grey">لینک دعوت یا کانال</div>
                                 </div>
                             </div>
                             <v-text-field
@@ -48,7 +47,6 @@
                                 </v-avatar>
                                 <div>
                                     <div class="text-body-2 font-weight-bold">پیام‌رسان ایتا</div>
-                                    <div class="text-caption text-grey">لینک دعوت یا کانال</div>
                                 </div>
                             </div>
                             <v-text-field
