@@ -2,21 +2,24 @@
     <Head :title="adminPageTitle" />
     <SettingLayout>
         <v-card v-for="(menu, menuIndex) in menus" :key="menu.type" class="mb-6">
-            <v-card-title class="d-flex align-center">
-                <v-icon class="me-2">mdi-menu</v-icon>
-                {{ menu.title }}
+            <v-toolbar color="green-lighten-5" density="compact" class="px-2 border-b">
+                <v-icon color="green-darken-2" start>mdi-menu</v-icon>
+                <v-toolbar-title class="text-body-1 font-weight-bold green">
+                    {{ menu.title }}
+                </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn
                     v-if="menu.items.length > 0"
                     color="primary"
                     size="small"
+                    variant="tonal"
                     @click="addNewItem(menu)"
                     prepend-icon="mdi-plus"
                     :disabled="isLoading"
                 >
                     افزودن آیتم
                 </v-btn>
-            </v-card-title>
+            </v-toolbar>
 
             <v-card-text>
                 <div

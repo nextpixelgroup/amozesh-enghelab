@@ -37,6 +37,7 @@ class QuizController extends Controller
                 'note' => $request->input('note'),
             ]);
         }
+        return redirectMessage('success', 'با موفقیت ذخیره شد');
     }
 
     public function url($uuid)

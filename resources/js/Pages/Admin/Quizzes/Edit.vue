@@ -2,7 +2,6 @@
     <AdminLayout>
         <v-container fluid class="px-4 px-md-8">
 
-            <!-- بخش 1: ویدیو -->
             <v-row>
                 <v-col cols="12">
                     <v-card class="rounded-lg overflow-hidden" elevation="3">
@@ -19,13 +18,10 @@
                 </v-col>
             </v-row>
 
-            <!-- بخش 2: محتوا اصلی -->
             <v-row class="mt-4">
 
-                <!-- ستون چپ: سوالات (8 از 12) -->
                 <v-col cols="12" md="8">
 
-                    <!-- 1. آزمون نهایی -->
                     <div class="mb-6">
                         <div class="d-flex align-center mb-2">
                             <v-icon color="primary" class="mr-2">mdi-school</v-icon>
@@ -44,23 +40,18 @@
 
                     <v-divider class="my-6"></v-divider>
 
-                    <!-- 2. آزمون‌های دروس -->
                     <div v-if="quizzesList && quizzesList.length > 0">
                         <div class="d-flex align-center mb-4">
                             <v-icon color="primary" class="mr-2">mdi-notebook-check-outline</v-icon>
                             <h2 class="text-h6 font-weight-bold text-primary">آزمون‌های دروس</h2>
                         </div>
-
-                        <!-- حلقه روی تمام آزمون‌های دروس -->
                         <div v-for="(quizItem, index) in quizzesList" :key="quizItem.id" class="mb-8">
 
-                            <!-- هدر هر آزمون شامل عنوان و نتیجه -->
                             <div class="d-flex align-center justify-space-between mb-2">
                                 <div class="text-subtitle-1 font-weight-bold text-grey-darken-3">
                                     {{ index + 1 }}. {{ quizItem.title }}
                                 </div>
 
-                                <!-- نمایش نتیجه تکی برای این آزمون -->
                                 <v-chip
                                     class="font-weight-bold"
                                     :color="getQuizColor(quizItem)"
@@ -68,7 +59,9 @@
                                     size="small"
                                 >
                                     <v-icon start icon="mdi-check-decagram"></v-icon>
-                                    {{ calculateQuizStats(quizItem).correct }} از {{ calculateQuizStats(quizItem).total }} صحیح
+                                    {{ calculateQuizStats(quizItem).correct }} از {{
+                                        calculateQuizStats(quizItem).total
+                                    }} صحیح
                                 </v-chip>
                             </div>
 
@@ -85,11 +78,9 @@
 
                 </v-col>
 
-                <!-- ستون راست: سایدبار (4 از 12) -->
                 <v-col cols="12" md="4">
                     <div class="position-sticky" style="top: 20px;">
 
-                        <!-- کارت اطلاعات دوره -->
                         <v-card elevation="2" border class="mb-4">
                             <v-img
                                 v-if="courseInfo.image"
@@ -99,7 +90,8 @@
                                 class="align-end"
                                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                             >
-                                <v-card-title class="text-white font-weight-bold" style="text-shadow: 1px 1px 2px black;">
+                                <v-card-title class="text-white font-weight-bold"
+                                              style="text-shadow: 1px 1px 2px black;">
                                     {{ courseInfo.title }}
                                 </v-card-title>
                             </v-img>
@@ -113,12 +105,12 @@
                             <v-divider></v-divider>
 
                             <v-card-actions class="pa-4 d-flex flex-column gap-2">
-                                <v-btn block variant="outlined" color="primary" :href="courseInfo.link" target="_blank" class="mb-3">
+                                <v-btn block variant="outlined" color="primary" :href="courseInfo.link" target="_blank"
+                                       class="mb-3">
                                     <v-icon start>mdi-open-in-new</v-icon>
                                     مشاهده دوره
                                 </v-btn>
 
-                                <!-- >>> بخش جدید: آمار کلی سوالات دروس <<< -->
                                 <v-card variant="tonal" color="grey-lighten-2" class="w-100 pa-3 rounded-lg border">
                                     <div class="d-flex align-center mb-3">
                                         <v-icon color="grey-darken-3" class="mr-2">mdi-chart-bar</v-icon>
@@ -156,12 +148,10 @@
                                         class="mt-3"
                                     ></v-progress-linear>
                                 </v-card>
-                                <!-- >>> پایان بخش آمار <<< -->
 
                             </v-card-actions>
                         </v-card>
 
-                        <!-- پنل ادمین -->
                         <v-card elevation="2" border>
                             <v-card-item class="bg-blue-grey-lighten-5 py-3">
                                 <template v-slot:prepend>
@@ -233,6 +223,54 @@
                             </v-card-actions>
                         </v-card>
 
+                        <v-card
+                            v-if="historyNotes && historyNotes.length > 0"
+                            elevation="2"
+                            border
+                            class="mt-4"
+                        >
+                            <v-card-item class="bg-grey-lighten-4 py-3">
+                                <template v-slot:prepend>
+                                    <v-icon color="grey-darken-2">mdi-history</v-icon>
+                                </template>
+                                <v-card-title class="text-subtitle-1 font-weight-bold text-grey-darken-3">
+                                    تاریخچه یادداشت‌ها
+                                </v-card-title>
+                            </v-card-item>
+
+                            <v-divider></v-divider>
+
+                            <v-card-text class="pa-4" style="max-height: 400px; overflow-y: auto;">
+                                <v-timeline density="compact" side="end" truncate-line="start">
+
+                                    <v-timeline-item
+                                        v-for="(note, i) in historyNotes"
+                                        :key="i"
+                                        dot-color="blue-grey-lighten-2"
+                                        size="x-small"
+                                        width="100%"
+                                    >
+                                    <div class="d-flex flex-column w-100">
+                                        <div class="d-flex justify-space-between align-center mb-1 w-100">
+                                            <span class="text-caption font-weight-bold text-blue-grey-darken-3">
+                                                {{ note.user || 'کاربر سیستم' }}
+                                            </span>
+                                            <span class="text-caption text-grey mr-2">
+                                                {{ note.created_at }}
+                                            </span>
+                                        </div>
+
+                                        <div class="text-caption text-grey-darken-4 bg-grey-lighten-5 pa-2 rounded border note-text">
+
+                                        {{ note.note }}
+                                        </div>
+                                    </div>
+                                    </v-timeline-item>
+
+                                </v-timeline>
+
+                            </v-card-text>
+                        </v-card>
                     </div>
                 </v-col>
 
@@ -244,7 +282,7 @@
 <script setup lang="ts">
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import QuizViewer from "@/Components/Admin/Quiz/QuizViewer.vue";
-import { ref, computed, reactive } from "vue";
+import {ref, computed, reactive} from "vue";
 import {useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 
@@ -343,7 +381,7 @@ const getProgressColor = (ratio: number) => {
  * @param quiz آبجکت آزمون شامل آرایه questions
  */
 const calculateQuizStats = (quiz: any) => {
-    if (!quiz || !quiz.questions) return { total: 0, correct: 0, wrong: 0 };
+    if (!quiz || !quiz.questions) return {total: 0, correct: 0, wrong: 0};
 
     const questions = quiz.questions;
     const total = questions.length;
@@ -362,7 +400,7 @@ const calculateQuizStats = (quiz: any) => {
     });
 
     const wrong = total - correct; // شامل نزده‌ها هم به عنوان غلط حساب می‌شود (یا می‌توانید نزده را جدا کنید)
-    return { total, correct, wrong };
+    return {total, correct, wrong};
 };
 
 /**
@@ -394,34 +432,41 @@ const overallStats = computed(() => {
         });
     }
 
-    return { total, correct, wrong };
+    return {total, correct, wrong};
 });
 // ----------------------------------------------------------------------
 
 
 // --- فرم ادمین ---
 const statusOptions = [
-    { title: 'در حال بررسی', value: 'pending', icon: 'mdi-clock-outline', color: 'warning' },
-    { title: 'تایید شده', value: 'approved', icon: 'mdi-check-circle-outline', color: 'success' },
-    { title: 'رد شده', value: 'rejected', icon: 'mdi-close-circle-outline', color: 'error' }
+    {title: 'در حال بررسی', value: 'review', icon: 'mdi-clock-outline', color: 'warning'},
+    {title: 'تایید شده', value: 'approved', icon: 'mdi-check-circle-outline', color: 'success'},
+    {title: 'رد شده', value: 'rejected', icon: 'mdi-close-circle-outline', color: 'error'}
 ];
+
+const historyNotes = computed(() => {
+    return quizData.value?.video?.notes || [];
+});
 
 const adminForm = useForm({
     status: '',
-    note: quizData.value.video?.admin_note || ''
+    note: ''
 });
 
 const isSaving = ref(false);
 
 const save = () => {
-    adminForm.put(route('admin.quizzes.update',{video: quizData.value.id}), {
+    adminForm.put(route('admin.quizzes.update', {video: quizData.value.id}), {
         preserveState: true,
         preserveScroll: true,
+
         onStart: () => {
             isSaving.value = true;
         },
-        onSuccess: () => {
+        onSuccess: (response) => {
+            quizData.value = response.props.quiz.data;
             isSaving.value = false;
+            adminForm.reset();
         },
         onError: () => {
             isSaving.value = false;

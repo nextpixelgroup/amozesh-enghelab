@@ -98,6 +98,13 @@ class AdminVideoDetailsResource extends JsonResource
                 'url' => route('admin.video.url',$this->id),
                 'poster' => route('admin.video.poster',$this->id),
                 'status' => $this->status,
+                'notes' => $this->notes()->orderBy('created_at', 'desc')->get()->map(function ($note) {
+                    return [
+                        'user' => $note->user->firstname.' '.$note->user->lastname,
+                        'note' => $note->note,
+                        'created_at' => verta()->instance($note->created_at)->format('Y/m/d H:i'),
+                    ];
+                })
             ],
             'finalQuiz' => $quizData,
             'quizzes' => $quizzes,
