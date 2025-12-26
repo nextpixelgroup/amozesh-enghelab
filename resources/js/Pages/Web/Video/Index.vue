@@ -251,6 +251,8 @@ const prevQuestion = () => { if (currentQuestionIndex.value > 0) currentQuestion
 
 const startRecording = async () => {
     if (!isAllowedToRecord.value) return;
+    const confirm = await $confirm('آیا می‌خواهید شروع به ضبط کنید؟');
+    if (!confirm) return;
     try {
         errorMessage.value = '';
         state.value = 'recording';
@@ -365,7 +367,11 @@ const processUploadQueue = async () => {
 const finishUpload = async () => {
     state.value = 'processing';
     await axios.post(route('web.video.finish'), { uuid: videoUuid.value, total_chunks: chunkCounter });
+
+    // اینجا که وضعیت completed می‌شود، computed بالا مقدار false را برمی‌گرداند
+    // و خروج آزاد می‌شود
     state.value = 'completed';
+
     await localforage.clear();
 };
 
@@ -387,7 +393,10 @@ onUnmounted(() => { window.removeEventListener('online', updateOnlineStatus); wi
 
 // شرطی که تعیین می‌کند آیا هشدار نمایش داده شود یا خیر
 // مثلاً وقتی در حال ضبط یا آپلود هستید این را true کنید
-const preventExit = ref(true);
+const preventExit = computed(() => {
+    // فقط در زمان ضبط، آپلود و پردازش جلوی خروج را بگیر
+    return ['recording', 'uploading', 'processing'].includes(state.value);
+});
 
 const handleBeforeUnload = (event) => {
     if (preventExit.value) {
