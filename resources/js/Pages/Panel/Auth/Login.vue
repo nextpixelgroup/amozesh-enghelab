@@ -137,9 +137,9 @@
                         <!-- فوتر کارت -->
                         <div class="mt-8 text-center">
                             <v-divider class="mb-4"></v-divider>
-                            <a href="/" class="text-decoration-none text-caption text-grey hover-green transition-swing">
-                                بازگشت به صفحه اصلی سایت
-                            </a>
+                            <Link :href="route('panel.index')" class="text-decoration-none text-caption text-grey hover-green transition-swing">
+                                بازگشت<v-icon>mdi-chevron-left</v-icon>
+                            </Link>
                         </div>
 
                     </v-card>
@@ -150,7 +150,7 @@
 </template>
 
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3'
+import {Head, Link, useForm} from '@inertiajs/vue3'
 import { ref, onMounted } from "vue";
 import { route } from "ziggy-js";
 import WebLayout from "@/Layouts/WebLayout.vue";
