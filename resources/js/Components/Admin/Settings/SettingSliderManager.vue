@@ -136,7 +136,7 @@
                                                 upload-route="admin.upload.general.image"
                                                 label="انتخاب فایل"
                                                 accept="image/*"
-                                                type="general"
+                                                type="setting"
                                             />
                                         </div>
                                         <div class="text-caption text-grey text-center mt-2">

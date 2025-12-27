@@ -18,10 +18,10 @@ class UploadController extends Controller
         $file = $request->file('file');
         $media = Media::uploadFile($file, 'image', 'uploads/images/users');
         if (!$media) {
-            return responseJSon('error', ' خطا در آپلود فایل');
+            return responseJson('error', ' خطا در آپلود فایل');
         }
 
-        return responseJSon('success', 'فایل با موفقیت آپلود شد', [
+        return responseJson('success', 'فایل با موفقیت آپلود شد', [
             'path'    => $media->path,
             'url'     => $media->url,
             'id'      => $media->id,
@@ -31,7 +31,7 @@ class UploadController extends Controller
     public function destroy(Media $media, $type, Request $request)
     {
         if (Gate::denies('delete', $media)) {
-            return responseJSon('error', 'شما اجازه حذف این فایل را ندارید');
+            return responseJson('error', 'شما اجازه حذف این فایل را ندارید');
         }
         if($type === 'nationalCardImage'){
             $media->userNationalCardImage()->update(['national_card_image_id' => null]);
@@ -40,9 +40,9 @@ class UploadController extends Controller
             $media->userAvatar()->update(['avatar_id' => null]);
         }
         else{
-            return responseJSon('error', 'نوع فایل مشخص نشده است');
+            return responseJson('error', 'نوع فایل مشخص نشده است');
         }
         $media->deleteFile();
-        return responseJSon('success', 'فایل از هاست حذف شد. لطفا تغییرات را ذخیره کنید تا اعمال شود');
+        return responseJson('success', 'فایل از هاست حذف شد. لطفا تغییرات را ذخیره کنید تا اعمال شود');
     }
 }

@@ -21,10 +21,10 @@ class UploadController extends Controller
         $media = Media::uploadFile($file, 'image', 'uploads/images/books');
 
         if (!$media) {
-            return responseJSon('error', ' خطا در آپلود فایل');
+            return responseJson('error', ' خطا در آپلود فایل');
         }
 
-        return responseJSon('success', 'فایل با موفقیت آپلود شد', [
+        return responseJson('success', 'فایل با موفقیت آپلود شد', [
             'path'    => $media->path,
             'url'     => $media->url,
             'id'      => $media->id,
@@ -41,10 +41,10 @@ class UploadController extends Controller
         $media = Media::uploadFile($file, 'image', 'uploads/images/courses');
 
         if (!$media) {
-            return responseJSon('error', ' خطا در آپلود فایل');
+            return responseJson('error', ' خطا در آپلود فایل');
         }
 
-        return responseJSon('success', 'فایل با موفقیت آپلود شد', [
+        return responseJson('success', 'فایل با موفقیت آپلود شد', [
             'path'    => $media->path,
             'url'     => $media->url,
             'id'      => $media->id,
@@ -60,10 +60,10 @@ class UploadController extends Controller
         $file = $request->file('file');
         $media = Media::uploadFile($file, 'image', 'uploads/images/users');
         if (!$media) {
-            return responseJSon('error', ' خطا در آپلود فایل');
+            return responseJson('error', ' خطا در آپلود فایل');
         }
 
-        return responseJSon('success', 'فایل با موفقیت آپلود شد', [
+        return responseJson('success', 'فایل با موفقیت آپلود شد', [
             'path'    => $media->path,
             'url'     => $media->url,
             'id'      => $media->id,
@@ -79,14 +79,14 @@ class UploadController extends Controller
         $file = $request->file('file');
         try {
             $media = Media::uploadFile($file, 'image', 'uploads/images/pages');
-            return responseJSon('success', 'فایل با موفقیت آپلود شد', [
+            return responseJson('success', 'فایل با موفقیت آپلود شد', [
                 'path'    => $media->path,
                 'url'     => $media->url,
                 'id'      => $media->id,
             ]);
         }
         catch (Exception $e){
-            return responseJSon('error', $e->getMessage());
+            return responseJson('error', $e->getMessage());
         }
 
 
@@ -100,14 +100,14 @@ class UploadController extends Controller
         $file = $request->file('file');
         try {
             $media = Media::uploadFile($file, 'image', 'uploads/images/general');
-            return responseJSon('success', 'فایل با موفقیت آپلود شد', [
+            return responseJson('success', 'فایل با موفقیت آپلود شد', [
                 'path'    => $media->path,
                 'url'     => $media->url,
                 'id'      => $media->id,
             ]);
         }
         catch (Exception $e){
-            return responseJSon('error', $e->getMessage());
+            return responseJson('error', $e->getMessage());
         }
 
 
@@ -145,22 +145,23 @@ class UploadController extends Controller
             $media->userNationalCardImage()->update(['national_card_image_id' => null]);
         }
         elseif ($type == 'setting'){
-            $settingName = $request->settingName;
-            $settingValue = $request->settingValue;
-            $setting = new SettingsService;
-            if($settingValue){
-                $data = $setting->get($settingName);
-                unset($data[$settingValue]);
+            if($request->settingName || $request->settingValue) {
+                $settingName = $request->settingName;
+                $settingValue = $request->settingValue;
+                $setting = new SettingsService;
+                if ($settingValue) {
+                    $data = $setting->get($settingName);
+                    unset($data[$settingValue]);
+                } else {
+                    $data = $settingValue;
+                }
+                $setting->set($settingName, $data);
             }
-            else{
-                $data = $settingValue;
-            }
-            $setting->set($settingName, $data);
         }
         else{
-            return responseJSon('error', 'نوع فایل مشخص نشده است');
+            return responseJson('error', 'نوع فایل مشخص نشده است');
         }
         $media->deleteFile();
-        return responseJSon('success', 'فایل از هاست حذف شد. لطفا تغییرات را ذخیره کنید تا اعمال شود');
+        return responseJson('success', 'فایل از هاست حذف شد. لطفا تغییرات را ذخیره کنید تا اعمال شود');
     }
 }

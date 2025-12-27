@@ -52,8 +52,8 @@ if (!function_exists('redirectMessage')) {
     }
 
 }
-if (!function_exists('responseJSon')) {
-    function responseJSon($status, $message, $data = [], $state = 200)
+if (!function_exists('responseJson')) {
+    function responseJson($status, $message, $data = [], $state = 200)
     {
         return response()->json([
             'status' => $status,
