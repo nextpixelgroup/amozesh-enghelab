@@ -3,7 +3,7 @@
         <v-container fluid class="px-4 px-md-8">
             <v-row>
                 <v-col cols="12">
-                    <v-card class="rounded-lg overflow-hidden" elevation="3"  v-if="quizData?.video.url">
+                    <v-card class="rounded-lg overflow-hidden" elevation="3" v-if="quizData?.video.url">
                         <video
                             :poster="quizData?.video?.poster"
                             controls
@@ -139,47 +139,99 @@
                                     مشاهده دوره
                                 </v-btn>
 
-                                <v-card variant="tonal" color="grey-lighten-2" class="w-100 pa-3 rounded-lg border">
-                                    <div class="d-flex align-center mb-3">
-                                        <v-icon color="grey-darken-3" class="mr-2">mdi-chart-bar</v-icon>
-                                        <span class="font-weight-bold text-grey-darken-3">آمار کلی سوالات دروس</span>
-                                    </div>
 
-                                    <div class="d-flex justify-space-between align-center mb-2">
-                                        <span class="text-body-2 text-grey-darken-2">کل سوالات:</span>
-                                        <v-chip size="x-small" color="back" variant="flat" class="font-weight-bold">
-                                            {{ overallStats.total }}
-                                        </v-chip>
-                                    </div>
-
-                                    <div class="d-flex justify-space-between align-center mb-2">
-                                        <span class="text-body-2 text-grey-darken-2">پاسخ‌های صحیح:</span>
-                                        <v-chip size="x-small" color="success" variant="flat" class="font-weight-bold">
-                                            {{ overallStats.correct }}
-                                        </v-chip>
-                                    </div>
-
-                                    <div class="d-flex justify-space-between align-center">
-                                        <span class="text-body-2 text-grey-darken-2">پاسخ‌های غلط:</span>
-                                        <v-chip size="x-small" color="error" variant="flat" class="font-weight-bold">
-                                            {{ overallStats.wrong }}
-                                        </v-chip>
-                                    </div>
-
-                                    <!-- نمایش درصد موفقیت (اختیاری) -->
-                                    <v-progress-linear
-                                        v-if="overallStats.total > 0"
-                                        :model-value="(overallStats.correct / overallStats.total) * 100"
-                                        :color="getProgressColor(overallStats.correct / overallStats.total)"
-                                        height="6"
-                                        rounded
-                                        class="mt-3"
-                                    ></v-progress-linear>
-                                </v-card>
 
                             </v-card-actions>
                         </v-card>
+                        <v-card elevation="2" border class="mb-4">
+                            <v-card-item class="bg-blue-grey-lighten-5 py-3">
+                                <template v-slot:prepend>
+                                    <v-icon color="blue-grey-darken-2">mdi-chart-bar</v-icon>
+                                </template>
+                                <v-card-title class="text-subtitle-1 font-weight-bold text-blue-grey-darken-3">
+                                    آمار کلی سوالات دروس
+                                </v-card-title>
+                            </v-card-item>
+                            <v-divider></v-divider>
+                            <v-card-text class="pa-4">
+                            <div class="d-flex justify-space-between align-center mb-2">
+                                <span class="text-body-2 text-grey-darken-2">کل سوالات:</span>
+                                <v-chip size="x-small" color="back" variant="flat" class="font-weight-bold">
+                                    {{ overallStats.total }}
+                                </v-chip>
+                            </div>
 
+                            <div class="d-flex justify-space-between align-center mb-2">
+                                <span class="text-body-2 text-grey-darken-2">پاسخ‌های صحیح:</span>
+                                <v-chip size="x-small" color="success" variant="flat" class="font-weight-bold">
+                                    {{ overallStats.correct }}
+                                </v-chip>
+                            </div>
+
+                            <div class="d-flex justify-space-between align-center">
+                                <span class="text-body-2 text-grey-darken-2">پاسخ‌های غلط:</span>
+                                <v-chip size="x-small" color="error" variant="flat" class="font-weight-bold">
+                                    {{ overallStats.wrong }}
+                                </v-chip>
+                            </div>
+
+                            <!-- نمایش درصد موفقیت (اختیاری) -->
+                            <v-progress-linear
+                                v-if="overallStats.total > 0"
+                                :model-value="(overallStats.correct / overallStats.total) * 100"
+                                :color="getProgressColor(overallStats.correct / overallStats.total)"
+                                height="6"
+                                rounded
+                                class="mt-3"
+                            ></v-progress-linear>
+                            </v-card-text>
+                        </v-card>
+                        <!-- ========================================== -->
+                        <!-- کارت جدید: اطلاعات کاربر (اضافه شده) -->
+                        <!-- ========================================== -->
+                        <v-card elevation="2" border class="mb-4">
+                            <v-card-item class="bg-blue-grey-lighten-5 py-3">
+                                <template v-slot:prepend>
+                                    <v-icon color="blue-grey-darken-2">mdi-account-details</v-icon>
+                                </template>
+                                <v-card-title class="text-subtitle-1 font-weight-bold text-blue-grey-darken-3">
+                                    مشخصات دانشجو
+                                </v-card-title>
+                            </v-card-item>
+                            <v-divider></v-divider>
+                            <v-card-text class="pa-4">
+                                <div class="d-flex align-center mb-4">
+                                    <v-avatar color="green-lighten-4" size="48" class="ml-3">
+                                        <v-icon size="28" color="green-darken-3">mdi-account</v-icon>
+                                    </v-avatar>
+                                    <div>
+                                        <div class="text-subtitle-1 font-weight-bold text-grey-darken-4">
+                                            {{ userInfo.name || 'بدون نام' }}
+                                        </div>
+                                        <div class="text-caption text-grey-darken-1">
+                                            شناسه: {{ userInfo.id || '-' }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <v-divider class="mb-3 border-dashed"></v-divider>
+
+                                <div class="d-flex align-center mb-2">
+                                    <v-icon size="small" color="grey-darken-1" class="ml-2">mdi-phone-outline</v-icon>
+                                    <span class="text-body-2 font-weight-medium text-grey-darken-3" dir="ltr">
+                                        {{ userInfo.mobile || '-' }}
+                                    </span>
+                                </div>
+
+                                <div class="d-flex align-center">
+                                    <v-icon size="small" color="grey-darken-1" class="ml-2">mdi-email-outline</v-icon>
+                                    <span class="text-body-2 text-grey-darken-3 text-truncate">
+                                        {{ userInfo.email || '-' }}
+                                    </span>
+                                </div>
+                            </v-card-text>
+                        </v-card>
+                        <!-- ========================================== -->
                         <v-card elevation="2" border>
                             <v-card-item class="bg-blue-grey-lighten-5 py-3">
                                 <template v-slot:prepend>
@@ -198,9 +250,9 @@
                                 <div class="d-flex align-center justify-space-between pa-3 rounded-lg border mb-4"
                                      :class="currentStatusInfo.bg"
                                      style="border-style: dashed !important;">
-            <span class="text-body-2 font-weight-bold text-grey-darken-3">
-                وضعیت فعلی:
-            </span>
+                                    <span class="text-body-2 font-weight-bold text-grey-darken-3">
+                                        وضعیت فعلی:
+                                    </span>
                                     <v-chip
                                         :color="currentStatusInfo.color"
                                         variant="elevated"
@@ -278,21 +330,21 @@
                                         size="x-small"
                                         width="100%"
                                     >
-                                    <div class="d-flex flex-column w-100">
-                                        <div class="d-flex justify-space-between align-center mb-1 w-100">
+                                        <div class="d-flex flex-column w-100">
+                                            <div class="d-flex justify-space-between align-center mb-1 w-100">
                                             <span class="text-caption font-weight-bold text-blue-grey-darken-3">
                                                 {{ note.user || 'کاربر سیستم' }}
                                             </span>
-                                            <span class="text-caption text-grey mr-2">
+                                                <span class="text-caption text-grey mr-2">
                                                 {{ note.created_at }}
                                             </span>
-                                        </div>
+                                            </div>
 
-                                        <div class="text-caption text-grey-darken-4 bg-grey-lighten-5 pa-2 rounded border note-text">
-
-                                        {{ note.note }}
+                                            <div
+                                                class="text-caption text-grey-darken-4 bg-grey-lighten-5 pa-2 rounded border note-text">
+                                                {{ note.note }}
+                                            </div>
                                         </div>
-                                    </div>
                                     </v-timeline-item>
 
                                 </v-timeline>
@@ -327,6 +379,10 @@ const courseInfo = computed(() => quizData.value?.course || {});
 const finalQuizData = computed(() => quizData.value?.finalQuiz || null);
 const quizzesList = computed(() => quizData.value?.quizzes || []);
 
+// --- اطلاعات کاربر (جدید) ---
+const userInfo = computed(() => quizData.value?.user || {});
+
+
 const currentStatusInfo = computed(() => {
     // اگر video.status وجود نداشته باشد، وضعیت پیش‌فرض 'pending' در نظر گرفته می‌شود.
     const status = quizData.value?.video?.status || 'pending';
@@ -347,14 +403,14 @@ const currentStatusInfo = computed(() => {
                 icon: 'mdi-close-circle',
                 bg: 'bg-red-lighten-5'
             };
-        case 'completed': // وضعیت جدید: تکمیل موفقیت‌آمیز فرآیند (مانند پردازش)
+        case 'completed':
             return {
                 title: 'تکمیل شده',
                 color: 'info',
                 icon: 'mdi-check-all',
                 bg: 'bg-green-lighten-5'
             };
-        case 'failed': // وضعیت جدید: ناموفق در فرآیند (مانند پردازش ویدیو)
+        case 'failed':
             return {
                 title: 'ناموفق',
                 color: 'error',
@@ -362,22 +418,22 @@ const currentStatusInfo = computed(() => {
                 bg: 'bg-red-lighten-5'
             };
 
-        // --- وضعیت‌های میانی و در حال انتظار ---
-        case 'recording': // وضعیت جدید: در حال ضبط
+        // --- وضعیت‌های میانی ---
+        case 'recording':
             return {
                 title: 'در حال ضبط',
                 color: 'primary',
                 icon: 'mdi-record-rec',
                 bg: 'bg-indigo-lighten-5'
             };
-        case 'pending_process': // وضعیت جدید: در حال پردازش (مانند انکدینگ ویدیو)
+        case 'pending_process':
             return {
                 title: 'در حال پردازش',
                 color: 'info',
                 icon: 'mdi-cog-sync',
                 bg: 'bg-cyan-lighten-5'
             };
-        case 'review': // وضعیت جدید: در حال بررسی (بازبینی انسانی یا فنی)
+        case 'review':
             return {
                 title: 'در حال بررسی',
                 color: 'warning',
@@ -385,29 +441,26 @@ const currentStatusInfo = computed(() => {
                 bg: 'bg-orange-lighten-5'
             };
 
-        case 'pending': // وضعیت پیشین: در انتظار اقدام بعدی یا شروع فرآیند
+        case 'pending':
         default:
             return {
-                title: 'در انتظار', // عنوان 'در حال بررسی' به 'در انتظار' تغییر داده شد
+                title: 'در انتظار',
                 color: 'warning',
                 icon: 'mdi-clock',
                 bg: 'bg-orange-lighten-5'
             };
     }
 });
+
 const getProgressColor = (ratio: number) => {
-    if (ratio >= 0.6) return 'success';  // Green for 50% or more
-    if (ratio >= 0.25) return 'warning';    // Blue for 25% to 49.99%
-    return 'error';                    // Yellow for less than 25%
+    if (ratio >= 0.6) return 'success';
+    if (ratio >= 0.25) return 'warning';
+    return 'error';
 };
+
 // ----------------------------------------------------------------------
 // منطق محاسبه آمار سوالات
 // ----------------------------------------------------------------------
-
-/**
- * محاسبه آمار برای یک آزمون خاص
- * @param quiz آبجکت آزمون شامل آرایه questions
- */
 const calculateQuizStats = (quiz: any) => {
     if (!quiz || !quiz.questions) return {total: 0, correct: 0, wrong: 0};
 
@@ -416,9 +469,6 @@ const calculateQuizStats = (quiz: any) => {
     let correct = 0;
 
     questions.forEach((q: any) => {
-        // پیدا کردن گزینه انتخاب شده کاربر
-        // فرض بر این است که q.userSelected شناسه (ID) گزینه انتخاب شده است
-        // و options آرایه‌ای از گزینه‌هاست که فیلد is_correct دارد
         if (q.userSelected) {
             const selectedOption = q.options.find((opt: any) => opt.id === q.userSelected);
             if (selectedOption && selectedOption.is_correct) {
@@ -427,25 +477,19 @@ const calculateQuizStats = (quiz: any) => {
         }
     });
 
-    const wrong = total - correct; // شامل نزده‌ها هم به عنوان غلط حساب می‌شود (یا می‌توانید نزده را جدا کنید)
+    const wrong = total - correct;
     return {total, correct, wrong};
 };
 
-/**
- * تعیین رنگ بج (Chip) بر اساس عملکرد
- */
 const getQuizColor = (quiz: any) => {
     const stats = calculateQuizStats(quiz);
     if (stats.total === 0) return 'grey';
     const percent = stats.correct / stats.total;
-    if (percent >= 0.7) return 'success'; // عالی
-    if (percent >= 0.4) return 'warning'; // متوسط
-    return 'error'; // ضعیف
+    if (percent >= 0.7) return 'success';
+    if (percent >= 0.4) return 'warning';
+    return 'error';
 };
 
-/**
- * محاسبه آمار کلی تمام آزمون‌های لیست (quizzesList)
- */
 const overallStats = computed(() => {
     let total = 0;
     let correct = 0;

@@ -16,14 +16,14 @@
             <v-row dense class="align-center">
                 <v-col class="v-col-lg-3 v-col-12">
                     <v-select
-                        v-model="filters.type"
+                        v-model="filters.status"
                         hide-details
                         variant="outlined"
                         density="compact"
                         label="وضعیت"
                         :items="status"
                         clearable
-                        @update:model-value="(val) => val === null && handleClear('type')"
+                        @update:model-value="(val) => val === null && handleClear('status')"
                     >
                     </v-select>
                 </v-col>
@@ -128,6 +128,7 @@ const props = defineProps({
 const currentPage = ref(props.quizzes?.meta.current_page)
 const quizzes = computed(() => props.quizzes.data)
 const dialog = ref(false)
+const isLoadingBtn = ref(false)
 const message = ref('')
 const status = ref(props.status)
 
@@ -137,6 +138,7 @@ const filters = ref({
     search: query.get('search') ?? '',
 });
 const search = () => {
+    isLoadingBtn.value = true;
     try {
         router.get(route('admin.quizzes.index'),
             {
@@ -149,6 +151,7 @@ const search = () => {
                 replace: true,
                 only: ['quizzes'],
                 onFinish: () => {
+                    isLoadingBtn.value = false;
                 }
             },
         );

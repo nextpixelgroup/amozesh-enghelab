@@ -94,6 +94,12 @@ class AdminVideoDetailsResource extends JsonResource
         //dd($quizzes);
         $data = [
             'id' => $this->id,
+            'user' => [
+                'id' => $this->user_id,
+                'name' => $this->user->firstname.' '.$this->user->lastname,
+                'mobile' => $this->user->mobile,
+                'email' => $this->user->email,
+            ],
             'video' => [
                 'url' => $this->path ? route('admin.video.url',$this->id) : '',
                 'poster' => $this->thumbnail ? route('admin.video.poster',$this->id) : '',

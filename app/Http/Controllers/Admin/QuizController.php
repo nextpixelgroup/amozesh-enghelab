@@ -13,7 +13,19 @@ class QuizController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Video::query()->with(['quiz', 'course', 'user']);
+        $query = Video::query()->with(['quiz', 'course', 'user'])
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->input('status'));
+            })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->input('search');
+                $query->whereHas('user', function($q) use ($search) {
+                    $q->whereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ["%{$search}%"])
+                        ->orWhere('mobile', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            });
+
         $quizzes = AdminVideosResource::collection($query->orderBy('created_at', 'desc')->paginate(env('PER_PAGE')));
         $status = enumFormated(VideoStatusEnum::cases());
         return inertia('Admin/Quizzes/List', compact('quizzes', 'status'));
