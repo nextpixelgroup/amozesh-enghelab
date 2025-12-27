@@ -42,11 +42,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->redirectGuestsTo(function (Request $request) {
             if (str_starts_with($request->path(), 'admin')) {
-                return route('admin.login');
+                return route('admin.index');
             } elseif (str_starts_with($request->path(), 'panel')) {
-                return route('panel.login'); // Make sure this route exists
+                return route('panel.index'); // Make sure this route exists
             }
-            return route('panel.login'); // Fallback to default login route
+            return route('panel.index'); // Fallback to default login route
         });
 
 

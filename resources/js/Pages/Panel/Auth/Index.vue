@@ -1,108 +1,110 @@
 <template>
     <!-- پس‌زمینه کل صفحه با سبز خیلی ملایم -->
     <WebLayout>
-        <v-app class="bg-grey-lighten-5">
-            <v-container fluid class="fill-height justify-center align-center">
+        <v-container fluid class="mt-10 justify-center align-center">
 
-                <v-row justify="center" align="center" class="w-100">
-                    <v-col cols="12" sm="8" md="6" lg="4">
+            <v-row justify="center" align="center" class="w-100">
+                <v-col cols="12" sm="8" md="6" lg="4">
 
-                        <!-- کارت اصلی -->
-                        <v-card
-                            class="pa-6 pa-md-10 rounded-xl persian-wrapper glass-card"
-                            elevation="10"
-                            color="white"
-                        >
-                            <!-- بخش لوگو و هدر -->
-                            <div class="text-center mb-10">
-                                <v-avatar size="80" color="green-lighten-5" class="mb-4">
-                                    <v-icon size="45" color="green-darken-2">mdi-shield-account-outline</v-icon>
-                                </v-avatar>
+                    <!-- کارت اصلی -->
+                    <v-card
+                        class="pa-6 pa-md-10 rounded-xl persian-wrapper glass-card"
+                        elevation="10"
+                        color="white"
+                    >
+                        <!-- بخش لوگو و هدر -->
+                        <div class="text-center mb-10">
+                            <v-avatar size="80" color="green-lighten-5" class="mb-4">
+                                <v-icon size="45" color="green-darken-2">mdi-shield-account-outline</v-icon>
+                            </v-avatar>
 
-                                <h1 class="text-h5 font-weight-black text-green-darken-3 mb-2">
-                                    خوش آمدید
-                                </h1>
-                                <p class="text-body-2 text-grey-darken-1">
-                                    لطفاً برای ادامه، نوع حساب کاربری خود را انتخاب کنید
-                                </p>
-                            </div>
+                            <h1 class="text-h5 font-weight-black text-green-darken-3 mb-2">
+                                خوش آمدید
+                            </h1>
+                            <p class="text-body-2 text-grey-darken-1">
+                                لطفاً برای ادامه، نوع حساب کاربری خود را انتخاب کنید
+                            </p>
+                        </div>
 
-                            <!-- دکمه‌ها -->
-                            <div class="d-flex flex-column gap-4">
+                        <!-- دکمه‌ها -->
+                        <div class="d-flex flex-column gap-4">
 
-                                <!-- دکمه ۱: کاربر معمولی -->
-                                <v-hover v-slot="{ isHovering, props }">
-                                    <v-btn
-                                        v-bind="props"
-                                        block
-                                        height="65"
-                                        :color="isHovering ? 'green-darken-2' : 'green-darken-1'"
-                                        class="text-white rounded-lg transition-swing"
-                                        :elevation="isHovering ? 8 : 2"
-                                        prepend-icon="mdi-account-circle-outline"
-                                        href="/login/user"
-                                    >
-                                        <div class="d-flex flex-column align-start py-2 w-100">
-                                            <span class="text-body-1 font-weight-bold">ورود کاربر معمولی</span>
-                                            <span class="text-caption text-green-lighten-4 opacity-80" style="font-weight: 300">
-                       پنل دانشجویان و متقاضیان
+                            <!-- دکمه ۱: کاربر معمولی -->
+                            <v-hover v-slot="{ isHovering, props }">
+                                <v-btn
+                                    v-bind="props"
+                                    block
+                                    height="65"
+                                    :color="isHovering ? 'green-darken-2' : 'green-darken-1'"
+                                    class="text-white rounded-lg transition-swing"
+                                    :elevation="isHovering ? 8 : 2"
+                                    prepend-icon="mdi-account-circle-outline"
+                                    href="/login/user"
+                                >
+                                    <div class="d-flex flex-column align-start py-2 w-100">
+                                        <span class="text-body-1 font-weight-bold">ورود کاربر معمولی</span>
+                                        <span class="text-caption text-green-lighten-4 opacity-80" style="font-weight: 300">
+                       پنل کاربران خارج از دانشگاه و موسسه
                     </span>
-                                        </div>
-                                        <template v-slot:append>
-                                            <v-icon>mdi-chevron-left</v-icon>
-                                        </template>
-                                    </v-btn>
-                                </v-hover>
+                                    </div>
+                                    <template v-slot:append>
+                                        <v-icon>mdi-chevron-left</v-icon>
+                                    </template>
+                                </v-btn>
+                            </v-hover>
 
-                                <!-- جداکننده متنی یا خطی (اختیاری) -->
-                                <div class="text-center my-1 text-caption text-grey-lighten-1">یا</div>
+                            <!-- جداکننده متنی یا خطی (اختیاری) -->
+                            <div class="text-center my-1 text-caption text-grey-lighten-1">یا</div>
 
-                                <!-- دکمه ۲: دانشگاه و موسسه -->
-                                <v-hover v-slot="{ isHovering, props }">
-                                    <v-btn
-                                        v-bind="props"
-                                        block
-                                        height="65"
-                                        variant="outlined"
-                                        :color="isHovering ? 'green-darken-3' : 'green-darken-2'"
-                                        class="rounded-lg transition-swing border-opacity-75 bg-green-lighten-5"
-                                        style="border-width: 2px;"
-                                        :elevation="isHovering ? 4 : 0"
-                                        prepend-icon="mdi-town-hall"
-                                        href="/login/institution"
-                                    >
-                                        <div class="d-flex flex-column align-start py-2 w-100 text-green-darken-3">
-                                            <span class="text-body-1 font-weight-bold">ورود کاربر دانشگاه و موسسه</span>
-                                            <span class="text-caption text-green-darken-1 opacity-80" style="font-weight: 300">
-                      پنل مدیریت مراکز آموزشی
+                            <!-- دکمه ۲: دانشگاه و موسسه -->
+                            <v-hover v-slot="{ isHovering, props }">
+                                <v-btn
+                                    v-bind="props"
+                                    block
+                                    height="65"
+                                    variant="outlined"
+                                    :color="isHovering ? 'green-darken-3' : 'green-darken-2'"
+                                    class="rounded-lg transition-swing border-opacity-75 bg-green-lighten-5"
+                                    style="border-width: 2px;"
+                                    :elevation="isHovering ? 4 : 0"
+                                    prepend-icon="mdi-town-hall"
+                                    href="/login/institution"
+                                >
+                                    <div class="d-flex flex-column align-start py-2 w-100 text-green-darken-3">
+                                        <span class="text-body-1 font-weight-bold">ورود کاربر دانشگاه و موسسه</span>
+                                        <span class="text-caption text-green-darken-1 opacity-80" style="font-weight: 300">
+                      پنل کاربران موسسه و دانشگاه
                     </span>
-                                        </div>
-                                        <template v-slot:append>
-                                            <v-icon>mdi-chevron-left</v-icon>
-                                        </template>
-                                    </v-btn>
-                                </v-hover>
+                                    </div>
+                                    <template v-slot:append>
+                                        <v-icon>mdi-chevron-left</v-icon>
+                                    </template>
+                                </v-btn>
+                            </v-hover>
 
-                            </div>
+                        </div>
 
-                            <!-- فوتر کارت -->
-                            <div class="text-center mt-8">
+                        <!-- فوتر کارت -->
+                        <div class="text-center mt-8">
+                            <Link :href="route('web.contact.index')">
                                 <v-btn variant="text" size="small" color="grey-darken-1" class="text-caption">
                                     نیاز به راهنمایی دارید؟
                                 </v-btn>
-                            </div>
+                            </Link>
+                        </div>
 
-                        </v-card>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-app>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
     </WebLayout>
 </template>
 
 <script setup>
 // لاجیک خاصی فعلا نیاز نیست، لینک‌ها در href دکمه‌ها قرار دارند
 import WebLayout from "@/Layouts/WebLayout.vue";
+import {Link} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
 </script>
 
 <style scoped>

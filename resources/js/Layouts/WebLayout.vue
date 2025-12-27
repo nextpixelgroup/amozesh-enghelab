@@ -79,12 +79,12 @@
                                         </v-tooltip>
                                     </div>
                                     <div class="zo-panel d-none d-lg-block" v-else>
-                                        <a :href="route('panel.login')">ورود/عضویت</a>
+                                        <a :href="route('panel.index')">ورود/عضویت</a>
                                     </div>
                                     <div class="zo-cart" v-if="showCart">
                                         <v-tooltip bottom>
                                             <template #activator="{ props }">
-                                                <a href="#" v-bind="props">
+                                                <a :href="route('web.cart')" v-bind="props">
                                                     <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
                                                 </a>
                                             </template>

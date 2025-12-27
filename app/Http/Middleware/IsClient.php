@@ -18,11 +18,11 @@ class IsClient
     {
         $user = Auth::user();
         if (!$user) {
-            return redirectMessage('error','لطفا وارد شوید', redirect: route('panel.login'));
+            return redirectMessage('error','لطفا وارد شوید', redirect: route('panel.index'));
         }
         elseif ($user && $user->isRestricted()){
             Auth::logout();
-            return redirectMessage('error', 'حساب شما مسدود شده است لطفا با پشتیبانی تماس بگیرید.', redirect: route('panel.login'));
+            return redirectMessage('error', 'حساب شما مسدود شده است لطفا با پشتیبانی تماس بگیرید.', redirect: route('panel.index'));
         }
 
         /*$allowedRoles = ['client','super-admin'];
@@ -36,7 +36,7 @@ class IsClient
                 return response()->json(['message' => $message], 403);
             }
             else{
-                return redirectMessage('error',message: $message, redirect: route('panel.login'));
+                return redirectMessage('error',message: $message, redirect: route('panel.index'));
             }
         }*/
 

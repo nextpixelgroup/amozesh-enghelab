@@ -179,7 +179,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirectMessage('success', 'خروج با موفقیت انجام شد', redirect: route('panel.login'));
+        return redirectMessage('success', 'خروج با موفقیت انجام شد', redirect: route('panel.index'));
     }
 
 }

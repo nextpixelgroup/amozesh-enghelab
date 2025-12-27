@@ -44,7 +44,7 @@ class PaymentController extends Controller
         try {
             $user = auth()->user();
             if(!$user){
-                return redirectMessage('error', 'ابتدا وارد سایت شوید', redirect: route('panel.login', ['redirect' => url()->previous()]));
+                return redirectMessage('error', 'ابتدا وارد سایت شوید', redirect: route('panel.index', ['redirect' => url()->previous()]));
             }
             elseif($request->qty > $book->max_order){
                 return redirectMessage('error', "سفارش شما بیشتر از $book->max_order عدد می‌باشد.");

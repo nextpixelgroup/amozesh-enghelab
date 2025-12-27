@@ -164,7 +164,7 @@ class CourseController extends Controller
     {
         $user = auth()->user();
         if(!$user){
-            return redirectMessage('error', 'ابتدا وارد سایت شوید', redirect: route('panel.login', ['redirect' => url()->previous()]));
+            return redirectMessage('error', 'ابتدا وارد سایت شوید', redirect: route('panel.index', ['redirect' => url()->previous()]));
         }
 
         if (!$user->isEnrolledIn($course)) {

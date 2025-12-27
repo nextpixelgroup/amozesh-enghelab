@@ -54,7 +54,7 @@
                         color="primary"
                         class="mt-6"
                         variant="flat"
-                        :href="`${route('panel.login')}?redirect=${route('web.cart')}`"
+                        :href="`${route('panel.index')}?redirect=${route('web.cart')}`"
                     >
                         ورود به حساب کاربری
                     </v-btn>
