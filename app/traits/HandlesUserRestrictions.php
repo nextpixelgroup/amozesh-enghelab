@@ -19,7 +19,7 @@ trait HandlesUserRestrictions
     public function removeRestriction($userId)
     {
         return Restriction::where('user_id', $userId)
-            ->where('type', 'temporary_ban')
+            ->where('type', 'temporary')
             ->delete();
     }
 
@@ -32,7 +32,7 @@ trait HandlesUserRestrictions
     {
         return $this->restrictUser(
             $userId,
-            'temporary_ban',
+            'temporary',
             $reason,
             now()->addDays($days)
         );

@@ -16,6 +16,9 @@
                                 </li>
                             </ul>
                         </li>
+                        <li v-if="display.mobile">
+                            <a :href="route('panel.index')">ورود/عضویت</a>
+                        </li>
                     </ul>
                 </div>
             </v-navigation-drawer>

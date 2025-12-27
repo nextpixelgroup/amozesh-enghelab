@@ -26,7 +26,7 @@ class RestrictionCreateRequest extends FormRequest
             'type' => 'in:'.collect(UserRestrictionTypeEnum::cases())->pluck('name')->implode(','),
             'reason' => 'required|min:3',
             'days' => [
-                'required_if:type,temporary_ban',
+                'required_if:type,temporary',
                 'nullable',
                 'integer',
                 'min:1',

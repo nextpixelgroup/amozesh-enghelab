@@ -39,18 +39,28 @@ if (!function_exists('sendJson')) {
 if (!function_exists('redirectMessage')) {
     function redirectMessage($status, $message = null, $data = null, $redirect = null)
     {
+        // ۱. ساخت اولیه ریسپانس (برگشت به عقب یا ریدارکت خاص)
+        $response = $redirect === null
+            ? back()
+            : redirect()->intended($redirect);
+
+        // ۲. افزودن پیام اصلی (موفقیت یا خطا)
         if ($status == 'success') {
-            return $redirect === null
-                ? back()->with($status, $message)
-                : redirect()->intended($redirect)->with($status, $message);
+            $response->with('success', $message);
         } else {
-            return $redirect === null
-                ? back()->withErrors($message)
-                : redirect()->intended($redirect)->with($status, $message);
+            // نکته: withErrors به bag خطاها می‌رود، اما برای هماهنگی با flash
+            // می‌توانیم یک کلید error هم در سشن ست کنیم (اختیاری)
+            $response->withErrors($message)->with('error', $message);
         }
 
-    }
+        // ۳. افزودن دیتا (بخش جدید)
+        // اگر دیتا وجود داشت، آن را با کلید 'data' به سشن اضافه کن
+        if ($data !== null) {
+            $response->with('data', $data);
+        }
 
+        return $response;
+    }
 }
 if (!function_exists('responseJson')) {
     function responseJson($status, $message, $data = [], $state = 200)

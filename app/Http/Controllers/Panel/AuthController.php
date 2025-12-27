@@ -42,6 +42,7 @@ class AuthController extends Controller
                 $request->all(),
                 [
                     'mobile' => ['required', 'regex:/^09\d{9}$/'],
+                    'type' => 'in:student,user'
                 ],
                 [
                     'mobile.required' => 'وارد کردن شماره همراه الزامی است.',
@@ -53,12 +54,23 @@ class AuthController extends Controller
                 return redirectMessage('error', $validator->errors()->first());
             }
 
+
+            $data = [];
+
             $mobile = $request->mobile;
             $maxAttempts = 5;
             $banDays = 1;
 
             $otp = OTP::where('login', $mobile)->first();
             $user = User::where('mobile',$mobile)->first();
+
+            if($request->type && !$user){
+                return redirectMessage('error', 'دانشجو با این مشخصات پیدا نشد. لطفا با پشتیبانی در ارتباط باشید');
+            }
+            if($user && $request->type == 'student' && !$user->institution_id){
+                return redirectMessage('error', 'حساب کاربری شما دانشجویی نمی‌باشد. لطفا با پشتیبانی در ارتباط باشید');
+            }
+
             if($user && $user->isRestricted()){
                 return redirectMessage('error', 'حساب شما مسدود شده است لطفا با پشتیبانی تماس بگیرید.');
             }
@@ -86,7 +98,14 @@ class AuthController extends Controller
                 SendOtpJob::dispatch($mobile,$code);
             }
 
-            return redirectMessage('success', 'کد تأیید ارسال شد.');
+            if($request->type === 'student'){
+                $data['institution'] = [
+                    'name' => $user->institution->firstname,
+                    'logo' => $user->institution->avatar?->url,
+                ];
+            }
+
+            return redirectMessage('success', 'کد تأیید ارسال شد.', $data);
 
         } catch (Exception $e) {
             $error = log_error($e);
@@ -162,6 +181,7 @@ class AuthController extends Controller
                 ]);
                 $user->assignRole($request->role);
             }
+            $user->update(['account_type' => $request->type]);
 
             // لاگین کردن کاربر
             Auth::login($user);

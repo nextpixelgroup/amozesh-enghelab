@@ -40,14 +40,15 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $path = $request->path();
-        $shared = [
-            ...parent::share($request),
+        $shared = array_merge(parent::share($request), [
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
-                'error'   => fn () => $request->session()->get('error'),
+                'error' => fn () => $request->session()->get('error'),
                 'message' => fn () => $request->session()->get('message'),
+                // --- این خط را اضافه کنید ---
+                'data' => fn () => $request->session()->get('data'),
             ],
-        ];
+        ]);
 
         if (str_starts_with($request->path(), 'admin')) {
             $user = $request->user();

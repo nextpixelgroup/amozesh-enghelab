@@ -7,8 +7,8 @@
 
                     <v-card class="pa-6 pa-md-8 rounded-xl persian-wrapper glass-card" elevation="10">
 
-                        <!-- هدر: لوگو و عنوان پویا -->
-                        <div class="text-center mb-8">
+                        <!-- هدر اصلی: فقط در مرحله ۱ یا اگر دیتای موسسه نبود نمایش داده شود -->
+                        <div class="text-center mb-8" v-if="step === 1">
                             <v-avatar size="80" color="green-lighten-5" class="mb-4 elevation-1">
                                 <v-icon
                                     size="40"
@@ -22,6 +22,23 @@
                             <p class="text-body-2 text-grey-darken-1">
                                 برای دسترسی به پنل، احراز هویت الزامی است
                             </p>
+                        </div>
+
+                        <!-- هدر اختصاصی موسسه: فقط در مرحله ۲ و اگر دیتا وجود داشت -->
+                        <div v-else class="text-center mb-8">
+                            <v-img
+                                v-if="institution?.logo"
+                                :src="institution?.logo"
+                                :alt="institution?.name"
+                                cover
+                                width="50"
+                                class="mx-auto mb-4"
+                            ></v-img>
+
+                            <h2 class="text-h6 font-weight-black text-green-darken-4 mb-1 d-flex justify-center align-center">
+                                <v-icon color="green" class="ml-2" size="small">mdi-check-decagram</v-icon>
+                                {{ institution?.name }}
+                            </h2>
                         </div>
 
                         <!-- ناحیه فرم با انیمیشن تغییر مرحله -->
@@ -42,8 +59,9 @@
                                         prepend-inner-icon="mdi-cellphone"
                                         rounded="lg"
                                         class="centered-input mb-2"
-                                        :rules="[v => !!v || 'شماره موبایل الزامی است']"
-                                        @input="form.mobile = toEnglishDigits(form.mobile)"
+                                        maxlength="11"
+                                        :rules="mobileRules"
+                                        @input="handleMobileInput"
                                         autofocus
                                     />
 
@@ -65,10 +83,12 @@
 
                             <!-- مرحله ۲: تایید کد OTP -->
                             <v-window-item :value="2" class="text-center">
-                                <div class="mb-6 bg-green-lighten-5 pa-3 rounded-lg d-flex justify-space-between align-center">
-                                        <span class="text-caption text-grey-darken-2">
-                                            کد ارسال شده به: <strong dir="ltr">{{ form.mobile }}</strong>
-                                        </span>
+
+                                <!-- باکس شماره موبایل -->
+                                <div class="mb-6 bg-green-lighten-5 pa-3 rounded-lg d-flex justify-space-between align-center border-dashed-green">
+                                    <span class="text-caption text-grey-darken-3">
+                                        کد ارسال شده به: <strong dir="ltr" class="text-green-darken-4">{{ form.mobile }}</strong>
+                                    </span>
                                     <v-btn
                                         variant="text"
                                         density="compact"
@@ -149,18 +169,26 @@
 </template>
 
 <script setup>
-import {Head, Link, useForm} from '@inertiajs/vue3'
-import { ref, onMounted } from "vue";
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
+import { ref, onMounted, computed } from "vue"; // computed اضافه شد
 import { route } from "ziggy-js";
 import WebLayout from "@/Layouts/WebLayout.vue";
 import { toEnglishDigits } from "@/utils/helpers.js";
 
+const page = usePage();
 const props = defineProps({
     type: {
         type: String,
-        default: 'user' // 'user' or 'institution'
+        default: 'user'
     }
 });
+
+// تغییر مهم: تبدیل به computed برای دریافت تغییرات آنی از فلش
+const institution = computed(() => {
+    // فرض بر این است که دیتا در فرمت { name: '...', logo: '...' } می‌آید
+    return page.props.flash?.data?.institution || null;
+});
+console.log(institution.value)
 
 const isLoading = ref(false);
 const isResending = ref(false);
@@ -171,10 +199,35 @@ let timerInterval = null;
 const form = useForm({
     mobile: '',
     code: '',
-    type: props.type, // مقداردهی اولیه نوع کاربر
+    type: props.type,
 });
 
-// شروع تایمر معکوس
+// قوانین اعتبارسنجی (Validation Rules)
+const mobileRules = [
+    v => !!v || 'شماره موبایل الزامی است',
+    v => (v && v.length === 11) || 'شماره موبایل باید ۱۱ رقم باشد',
+    v => (v && v.startsWith('09')) || 'شماره موبایل معتبر نیست (باید با 09 شروع شود)'
+];
+
+// هندل کردن ورودی (فارسی به انگلیسی + حذف حروف + محدودیت تعداد)
+const handleMobileInput = () => {
+    if (!form.mobile) return;
+
+    // ۱. تبدیل اعداد فارسی به انگلیسی
+    let value = toEnglishDigits(form.mobile);
+
+    // ۲. حذف هر کاراکتری که عدد نیست (مثلا حروف یا فاصله)
+    value = value.replace(/\D/g, '');
+
+    // ۳. اطمینان از اینکه بیشتر از ۱۱ رقم نشود (برای حالت Copy/Paste)
+    if (value.length > 11) {
+        value = value.slice(0, 11);
+    }
+
+    form.mobile = value;
+};
+
+// ... (توابع تایمر بدون تغییر) ...
 const startCountdown = (seconds) => {
     countdown.value = seconds;
     clearInterval(timerInterval);
@@ -186,6 +239,7 @@ const startCountdown = (seconds) => {
         }
     }, 1000);
 };
+
 const formatCountdown = (seconds) => {
     if (seconds <= 60) {
         return `${seconds} ثانیه`;
@@ -194,18 +248,20 @@ const formatCountdown = (seconds) => {
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? '0' + secs : secs} دقیقه`;
 };
-const sendCode = () => {
-    if(!form.mobile) return; // اعتبارسنجی ساده
 
-    // اطمینان از ارسال تایپ صحیح
+const sendCode = () => {
+    if(!form.mobile) return;
+
     form.type = props.type;
 
     form.post(route('panel.auth.sendCode'), {
         preserveScroll: true,
-        preserveState: true,
+        preserveState: true, // مهم: برای حفظ استیت صفحه
         onStart: () => { isLoading.value = true; },
         onSuccess: () => {
-            startCountdown(90); // 1.5 دقیقه
+            // وقتی ساکسس می‌شود، اینرشیا page.props را آپدیت می‌کند
+            // و institution به طور خودکار مقدار می‌گیرد
+            startCountdown(90);
             step.value = 2;
             isLoading.value = false;
         },
@@ -221,7 +277,7 @@ const verifyCode = () => {
         preserveScroll: true,
         preserveState: true,
         onStart: () => { isLoading.value = true; },
-        onSuccess: () => { isLoading.value = false; }, // ریدایرکت توسط بک‌اند انجام می‌شود
+        onSuccess: () => { isLoading.value = false; },
         onError: () => { isLoading.value = false; },
         onFinish: () => { isLoading.value = false; }
     });
@@ -231,7 +287,6 @@ const resendCode = async () => {
     isResending.value = true;
     form.code = '';
 
-    // شبیه‌سازی فراخوانی مجدد sendCode اما با مدیریت state محلی
     form.post(route('panel.auth.sendCode'), {
         preserveScroll: true,
         onSuccess: () => {
@@ -244,8 +299,7 @@ const resendCode = async () => {
 };
 
 onMounted(() => {
-    // اگر فرم اروری داشته باشد که مربوط به کد است، ممکن است بخواهیم در مرحله ۲ بمانیم
-    // اما به طور پیش‌فرض روی ۱ ست شده است.
+    // لاجیک خاصی نیاز نیست
 });
 </script>
 
@@ -257,7 +311,7 @@ onMounted(() => {
 }
 
 .login-wrapper {
-    background-color: #f8fcf9 !important; /* سبز خیلی خیلی محو */
+    background-color: #f8fcf9 !important;
 }
 
 /* --- تنظیمات اینپوت‌ها --- */
@@ -265,7 +319,6 @@ onMounted(() => {
     direction: ltr !important;
 }
 
-/* تنظیم دقیق OTP Input */
 :deep(.v-otp-input) {
     justify-content: center;
     direction: ltr;
@@ -276,35 +329,10 @@ onMounted(() => {
     background-color: #f9f9f9;
 }
 
-/* --- اشکال پس‌زمینه (Blobs) --- */
-.bg-shape {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    z-index: 0;
-    opacity: 0.5;
-}
-
-.shape-1 {
-    top: -100px;
-    right: -100px;
-    width: 500px;
-    height: 500px;
-    background: rgba(76, 175, 80, 0.12);
-}
-
-.shape-2 {
-    bottom: -100px;
-    left: -100px;
-    width: 400px;
-    height: 400px;
-    background: rgba(129, 199, 132, 0.15);
-}
-
 /* --- استایل کارت --- */
 .glass-card {
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95) !important; /* کمی مات‌تر برای خوانایی لوگو */
+    backdrop-filter: blur(12px);
     position: relative;
     z-index: 2;
 }
@@ -316,9 +344,14 @@ onMounted(() => {
 
 /* --- افکت هاور لینک --- */
 .hover-green:hover {
-    color: #2e7d32 !important; /* green-darken-3 */
+    color: #2e7d32 !important;
 }
 .transition-swing {
     transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+
+/* استایل جدید برای باکس شماره موبایل */
+.border-dashed-green {
+    border: 1px dashed rgba(76, 175, 80, 0.5);
 }
 </style>
