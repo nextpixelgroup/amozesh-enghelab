@@ -42,7 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->redirectGuestsTo(function (Request $request) {
             if (str_starts_with($request->path(), 'admin')) {
-                return route('admin.index');
+                return route('admin.login');
             } elseif (str_starts_with($request->path(), 'panel')) {
                 return route('panel.index'); // Make sure this route exists
             }

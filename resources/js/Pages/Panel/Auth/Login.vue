@@ -115,8 +115,7 @@
                                         <div v-if="countdown > 0" key="timer" class="text-body-2 text-grey-darken-1">
                                             <v-icon size="small" class="ml-1">mdi-timer-outline</v-icon>
                                             ارسال مجدد تا
-                                            <strong class="text-green-darken-2 mx-1">{{ countdown }}</strong>
-                                            ثانیه دیگر
+                                            <strong class="text-green-darken-2 mx-1">{{ formatCountdown(countdown) }}</strong>
                                         </div>
                                         <v-btn
                                             v-else
@@ -187,7 +186,14 @@ const startCountdown = (seconds) => {
         }
     }, 1000);
 };
-
+const formatCountdown = (seconds) => {
+    if (seconds <= 60) {
+        return `${seconds} ثانیه`;
+    }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' + secs : secs} دقیقه`;
+};
 const sendCode = () => {
     if(!form.mobile) return; // اعتبارسنجی ساده
 
