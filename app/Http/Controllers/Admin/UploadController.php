@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Media;
 use App\Models\Page;
+use App\Services\SettingsService;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class UploadController extends Controller
     public function bookImage(Request $request)
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:3120'], // 5MB
+            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg', 'max:3120'], // 5MB
         ]);
 
         $file = $request->file('file');
@@ -33,7 +34,7 @@ class UploadController extends Controller
     public function courseImage(Request $request)
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:3120'], // 3MB
+            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg', 'max:3120'], // 3MB
         ]);
 
         $file = $request->file('file');
@@ -53,7 +54,7 @@ class UploadController extends Controller
     public function userImage(Request $request)
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:3120'], // 3MB
+            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg', 'max:3120'], // 3MB
         ]);
 
         $file = $request->file('file');
@@ -72,7 +73,7 @@ class UploadController extends Controller
     public function pageImage(Request $request)
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:3120'], // 3MB
+            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg', 'max:3120'], // 3MB
         ]);
 
         $file = $request->file('file');
@@ -93,7 +94,7 @@ class UploadController extends Controller
     public function generalImage(Request $request)
     {
         $request->validate([
-            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:3120'], // 3MB
+            'file' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg', 'max:3120'], // 3MB
         ]);
 
         $file = $request->file('file');
@@ -114,6 +115,7 @@ class UploadController extends Controller
 
     public function destroy(Media $media, $type, Request $request)
     {
+
         if($type === 'course'){
             $media->courseThumbnail()->update(['thumbnail_id' => null]);
         }
@@ -141,6 +143,19 @@ class UploadController extends Controller
         }
         elseif($type === 'userNationalCardImage'){
             $media->userNationalCardImage()->update(['national_card_image_id' => null]);
+        }
+        elseif ($type == 'setting'){
+            $settingName = $request->settingName;
+            $settingValue = $request->settingValue;
+            $setting = new SettingsService;
+            if($settingValue){
+                $data = $setting->get($settingName);
+                unset($data[$settingValue]);
+            }
+            else{
+                $data = $settingValue;
+            }
+            $setting->set($settingName, $data);
         }
         else{
             return responseJSon('error', 'نوع فایل مشخص نشده است');

@@ -50,99 +50,129 @@ class HandleInertiaRequests extends Middleware
         ];
 
         if (str_starts_with($request->path(), 'admin')) {
-            $shared['menuItems'] = [
-                [
-                    'title' => 'دوره‌ها',
-                    'icon' => 'mdi-laptop',
-                    'route' => 'admin.courses.index',
-                    'children' => [
-                        [
-                            'title' => 'لیست دوره‌ها',
-                            'icon'  => 'mdi-format-list-bulleted',
-                            'route' => 'admin.courses.index'
-                        ],
-                        [
-                            'title' => 'ایجاد دوره',
-                            'icon'  => 'mdi-file-plus',
-                            'route' => 'admin.courses.create'
-                        ],
-                        [
-                            'title' => 'دسته‌بندی‌ها',
-                            'icon' => 'mdi-format-list-group-plus',
-                            'route' => 'admin.courses.categories.index'
-                        ],
-                    ]
-                ],
-                [
-                    'title' => 'کتب',
-                    'icon' => 'mdi-book-open-page-variant',
-                    'route' => 'admin.books.index',
-                    'children' => [
-                        [
-                            'title' => 'لیست کتب',
-                            'icon'  => 'mdi-format-list-bulleted',
-                            'route' => 'admin.books.index'
-                        ],
-                        [
-                            'title' => 'ایجاد کتاب',
-                            'icon'  => 'mdi-file-plus',
-                            'route' => 'admin.books.create'
-                        ],
-                        [
-                            'title' => 'دسته‌بندی‌ها',
-                            'icon' => 'mdi-format-list-group-plus',
-                            'route' => 'admin.books.categories.index'
-                        ],
-                    ]
-                ],
-                [
-                    'title' => 'مسیرها',
-                    'icon' => 'mdi-multicast',
-                    'route' => 'admin.paths.index'
-                ],
-                [
-                    'title' => 'برگه ها',
-                    'icon' => 'mdi-page-layout-sidebar-right',
-                    'route' => 'admin.pages.index'
-                ],
-                [
-                    'title' => 'سفارش‌ها',
-                    'icon' => 'mdi-cart',
-                    'route' => 'admin.orders.index'
-                ],
-                [
-                    'title' => 'آزمون‌ها',
-                    'icon' => 'mdi-help-box-multiple',
-                    'route' => 'admin.quizzes.index'
-                ],
-                [
-                    'title' => 'نظرها',
-                    'icon' => 'mdi-forum',
-                    'route' => 'admin.comments.index'
-                ],
-                [
-                    'title' => 'پشتیبانی',
-                    'icon' => 'mdi-message-text-fast',
-                    'route' => 'admin.tickets.index'
-                ],
-                [
-                    'title' => 'تماس با ما',
-                    'icon' => 'mdi-bell-ring',
-                    'route' => 'admin.contacts.index'
-                ],
-                [
-                    'title' => 'کاربران',
-                    'icon' => 'mdi-account-group',
-                    'route' => 'admin.users.index'
-                ],
-                [
-                    'title' => 'تنظیمات',
-                    'icon' => 'mdi-cog',
-                    'route' => 'admin.settings.general'
-                ],
-            ];
-            $shared['ticketCount'] = Ticket::where('read_at', null)->count();
-            $shared['contactCount'] = Contact::where('read_at', null)->count();
+            $user = $request->user();
+            if($user &&in_array($user->roles->first()->name,['admin','super-admin'])){
+                $shared['menuItems'] = [
+                    [
+                        'title' => 'دوره‌ها',
+                        'icon' => 'mdi-laptop',
+                        'route' => 'admin.courses.index',
+                        'children' => [
+                            [
+                                'title' => 'لیست دوره‌ها',
+                                'icon'  => 'mdi-format-list-bulleted',
+                                'route' => 'admin.courses.index'
+                            ],
+                            [
+                                'title' => 'ایجاد دوره',
+                                'icon'  => 'mdi-file-plus',
+                                'route' => 'admin.courses.create'
+                            ],
+                            [
+                                'title' => 'دسته‌بندی‌ها',
+                                'icon' => 'mdi-format-list-group-plus',
+                                'route' => 'admin.courses.categories.index'
+                            ],
+                        ]
+                    ],
+                    [
+                        'title' => 'کتب',
+                        'icon' => 'mdi-book-open-page-variant',
+                        'route' => 'admin.books.index',
+                        'children' => [
+                            [
+                                'title' => 'لیست کتب',
+                                'icon'  => 'mdi-format-list-bulleted',
+                                'route' => 'admin.books.index'
+                            ],
+                            [
+                                'title' => 'ایجاد کتاب',
+                                'icon'  => 'mdi-file-plus',
+                                'route' => 'admin.books.create'
+                            ],
+                            [
+                                'title' => 'دسته‌بندی‌ها',
+                                'icon' => 'mdi-format-list-group-plus',
+                                'route' => 'admin.books.categories.index'
+                            ],
+                        ]
+                    ],
+                    [
+                        'title' => 'مسیرها',
+                        'icon' => 'mdi-multicast',
+                        'route' => 'admin.paths.index'
+                    ],
+                    [
+                        'title' => 'برگه ها',
+                        'icon' => 'mdi-page-layout-sidebar-right',
+                        'route' => 'admin.pages.index'
+                    ],
+                    [
+                        'title' => 'سفارش‌ها',
+                        'icon' => 'mdi-cart',
+                        'route' => 'admin.orders.index'
+                    ],
+                    [
+                        'title' => 'آزمون‌ها',
+                        'icon' => 'mdi-help-box-multiple',
+                        'route' => 'admin.quizzes.index'
+                    ],
+                    [
+                        'title' => 'نظرها',
+                        'icon' => 'mdi-forum',
+                        'route' => 'admin.comments.index'
+                    ],
+                    [
+                        'title' => 'پشتیبانی',
+                        'icon' => 'mdi-message-text-fast',
+                        'route' => 'admin.tickets.index'
+                    ],
+                    [
+                        'title' => 'تماس با ما',
+                        'icon' => 'mdi-bell-ring',
+                        'route' => 'admin.contacts.index'
+                    ],
+                    [
+                        'title' => 'کاربران',
+                        'icon' => 'mdi-account-group',
+                        'route' => 'admin.users.index'
+                    ],
+                    [
+                        'title' => 'تنظیمات',
+                        'icon' => 'mdi-cog',
+                        'route' => 'admin.settings.general'
+                    ],
+                ];
+                $shared['ticketCount'] = Ticket::where('read_at', null)->count();
+                $shared['contactCount'] = Contact::where('read_at', null)->count();
+            }
+            elseif($user && in_array($user->roles->first()->name,['content-manager'])){
+                $shared['menuItems'] = [
+                    [
+                        'title' => 'دوره‌ها',
+                        'icon' => 'mdi-laptop',
+                        'route' => 'admin.courses.index',
+                        'children' => [
+                            [
+                                'title' => 'لیست دوره‌ها',
+                                'icon'  => 'mdi-format-list-bulleted',
+                                'route' => 'admin.courses.index'
+                            ],
+                            [
+                                'title' => 'ایجاد دوره',
+                                'icon'  => 'mdi-file-plus',
+                                'route' => 'admin.courses.create'
+                            ],
+                            [
+                                'title' => 'دسته‌بندی‌ها',
+                                'icon' => 'mdi-format-list-group-plus',
+                                'route' => 'admin.courses.categories.index'
+                            ],
+                        ]
+                    ],
+                ];
+            }
+
         }
         else{
 
@@ -198,6 +228,7 @@ class HandleInertiaRequests extends Middleware
 
             $setting = new SettingsService;
             $shared['social'] = $setting->get('index.social');
+            $shared['logos'] = $setting->get('web.logos');
             $shared['showCart'] = false;
             if(str_starts_with($request->path(), 'books')){
                 $shared['showCart'] = true;

@@ -26,7 +26,7 @@
                         <v-row dense class="align-center">
                             <v-col cols="4" lg="2">
                                 <Link :href="route('web.index')" class="zo-logo">
-                                    <img src="/assets/img/site/logo-header.svg" alt="" class="img-fluid">
+                                    <img :src="logos?.logoHeader?.url" alt="" class="img-fluid">
                                 </Link>
                             </v-col>
                             <v-col cols="12" lg="7" class="d-lg-block d-none">
@@ -129,7 +129,7 @@
                         <v-row>
                             <v-col cols="12" lg="5">
                                 <div class="zo-about">
-                                    <img src="/assets/img/site/logo-footer.svg" alt="" class="img-fluid">
+                                    <img :src="logos?.logoFooter?.url" alt="" class="img-fluid">
                                     <p>
                                         متن توضیحات مرتبط با خانه انقلاب اسلامی که توضیحات مختصری در مورد فعالیت‌ها،
                                         برنامه‌ها و دوره‌های برگزار شده در این مجموعه است در این قسمت قرار می‌گیرد.
@@ -217,6 +217,7 @@ const footer1 = ref(page.props.footer1 || []);
 const footer2 = ref(page.props.footer2 || []);
 const footer3 = ref(page.props.footer3 || []);
 const social = ref(page.props.social || {});
+const logos = ref(page.props.logos || {});
 const showCart = ref(page.props.showCart || false);
 const isAuth = ref(page.props.isAuth || false);
 

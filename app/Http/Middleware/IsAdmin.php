@@ -24,6 +24,9 @@ class IsAdmin
 
         $allowedRoles = User::assessToAdmin();
 
+        // If user is content manager, only allow specific course routes
+
+
         if (!$user->hasAnyRole($allowedRoles)) {
             $message = 'دسترسی غیر مجاز';
             if($user){
@@ -36,6 +39,30 @@ class IsAdmin
 
                 return redirectMessage('error',message: $message, redirect: route('admin.login'));
             }
+        }
+        if ($user && $user->roleObject['value'] == 'content-manager') {
+            $allowedCourseRoutes = [
+                'admin.courses.index',
+                'admin.courses.create',
+                'admin.courses.store',
+                'admin.courses.edit',
+                'admin.courses.update',
+                'admin.courses.categories.index',
+                'admin.courses.categories.store',
+                'admin.courses.categories.update',
+                'admin.courses.categories.destroy',
+                'admin.profile',
+                'admin.logout',
+            ];
+
+            if (!in_array($request->route()->getName(), $allowedCourseRoutes)) {
+                $message = 'دسترسی غیر مجاز';
+                if($request->isJson()){
+                    return response()->json(['message' => $message], 403);
+                }
+                return redirectMessage('error', message: $message, redirect: route('admin.courses.index'));
+            }
+            return $next($request);
         }
         return $next($request);
     }

@@ -18,7 +18,8 @@ class SettingController extends Controller
         $setting = $setting->getGroup('setting');
         $slides = isset($setting['index.slider']) ? $setting['index.slider'] : [];
         $social = isset($setting['index.social']) ? $setting['index.social'] : [];
-        return inertia('Admin/Settings/General', compact('slides', 'social'));
+        $logos = isset($setting['web.logos']) ? $setting['web.logos'] : [];
+        return inertia('Admin/Settings/General', compact('slides', 'social', 'logos'));
     }
 
     public function slideUpdate(Request $request)
@@ -84,4 +85,50 @@ class SettingController extends Controller
         return redirectMessage('success', 'با موفقیت ذخیره شد');
     }
 
+    public function imagesUpdate(Request $request)
+    {
+        try {
+            $setting = new SettingsService;
+            $logoHeader = $request->logoHeader;
+            $logoFooter = $request->logoFooter;
+
+            $images = [
+                'logoHeader' => [
+                    'id' => null,
+                    'url' => '',
+                ],
+                'logoFooter' => [
+                    'id' => null,
+                    'url' => '',
+                ],
+            ];
+            if(!empty($logoHeader)) {
+                $media = Media::find($logoHeader);
+
+                if($media) {
+                    $images['logoHeader'] = [
+                        'id' => $media->id,
+                        'url' => $media->url,
+                    ];
+                }
+            }
+            if(!empty($logoFooter)) {
+                $media = Media::find($logoFooter);
+
+                if($media) {
+                    $images['logoFooter'] = [
+                        'id' => $media->id,
+                        'url' => $media->url,
+                    ];
+                }
+            }
+
+            $setting->set('web.logos',$images,'setting');
+            return redirectMessage('success', 'با موفقیت ذخیره شد');
+        }
+        catch (\Exception $exception){
+            $error = log_error($exception);
+            return redirectMessage('error',"خطایی پیش آمد(کدخطا: $error->id)");
+        }
+    }
 }

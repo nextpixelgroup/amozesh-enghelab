@@ -109,6 +109,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
         Route::put('/settings/slides/update', [SettingController::class, 'slideUpdate'])->name('settings.slides.update');
         Route::delete('/settings/slides/{id}/destroy', [SettingController::class, 'slideDelete'])->name('settings.slides.destroy');
         Route::put('/settings/social/update', [SettingController::class, 'socialUpdate'])->name('settings.social.update');
+        Route::put('/settings/logos/update', [SettingController::class, 'imagesUpdate'])->name('settings.logos.update');
 
         /********* media & upload *********/
         Route::post('upload/books/image', [UploadController::class, 'bookImage'])->name('upload.books.image');

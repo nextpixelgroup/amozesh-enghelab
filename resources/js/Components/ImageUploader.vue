@@ -122,6 +122,8 @@ const props = defineProps({
     initialUrl: {type: String, default: ''},
     thumbnailText: {type: String, default: 'برای تغییر تصویر، ابتدا حذف کنید'},
     type: {type: String},
+    settingName: {type: String},
+    settingValue: {type: String},
     pageId: {
         type: Number,
         required: false,
@@ -225,10 +227,11 @@ const uploadThumbnail = async () => {
 const removeThumbnail = async () => {
     const confirm = await $confirm("آیا از حذف این تصویر اطمینان دارید؟");
     if(confirm) {
-
         removeRoute.value = route(props.removeRoute, {
             media: props.modelValue,
             type: props.type,
+            settingName: props.settingName,
+            settingValue: props.settingValue,
             pageId: props.pageId
         });
         isRemoving.value = true;
