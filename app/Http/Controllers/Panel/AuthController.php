@@ -26,12 +26,12 @@ class AuthController extends Controller
         return Inertia::render('Panel/Auth/Index');
     }
 
-    public function login(Request $request)
+    public function login(Request $request, $type)
     {
         if(auth()->check()){
             return redirect()->route('panel.profile.index');
         }
-        return Inertia::render('Panel/Auth/Login');
+        return Inertia::render('Panel/Auth/Login', compact('type'));
     }
 
     public function sendCode(Request $request)

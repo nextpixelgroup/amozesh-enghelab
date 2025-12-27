@@ -39,10 +39,10 @@
                                     class="text-white rounded-lg transition-swing"
                                     :elevation="isHovering ? 8 : 2"
                                     prepend-icon="mdi-account-circle-outline"
-                                    href="/login/user"
+                                    :href="getLoginUrl('user')"
                                 >
                                     <div class="d-flex flex-column align-start py-2 w-100">
-                                        <span class="text-body-1 font-weight-bold">ورود کاربر معمولی</span>
+                                        <span class="text-body-1 font-weight-bold">ورود کاربر</span>
                                         <span class="text-caption text-green-lighten-4 opacity-80" style="font-weight: 300">
                        پنل کاربران خارج از دانشگاه و موسسه
                     </span>
@@ -68,12 +68,12 @@
                                     style="border-width: 2px;"
                                     :elevation="isHovering ? 4 : 0"
                                     prepend-icon="mdi-town-hall"
-                                    href="/login/institution"
+                                    :href="getLoginUrl('student')"
                                 >
                                     <div class="d-flex flex-column align-start py-2 w-100 text-green-darken-3">
-                                        <span class="text-body-1 font-weight-bold">ورود کاربر دانشگاه و موسسه</span>
+                                        <span class="text-body-1 font-weight-bold">ورود دانشجو</span>
                                         <span class="text-caption text-green-darken-1 opacity-80" style="font-weight: 300">
-                      پنل کاربران موسسه و دانشگاه
+                      پنل دانجشویان موسسه و دانشگاه
                     </span>
                                     </div>
                                     <template v-slot:append>
@@ -105,6 +105,18 @@
 import WebLayout from "@/Layouts/WebLayout.vue";
 import {Link} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
+
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get('redirect');
+
+// Function to generate login URL with redirect parameter
+const getLoginUrl = (type) => {
+    const baseUrl = route('panel.login', { type });
+    return redirectParam
+        ? `${baseUrl}?redirect=${encodeURIComponent(redirectParam)}`
+        : baseUrl;
+};
+
 </script>
 
 <style scoped>

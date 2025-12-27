@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 Route::name('panel.')->prefix('panel')->group(function () {
     Route::get('/', [AuthController::class, 'index'])->name('index');
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/login/{type}', [AuthController::class, 'login'])->name('login');
     Route::post('/login/send', [AuthController::class, 'sendCode'])->name('auth.sendCode');
     Route::post('/login/verify', [AuthController::class, 'verifyCode'])->name('auth.verifyCode');
 
