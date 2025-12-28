@@ -195,7 +195,7 @@
                                     <v-icon color="blue-grey-darken-2">mdi-account-details</v-icon>
                                 </template>
                                 <v-card-title class="text-subtitle-1 font-weight-bold text-blue-grey-darken-3">
-                                    مشخصات دانشجو
+                                    مشخصات
                                 </v-card-title>
                             </v-card-item>
                             <v-divider></v-divider>
@@ -223,11 +223,25 @@
                                     </span>
                                 </div>
 
-                                <div class="d-flex align-center">
+                                <div class="d-flex align-center mb-2">
                                     <v-icon size="small" color="grey-darken-1" class="ml-2">mdi-email-outline</v-icon>
                                     <span class="text-body-2 text-grey-darken-3 text-truncate">
                                         {{ userInfo.email || '-' }}
                                     </span>
+                                </div>
+
+                                <v-divider class="mb-3 border-dashed" v-if="quizData.certificate?.number"></v-divider>
+                                <div class="d-flex align-center mb-2" v-if="quizData.certificate?.number">
+                                    <v-icon size="small" color="grey-darken-1" class="ml-2">mdi-certificate</v-icon>
+
+                                    <v-chip
+                                        v-if="quizData.certificate?.number"
+                                        color="green-lighten-4"
+                                        size="small"
+                                        class="text-green-darken-3 font-weight-bold"
+                                    >
+                                        شماره گواهی دوره: {{ quizData.certificate?.number }}
+                                    </v-chip>
                                 </div>
                             </v-card-text>
                         </v-card>

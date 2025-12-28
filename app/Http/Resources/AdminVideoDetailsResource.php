@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\QuizCompletion;
 use Illuminate\Http\Request;
@@ -91,7 +92,15 @@ class AdminVideoDetailsResource extends JsonResource
                 })->toArray(),
             ];
         }
-        //dd($quizzes);
+        $certificate = Certificate::where('user_id',$this->user_id)->where('course_id',$this->course_id)->first();
+        if($certificate){
+            $certificate = [
+                'number' => $certificate->certificate_number,
+            ];
+        }
+        else{
+            $certificate = [];
+        }
         $data = [
             'id' => $this->id,
             'user' => [
@@ -112,6 +121,7 @@ class AdminVideoDetailsResource extends JsonResource
                     ];
                 })
             ],
+            'certificate' => $certificate,
             'finalQuiz' => $quizData,
             'quizzes' => $quizzes,
             'course' => [

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminVideoDetailsResource;
 use App\Http\Resources\AdminVideosResource;
 use App\Jobs\SendSmsForQuiz;
+use App\Models\Certificate;
 use App\Models\Video;
 use Illuminate\Http\Request;
 
@@ -46,7 +47,13 @@ class QuizController extends Controller
                 SendSmsForQuiz::dispatch($video->user,$video->uuid,'retryFinalQuiz');
             }
             elseif ($request->input('status') === 'approved'){
-
+                $certificate = Certificate::where('user_id', $user->id)->where('course_id', $video->course_id)->exists();
+                if (!$certificate){
+                Certificate::create([
+                    'user_id' => $video->user_id,
+                    'course_id' => $video->course_id,
+                ]);
+                }
             }
             $video->update(['status' => $request->input('status')]);
         }
