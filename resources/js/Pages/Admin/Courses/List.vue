@@ -143,7 +143,7 @@
                                 <v-btn icon="mdi-pencil" size="small" color="primary"></v-btn>
                             </Link>
                             <a :href="route('web.courses.show',item.slug)" target="_blank">
-                                <v-btn icon="mdi-eye" size="small" color="secondary"></v-btn>
+                                <v-btn icon="mdi-eye" size="small" color="rgb(105, 5, 50)"></v-btn>
                             </a>
                         </div>
                     </td>

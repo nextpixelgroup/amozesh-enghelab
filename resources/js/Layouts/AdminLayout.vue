@@ -1,28 +1,23 @@
 <template>
-    <v-app>
-        <!-- Confirm Dialog -->
+    <v-app id="inspire">
         <ConfirmDialog ref="confirmRef" />
 
-        <!-- Navigation Drawer -->
         <v-navigation-drawer
             v-model="drawer"
-            permanent
             location="right"
             color="primary"
             class="elevation-2 zo-drawer-section"
+            :temporary="!mdAndUp" 
         >
-            <!-- Logo -->
             <div class="zo-logo py-3 d-flex justify-center">
                 <img src="/assets/img/logo-typo.svg" alt="Logo">
             </div>
 
             <v-divider class="mx-3 my-1"></v-divider>
 
-            <!-- Menu Items -->
             <v-list density="comfortable" class="px-1">
                 <template v-for="(item, i) in menuItems" :key="i">
 
-                    <!-- Group Menu -->
                     <v-list-group
                         v-if="item.children"
                         v-model="groupStates[item.title]"
@@ -40,7 +35,6 @@
                             />
                         </template>
 
-                        <!-- Sub Items -->
                         <Link
                             v-for="(child, ci) in item.children"
                             :key="`child-${ci}`"
@@ -57,7 +51,6 @@
                         </Link>
                     </v-list-group>
 
-                    <!-- Normal Items -->
                     <Link
                         v-else
                         :href="route(item.route)"
@@ -74,7 +67,6 @@
                 </template>
             </v-list>
 
-            <!-- Social Buttons -->
             <template #append>
                 <div class="d-flex justify-center py-3">
                     <ul class="zo-social d-flex gap-2">
@@ -88,15 +80,17 @@
             </template>
         </v-navigation-drawer>
 
-        <!-- App Bar -->
         <v-app-bar
             color="white"
             elevation="2"
             density="comfortable"
-            class="px-3 d-flex justify-space-between"
+            class="px-3"
         >
             <v-app-bar-nav-icon @click="drawer = !drawer" />
+            
             <v-toolbar-title class="text-h6 font-weight-bold"></v-toolbar-title>
+
+            <v-spacer></v-spacer>
 
             <div class="d-flex align-center">
                 <Link :href="route('admin.contacts.index')">
@@ -140,17 +134,18 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
+import { useDisplay } from 'vuetify' // اضافه شده
 import FlashMessage from '@/Components/FlashMessage.vue'
 import ConfirmDialog from '@/Components/ConfirmDialog.vue'
 import { isActive } from '@/utils/helpers.js'
 
-const drawer = ref(true)
-const menu = ref(true)
+const { mdAndUp } = useDisplay()
+const drawer = ref(mdAndUp.value)
+
 const page = usePage()
 const confirmRef = ref(null)
 const isLoading = ref(false)
 
-/* state مستقل برای هر گروه */
 const groupStates = ref({})
 
 /* From server props */
@@ -173,33 +168,35 @@ onMounted(() => {
             msg: message,
             ttl: options.title || 'تأیید عملیات',
             color: options.color || 'red',
-            socialButtons,
         })
 })
 
-/* باز نگه‌داشتن گروه والد وقتی زیرمنو فعال است */
 watch(
     () => page.url,
     () => {
         menuItems.value.forEach(item => {
-            const parentActive = isActive(item.route)
             const childActive = item.children?.some(c => isActive(c.route))
-
-            if (parentActive || childActive) {
+            if (childActive) {
                 groupStates.value[item.title] = true
             }
         })
+        
+        // در موبایل بعد از کلیک روی لینک، سایدبار بسته شود
+        if (!mdAndUp.value) {
+            drawer.value = false
+        }
     },
     { immediate: true }
 )
 
-/* toggle دستی */
 const toggleGroup = (title, val) => {
     groupStates.value[title] = val
 }
 
-/* Logout */
-const logout = () => {
+const logout = async () => {
+    const confirmed = await window.$confirm('آیا برای خروج اطمینان دارید؟')
+    if (!confirmed) return
+
     isLoading.value = true
     router.post(route('admin.logout'), {}, {
         onFinish: () => (isLoading.value = false)
@@ -210,13 +207,14 @@ const logout = () => {
 <style scoped>
 .zo-main {
     background: rgba(245, 245, 245, 0.75);
+    min-height: 100vh;
 }
 
 a {
     display: block;
-    color: #fff;
-    border-radius: 0.4rem;
-    transition: background 0.25s ease-in-out;
+    color: rgb(255, 255, 255);
+    border-radius: 0.5rem;
+    transition: background 0.25s ease-in-out
 }
 a:hover {
     background: rgba(255, 255, 255, 0.15);

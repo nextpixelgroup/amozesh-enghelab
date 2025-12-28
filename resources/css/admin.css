@@ -165,7 +165,7 @@ th {
     background: rgba(5, 105, 60, .10);
     color: rgb(5, 105, 60);
     border: 2px solid rgb(5, 105, 60);
-    border-radius: 50%;
+    border-radius: 50%
 }
 
 .zo-header-section .zo-info .zo-icon i {
@@ -176,6 +176,13 @@ th {
 
     .zo-header-section .zo-add {
         width: 100%;
+    }
+}
+
+@media (max-width: 757px) {
+
+    .zo-header-section .zo-info .zo-icon {
+        display: none
     }
 }
 

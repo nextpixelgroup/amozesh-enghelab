@@ -72,7 +72,7 @@
             </v-row>
         </v-card>
         <v-card class="pa-3 elevation-2">
-            <v-table density="compact">
+            <v-table>
                 <thead>
                 <tr>
                     <th class="text-center">شناسه</th>
@@ -92,7 +92,7 @@
                 >
                     <td class="text-center">{{ item.id }}</td>
                     <td class="text-center">
-                        <img :src="item.thumbnail.url ?? '/assets/img/default_image.png'" :alt="item.title" width="90" height="90">
+                        <img :src="item.thumbnail.url ?? '/assets/img/default_image.png'" :alt="item.title" width="90" height="135">
                     </td>
                     <td>
                         <strong class="d-block">{{ item.title }}</strong>
@@ -138,7 +138,7 @@
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <v-btn icon="mdi-eye" size="small" color="info"></v-btn>
+                            <v-btn icon="mdi-eye" size="small" color="rgb(105, 5, 50)"></v-btn>
                         </a>
                         </div>
                     </td>
@@ -236,3 +236,9 @@ watch(() => props.books, (newVal) => {
     currentPage.value = newVal.meta?.current_page || 1;
 });
 </script>
+<style scoped>
+    img {
+        display: block;
+        margin: 5px auto
+    }
+</style>

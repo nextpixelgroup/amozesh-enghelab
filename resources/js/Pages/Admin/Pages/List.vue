@@ -40,7 +40,7 @@
                     </td>
                     <td class="text-center">
                         <Link :href="route('admin.pages.edit', item.id)">
-                            <v-btn icon="mdi-eye" size="small" color="primary"></v-btn>
+                            <v-btn icon="mdi-eye" size="small" color="rgb(105, 5, 50)"></v-btn>
                         </Link>
                     </td>
                 </tr>
