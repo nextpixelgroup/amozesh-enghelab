@@ -93,7 +93,7 @@
                             </span>
                             <span>
                                 وضعیت:
-                                <v-chip size="small" color="primary">
+                                <v-chip size="small" :color="statusColor(selectedOrder.status.value)">
                                     {{ selectedOrder.status.title }}
                                 </v-chip>
                             </span>
@@ -176,6 +176,23 @@ const showDetails = (order) => {
     selectedOrder.value = JSON.parse(JSON.stringify(order));
     detailDialog.value = true;
 };
+
+const statusColor = (status) => {
+    switch (status){
+        case 'pending':
+            return 'warning';
+        case 'paid':
+            return 'info';
+        case 'processing':
+            return 'info';
+        case 'completed':
+            return 'success';
+        case 'canceled':
+            return 'black';
+        case 'refunded':
+            return 'black';
+    }
+}
 
 </script>
 <style scoped>
