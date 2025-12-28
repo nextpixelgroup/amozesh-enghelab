@@ -1,7 +1,7 @@
 <template>
     <WebLayout>
         <PanelLayout>
-            <v-container>
+            <v-container class="zo-orders-section">
                 <v-row>
                     <v-col cols="12">
                         <div class="zo-header mb-3">
@@ -29,6 +29,7 @@
                                         <th class="text-center">قیمت</th>
                                         <th class="text-center">ثبت سفارش</th>
                                         <th class="text-center">وضعیت</th>
+                                        <th class="text-center">کد رهگیری</th>
                                         <th class="text-center">عملیات</th>
                                     </tr>
                                 </thead>
@@ -37,18 +38,19 @@
                                         <td class="text-center">{{ index + 1 }}</td>
                                         <td class="text-center">{{ order.code }}</td>
                                         <td>
-                                            <ul>
+                                            <ul class="zo-books">
                                                 <li v-for="(item, i) in order.items" :key="item.title + i">
-                                                    <img :src="item.image" />
-                                                    <div>
-                                                        <strong>{{ item.title }}</strong>
-                                                        <small>{{ item.subtitle }}</small>
-                                                    </div>
+                                                    <v-tooltip location="bottom">
+                                                        <template #activator="{ props }">
+                                                            <img v-bind="props" :src="item.image" />
+                                                        </template>
+                                                        {{ item.title }}
+                                                    </v-tooltip>
                                                 </li>
                                             </ul>
                                         </td>
                                         <td>
-                                            <div class="zo-price text-center">
+                                            <div class="zo-price">
                                                 <del>{{ order.oldPrice }}</del>
                                                 <div class="zo-sale">
                                                     <strong>{{ order.newPrice }}</strong>
@@ -57,12 +59,15 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <span>{{ order.date }}</span>
+                                            <small>{{ order.date }}</small>
                                         </td>
                                         <td class="text-center">
                                             <v-chip small :class="getStatusClass(order.status)">
                                                 {{ order.status }}
                                             </v-chip>
+                                        </td>
+                                        <td class="text-center">
+                                            <strong><small>{{order.trackingCode}}</small></strong>
                                         </td>
                                         <td class="text-center">
                                             <v-btn color="primary" @click="showDetails(order)">
@@ -100,7 +105,12 @@
                         <v-list dense border class="rounded-lg">
                             <v-list-item v-for="(item, i) in selectedOrder.items" :key="item.title + i" class="py-3">
                                 <template #prepend>
-                                    <v-img :src="item.image" width="50" class="ml-3" />
+                                    <v-tooltip bottom>
+                                        <template #activator="{ on, attrs }">
+                                            <v-img v-bind="attrs" v-on="on" :src="item.image" width="50" class="ml-3" />
+                                        </template>
+                                        <span>{{ item.title }}</span>
+                                    </v-tooltip>
                                 </template>
                                 <v-list-item-title class="font-weight-bold">
                                     {{ item.title }}
@@ -108,9 +118,6 @@
                                         {{ item.number }}
                                     </v-chip>
                                 </v-list-item-title>
-                                <v-list-item-subtitle>
-                                    {{ item.subtitle }}
-                                </v-list-item-subtitle>
                                 <template #append>
                                     <div class="text-left">
                                         <div class="zo-price">
@@ -182,19 +189,16 @@ const getStatusClass = (status) => {
     }
 };
 
-
 const orders = ref([{
         code: "192469",
         date: "1404/09/19 - 15:44",
         status: "درانتظار",
         oldPrice: "۲۳۰٬۰۰۰",
         newPrice: "۲۰۰٬۰۰۰",
-        items: [{
-            title: "کتاب آیین رستگاری",
-            subtitle: "مصاحبات آیت الله طهرانی با برخی دوستان",
-            number: "3",
-            image: "/assets/img/sample/17.png",
-        }, ],
+        trackingCode: "97453454",
+        items: [
+            { title: "کتاب آیین رستگاری", number: "3", image: "/assets/img/sample/17.png" },
+        ],
     },
     {
         code: "192470",
@@ -202,18 +206,10 @@ const orders = ref([{
         status: "درانتظار",
         oldPrice: "۴۶۰٬۰۰۰",
         newPrice: "۴۰۰٬۰۰۰",
-        items: [{
-                title: "کتاب آیین رستگاری",
-                subtitle: "مصاحبات آیت الله طهرانی",
-                number: "7",
-                image: "/assets/img/sample/18.png",
-            },
-            {
-                title: "کتاب آینده انقلاب",
-                subtitle: "چاپ جدید با ویرایش جدید",
-                number: "2",
-                image: "/assets/img/sample/19.png",
-            },
+        trackingCode: "97454654",
+        items: [
+            { title: "کتاب آیین رستگاری", number: "7", image: "/assets/img/sample/18.png" },
+            { title: "کتاب آینده انقلاب", number: "2", image: "/assets/img/sample/19.png" },
         ],
     },
     {
@@ -221,13 +217,11 @@ const orders = ref([{
         date: "1404/09/21 - 12:20",
         status: statuses[Math.floor(Math.random() * statuses.length)],
         oldPrice: "۵۵۰٬۰۰۰",
-        newPrice: "۵۰۰٬۰۰۰",
-        items: [{
-            title: "کتاب تاریخ اسلام",
-            subtitle: "جلد دوم",
-            number: "1",
-            image: "/assets/img/sample/20.png",
-        }, ],
+        newPrice: "۴۰۰٬۰۰۰",
+        trackingCode: "37454654",
+        items: [
+            { title: "کتاب تاریخ اسلام", number: "1", image: "/assets/img/sample/20.png" },
+        ],
     },
     {
         code: "192472",
@@ -235,12 +229,10 @@ const orders = ref([{
         status: statuses[Math.floor(Math.random() * statuses.length)],
         oldPrice: "۱۲۰٬۰۰۰",
         newPrice: "۱۰۰٬۰۰۰",
-        items: [{
-            title: "کتاب منطق",
-            subtitle: "ویراست جدید",
-            number: "2",
-            image: "/assets/img/sample/21.png",
-        }, ],
+        trackingCode: "97454654",
+        items: [
+            { title: "کتاب منطق", number: "2", image: "/assets/img/sample/21.png" },
+        ],
     },
     {
         code: "192473",
@@ -248,18 +240,10 @@ const orders = ref([{
         status: statuses[Math.floor(Math.random() * statuses.length)],
         oldPrice: "۷۸۰٬۰۰۰",
         newPrice: "۷۰۰٬۰۰۰",
-        items: [{
-                title: "کتاب فلسفه",
-                subtitle: "چاپ سوم",
-                number: "3",
-                image: "/assets/img/sample/22.png",
-            },
-            {
-                title: "کتاب منطق و فلسفه",
-                subtitle: "جلد اول",
-                number: "1",
-                image: "/assets/img/sample/23.png",
-            },
+        trackingCode: "87354612",
+        items: [
+            { title: "کتاب فلسفه", number: "3", image: "/assets/img/sample/22.png" },
+            { title: "کتاب منطق و فلسفه", number: "1", image: "/assets/img/sample/23.png" },
         ],
     },
 ]);
@@ -271,52 +255,40 @@ const showDetails = (order) => {
 
 </script>
 <style scoped>
-.v-table>.v-table__wrapper>table>thead>tr {
+.zo-orders-section .v-table>.v-table__wrapper>table>thead>tr {
     background: rgb(250, 250, 250);
 }
 
-.v-table>.v-table__wrapper>table>thead>tr>th {
+.zo-orders-section .v-table>.v-table__wrapper>table>thead>tr>th {
     padding: 0;
     font-size: 0.9rem;
     background: rgb(245, 245, 245);
 }
 
-.v-table>.v-table__wrapper>table>tbody>tr>td {
+.zo-orders-section .v-table>.v-table__wrapper>table>tbody>tr>td {
     padding: 5px;
 }
 
-ul li {
+.zo-orders-section .zo-books {
     display: flex;
-    align-items: center;
-    gap: 5px;
-    margin: 1.5px 0;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
     list-style: none;
 }
 
-ul li img {
-    max-width: 35px;
+.zo-orders-section .zo-books li img {
+    max-width: 45px
 }
 
-ul li div strong {
-    display: block;
-    margin: 0 0 -1.5px;
-    font-family: "Estedad-Bold";
-    font-size: 0.9rem;
-}
-
-ul li div small {
-    font-size: 0.875rem;
-    color: var(--Sub);
-}
-
-.zo-price del {
+.zo-orders-section .zo-price del {
     position: relative;
     text-decoration: none;
     font-size: 0.8rem;
     color: var(--Sub);
 }
 
-.zo-price del:before {
+.zo-orders-section .zo-price del:before {
     content: "";
     width: 100%;
     height: 1px;
@@ -324,33 +296,33 @@ ul li div small {
     top: 10px;
     left: 0;
     background: rgb(90, 90, 90);
-    transform: rotate(-15deg);
+    transform: rotate(-15deg)
 }
 
-.zo-price strong {
+.zo-orders-section .zo-price strong {
     padding: 0 0 0 1.5px;
-    font-family: "Estedad-Bold";
+    font-family: "Estedad-Bold"
 }
 
-.zo-status {
+.zo-orders-section .zo-status {
     background: transparent
 }
 
-.zo-status :deep(span) {
+.zo-orders-section .zo-status :deep(span) {
     background: transparent
 }
 
-.zo-completed,
-.zo-paid {
+.zo-orders-section .zo-paid,
+.zo-orders-section .zo-completed {
     color: rgba(5, 105, 60)
 }
 
-.zo-pending {
+.zo-orders-section .zo-pending {
     color: rgba(105, 60, 5)
 }
 
-.zo-canceled,
-.zo-refunded {
+.zo-orders-section .zo-canceled,
+.zo-orders-section .zo-refunded {
     color: rgb(0, 0, 0)
 }
 
