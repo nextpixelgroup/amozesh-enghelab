@@ -20,6 +20,11 @@ html[dir="rtl"], body[dir="rtl"] {
     text-align: right;
 }
 
+a {
+    color: rgb(0, 0, 0);
+    text-decoration: none
+}
+
 /* Vuetify RTL Support */
 .v-application[dir="rtl"] {
     direction: rtl;
@@ -99,7 +104,8 @@ th {
 }
 
 .zo-publish,
-.zo-active {
+.zo-active,
+.zo-paid {
     background: rgba(5, 105, 60);
     color: rgb(255, 255, 255)
 }
@@ -127,6 +133,7 @@ th {
 }
 
 .zo-suspended,
+.zo-canceled,
 .zo-trash {
     background: rgb(0, 0, 0);
     color: rgb(255, 255, 255);

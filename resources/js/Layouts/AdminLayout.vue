@@ -69,7 +69,7 @@
 
             <template #append>
                 <div class="d-flex justify-center py-3">
-                    <ul class="zo-social d-flex gap-2">
+                    <ul class="zo-social elevation-4 d-flex gap-2">
                         <li v-for="(btn, i) in socialButtons" :key="i">
                             <v-btn icon size="small" variant="text">
                                 <img :src="btn.src" :alt="btn.alt" width="18" height="18">
@@ -213,20 +213,30 @@ const logout = async () => {
 a {
     display: block;
     color: rgb(255, 255, 255);
-    border-radius: 0.5rem;
+    border-radius: 300px;
     transition: background 0.25s ease-in-out
 }
 a:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(5, 70, 40, .5)
 }
 
 .v-list-item--active {
-    background: rgba(255, 255, 255, 0.25) !important;
+    background: rgb(105, 5, 50);
+    opacity: 1;
+}
+
+.v-list-item--active:not(.v-list-item--link) .v-list-item__overlay {
+    opacity: 1;
 }
 
 .zo-social {
-    list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 7.5px 20px;
+    background: rgba(5, 70, 40, .75);
+    border-radius: 300px
+}
+
+.zo-social ul li {
+    display: inline-block
 }
 </style>

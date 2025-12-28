@@ -247,3 +247,9 @@ watch(() => props.courses, (newVal) => {
     currentPage.value = newVal.meta?.current_page || 1;
 });
 </script>
+<style scoped>
+    img {
+        display: block;
+        margin: 5px auto
+    }
+</style>
