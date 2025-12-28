@@ -197,6 +197,12 @@ class HandleInertiaRequests extends Middleware
                     'slug' => ['bookmarks/courses', 'bookmarks/books']
                 ],
                 [
+                    'title' => 'گواهینامه‌ها',
+                    'icon' => 'mdi-certificate',
+                    'url' => route('panel.certificates.index'),
+                    'slug' => 'certificates'
+                ],
+                [
                     'title' => 'سفارش‌ها',
                     'icon' => 'mdi-cart',
                     'url' => route('panel.orders.index'),

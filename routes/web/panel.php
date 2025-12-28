@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Panel\CertificateController;
 use App\Http\Controllers\Panel\UploadController;
 use App\Http\Controllers\Panel\AuthController;
 use App\Http\Controllers\Panel\BookmarkController;
@@ -19,6 +20,7 @@ Route::name('panel.')->prefix('panel')->group(function () {
     Route::middleware(['auth', 'client'])->group(function () {
         Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
         Route::get('/bookmarks/books', [BookmarkController::class, 'books'])->name('bookmarks.books');
         Route::get('/bookmarks/courses', [BookmarkController::class, 'courses'])->name('bookmarks.courses');
         Route::get('/supports', [TicketController::class, 'index'])->name('supports.index');
