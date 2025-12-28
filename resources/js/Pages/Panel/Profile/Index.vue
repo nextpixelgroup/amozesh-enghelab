@@ -18,7 +18,6 @@
                             </v-col>
                         </v-row>
                     </div>
-
                     <v-card class="zo-card pa-6">
                         <v-row dense>
                             <v-col cols="12" md="6" lg="3">
