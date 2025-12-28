@@ -426,7 +426,7 @@ const currentStatusInfo = computed(() => {
                 icon: 'mdi-record-rec',
                 bg: 'bg-indigo-lighten-5'
             };
-        case 'pending_process':
+        case 'process':
             return {
                 title: 'در حال پردازش',
                 color: 'info',

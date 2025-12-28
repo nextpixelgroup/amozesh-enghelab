@@ -103,11 +103,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
                     // برای مسیرهای پنل
                     if (str_starts_with($path, 'panel')) {
-                        return response()->view('errors.405', [], 405);
+                        return \inertia('Web/405');
                     }
 
                     // برای سایر موارد
-                    return response()->view('errors.405', [], 405);
+                    return \inertia('Web/405');
                 }
                 elseif ($e instanceof NotFoundHttpException) {
 
@@ -118,7 +118,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
                     // برای مسیرهای پنل
                     if (str_starts_with($path, 'panel')) {
-                        return response()->view('errors.404', [], 404);
+                        return \inertia('Web/404');
                     }
 
                     // برای سایر موارد

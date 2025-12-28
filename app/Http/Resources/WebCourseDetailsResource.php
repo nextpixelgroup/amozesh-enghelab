@@ -169,7 +169,7 @@ class WebCourseDetailsResource extends JsonResource
             $video = Video::where('user_id', $userId)->where('course_id', $this->id)->first();
             if($video){
                 $data['quiz']['url'] = route('web.video.record', $video->uuid);
-                $data['quiz']['completed'] = $video->status !== 'pending';
+                $data['quiz']['completed'] = !in_array($video->status,['pending', 'rejected']);
             }
         }
         //dd($data['seasons']);

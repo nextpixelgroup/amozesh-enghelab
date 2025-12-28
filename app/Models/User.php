@@ -101,6 +101,11 @@ class User extends Authenticatable
         return ['super-admin', 'admin', 'content-manager'];
     }
 
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
     public function bookmarks()
     {
         return $this->hasMany(Bookmark::class);

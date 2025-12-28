@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\WebCommentResource;
 use App\Http\Resources\WebCourseDetailsResource;
 use App\Http\Resources\WebCoursesResource;
+use App\Jobs\SendSmsForQuiz;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Course;
@@ -241,7 +242,6 @@ class CourseController extends Controller
 
             if($course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
                 $uuid = (string) Str::uuid();
-
                 $video = Video::create([
                     'uuid'      => $uuid,
                     'user_id'   => $user->id,
@@ -249,6 +249,8 @@ class CourseController extends Controller
                     'quiz_id'   => $course->quiz->id,
                     'status'    => 'pending',
                 ]);
+
+                SendSmsForQuiz::dispatch($user,$uuid, $uuid);
 
             }
         }

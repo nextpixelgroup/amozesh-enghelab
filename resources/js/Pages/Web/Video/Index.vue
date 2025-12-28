@@ -222,7 +222,7 @@ const props = defineProps({
     video: Object,
 })
 
-const isAllowedToRecord = computed(() => props.video?.status.value === 'pending');
+const isAllowedToRecord = computed(() => props.video?.status.value === 'pending' || props.video?.status.value === 'rejected');
 const hasError = computed(() => !!errorMessage.value);
 
 localforage.config({ name: 'VideoUploadApp', storeName: 'upload_chunks' });

@@ -64,7 +64,7 @@ class AuthController extends Controller
             $otp = OTP::where('login', $mobile)->first();
             $user = User::where('mobile',$mobile)->first();
 
-            if($request->type && !$user){
+            if($request->type === 'student' && !$user){
                 return redirectMessage('error', 'دانشجو با این مشخصات پیدا نشد. لطفا با پشتیبانی در ارتباط باشید');
             }
             if($user && $request->type == 'student' && !$user->institution_id){
@@ -179,7 +179,7 @@ class AuthController extends Controller
                     'mobile' => $mobile,
                     'password' => bcrypt(Str::random(50)), // رمز موقت
                 ]);
-                $user->assignRole($request->role);
+                $user->assignRole('user');
             }
             $user->update(['account_type' => $request->type]);
 

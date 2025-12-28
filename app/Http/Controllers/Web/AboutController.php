@@ -11,7 +11,13 @@ class AboutController extends Controller
 {
     public function index()
     {
-        $about = WebAboutResource::make(Page::where('type', 'about')->first());
+        $query = Page::where('type', 'about')->where('status','publish')->first();
+        if($query) {
+            $about = WebAboutResource::make($query);
+        }
+        else{
+            return redirect()->route('web.404');
+        }
         return inertia('Web/About', compact('about'));
     }
 }

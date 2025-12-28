@@ -139,7 +139,7 @@ class VideoController extends Controller
         // اگر همه چیز کامل بود، جاب سنگین را صدا بزن
         // در اینجا یک رکورد اولیه در دیتابیس می‌سازیم
 
-        $video->update(['status' => 'pending_process']);
+        $video->update(['status' => 'process']);
 
         // ارسال به صف برای پردازش FFmpeg
         ProcessVideoJob::dispatch($video, $totalChunks);

@@ -7,7 +7,7 @@ enum VideoStatusEnum: string
 
     case pending = 'درانتظار';
     case recording = 'درحال ضبط';
-    case pending_process = 'درحال پردازش';
+    case process = 'درحال پردازش';
     case completed = 'تکمیل شده';
     case failed = 'ناموفق';
     case review = 'درحال‌بررسی';

@@ -13,7 +13,13 @@ class ContactController extends Controller
 {
     public function index()
     {
-        $contact = WebContactResource::make(Page::where('type', 'contact')->first());
+        $query = Page::where('type', 'contact')->where('status','publish')->first();
+        if($query) {
+            $contact = WebContactResource::make($query);
+        }
+        else{
+            return redirect()->route('web.404');
+        }
         return inertia('Web/Contact', compact('contact'));
     }
 

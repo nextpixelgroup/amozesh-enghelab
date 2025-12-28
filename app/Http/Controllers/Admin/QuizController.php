@@ -6,6 +6,7 @@ use App\Enums\VideoStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminVideoDetailsResource;
 use App\Http\Resources\AdminVideosResource;
+use App\Jobs\SendSmsForQuiz;
 use App\Models\Video;
 use Illuminate\Http\Request;
 
@@ -41,6 +42,12 @@ class QuizController extends Controller
     {
         $user = auth()->user();
         if($request->filled('status')){
+            if($request->input('status') === 'rejected'){
+                SendSmsForQuiz::dispatch($video->user,$video->uuid,'retryFinalQuiz');
+            }
+            elseif ($request->input('status') === 'approved'){
+
+            }
             $video->update(['status' => $request->input('status')]);
         }
         if($request->filled('note')){

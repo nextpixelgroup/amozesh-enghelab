@@ -16,10 +16,16 @@ class PanelCoursesResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $lessonCompletions = $this->lessonCompletions->count();
-        $lessonCount = $this->seasons->sum(fn($season) => $season->lessons->count());
-        $students = $this->students()->count();
         $user = auth()->user();
+        $userId = $user->id;
+        $lessonCompletions = $this->lessons()
+            ->whereHas('completions', function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->count();
+        $lessonCount = $this->seasons->sum(fn($season) => $season->lessons()->where('is_active',true)->count());
+
+        $students = $this->students()->count();
         $data = [
             'thumbnail' => $this->thumbnail ? $this->thumbnail->url : asset('assets/img/default.svg'),
             'title' => $this->title,

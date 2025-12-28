@@ -24,6 +24,11 @@ class Course extends Model
         'must_complete_quizzes' => 'boolean',
     ];
 
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
     public function bookmarks()
     {
         return $this->morphMany(Bookmark::class, 'bookmarkable');
