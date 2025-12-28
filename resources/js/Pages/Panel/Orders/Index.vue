@@ -180,7 +180,7 @@ const showDetails = (order) => {
 const statusColor = (status) => {
     switch (status){
         case 'pending':
-            return 'warning';
+            return 'brown';
         case 'paid':
             return 'info';
         case 'processing':
@@ -253,9 +253,12 @@ const statusColor = (status) => {
     background: transparent
 }
 
-.zo-orders-section .zo-paid,
 .zo-orders-section .zo-completed {
     color: rgba(5, 105, 60)
+}
+
+.zo-orders-section .zo-paid {
+    color: rgb(50, 126, 180)
 }
 
 .zo-orders-section .zo-pending {
