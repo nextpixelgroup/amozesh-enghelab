@@ -52,7 +52,7 @@ class AdminVideoDetailsResource extends JsonResource
                     'is_active' => $quiz->is_active,
                     'title' => $quiz->title,
                     'description' => $quiz->description,
-                    'questions' => $quiz->questions->map(function ($question) use ($answersForQuiz) {
+                    'questions' => $quiz->questions()->where('is_active', true)->get()->map(function ($question) use ($answersForQuiz) {
                         $completion = $answersForQuiz->get($question->id);
 
                         return [
@@ -77,7 +77,7 @@ class AdminVideoDetailsResource extends JsonResource
                 'id' => $this->quiz->id,
                 'title' => $this->quiz->title,
                 'description' => $this->quiz->description,
-                'questions' => $this->quiz->questions->map(function($question) {
+                'questions' => $this->quiz->questions()->where('is_active', true)->get()->map(function($question) {
                     return [
                         'id' => $question->id,
                         'question' => $question->question_text,

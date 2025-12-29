@@ -26,7 +26,7 @@ class VideoController extends Controller
                     //'id' => $video->quiz->id,
                     'title' => $video->quiz->title,
                     'description' => $video->quiz->description,
-                    'questions' => $video->quiz->questions->map(function ($question) {
+                    'questions' => $video->quiz->questions()->where('is_active', true)->get()->map(function ($question) {
                         return [
                             'id' => $question->id,
                             'question' => $question->question_text,

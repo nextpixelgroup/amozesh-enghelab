@@ -240,7 +240,6 @@ class CourseController extends Controller
                     'progress' => 100
                 ]);
             }
-
             if($course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
                 $uuid = (string) Str::uuid();
                 $video = Video::create([
@@ -251,7 +250,7 @@ class CourseController extends Controller
                     'status'    => 'pending',
                 ]);
 
-                SendSmsForQuiz::dispatch($user,$uuid, $uuid);
+                SendSmsForQuiz::dispatch($user,$uuid, 'finalQuiz');
 
             }
         }
