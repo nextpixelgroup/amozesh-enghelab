@@ -91,6 +91,9 @@
                         accept="image/*"
                         type="userAvatar"
                     />
+                    <div class="text-caption text-grey text-center mt-2">
+                        سایز پیشنهادی: 75x75 یا 100x100 پیکسل
+                    </div>
                 </v-col>
             </v-row>
         </v-card>

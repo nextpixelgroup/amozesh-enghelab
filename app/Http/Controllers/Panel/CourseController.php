@@ -33,6 +33,7 @@ class CourseController extends Controller
             }, 'desc')
             ->get();
         $courses = PanelCoursesResource::collection($query);
-        return Inertia::render('Panel/Courses/Index', compact('courses'));
+        $pageTitle = 'آموزش‌های‌من';
+        return Inertia::render('Panel/Courses/Index', compact('courses', 'pageTitle'));
     }
 }

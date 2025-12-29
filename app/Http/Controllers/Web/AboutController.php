@@ -18,6 +18,7 @@ class AboutController extends Controller
         else{
             return redirect()->route('web.404');
         }
-        return inertia('Web/About', compact('about'));
+        $pageTitle = $about->title;
+        return inertia('Web/About', compact('about', 'pageTitle'));
     }
 }

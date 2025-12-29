@@ -191,6 +191,8 @@ const statusColor = (status) => {
             return 'black';
         case 'refunded':
             return 'black';
+        default:
+            return 'gray';
     }
 }
 

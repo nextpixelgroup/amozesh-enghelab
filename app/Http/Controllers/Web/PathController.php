@@ -13,6 +13,7 @@ class PathController extends Controller
     {
         $query = Path::query()->orderBy('order')->get();
         $path = WebPathResource::collection($query);
-        return inertia('Web/Path', compact('path'));
+        $pageTitle = 'سیرمطالعاتی';
+        return inertia('Web/Path', compact('path', 'pageTitle'));
     }
 }

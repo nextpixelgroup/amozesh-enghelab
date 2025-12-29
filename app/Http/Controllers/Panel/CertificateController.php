@@ -9,6 +9,7 @@ class CertificateController extends Controller
 {
     public function index()
     {
-        return inertia('Panel/Certificates/Index');
+        $pageTitle = 'گواهینامه‌ها';
+        return inertia('Panel/Certificates/Index', compact('pageTitle'));
     }
 }

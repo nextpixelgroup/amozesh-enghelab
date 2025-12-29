@@ -50,6 +50,9 @@
                                 accept="image/*"
                                 type="lesson"
                             />
+                            <div class="text-caption text-grey text-center mt-2">
+                                سایز پیشنهادی: 1230x385 پیکسل
+                            </div>
                         </v-col>
                         <v-col class="v-col-12">
                             <v-text-field
@@ -297,6 +300,9 @@
                                                                 accept="image/*"
                                                                 type="lesson"
                                                             />
+                                                            <div class="text-caption text-grey text-center mt-2">
+                                                                سایز پیشنهادی: 800x350 یا 800x450 پیکسل
+                                                            </div>
                                                         </v-col>
                                                     </v-row>
                                                     <v-row dense class="mb-3">
@@ -688,7 +694,7 @@
                         type="course"
                     />
                     <div class="text-caption text-grey text-center mt-2">
-                        سایز پیشنهادی: ۱۹۲۰x۶۰۰ پیکسل
+                        سایز پیشنهادی: 250x265 پیکسل
                     </div>
                     <v-btn block
                            size="large"

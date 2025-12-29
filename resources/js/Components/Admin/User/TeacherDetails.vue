@@ -161,6 +161,9 @@
                         accept="image/*"
                         type="userAvatar"
                     />
+                    <div class="text-caption text-grey text-center mt-2">
+                        سایز پیشنهادی: 250x250 پیکسل
+                    </div>
                 </v-col>
                 <v-col cols="12" lg="6">
                     <v-text-field

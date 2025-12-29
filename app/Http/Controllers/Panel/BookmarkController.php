@@ -16,7 +16,8 @@ class BookmarkController extends Controller
         $user = auth()->user();
         $query = $user->bookmarks()->where('bookmarkable_type', Book::class)->get()->pluck('bookmarkable');
         $books = WebBooksResource::collection($query);
-        return inertia('Panel/Bookmarks/Books', compact('books'));
+        $pageTitle = 'کتب موردعلاقه';
+        return inertia('Panel/Bookmarks/Books', compact('books', 'pageTitle'));
     }
 
     public function courses()
@@ -24,6 +25,7 @@ class BookmarkController extends Controller
         $user = auth()->user();
         $query = $user->bookmarks()->where('bookmarkable_type', Course::class)->get()->pluck('bookmarkable');
         $courses = WebCoursesResource::collection($query);
-        return inertia('Panel/Bookmarks/Courses', compact('courses'));
+        $pageTitle = 'دوره‌های موردعلاقه';
+        return inertia('Panel/Bookmarks/Courses', compact('courses', 'pageTitle'));
     }
 }

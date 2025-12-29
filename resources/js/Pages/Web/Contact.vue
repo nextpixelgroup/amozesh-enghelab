@@ -11,7 +11,7 @@
                                         <a href="#">خانه</a>
                                     </li>
                                     <li>
-                                        <span>درباره ما</span>
+                                        <span>تماس ما</span>
                                     </li>
                                 </ul>
                             </nav>

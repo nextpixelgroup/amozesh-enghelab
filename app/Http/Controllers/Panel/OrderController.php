@@ -14,6 +14,7 @@ class OrderController extends Controller
         $user = auth()->user();
         $query = $user->orders()->with('items')->orderBy('id', 'desc')->get();
         $orders = PanelOrdersResource::collection($query);
-        return inertia('Panel/Orders/Index', compact('orders'));
+        $pageTitle = 'سفارش‌ها';
+        return inertia('Panel/Orders/Index', compact('orders', 'pageTitle'));
     }
 }

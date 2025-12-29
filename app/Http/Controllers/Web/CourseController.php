@@ -54,7 +54,8 @@ class CourseController extends Controller
         $stats['ratings'] = number_format(@$stats['ratings'],1);
         $stats['students'] = number_format(@$stats['students']);
         $stats['seasons'] = number_format(@$stats['seasons']);
-        return inertia('Web/Courses/Index', compact('categories', 'courses', 'stats'));
+        $pageTitle = 'دوره‌ها';
+        return inertia('Web/Courses/Index', compact('categories', 'courses', 'stats', 'pageTitle'));
     }
 
     public function show(Request $request, Course $course)

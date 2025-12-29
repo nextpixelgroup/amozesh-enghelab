@@ -1,5 +1,4 @@
 <template>
-    <Head :title="adminPageTitle" />
     <SettingLayout>
         <v-card v-for="(menu, menuIndex) in menus" :key="menu.type" class="mb-6">
             <v-toolbar color="green-lighten-5" density="compact" class="px-2 border-b">
@@ -166,6 +165,7 @@
                     ></v-text-field>-->
                 </v-card-text>
 
+                <Head :title="adminPageTitle" />
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="error" variant="text" @click="closeDialog">انصراف</v-btn>

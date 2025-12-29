@@ -23,7 +23,8 @@ class AuthController extends Controller
         if(auth()->check()){
             return redirect()->route('panel.profile.index');
         }
-        return Inertia::render('Panel/Auth/Index');
+        $pageTitle = 'ورود';
+        return Inertia::render('Panel/Auth/Index', compact('pageTitle'));
     }
 
     public function login(Request $request, $type)
@@ -31,7 +32,8 @@ class AuthController extends Controller
         if(auth()->check()){
             return redirect()->route('panel.profile.index');
         }
-        return Inertia::render('Panel/Auth/Login', compact('type'));
+        $pageTitle = 'ورود و ثبت نام';
+        return Inertia::render('Panel/Auth/Login', compact('type', 'pageTitle'));
     }
 
     public function sendCode(Request $request)

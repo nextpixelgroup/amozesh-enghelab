@@ -24,7 +24,8 @@ class ProfileController extends Controller
         $degree = enumFormated(DegreeEnum::cases());
         $cities = City::getAll();
         $provinces = City::getProvincesList();
-        return inertia('Panel/Profile/Index', compact('user', 'gender', 'years', 'months', 'days', 'degree', 'cities', 'provinces', 'degree'));
+        $pageTitle = 'پروفایل کاربری';
+        return inertia('Panel/Profile/Index', compact('user', 'gender', 'years', 'months', 'days', 'degree', 'cities', 'provinces', 'degree', 'pageTitle'));
     }
 
     public function update(ProfileStoreRequest $request)

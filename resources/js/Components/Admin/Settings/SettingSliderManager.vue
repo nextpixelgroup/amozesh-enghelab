@@ -140,7 +140,7 @@
                                             />
                                         </div>
                                         <div class="text-caption text-grey text-center mt-2">
-                                            سایز پیشنهادی: ۱۹۲۰x۶۰۰ پیکسل
+                                            سایز پیشنهادی: 1585x525 پیکسل
                                         </div>
                                     </v-card-text>
                                 </v-card>

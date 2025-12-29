@@ -17,12 +17,15 @@ class TeacherController extends Controller
             $query->where('name', 'teacher');
         })->get();
         $teachers = WebTeachersResource::collection($query);
-        return inertia('Web/Teachers/Index', compact('teachers'));
+        $pageTitle = 'اساتید';
+        return inertia('Web/Teachers/Index', compact('teachers', 'pageTitle'));
     }
 
     public function show(User $teacher)
     {
+        $teacherSource = $teacher;
         $teacher = WebTeacherDetailsResource::make($teacher);
-        return inertia('Web/Teachers/Show', compact('teacher'));
+        $pageTitle = $teacherSource->firstname . ' ' . $teacherSource->lastname;
+        return inertia('Web/Teachers/Show', compact('teacher', 'pageTitle'));
     }
 }

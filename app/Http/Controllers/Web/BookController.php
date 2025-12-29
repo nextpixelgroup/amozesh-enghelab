@@ -24,7 +24,8 @@ class BookController extends Controller
         $section4 = WebBooksResource::collection($query);
         $section5 = WebBooksResource::collection($query)->response()->getData(true);
         $section5['moreUrl'] = route('web.books.archives', ['category' => 'معارف-اسلامی']);
-        return inertia('Web/Books/Index', compact('section1', 'section2', 'section3', 'section4', 'section5'));
+        $pageTitle = 'فروشگاه کتاب';
+        return inertia('Web/Books/Index', compact('section1', 'section2', 'section3', 'section4', 'section5', 'pageTitle'));
     }
 
     public function archives(Request $request)
@@ -45,12 +46,15 @@ class BookController extends Controller
                 $query->orderBy('created_at', $request->sort);
             });
         $books = WebBooksResource::collection($query->orderBy('created_at', 'desc')->paginate(env('BOOKS_PER_PAGE')));
-        return inertia('Web/Books/Archives', compact('books', 'categories'));
+
+        $pageTitle = 'آرشیو کتب';
+        return inertia('Web/Books/Archives', compact('books', 'categories', 'pageTitle'));
     }
 
     public function show(Book $book)
     {
         $user = auth()->user();
+        $bookSource = $book;
         $book->update(['views' => $book->views + 1]);
         $book = WebBookDetailsResource::make($book);
         $similarCourses = Book::whereHas('categories', function ($query) use ($book) {
@@ -61,7 +65,8 @@ class BookController extends Controller
             ->take(5)
             ->get();
         $related = WebBooksResource::collection($similarCourses);
-        return Inertia::render('Web/Books/Show', compact('book', 'user', 'related'));
+        $pageTitle = $bookSource->title;
+        return Inertia::render('Web/Books/Show', compact('book', 'user', 'related', 'pageTitle'));
     }
 
     private function categories()

@@ -10,7 +10,9 @@ class TicketController extends Controller
 {
     public function index()
     {
-        return inertia('Panel/Tickets/Index');
+
+        $pageTitle = 'ارتباط با پشتیبانی';
+        return inertia('Panel/Tickets/Index', compact('pageTitle'));
     }
 
     public function store(Request $request)

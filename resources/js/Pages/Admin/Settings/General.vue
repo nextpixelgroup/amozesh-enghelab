@@ -1,4 +1,5 @@
 <template>
+    <Head :title="adminPageTitle" />
     <SettingLayout>
         <SettingImages
             :logos="logos"
@@ -16,13 +17,15 @@
 </template>
 
 <script setup>
-import { usePage } from '@inertiajs/vue3'
+import {Head, usePage} from '@inertiajs/vue3'
 import SettingLayout from '@/Components/Admin/SettingLayout.vue'
 import SettingSliderManager from '@/Components/Admin/Settings/SettingSliderManager.vue'
 import SettingSocialLinksManager from "@/Components/Admin/Settings/SettingSocialLinksManager.vue";
 import SettingImages from "@/Components/Admin/Settings/SettingImages.vue";
 import {useTemplateRefsList} from "@vueuse/core";
+import usePageTitle from "@/Composables/usePageTitle.js";
 
+const {adminPageTitle} = usePageTitle('تنظیمات عمومی')
 const page = usePage()
 const slides = page.props.slides ?? []
 const social = page.props.social ?? { soroush: '', eitaa: '' }

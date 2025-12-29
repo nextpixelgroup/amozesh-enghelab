@@ -20,7 +20,8 @@ class ContactController extends Controller
         else{
             return redirect()->route('web.404');
         }
-        return inertia('Web/Contact', compact('contact'));
+        $pageTitle = $contact->title;
+        return inertia('Web/Contact', compact('contact', 'pageTitle'));
     }
 
     public function store(ContactStoreRequest $request)

@@ -8,13 +8,13 @@
                             <nav>
                                 <ul>
                                     <li>
-                                        <a href="#">خانه</a>
+                                        <a href="/">خانه</a>
                                     </li>
                                     <li>
-                                        <a href="#">فروشگاه کتاب</a>
+                                        <a :href="route('web.books.index')">فروشگاه کتاب</a>
                                     </li>
                                     <li>
-                                        <span>کتب معارف اسلامی</span>
+                                        <span>آرشیو</span>
                                     </li>
                                 </ul>
                             </nav>
