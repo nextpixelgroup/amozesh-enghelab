@@ -19,7 +19,12 @@ class ProcessVideoJob implements ShouldQueue
 
     public $video;
     public $totalChunks;
-    public $timeout = 3600; // 1 Hour
+
+    // افزایش تایم‌اوت کلاس به ۲ ساعت برای ویدیوهای طولانی روی سرور ضعیف
+    public $timeout = 7200;
+
+    // تعداد تلاش فقط ۱ بار باشد، چون اگر یکبار به خاطر ارور منطقی فیل شد، بار دوم هم می‌شود
+    public $tries = 1;
 
     public function __construct(Video $video, $totalChunks)
     {
@@ -29,15 +34,14 @@ class ProcessVideoJob implements ShouldQueue
 
     public function handle()
     {
+        // افزایش مموری لیمیت فقط برای این پروسه (در صورت نیاز)
+        ini_set('memory_limit', '1024M');
+
         $uuid = $this->video->uuid;
-        // مسیر فایل‌های موقت
         $tempPath = storage_path("app/temp_uploads/{$uuid}");
-        // مسیر خروجی نهایی
         $outputDir = storage_path("app/private/videos");
         $finalVideoPath = "{$outputDir}/{$uuid}.mp4";
         $thumbnailPath = "{$outputDir}/{$uuid}.jpg";
-
-        // مسیر فایل ادغام شده اولیه (WebM خام)
         $mergedSourcePath = "{$tempPath}/full_source.webm";
 
         if (!File::exists($outputDir)) {
@@ -46,59 +50,70 @@ class ProcessVideoJob implements ShouldQueue
 
         try {
             // =========================================================
-            // مرحله ۱: ادغام باینری چانک‌ها (Binary Concatenation)
+            // مرحله ۱: ادغام با استریم (بهینه سازی حافظه RAM)
             // =========================================================
-            // به جای استفاده از ffmpeg concat demuxer، فایل‌ها را بایت به بایت به هم می‌چسبانیم.
-            // این روش برای استریم‌های WebM که از مرورگر می‌آیند الزامی است.
 
-            $mergedFileHandle = fopen($mergedSourcePath, 'a+');
+            // باز کردن فایل مقصد برای نوشتن
+            $destStream = fopen($mergedSourcePath, 'ab'); // b flag for binary safe
+            if (!$destStream) {
+                throw new \Exception("Could not open destination file stream.");
+            }
+
             $chunksFound = 0;
 
             for ($i = 0; $i < $this->totalChunks; $i++) {
                 $chunkFile = "{$tempPath}/{$i}.tmp";
 
                 if (file_exists($chunkFile)) {
-                    // خواندن چانک و نوشتن در فایل نهایی
-                    $chunkContent = file_get_contents($chunkFile);
-                    fwrite($mergedFileHandle, $chunkContent);
-                    $chunksFound++;
+                    // خواندن فایل به صورت استریم (پایپ کردن) بدون لود کردن در رم
+                    $srcStream = fopen($chunkFile, 'rb');
+                    if ($srcStream) {
+                        stream_copy_to_stream($srcStream, $destStream);
+                        fclose($srcStream);
+                        $chunksFound++;
 
-                    // آزاد سازی حافظه متغیر در لوپ
-                    unset($chunkContent);
-                } else {
-                   // Chunk missing during binary merge: {$chunkFile}
+                        // حذف آنی چانک برای خالی شدن دیسک
+                        unlink($chunkFile);
+                    }
                 }
             }
 
-            fclose($mergedFileHandle);
+            fclose($destStream);
 
             if ($chunksFound === 0) {
                 throw new \Exception("No chunks found to merge for video $uuid");
             }
 
-
             // =========================================================
-            // مرحله ۲: تبدیل فایل ادغام شده به MP4 با FFmpeg
+            // مرحله ۲: تبدیل سریع با FFmpeg
             // =========================================================
 
             $command = [
                 'ffmpeg',
-                '-y', // Overwrite
-                '-i', $mergedSourcePath, // ورودی فایل WebM یکپارچه است
+                '-y',
+                '-i', $mergedSourcePath,
 
-                // Video Codec
+                // استفاده از تمام هسته‌های CPU
+                '-threads', '0',
+
+                // تنظیمات ویدیو
                 '-c:v', 'libx264',
-                '-preset', 'veryfast', // سرعت بالا
-                '-crf', '26', // کیفیت مناسب (هرچه کمتر، کیفیت بالاتر/حجم بیشتر. ۲۳ تا ۲۸ استاندارد وب)
+
+                // تغییر به ultrafast برای سرعت بیشتر (حجم کمی بالا می‌رود ولی سرعت دوبرابر می‌شود)
+                // گزینه‌ها: ultrafast, superfast, veryfast, faster, fast, medium (default)
+                '-preset', 'ultrafast',
+
+                // تنظیم Tune برای تاخیر کمتر
+                '-tune', 'zerolatency',
+
+                '-crf', '28', // کیفیت استاندارد وب (کمی کیفیت را فدای سرعت می‌کنیم)
                 '-pix_fmt', 'yuv420p',
 
-                // Audio Codec
+                // تنظیمات صدا
                 '-c:a', 'aac',
                 '-b:a', '128k',
+                '-ac', '2', // Stereo
                 '-ar', '44100',
-
-                // Fix Timestamps: اگر تایم‌لاین به هم ریخته باشد این‌ها کمک می‌کنند
-                '-fflags', '+genpts',
 
                 // Web Optimization
                 '-movflags', '+faststart',
@@ -109,15 +124,13 @@ class ProcessVideoJob implements ShouldQueue
             $this->runProcess($command);
 
             // =========================================================
-            // مرحله ۳: دریافت اطلاعات و تامنیل
+            // مرحله ۳: ساخت تامنیل و آپدیت
             // =========================================================
 
-            // دریافت مدت زمان
             $duration = $this->getVideoDuration($finalVideoPath);
 
-            // ساخت تامنیل
-            // اگر ویدیو خیلی کوتاه بود (زیر ۱ ثانیه)، از فریم اول عکس بگیر
-            $seekTime = ($duration > 1) ? '00:00:01.000' : '00:00:00.000';
+            // گرفتن عکس از ثانیه ۱ یا ۱۰٪ ویدیو
+            $seekTime = ($duration > 10) ? '00:00:05.000' : '00:00:01.000';
 
             $thumbCommand = [
                 'ffmpeg',
@@ -131,9 +144,6 @@ class ProcessVideoJob implements ShouldQueue
 
             $this->runProcess($thumbCommand);
 
-            // =========================================================
-            // مرحله ۴: بروزرسانی دیتابیس
-            // =========================================================
             $this->video->update([
                 'status' => 'completed',
                 'path' => "videos/{$uuid}.mp4",
@@ -143,10 +153,10 @@ class ProcessVideoJob implements ShouldQueue
             ]);
 
         } catch (\Exception $e) {
-            // پرتاب مجدد خطا برای اینکه جاب در صف به عنوان failed ثبت شود
+            Log::error("Video processing failed for {$uuid}: " . $e->getMessage());
             throw $e;
         } finally {
-            // پاکسازی فایل‌های موقت
+            // پاکسازی نهایی (اگر چانکی باقی مانده یا فایل سورس)
             if (File::exists($tempPath)) {
                 File::deleteDirectory($tempPath);
             }
@@ -155,11 +165,13 @@ class ProcessVideoJob implements ShouldQueue
 
     private function runProcess(array $command)
     {
-        // اجرای دستور با تایم‌اوت بالا
-        $result = Process::timeout(3600)->run($command);
+        // تایم اوت پردازش را همسو با تایم‌اوت جاب بالا ببرید
+        $result = Process::timeout($this->timeout)->run($command);
 
         if ($result->failed()) {
-            throw new \Exception("FFmpeg Error: " . $result->errorOutput());
+            // لاگ کردن خروجی ارور FFmpeg برای دیباگ دقیق‌تر
+            Log::error("FFmpeg Error Output: " . $result->errorOutput());
+            throw new \Exception("FFmpeg Process Failed");
         }
     }
 
@@ -172,10 +184,7 @@ class ProcessVideoJob implements ShouldQueue
 
     public function failed(Throwable $exception)
     {
-        $this->video->update([
-            'status' => 'failed',
-        ]);
-        log_error($exception);
-
+        $this->video->update(['status' => 'failed']);
+        Log::error("Job Failed Final: " . $exception->getMessage());
     }
 }
