@@ -133,7 +133,7 @@
                                                 <span class="text-body-1 font-weight-black text-deep-orange-darken-3">محدود است</span>
                                             </v-col>
                                         </v-row>
-                                    </v-card>php artisan queue:work & php artisan schedule:work & npm run dev & php artisan horizon & php artisan config:clear & php artisan cache:clear & php artisan octane:start
+                                    </v-card>
                                 </div>
                             </div>
 
@@ -295,10 +295,18 @@ const nextQuestion = () => { if (currentQuestionIndex.value < props.quiz.questio
 const prevQuestion = () => { if (currentQuestionIndex.value > 0) currentQuestionIndex.value--; };
 
 const startRecording = async () => {
+    if (isLoading.value) return;
     if (!isAllowedToRecord.value) return;
+
+    // ... (کدهای confirm و ...)
     const confirm = await $confirm('آیا می‌خواهید شروع به ضبط کنید؟');
     if (!confirm) return;
+
+    isLoading.value = true;
+
     try {
+        stopTimer();
+        // ... (ریست کردن متغیرها) ...
         errorMessage.value = '';
         state.value = 'recording';
         timer.value = 0;
@@ -306,16 +314,22 @@ const startRecording = async () => {
         currentQuestionIndex.value = 0;
         await localforage.clear();
 
-        stream.value = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                facingMode: "user"
-            },
-            audio: true
-        });
-        videoPreview.value.srcObject = stream.value;
+        // *** تغییر این بخش ***
+        // چک می‌کنیم اگر استریم نال است یا غیرفعال (active نیست)، دوباره بگیرد
+        if (!stream.value || !stream.value.active) {
+            stream.value = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: "user"
+                },
+                audio: true
+            });
+            videoPreview.value.srcObject = stream.value;
+            await videoPreview.value.play();
+        }
 
+        // ادامه کد بدون تغییر...
         await axios.post(route('web.video.init', videoUuid.value));
 
         let options = { mimeType: 'video/webm;codecs=vp9,opus', videoBitsPerSecond: 1000000 };
@@ -327,10 +341,15 @@ const startRecording = async () => {
 
         isRecording.value = true;
         startTimer();
+
     } catch (err) {
         console.error(err);
-        errorMessage.value = 'خطا در دسترسی به دوربین. لطفاً دسترسی‌ها را بررسی کنید.';
+        errorMessage.value = 'خطا در دسترسی به دوربین یا ارتباط با سرور.';
         state.value = 'idle';
+        isRecording.value = false;
+    } finally {
+        // ۴. پایان لودینگ (چه موفق چه ناموفق)
+        isLoading.value = false;
     }
 };
 
@@ -358,15 +377,38 @@ const stopRecording = async () => {
 
 const cancelRecording = async () => {
     if (await $confirm('آیا آزمون را لغو می‌کنید؟')) {
-        if (mediaRecorder.value && state.value === 'recording') mediaRecorder.value.stop();
+        // ۱. تغییر وضعیت فوری به idle تا بقیه توابع بفهمند کار تمام است
         state.value = 'idle';
         isRecording.value = false;
+
+        // ۲. قطع کردن مدیا رکوردر بدون دریافت آخرین چانک
+        if (mediaRecorder.value) {
+            // مهم: این خط باعث می‌شود آخرین تکه ویدیو نادیده گرفته شود
+            mediaRecorder.value.ondataavailable = null;
+            // اگر وضعیت هنوز recording است متوقفش کن
+            if (mediaRecorder.value.state === 'recording') {
+                mediaRecorder.value.stop();
+            }
+        }
+
         stopStream();
         stopTimer();
+
+        // ۳. پاکسازی صف لوکال (قبل از ریکوئست کنسل)
         await localforage.clear();
+
+        // ۴. ارسال درخواست حذف به سرور
+        try {
+            await axios.delete(route('web.video.cancel', videoUuid.value));
+        } catch (e) {
+            console.error("Error canceling video:", e);
+        }
+
+        // ۵. شروع مجدد دوربین برای تلاش بعدی
         initializeCamera();
     }
 };
+
 
 const initializeCamera = async () => {
     // اگر قبلاً استریم داریم، کاری نکن
@@ -427,6 +469,8 @@ const handleStreamSuccess = (mediaStream) => {
 
 const processUploadQueue = async () => {
     if (isUploaderRunning) return;
+    // اگر وضعیت دیگر recording یا uploading نیست (یعنی کنسل شده)، ادامه نده
+    if (state.value === 'idle') return;
     isUploaderRunning = true;
     try {
         const keys = await localforage.keys();
@@ -461,7 +505,16 @@ const finishUpload = async () => {
 };
 
 // Utils
-const stopStream = () => stream.value?.getTracks().forEach(t => t.stop());
+const stopStream = () => {
+    if (stream.value) {
+        stream.value.getTracks().forEach(track => track.stop());
+        stream.value = null; // <--- این خط حیاتی است
+    }
+    if (videoPreview.value) {
+        videoPreview.value.srcObject = null;
+    }
+};
+
 const startTimer = () => { timerInterval.value = setInterval(() => timer.value++, 1000); };
 const stopTimer = () => clearInterval(timerInterval.value);
 const formatTime = (s) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;

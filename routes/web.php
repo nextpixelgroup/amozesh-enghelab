@@ -83,6 +83,7 @@ Route::name('web.')->group(function () {
 
         Route::get('/video/record/{uuid}', [VideoController::class, 'index'])->name('video.record');
         Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
+        Route::delete('/video/cancel/{uuid}', [VideoController::class, 'cancel'])->name('video.cancel');
         Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
         Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');
     });

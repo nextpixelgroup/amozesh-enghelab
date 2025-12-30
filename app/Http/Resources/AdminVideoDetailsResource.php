@@ -110,6 +110,7 @@ class AdminVideoDetailsResource extends JsonResource
                 'email' => $this->user->email,
             ],
             'video' => [
+                'uuid' => $this->uuid,
                 'url' => $this->path ? route('admin.video.url',$this->id) : '',
                 'poster' => $this->thumbnail ? route('admin.video.poster',$this->id) : '',
                 'status' => $this->status,

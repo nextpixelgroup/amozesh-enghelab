@@ -26,7 +26,7 @@
                                         <th class="text-center">ردیف</th>
                                         <th class="text-center">تصویر</th>
                                         <th>دوره موفق</th>
-                                        <th class="text-center">تاریخ صدور</th>
+                                        <th class="text-center">تاریخ</th>
                                         <th class="text-center">شماره گواهینامه</th>
                                     </tr>
                                 </thead>
@@ -34,17 +34,16 @@
                                     <tr v-for="(item, index) in certificates" :key="index">
                                         <td class="text-center">{{ index + 1 }}</td>
                                         <td class="text-center">
-                                            <img :src="item.image" />
+                                            <img :src="item.course.thumbnail" />
                                         </td>
                                         <td class="zo-course">
-                                            <strong>{{ item.title }}</strong>
-                                            <small>{{ item.description }}</small>
+                                            <strong>{{ item.course.title }}</strong>
                                         </td>
                                         <td class="text-center">
-                                            <small>{{ item.date }}</small>
+                                            <small dir="ltr">{{ item.created_at.title }}</small>
                                         </td>
                                         <td class="text-center">
-                                            <strong>{{ item.code }}</strong>
+                                            <strong>{{ item.certificate_number }}</strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -59,51 +58,12 @@
 <script setup lang="ts">
 import PanelLayout from "@/Layouts/PanelLayout.vue";
 import WebLayout from "@/Layouts/WebLayout.vue";
-
+import {ref} from "vue";
+const props = defineProps({
+    certificates: Object
+})
 /* داده‌های ثابت (Mock Data) */
-const certificates = [{
-        image: "/assets/img/sample/21.png",
-        title: "مبانی فکری و اعتقادی انقلاب اسلامی ایران",
-        description: "آشنایی با اصول فکری، اعتقادی و مبانی نظری انقلاب اسلامی",
-        date: "1404/09/05 10:32",
-        code: "874512963"
-    },
-    {
-        image: "/assets/img/sample/22.png",
-        title: "انقلاب اسلامی ایران؛ از شکل‌گیری تا تداوم",
-        description: "ریشه‌های تاریخی، اجتماعی و فرهنگی انقلاب اسلامی ایران",
-        date: "1404/08/18 14:45",
-        code: "562198437"
-    },
-    {
-        image: "/assets/img/sample/23.png",
-        title: "جهاد تبیین در گام دوم انقلاب",
-        description: "بررسی راهبردهای تبیین، روایت صحیح و مقابله با جنگ شناختی",
-        date: "1404/07/02 09:15",
-        code: "931475286"
-    },
-    {
-        image: "/assets/img/sample/24.png",
-        title: "هویت ملی در اندیشه امام خمینی (ره)",
-        description: "تحلیل مفهوم هویت ملی و استقلال فرهنگی در اندیشه امام خمینی",
-        date: "1404/06/21 16:08",
-        code: "748236519"
-    },
-    {
-        image: "/assets/img/sample/18.png",
-        title: "هویت ملی در اندیشه آیت‌الله خامنه‌ای",
-        description: "چیستی هویت ملی و نسبت آن با تمدن نوین اسلامی",
-        date: "1404/05/11 11:54",
-        code: "615983742"
-    },
-    {
-        image: "/assets/img/sample/17.png",
-        title: "انقلاب اسلامی و نظام مردم‌سالاری دینی",
-        description: "بررسی پیوند جمهوریت و اسلامیت در نظام جمهوری اسلامی ایران",
-        date: "1404/04/03 13:27",
-        code: "489721356"
-    }
-];
+const certificates = ref(props.certificates?.data);
 
 </script>
 <style scoped>

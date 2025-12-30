@@ -82,6 +82,50 @@ class VideoController extends Controller
         }
     }
 
+    public function cancel(Request $request, $uuid)
+    {
+        try {
+            $video = Video::where('uuid', $uuid)->first();
+            if (!$video) {
+                return response()->json(['status' => 'error', 'message' => 'Video not found'], 404);
+            }
+
+            // ۱. اول دیتابیس را آپدیت کن (قفل کردن عملیات آپلود)
+            // این کار باعث می‌شود شرطی که در uploadChunk گذاشتیم، برای درخواست‌های بعدی فعال شود
+            $video->update([
+                'status' => 'pending',
+                'path' => null,
+                'thumbnail' => null,
+                'duration' => 0,
+                'completed_at' => null,
+            ]);
+
+            // ۲. پاک کردن کلیدهای Redis (چون از ردیس استفاده می‌کنید خیلی مهمه)
+            Redis::del("upload:{$uuid}:chunks");
+
+            // ۳. پاک کردن فایل‌های اصلی (اگر وجود داشتند)
+            if ($video->path && Storage::exists($video->path)) {
+                Storage::delete($video->path);
+            }
+            if ($video->thumbnail && Storage::exists($video->thumbnail)) {
+                Storage::delete($video->thumbnail);
+            }
+
+            // ۴. پاک کردن دایرکتوری موقت چانک‌ها
+            $chunksPath = storage_path("app/temp_uploads/{$uuid}");
+            if (File::exists($chunksPath)) {
+                File::deleteDirectory($chunksPath);
+            }
+
+            return response()->json(['status' => 'success']);
+
+        } catch (\Exception $e) {
+            log_error($e);
+            return response()->json(['status' => 'error', 'message' => 'Failed to cancel'], 500);
+        }
+    }
+
+
     // ... متدهای uploadChunk و finish که قبلا داشتید
 
     public function uploadChunk(Request $request)
@@ -94,6 +138,24 @@ class VideoController extends Controller
         ]);
 
         $uuid = $request->input('uuid');
+
+        // *** افزودن چک وضعیت (Race Condition Fix) ***
+        // فقط یک کوئری سبک میزنیم تا وضعیت رو بگیریم.
+        // اگر از مدل Video استفاده می‌کنید:
+        $videoStatus = Video::where('uuid', $uuid)->value('status');
+
+        // اگر ویدیو پیدا نشد یا وضعیتش در حال ضبط نبود (یعنی کنسل شده)، عملیات را متوقف کن
+        // توجه: فرض بر این است که وقتی کنسل می‌کنید وضعیت به pending برمی‌گردد
+        // اگر مقدار enum دارید باید چک کنید برابر مقدار recording باشد
+        // مثلا: if ($videoStatus !== 'recording') ...
+
+        // اینجا فرض میکنیم اگر pending باشد یعنی ریست شده و نباید ذخیره شود
+        if (!$videoStatus || $videoStatus === 'pending' || $videoStatus === 'rejected') {
+            // فایل رو نادیده میگیریم و موفق برمیگردونیم تا کلاینت ارور نده
+            return response()->json(['status' => 'ignored_cancelled']);
+        }
+        // *******************************************
+
         $index = $request->input('chunk_index');
         $file = $request->file('chunk');
 
@@ -101,21 +163,21 @@ class VideoController extends Controller
         $path = storage_path("app/temp_uploads/{$uuid}");
 
         if (!file_exists($path)) {
+            // یک لایه امنیتی دیگر: اگر پوشه وجود ندارد و وضعیت هم رکوردینگ نیست، نسازش
+            // اما چون بالا چک کردیم، اینجا فقط می‌سازیم
             mkdir($path, 0777, true);
         }
 
-        // ذخیره فایل فیزیکی (روی SSD سرور خیلی سریع است)
+        // ذخیره فایل فیزیکی
         $file->move($path, "{$index}.tmp");
 
-        // ثبت در Redis (بسیار سریع و اتمیک)
-        // کلید: upload:{uuid}:chunks
+        // ثبت در Redis
         Redis::sadd("upload:{$uuid}:chunks", $index);
-
-        // تنظیم انقضا برای جلوگیری از پر شدن رم (مثلا ۲۴ ساعت)
         Redis::expire("upload:{$uuid}:chunks", 86400);
 
         return response()->json(['status' => 'ok']);
     }
+
 
     public function finish(Request $request)
     {

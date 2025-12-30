@@ -206,7 +206,11 @@
                                     </v-avatar>
                                     <div>
                                         <div class="text-subtitle-1 font-weight-bold text-grey-darken-4">
-                                            {{ userInfo.name || 'بدون نام' }}
+
+                                            <a :href="route('admin.users.edit', userInfo.id)" target="_blank">
+                                                {{ userInfo.name || 'بدون نام' }}
+                                                <v-icon size="16">mdi mdi-open-in-new</v-icon>
+                                            </a>
                                         </div>
                                         <div class="text-caption text-grey-darken-1">
                                             شناسه: {{ userInfo.id || '-' }}
@@ -280,6 +284,7 @@
                                 </div>
                                 <!-- فرم تغییر وضعیت -->
                                 <v-select
+                                    v-if="quizData.video.status !== 'approved'"
                                     v-model="adminForm.status"
                                     :items="statusOptions"
                                     item-title="title"
