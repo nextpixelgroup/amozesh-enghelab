@@ -221,7 +221,7 @@ a:hover {
 }
 
 .v-list-item--active {
-    background: rgb(105, 5, 50);
+    background: rgba(5, 70, 40, .75);
     opacity: 1;
 }
 
