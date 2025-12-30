@@ -52,8 +52,8 @@
 
                                             <!-- حالت ۱: اگر ارور دسترسی داریم -->
                                             <div v-if="permissionError" class="text-center px-4">
-                                                <v-icon size="48" color="red-accent-2" class="mb-4">mdi-camera-off</v-icon>
-                                                <p class="text-body-2 font-weight-bold mb-4 text-white">
+                                                <v-icon size="40" color="red-accent-2" class="mb-2">mdi-camera-off</v-icon>
+                                                <p class="text-body-2 font-weight-bold mb-2 text-white">
                                                     دسترسی به دوربین داده نشد یا خطایی رخ داد.
                                                 </p>
                                                 <v-btn color="white" variant="outlined" rounded="pill" @click="initializeCamera">
@@ -63,17 +63,16 @@
 
                                             <!-- حالت ۲: حالت عادی (دکمه فعال‌سازی دستی برای کروم/فایرفاکس) -->
                                             <div v-else class="text-center px-4">
-                                                <div class="pulse-ring mb-6">
-                                                    <v-icon size="48" color="white">mdi-camera-iris</v-icon>
+                                                <div class="pulse-ring mb-2">
+                                                    <v-icon size="40" color="white">mdi-camera-iris</v-icon>
                                                 </div>
                                                 <h3 class="text-h6 font-weight-bold mb-2">راه‌اندازی دوربین</h3>
-                                                <p class="text-caption text-grey-lighten-1 mb-6">
+                                                <p class="text-caption text-grey-lighten-1 mb-2">
                                                     جهت شروع، دسترسی دوربین را فعال کنید
                                                 </p>
                                                 <!-- این دکمه "User Gesture" لازم برای کروم و فایرفاکس را فراهم می‌کند -->
                                                 <v-btn
                                                     color="primary"
-                                                    size="large"
                                                     rounded="pill"
                                                     prepend-icon="mdi-camera"
                                                     @click="initializeCamera"
