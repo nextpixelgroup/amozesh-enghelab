@@ -49,10 +49,11 @@ class QuizController extends Controller
             elseif ($request->input('status') === 'approved'){
                 $certificate = Certificate::where('user_id', $user->id)->where('course_id', $video->course_id)->exists();
                 if (!$certificate){
-                Certificate::create([
-                    'user_id' => $video->user_id,
-                    'course_id' => $video->course_id,
-                ]);
+                    $certificate = Certificate::create([
+                        'user_id' => $video->user_id,
+                        'course_id' => $video->course_id,
+                    ]);
+                    SendSmsForQuiz::dispatch($video->user,$certificate->certificate_number,'approveFinalQuiz');
                 }
             }
             $video->update(['status' => $request->input('status')]);
