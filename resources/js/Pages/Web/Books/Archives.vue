@@ -22,78 +22,34 @@
                     </v-col>
                 </v-row>
             </v-container>
-            <div class="zo-actions">
-                <v-container class="py-1">
-                    <v-row class="align-center">
-                        <v-col class="v-col-md-8 v-col-12">
-                            <select name="" id="">
-                                <option value=""></option>
-                                <option value=""></option>
-                                <option value=""></option>
-                            </select>
-                            <div class="zo-search">
-                                <div class="zo-search">
-                                    <div class="zo-select">
-                                        <v-select
-                                            v-model="filters.category"
-                                            :label="filters.category ? '' : 'دسته‌بندی'"
-                                            :items="categories"
-                                            item-title="title"
-                                            item-value="value"
-                                            variant="solo"
-                                            :clearable="filters.category !== 'all'"
-                                            hide-details
-                                            @update:model-value="search('category')"
-                                            :loading="isCategoryLoading"
-                                            :disabled="disabled"
-                                        />
-                                    </div>
-                                    <div class="zo-input">
-                                        <v-text-field
-                                            v-model="filters.search"
-                                            hide-details
-                                            placeholder="جستجو"
-                                            variant="solo"
-                                            @update:model-value="search('search')"
-                                            :loading="isSearchLoading"
-                                        />
-                                        <span class="zo-icon">
-                                            <img src="/assets/img/site/c-search.svg" alt="" class="img-fluid" />
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </v-col>
-                        <v-col class="v-col-md-4 v-col-12">
-                            <div class="zo-sort">
-                                <v-menu :disabled="disabled">
-                                    <template #activator="{ props }">
-                                        <v-btn
-                                            v-bind="props"
-                                            variant="tonal"
-                                            icon="mdi-filter-variant"
-                                            class="w-10 h-10"
-                                            :loading="isSortLoading"
-                                        ></v-btn>
-                                    </template>
-                                    <v-list>
-                                        <v-list-item
-                                            v-for="(item, index) in sorts"
-                                            :key="index"
-                                            :value="index"
-                                            v-model="sort"
-                                            @click="search('sort', item.value)"
-                                            :class="{ 'bg-primary text-white': filters.sort === item.value }"
-                                        >
-                                            <v-list-item-title>{{ item.title }}</v-list-item-title>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
-                            </div>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </div>
+            <v-container class="mb-3 py-1">
+                <v-row class="justify-space-between align-center">
+                    <v-col cols="12" lg="8">
+                        <v-row dense class="align-center">
+                            <v-col cols="12" lg="4">
+                                <v-select v-model="filters.category" :label="filters.category ? '' : 'دسته‌بندی'" :items="categories" item-title="title" item-value="value" variant="solo" :clearable="filters.category !== 'all'" hide-details @update:model-value="search('category')" :loading="isCategoryLoading" :disabled="disabled" />
+                            </v-col>
+                            <v-col cols="12" lg="8">
+                                <v-text-field v-model="filters.search" hide-details placeholder="جستجو" variant="solo" @update:model-value="search('search')" :loading="isSearchLoading" />
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                    <v-col cols="12" lg="4">
+                        <div class="text-left">
+                            <v-menu :disabled="disabled">
+                                <template #activator="{ props }">
+                                    <v-btn v-bind="props" variant="tonal" icon="mdi-filter-variant" class="w-10 h-10" :loading="isSortLoading"></v-btn>
+                                </template>
+                                <v-list>
+                                    <v-list-item v-for="(item, index) in sorts" :key="index" :value="index" v-model="sort" @click="search('sort', item.value)" :class="{ 'bg-primary text-white': filters.sort === item.value }">
+                                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                    </v-list-item>
+                                </v-list>
+                            </v-menu>
+                        </div>
+                    </v-col>
+                </v-row>
+            </v-container>
             <v-container>
                 <v-row dense>
                     <v-col lg="3" md="6" cols="12" v-for="(book,index) in books">
@@ -104,11 +60,7 @@
             <v-container>
                 <v-row>
                     <v-col cols="12">
-                        <Pagination
-                            v-model="currentPage"
-                            :length="lastPage"
-                            @changePage="changePage"
-                        />
+                        <Pagination v-model="currentPage" :length="lastPage" @changePage="changePage" />
                     </v-col>
                 </v-row>
             </v-container>
