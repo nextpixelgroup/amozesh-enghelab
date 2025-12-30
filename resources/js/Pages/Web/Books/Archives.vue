@@ -22,34 +22,43 @@
                     </v-col>
                 </v-row>
             </v-container>
-            <v-container class="mb-3 py-1">
-                <v-row class="justify-space-between align-center">
-                    <v-col cols="12" lg="8">
-                        <v-row dense class="align-center">
-                            <v-col cols="12" lg="4">
-                                <v-select v-model="filters.category" :label="filters.category ? '' : 'دسته‌بندی'" :items="categories" item-title="title" item-value="value" variant="solo" :clearable="filters.category !== 'all'" hide-details @update:model-value="search('category')" :loading="isCategoryLoading" :disabled="disabled" />
-                            </v-col>
+            <div class="zo-books-archive-section">
+                <div class="zo-actions">
+                    <v-container class="py-1">
+                        <v-row class="justify-space-between align-center">
                             <v-col cols="12" lg="8">
-                                <v-text-field v-model="filters.search" hide-details placeholder="جستجو" variant="solo" @update:model-value="search('search')" :loading="isSearchLoading" />
+                                <v-row dense class="align-center">
+                                    <div class="zo-search">
+                                        <div class="zo-select">
+                                            <v-select v-model="filters.category" :label="filters.category ? '' : 'دسته‌بندی'" :items="categories" item-title="title" item-value="value" variant="solo" :clearable="filters.category !== 'all'" hide-details @update:model-value="search('category')" :loading="isCategoryLoading" :disabled="disabled" />
+                                        </div>
+                                        <div class="zo-input">
+                                            <v-text-field v-model="filters.search" hide-details placeholder="جستجو" variant="solo" @update:model-value="search('search')" :loading="isSearchLoading" />
+                                            <span class="zo-icon">
+                                                <img src="/assets/img/site/c-search.svg" alt="" class="img-fluid" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </v-row>
+                            </v-col>
+                            <v-col cols="12" lg="4">
+                                <div class="zo-sort">
+                                    <v-menu :disabled="disabled">
+                                        <template #activator="{ props }">
+                                            <v-btn v-bind="props" variant="tonal" icon="mdi-filter-variant" class="w-10 h-10" :loading="isSortLoading"></v-btn>
+                                        </template>
+                                        <v-list>
+                                            <v-list-item v-for="(item, index) in sorts" :key="index" :value="index" v-model="sort" @click="search('sort', item.value)" :class="{ 'bg-primary text-white': filters.sort === item.value }">
+                                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </div>
                             </v-col>
                         </v-row>
-                    </v-col>
-                    <v-col cols="12" lg="4">
-                        <div class="text-left">
-                            <v-menu :disabled="disabled">
-                                <template #activator="{ props }">
-                                    <v-btn v-bind="props" variant="tonal" icon="mdi-filter-variant" class="w-10 h-10" :loading="isSortLoading"></v-btn>
-                                </template>
-                                <v-list>
-                                    <v-list-item v-for="(item, index) in sorts" :key="index" :value="index" v-model="sort" @click="search('sort', item.value)" :class="{ 'bg-primary text-white': filters.sort === item.value }">
-                                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                                    </v-list-item>
-                                </v-list>
-                            </v-menu>
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-container>
+                    </v-container>
+                </div>
+            </div>
             <v-container>
                 <v-row dense>
                     <v-col lg="3" md="6" cols="12" v-for="(book,index) in books">
@@ -189,3 +198,53 @@ watch(() => page.props.books, (newVal) => {
 });
 
 </script>
+<style scoped>
+.zo-books-archive-section .zo-actions .zo-sort {
+    text-align: left
+}
+
+.zo-books-archive-section .zo-actions .zo-sort button {
+    border-radius: 0.75rem;
+}
+
+.zo-books-archive-section .zo-actions .zo-select :deep(.v-field) {
+    background: var(--Secondary);
+    color: var(--White);
+    box-shadow: none
+}
+
+.zo-books-archive-section .zo-actions .zo-search {
+    display: flex;
+    gap: 10px;
+    position: relative;
+}
+
+.zo-books-archive-section .zo-actions .zo-search .zo-select :deep(.v-field .v-field__input) {
+    height: 40px;
+    min-height: 40px;
+    padding: 0 15px
+}
+
+.zo-books-archive-section .zo-actions .zo-search .zo-input {
+    width: 300px;
+    position: relative
+}
+
+.zo-books-archive-section .zo-actions .zo-search .zo-input :deep(.v-field) {
+    background: rgb(240, 240, 240);
+    box-shadow: none
+}
+
+.zo-books-archive-section .zo-actions .zo-search .zo-input :deep(.v-field .v-field__input) {
+    height: 40px;
+    min-height: 40px;
+    padding: 0 15px
+}
+
+.zo-books-archive-section .zo-actions .zo-search .zo-input .zo-icon {
+    position: absolute;
+    top: 7.5px;
+    left: 7.5px
+}
+
+</style>
