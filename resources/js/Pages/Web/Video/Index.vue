@@ -1,18 +1,21 @@
 <template>
     <VideoLayout>
-        <!-- کلاس persian-wrapper برای اعمال اجباری فونت اضافه شد -->
         <v-container class="fill-height align-start justify-center pa-0 pa-md-4 persian-wrapper" fluid>
 
             <v-row justify="center" class="w-100 ma-0">
                 <v-col cols="12" md="10" lg="8" class="pa-0">
 
-                    <!-- کارت اصلی -->
+                    <!--
+                        تغییر ۱: اصلاح کلاس‌های کارت
+                        - h-100 و overflow-hidden فقط برای دسکتاپ (mdAndUp) فعال است.
+                        - در موبایل overflow-visible است تا اسکرول کار کند.
+                    -->
                     <v-card
-                        class="overflow-hidden main-card h-100 d-flex flex-column"
-                        :class="$vuetify.display.mdAndUp ? 'rounded-xl elevation-10' : 'rounded-0 elevation-0 bg-background'"
+                        class="main-card d-flex flex-column"
+                        :class="$vuetify.display.mdAndUp ? 'rounded-xl elevation-10 h-100 overflow-hidden' : 'rounded-0 elevation-0 bg-background min-h-screen'"
                     >
 
-                        <!-- هدر وضعیت (فقط دسکتاپ یا وقتی ضبط نیست) -->
+                        <!-- هدر وضعیت -->
                         <div v-if="(!isRecording || $vuetify.display.mdAndUp) && state !== 'completed'" class="px-4 py-3 d-flex align-center justify-space-between bg-grey-lighten-5 border-b">
                             <div class="d-flex align-center">
                                 <v-avatar color="primary" variant="tonal" size="36" class="me-3">
@@ -37,9 +40,10 @@
                         <!-- بدنه اصلی -->
                         <v-card-text class="pa-0 position-relative d-flex flex-column flex-grow-1">
 
-                            <!-- 1. حالت مجاز و قبل از تکمیل: بخش ضبط -->
+                            <!-- بخش ضبط -->
                             <div v-if="isAllowedToRecord && state !== 'completed' && state !== 'processing' && state !== 'uploading'" class="video-section d-flex flex-column flex-grow-1">
-                                <!-- ... (بخش ویدیو و سوالات مثل قبل) ... -->
+
+                                <!-- باکس ویدیو (Sticky در موبایل) -->
                                 <div class="video-wrapper-container" :class="{ 'sticky-mobile': $vuetify.display.smAndDown && isRecording }">
                                     <div class="video-wrapper bg-black d-flex align-center justify-center">
                                         <video ref="videoPreview" autoplay playsinline muted class="video-element" :class="{ 'is-mirror': true }"></video>
@@ -63,15 +67,23 @@
                                         <span class="text-caption font-weight-bold">لطفاً سؤال را به همراه پاسخ صحیح، رو به دوربین مطرح کرده و توضیحات لازم را ارائه دهید.</span>
                                     </div>
                                     <div class="question-box mb-6"><h3 class="text-h6 font-weight-bold text-grey-darken-4 leading-relaxed text-right">{{ currentQuestion.question }}</h3></div>
-                                    <div class="options-read-only d-flex flex-column gap-3 mb-16 pb-16">
+
+                                    <!-- گزینه‌ها -->
+                                    <div class="options-read-only d-flex flex-column gap-3">
                                         <div v-for="(option, idx) in currentQuestion.options" :key="option.id" class="option-item d-flex align-start pa-3 rounded-lg border border-dashed bg-grey-lighten-5">
                                             <div class="option-bullet me-3 mt-1 d-flex align-center justify-center rounded-circle bg-white border text-grey-darken-2 font-weight-bold text-caption" style="width: 24px; height: 24px; flex-shrink: 0;">{{ idx + 1 }}</div>
                                             <span class="text-body-1 text-grey-darken-3 font-weight-medium">{{ option.option }}</span>
                                         </div>
                                     </div>
+
+                                    <!--
+                                        تغییر ۲: فضای خالی برای جلوگیری از افتادن محتوا زیر دکمه‌های ثابت
+                                        این فضا فقط در موبایل (smAndDown) دیده می‌شود.
+                                    -->
+                                    <div class="mobile-spacer d-md-none" style="height: 160px; width: 100%;"></div>
                                 </div>
 
-                                <!-- کنترل‌های شروع -->
+                                <!-- کنترل‌های شروع (بدون تغییر) -->
                                 <div v-if="!isRecording" class="controls-bar py-8 px-4 bg-surface text-center d-flex flex-column align-center justify-center flex-grow-1">
                                     <v-btn size="x-large" color="primary" rounded="pill" class="px-8 font-weight-bold record-btn shadow-lg mb-6" @click="startRecording" :loading="isLoading" :disabled="!canRecord" height="64" block max-width="300">
                                         <v-icon start size="large">mdi-record-circle-outline</v-icon>شروع آزمون
@@ -94,7 +106,8 @@
                                 </div>
                             </div>
 
-                            <!-- 2. حالت جدید: در حال پردازش (Uploading / Processing) -->
+                            <!-- (سایر بخش‌های Loading و Completed بدون تغییر باقی می‌مانند) -->
+                            <!-- ... -->
                             <div v-else-if="state === 'uploading' || state === 'processing'" class="d-flex flex-column align-center justify-center py-16 px-4 bg-surface h-100 text-center">
                                 <!-- انیمیشن پردازش (آبی) -->
                                 <div class="mb-8 position-relative" style="height: 100px; width: 100px;">
@@ -207,6 +220,7 @@
         </v-container>
     </VideoLayout>
 </template>
+
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, onUnmounted, computed } from 'vue';
@@ -492,4 +506,7 @@ onUnmounted(() => {
 .option-item { border-color: #e0e0e0 !important; transition: none; }
 .option-bullet { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
 .dashed-divider { position: absolute; left: 0; top: 15%; bottom: 15%; width: 1px; border-left: 2px dashed #e0e0e0; }
+.min-h-screen {
+    min-height: 100vh !important;
+}
 </style>
