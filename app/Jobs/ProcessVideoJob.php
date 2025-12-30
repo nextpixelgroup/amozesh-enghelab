@@ -25,6 +25,7 @@ class ProcessVideoJob implements ShouldQueue
 
     public function __construct(Video $video, $totalChunks)
     {
+        $this->onConnection('redis')->onQueue('quizVideo');
         $this->video = $video;
         $this->totalChunks = $totalChunks;
     }
