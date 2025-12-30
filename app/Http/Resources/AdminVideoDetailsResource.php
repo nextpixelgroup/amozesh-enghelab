@@ -119,7 +119,8 @@ class AdminVideoDetailsResource extends JsonResource
                         'note' => $note->note,
                         'created_at' => verta()->instance($note->created_at)->format('Y/m/d H:i'),
                     ];
-                })
+                }),
+                'updatedAtTimestamp' => $this->updated_at->timestamp,
             ],
             'certificate' => $certificate,
             'finalQuiz' => $quizData,

@@ -10,7 +10,7 @@
                             class="w-100 d-block"
                             style="max-height: 500px; width: 100%; object-fit: contain; background: #000;"
                         >
-                            <source :src="quizData?.video?.url" type="video/mp4">
+                            <source :src="`${quizData?.video?.url}?v=${quizData?.video?.updatedAtTimestamp}`" type="video/mp4">
                             مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
                         </video>
                     </v-card>
