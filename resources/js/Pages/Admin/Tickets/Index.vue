@@ -88,8 +88,8 @@
                         <small>{{ item.created_at.title.split(' ')[1] }}</small>
                     </td>
                     <td class="text-center">
-                        <span v-if="item.read_at.value" class="'zo-status zo-archive'">آرشیو</span>
-                        <span v-else :class="'zo-status zo-unread'">خوانده نشده</span>
+                        <span v-if="item.read_at.value" class="zo-status zo-archive">آرشیو</span>
+                        <span v-else class="zo-status zo-unread">خوانده نشده</span>
                     </td>
                     <td>
                         <div class="d-flex justify-center ga-1">

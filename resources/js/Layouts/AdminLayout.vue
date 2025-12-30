@@ -1,72 +1,26 @@
 <template>
     <v-app id="inspire">
         <ConfirmDialog ref="confirmRef" />
-
-        <v-navigation-drawer
-            v-model="drawer"
-            location="right"
-            color="primary"
-            class="elevation-2 zo-drawer-section"
-            :temporary="!mdAndUp"
-        >
+        <v-navigation-drawer v-model="drawer" location="right" color="primary" class="elevation-2 zo-drawer-section" :temporary="!mdAndUp">
             <div class="zo-logo py-3 d-flex justify-center">
                 <img src="/assets/img/logo-typo.svg" alt="Logo">
             </div>
-
             <v-divider class="mx-3 my-1"></v-divider>
-
             <v-list density="comfortable" class="px-1">
                 <template v-for="(item, i) in menuItems" :key="i">
-
-                    <v-list-group
-                        v-if="item.children"
-                        v-model="groupStates[item.title]"
-                        @update:value="val => toggleGroup(item.title, val)"
-                        no-action
-                    >
+                    <v-list-group v-if="item.children" v-model="groupStates[item.title]" @update:value="val => toggleGroup(item.title, val)" no-action>
                         <template #activator="{ props }">
-                            <v-list-item
-                                v-bind="props"
-                                :prepend-icon="item.icon"
-                                :title="item.title"
-                                :active="isActive(item.route) || item.children?.some(child => isActive(child.route))"
-                                rounded
-                                class="text-white"
-                            />
+                            <v-list-item v-bind="props" :prepend-icon="item.icon" :title="item.title" :active="isActive(item.route) || item.children?.some(child => isActive(child.route))" rounded class="text-white" />
                         </template>
-
-                        <Link
-                            v-for="(child, ci) in item.children"
-                            :key="`child-${ci}`"
-                            :href="route(child.route)"
-                            class="text-decoration-none"
-                        >
-                            <v-list-item
-                                :prepend-icon="child.icon"
-                                :title="child.title"
-                                :active="isActive(child.route)"
-                                rounded
-                                class="text-white"
-                            />
+                        <Link v-for="(child, ci) in item.children" :key="`child-${ci}`" :href="route(child.route)" class="text-decoration-none">
+                        <v-list-item :prepend-icon="child.icon" :title="child.title" :active="isActive(child.route)" rounded class="text-white" />
                         </Link>
                     </v-list-group>
-
-                    <Link
-                        v-else
-                        :href="route(item.route)"
-                        class="text-decoration-none"
-                    >
-                        <v-list-item
-                            :prepend-icon="item.icon"
-                            :title="item.title"
-                            :active="isActive(item.route)"
-                            rounded
-                            class="text-white"
-                        />
+                    <Link v-else :href="route(item.route)" class="text-decoration-none">
+                    <v-list-item :prepend-icon="item.icon" :title="item.title" :active="isActive(item.route)" rounded class="text-white" />
                     </Link>
                 </template>
             </v-list>
-
             <template #append>
                 <div class="d-flex justify-center py-3">
                     <ul class="zo-social elevation-4 d-flex gap-2">
@@ -79,57 +33,43 @@
                 </div>
             </template>
         </v-navigation-drawer>
-
-        <v-app-bar
-            color="white"
-            elevation="2"
-            density="comfortable"
-            class="px-3"
-        >
+        <v-app-bar color="white" elevation="2" density="comfortable" class="px-3">
             <v-app-bar-nav-icon @click="drawer = !drawer" />
-
             <v-toolbar-title class="text-h6 font-weight-bold"></v-toolbar-title>
-
             <v-spacer></v-spacer>
-
             <div class="d-flex align-center">
                 <Link :href="route('admin.contacts.index')">
-                    <v-btn icon color="black">
-                        <v-badge color="secondary" :content="contactCount">
-                            <v-icon>mdi-bell-ring</v-icon>
-                        </v-badge>
-                    </v-btn>
+                <v-btn icon color="black">
+                    <v-badge color="secondary" :content="contactCount">
+                        <v-icon>mdi-bell-ring</v-icon>
+                    </v-badge>
+                </v-btn>
                 </Link>
                 <Link :href="route('admin.tickets.index')">
-                    <v-btn icon color="black">
-                        <v-badge color="secondary" :content="ticketCount">
-                            <v-icon>mdi-message-processing</v-icon>
-                        </v-badge>
-                    </v-btn>
+                <v-btn icon color="black">
+                    <v-badge color="secondary" :content="ticketCount">
+                        <v-icon>mdi-message-processing</v-icon>
+                    </v-badge>
+                </v-btn>
                 </Link>
-
                 <Link :href="route('admin.profile')">
-                    <v-btn icon color="black">
-                        <v-icon>mdi-account-circle</v-icon>
-                    </v-btn>
+                <v-btn icon color="black">
+                    <v-icon>mdi-account-circle</v-icon>
+                </v-btn>
                 </Link>
-
                 <v-btn icon @click="logout" :loading="isLoading">
                     <v-icon>mdi-logout</v-icon>
                 </v-btn>
             </div>
         </v-app-bar>
-
         <v-main class="zo-main">
             <v-container fluid>
                 <slot />
             </v-container>
         </v-main>
-
         <FlashMessage />
     </v-app>
 </template>
-
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
@@ -175,7 +115,7 @@ watch(
     () => page.url,
     () => {
         menuItems.value.forEach(item => {
-            const childActive = item.children?.some(c => isActive(c.route))
+            const childActive = item.children ? .some(c => isActive(c.route))
             if (childActive) {
                 groupStates.value[item.title] = true
             }
@@ -185,8 +125,7 @@ watch(
         if (!mdAndUp.value) {
             drawer.value = false
         }
-    },
-    { immediate: true }
+    }, { immediate: true }
 )
 
 const toggleGroup = (title, val) => {
@@ -202,21 +141,22 @@ const logout = async () => {
         onFinish: () => (isLoading.value = false)
     })
 }
-</script>
 
+</script>
 <style scoped>
 .zo-main {
     background: rgba(245, 245, 245, 0.75);
     min-height: 100vh;
 }
 
-a {
+.v-navigation-drawer a {
     display: block;
     color: rgb(255, 255, 255);
     border-radius: 300px;
     transition: background 0.25s ease-in-out
 }
-a:hover {
+
+.v-navigation-drawer a:hover {
     background: rgba(5, 70, 40, .5)
 }
 
@@ -239,4 +179,5 @@ a:hover {
 .zo-social ul li {
     display: inline-block
 }
+
 </style>

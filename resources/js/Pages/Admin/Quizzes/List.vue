@@ -222,3 +222,15 @@ watch(() => props.tickets, (newVal) => {
     currentPage.value = newVal.meta?.current_page || 1;
 });
 </script>
+<style scoped>
+    .zo-completed {
+        background: rgba(5, 105, 60, .05);
+        color: rgb(5, 105, 60);
+        border: 1px solid rgb(5, 105, 60)
+    }
+    .zo-review {
+        background: rgba(200, 160, 100, .05);
+        color: rgb(200,160,100);
+        border: 1px solid rgb(200,160,100)
+    }
+</style>

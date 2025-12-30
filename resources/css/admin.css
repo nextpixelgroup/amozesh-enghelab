@@ -14,7 +14,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-html[dir="rtl"], body[dir="rtl"] {
+html[dir="rtl"],
+body[dir="rtl"] {
     font-family: 'Estedad', sans-serif;
     direction: rtl;
     text-align: right;
@@ -106,46 +107,46 @@ th {
 .zo-publish,
 .zo-active,
 .zo-paid {
-    background: rgba(5, 105, 60);
-    color: rgb(255, 255, 255)
+    background: rgba(5, 105, 60, .05);
+    color: rgb(5, 105, 60);
+    border: 1px solid rgb(5, 105, 60)
 }
 
 .zo-pending {
-    background: rgba(105, 60, 5);
-    color: rgb(255, 255, 255)
-}
-
-.zo-draft {
-    background: rgba(150, 90, 5, .15);
-    color: rgb(150, 90, 5);
+    background: rgba(105, 60, 5, 0.05);
+    color: rgb(105, 60, 5);
+    border: 1px solid rgb(105, 60, 5)
 }
 
 .zo-archive,
 .zo-archived {
-    background: rgba(0, 0, 0, .15);
+    background: rgba(45, 45, 45, .05);
     color: rgb(45, 45, 45);
+    border: 1px solid rgb(45, 45, 45)
 }
 
-.zo-deactive,
-.zo-unread {
-    background: rgba(150, 90, 5, .15);
+.zo-draft,
+.zo-unread,
+.zo-deactive {
+    background: rgba(150, 90, 5, .05);
     color: rgb(150, 90, 5);
+    border: 1px solid rgb(150, 90, 5)
 }
 
-.zo-suspended,
+.zo-trash,
 .zo-canceled,
-.zo-trash {
-    background: rgb(0, 0, 0);
-    color: rgb(255, 255, 255);
+.zo-suspended {
+    background: rgba(0, 0, 0, .05);
+    color: rgb(0, 0, 0);
+    border: 1px solid rgb(0, 0, 0)
 }
 
+.zo-ban,
+.zo-refunded,
 .status-temporary_ban {
-    width: 100px;
-    display: inline-block;
-    padding: 3.5px 15px;
     background: rgba(150, 90, 5, .15);
     color: rgb(150, 90, 5);
-    border-radius: 2px
+    border: 1px solid rgb(150, 90, 5)
 }
 
 .status-ban {
