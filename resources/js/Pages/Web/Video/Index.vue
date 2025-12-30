@@ -470,7 +470,11 @@ const updateOnlineStatus = () => isOnline.value = navigator.onLine;
 onMounted(async () => {
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
-    await initializeCamera();
+
+    // تغییر مهم: فقط اگر وضعیت مجاز بود (pending یا rejected) دوربین را روشن کن
+    if (isAllowedToRecord.value) {
+        await initializeCamera();
+    }
 });
 
 onBeforeUnmount(() => { stopStream(); stopTimer(); });
@@ -504,7 +508,6 @@ onUnmounted(() => {
 
 <style scoped>
 /* --- Font Fixes for Persian --- */
-/* این بخش تمام کلاس‌های Vuetify را مجبور می‌کند از فونت والد پیروی کنند */
 .persian-wrapper :deep(.text-h1), .persian-wrapper :deep(.text-h2),
 .persian-wrapper :deep(.text-h3), .persian-wrapper :deep(.text-h4),
 .persian-wrapper :deep(.text-h5), .persian-wrapper :deep(.text-h6),
@@ -513,23 +516,53 @@ onUnmounted(() => {
 .persian-wrapper :deep(.text-button), .persian-wrapper :deep(.text-caption),
 .persian-wrapper :deep(.text-overline) {
     font-family: inherit !important;
-    letter-spacing: 0 !important; /* حذف فاصله حروف اضافی در فونت فارسی */
+    letter-spacing: 0 !important;
 }
 
 .font-monospace { letter-spacing: 1px; font-family: monospace !important; }
 .gap-3 { gap: 12px; }
 
-/* Video Styles */
-.video-wrapper-container { width: 100%; background: #000; }
-.video-wrapper { width: 100%; aspect-ratio: 16 / 9; position: relative; overflow: hidden; }
-.sticky-mobile { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #333; }
-.video-element { width: 100%; height: 100%; object-fit: cover; }
+/*
+   Video Styles - اصلاح شده برای نمایش کامل کادر دوربین
+*/
+.video-wrapper-container {
+    width: 100%;
+    background: #000;
+}
+
+.video-wrapper {
+    width: 100%;
+    /* حذف aspect-ratio ثابت */
+    position: relative;
+    overflow: hidden;
+    background: #18181b; /* هماهنگ با رنگ پس‌زمینه جدید */
+    min-height: 350px; /* حداقل ارتفاع برای نمایش دکمه فعال‌سازی قبل از لود دوربین */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sticky-mobile {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid #333;
+}
+
+.video-element {
+    width: 100%;
+    height: auto; /* ارتفاع بر اساس ورودی دوربین تنظیم می‌شود */
+    max-height: 60vh; /* جلوگیری از اشغال کل صفحه در موبایل */
+    object-fit: contain; /* تضمین می‌کند هیچ بخشی از تصویر بریده نمی‌شود */
+    display: block;
+}
+
 .is-mirror { transform: scaleX(-1); }
 
 /* Rec Indicator */
-.rec-indicator { position: absolute; top: 12px; left: 12px; background: rgba(255, 0, 0, 0.7); color: white; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 6px; }
+.rec-indicator { position: absolute; top: 12px; left: 12px; background: rgba(255, 0, 0, 0.7); color: white; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 6px; z-index: 20; }
 .rec-indicator .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
-.mobile-overlay-timer { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-family: monospace; }
+.mobile-overlay-timer { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-family: monospace; z-index: 20; }
 
 /* Animations */
 .blink-animation { animation: blink 1s infinite; }
@@ -561,7 +594,7 @@ onUnmounted(() => {
     transform: translate(-50%, -50%);
     width: 80px;
     height: 80px;
-    background-color: rgba(25, 118, 210, 0.1); /* Primary color low opacity */
+    background-color: rgba(25, 118, 210, 0.1);
     border-radius: 50%;
     animation: pulse-blue 2s infinite;
 }
