@@ -64,6 +64,19 @@
                                             <span>پروفایل کاربری</span>
                                         </v-tooltip>
                                     </div>
+                                    <div class="zo-panel d-none d-lg-block" v-else>
+                                        <a :href="route('panel.index')">ورود/عضویت</a>
+                                    </div>
+                                    <div class="zo-cart" v-if="showCart">
+                                        <v-tooltip bottom>
+                                            <template #activator="{ props }">
+                                                <a :href="route('web.cart')" v-bind="props">
+                                                    <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
+                                                </a>
+                                            </template>
+                                            <span>سبد خرید</span>
+                                        </v-tooltip>
+                                    </div>
                                     <div class="zo-exit" v-if="isAuth">
                                         <v-tooltip bottom>
                                             <template #activator="{ props }">
@@ -79,19 +92,6 @@
                                                 ></v-btn>
                                             </template>
                                             <span>خروج از حساب کاربری</span>
-                                        </v-tooltip>
-                                    </div>
-                                    <div class="zo-panel d-none d-lg-block" v-else>
-                                        <a :href="route('panel.index')">ورود/عضویت</a>
-                                    </div>
-                                    <div class="zo-cart" v-if="showCart">
-                                        <v-tooltip bottom>
-                                            <template #activator="{ props }">
-                                                <a :href="route('web.cart')" v-bind="props">
-                                                    <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
-                                                </a>
-                                            </template>
-                                            <span>سبد خرید</span>
                                         </v-tooltip>
                                     </div>
                                     <v-app-bar-nav-icon variant="text" class="d-block d-lg-none"
