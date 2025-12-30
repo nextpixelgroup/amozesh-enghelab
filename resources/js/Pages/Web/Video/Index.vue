@@ -12,7 +12,7 @@
                     -->
                     <v-card
                         class="main-card d-flex flex-column"
-                        :class="$vuetify.display.mdAndUp ? 'rounded-xl elevation-10 h-100 overflow-hidden' : 'rounded-0 elevation-0 bg-background min-h-screen'"
+                        :class="$vuetify.display.mdAndUp ? 'rounded-xl elevation-10 h-100 overflow-hidden' : 'rounded-0 elevation-0 bg-background'"
                     >
 
                         <!-- هدر وضعیت -->
@@ -47,10 +47,42 @@
                                 <div class="video-wrapper-container" :class="{ 'sticky-mobile': $vuetify.display.smAndDown && isRecording }">
                                     <div class="video-wrapper bg-black d-flex align-center justify-center">
                                         <video ref="videoPreview" autoplay playsinline muted class="video-element" :class="{ 'is-mirror': true }"></video>
-                                        <div v-if="!stream" class="video-placeholder d-flex flex-column align-center justify-center text-white" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8);">
-                                            <div class="pulse-ring mb-4"><v-icon size="40" color="white">mdi-camera-off</v-icon></div>
-                                            <div class="text-subtitle-1 font-weight-light text-center">درحال آماده‌سازی...</div>
+                                        <!-- جایگزین بخش video-placeholder قبلی شود -->
+                                        <div v-if="!stream" class="video-placeholder d-flex flex-column align-center justify-center text-white" style="position: absolute; inset: 0; background: rgba(0,0,0,0.85); z-index: 10;">
+
+                                            <!-- حالت ۱: اگر ارور دسترسی داریم -->
+                                            <div v-if="permissionError" class="text-center px-4">
+                                                <v-icon size="48" color="red-accent-2" class="mb-4">mdi-camera-off</v-icon>
+                                                <p class="text-body-2 font-weight-bold mb-4 text-white">
+                                                    دسترسی به دوربین داده نشد یا خطایی رخ داد.
+                                                </p>
+                                                <v-btn color="white" variant="outlined" rounded="pill" @click="initializeCamera">
+                                                    تلاش مجدد
+                                                </v-btn>
+                                            </div>
+
+                                            <!-- حالت ۲: حالت عادی (دکمه فعال‌سازی دستی برای کروم/فایرفاکس) -->
+                                            <div v-else class="text-center px-4">
+                                                <div class="pulse-ring mb-6">
+                                                    <v-icon size="48" color="white">mdi-camera-iris</v-icon>
+                                                </div>
+                                                <h3 class="text-h6 font-weight-bold mb-2">راه‌اندازی دوربین</h3>
+                                                <p class="text-caption text-grey-lighten-1 mb-6">
+                                                    جهت شروع، دسترسی دوربین را فعال کنید
+                                                </p>
+                                                <!-- این دکمه "User Gesture" لازم برای کروم و فایرفاکس را فراهم می‌کند -->
+                                                <v-btn
+                                                    color="primary"
+                                                    size="large"
+                                                    rounded="pill"
+                                                    prepend-icon="mdi-camera"
+                                                    @click="initializeCamera"
+                                                >
+                                                    فعال‌سازی دوربین
+                                                </v-btn>
+                                            </div>
                                         </div>
+
                                         <div v-if="isRecording" class="rec-indicator"><span class="dot"></span><span class="text-caption font-weight-bold">ضبط</span></div>
                                     </div>
                                     <div v-if="$vuetify.display.smAndDown && isRecording" class="mobile-overlay-timer">{{ formatTime(timer) }}</div>
@@ -257,7 +289,7 @@ const currentQuestionIndex = ref(0);
 let videoUuid = ref(props.uuid);
 let chunkCounter = 0;
 let isUploaderRunning = false;
-
+const permissionError = ref(false);
 // --- Logic ---
 const currentQuestion = computed(() => props.quiz?.questions?.[currentQuestionIndex.value] || null);
 const nextQuestion = () => { if (currentQuestionIndex.value < props.quiz.questions.length - 1) currentQuestionIndex.value++; };
@@ -338,20 +370,60 @@ const cancelRecording = async () => {
 };
 
 const initializeCamera = async () => {
-    if (!isAllowedToRecord.value) return;
+    // اگر قبلاً استریم داریم، کاری نکن
+    if (stream.value) return;
+
+    // ریست کردن ارورها
+    permissionError.value = false;
+    errorMessage.value = '';
+
     try {
+        // تلاش اول: کیفیت ایده آل
         const mediaStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "user" },
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: "user"
+            },
             audio: true
         });
-        if (videoPreview.value) {
-            videoPreview.value.srcObject = mediaStream;
-            stream.value = mediaStream;
-            canRecord.value = true;
-        }
+        handleStreamSuccess(mediaStream);
     } catch (err) {
-        canRecord.value = false;
+        console.warn('HD failed, trying fallback...', err);
+        try {
+            // تلاش دوم: حداقل کیفیت (مناسب برای دستگاه‌های قدیمی یا ناسازگار)
+            const fallbackStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "user" }, // حذف رزولوشن تا هر چه هست را بدهد
+                audio: true
+            });
+            handleStreamSuccess(fallbackStream);
+        } catch (finalErr) {
+            console.error('Camera init failed:', finalErr);
+            canRecord.value = false;
+            permissionError.value = true; // نمایش دکمه تلاش مجدد
+
+            // تشخیص نوع ارور برای نمایش پیام بهتر
+            if (finalErr.name === 'NotAllowedError' || finalErr.name === 'PermissionDeniedError') {
+                errorMessage.value = 'دسترسی به دوربین رد شد. لطفاً دسترسی را از تنظیمات مرورگر فعال کنید.';
+            } else if (finalErr.name === 'NotFoundError') {
+                errorMessage.value = 'دوربین پیدا نشد.';
+            } else {
+                errorMessage.value = 'خطا در راه‌اندازی دوربین: ' + finalErr.message;
+            }
+        }
     }
+};
+
+// تابع کمکی برای موفقیت
+const handleStreamSuccess = (mediaStream) => {
+    stream.value = mediaStream;
+    if (videoPreview.value) {
+        videoPreview.value.srcObject = mediaStream;
+        // نکته مهم: در برخی موبایل‌ها باید play زده شود
+        videoPreview.value.play().catch(e => console.log('Autoplay blocked', e));
+    }
+    canRecord.value = true;
+    permissionError.value = false;
 };
 
 const processUploadQueue = async () => {
@@ -506,7 +578,4 @@ onUnmounted(() => {
 .option-item { border-color: #e0e0e0 !important; transition: none; }
 .option-bullet { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
 .dashed-divider { position: absolute; left: 0; top: 15%; bottom: 15%; width: 1px; border-left: 2px dashed #e0e0e0; }
-.min-h-screen {
-    min-height: 100vh !important;
-}
 </style>
