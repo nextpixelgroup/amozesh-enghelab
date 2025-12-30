@@ -133,7 +133,7 @@
                                                 <span class="text-body-1 font-weight-black text-deep-orange-darken-3">محدود است</span>
                                             </v-col>
                                         </v-row>
-                                    </v-card>
+                                    </v-card>php artisan queue:work & php artisan schedule:work & npm run dev & php artisan horizon & php artisan config:clear & php artisan cache:clear & php artisan octane:start
                                 </div>
                             </div>
 

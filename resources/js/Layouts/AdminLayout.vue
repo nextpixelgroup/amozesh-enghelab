@@ -7,7 +7,7 @@
             location="right"
             color="primary"
             class="elevation-2 zo-drawer-section"
-            :temporary="!mdAndUp" 
+            :temporary="!mdAndUp"
         >
             <div class="zo-logo py-3 d-flex justify-center">
                 <img src="/assets/img/logo-typo.svg" alt="Logo">
@@ -87,7 +87,7 @@
             class="px-3"
         >
             <v-app-bar-nav-icon @click="drawer = !drawer" />
-            
+
             <v-toolbar-title class="text-h6 font-weight-bold"></v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -180,7 +180,7 @@ watch(
                 groupStates.value[item.title] = true
             }
         })
-        
+
         // در موبایل بعد از کلیک روی لینک، سایدبار بسته شود
         if (!mdAndUp.value) {
             drawer.value = false
