@@ -867,7 +867,17 @@ figure {
 .zo-books-section .zo-book .zo-content .zo-meta .zo-price {
     display: flex;
     align-items: center;
-    gap: 2.5px;
+    gap: 2.5px
+}
+
+.zo-books-section .zo-book .zo-content .zo-meta .zo-price .zo-sale {
+    display: flex;
+    align-items: center;
+    gap: 1.5px;
+}
+
+.zo-books-section .zo-book .zo-content .zo-meta .zo-price strong {
+    font-family: Estedad-Bold;
 }
 
 .zo-books-section .zo-book .zo-content .zo-meta .zo-price .zo-regular {
@@ -933,6 +943,11 @@ figure {
     border-radius: .5rem;
 }
 
+.zo-home-books-section .zo-more a:hover {
+    background: var(--Secondary);
+    color: rgb(255, 255, 255)
+}
+
 .zo-home-books-section .zo-selected-books-section {
     width: 100%;
     display: inline-block;
@@ -988,7 +1003,17 @@ figure {
 .zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta .zo-price {
     display: flex;
     align-items: center;
-    gap: 2.5px;
+    gap: 2.5px
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta .zo-price .zo-sale {
+    display: flex;
+    align-items: center;
+    gap: 1.5px
+}
+
+.zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta .zo-price .zo-sale strong {
+    font-family: 'Estedad-Bold'
 }
 
 .zo-home-books-section .zo-selected-books-section .zo-book .zo-content .zo-meta .zo-price .zo-regular {

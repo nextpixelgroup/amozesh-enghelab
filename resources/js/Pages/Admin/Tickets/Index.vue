@@ -98,7 +98,7 @@
                                     <v-btn
                                         icon="mdi-eye"
                                         size="small"
-                                        color="primary"
+                                         color="rgb(105, 5, 50)"
                                         @click="openDialog(item)"
                                         v-bind="props"
                                     >

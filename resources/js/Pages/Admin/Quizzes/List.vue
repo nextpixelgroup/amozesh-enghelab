@@ -90,7 +90,7 @@
                                         <v-btn
                                             icon="mdi-eye"
                                             size="small"
-                                            color="primary"
+                                             color="rgb(105, 5, 50)"
                                             v-bind="props"
                                         >
                                         </v-btn>

@@ -1,5 +1,6 @@
 <template>
-    <Head title="Path"/>
+
+    <Head title="Path" />
     <WebLayout>
         <v-container>
             <v-row dense>
@@ -55,29 +56,17 @@
             </v-container>
             <div class="zo-courses-section">
                 <div class="zo-swiper">
-                    <Swiper
-                        dir="rtl"
-                        :modules="[Navigation]"
-                        :breakpoints="{
+                    <Swiper dir="rtl" :modules="[Navigation]" :breakpoints="{
                             0: { slidesPerView: 1.5, spaceBetween: 15 },
                             575: { slidesPerView: 2.5, spaceBetween: 15 },
                             990: { slidesPerView: 3.5, spaceBetween: 15 },
                             1200: { slidesPerView: 6.15, spaceBetween: 15 }
-                        }"
-                    >
-                        <swiper-slide
-                            v-for="(course, index) in item.courses"
-                            :key="index"
-                            :class="[course.passed ? 'zo-passed' : 'zo-notpassed' ]"
-                        >
-                            <div
-                                v-if="index !== item.courses.length - 1"
-                                class="zo-step"
-                                :class="(index + 1) % 2 === 1 ? 'zo-up' : 'zo-down'"
-                            >
+                        }">
+                        <swiper-slide v-for="(course, index) in item.courses" :key="index" :class="[course.passed ? 'zo-passed' : 'zo-notpassed' ]">
+                            <div v-if="index !== item.courses.length - 1" class="zo-step" :class="(index + 1) % 2 === 1 ? 'zo-up' : 'zo-down'">
                                 <span>{{ index + 1 }}</span>
                             </div>
-                            <CourseCard :course="course"/>
+                            <CourseCard :course="course" />
                         </swiper-slide>
                     </swiper>
                 </div>
@@ -86,22 +75,27 @@
     </WebLayout>
 </template>
 <script setup>
-import {Head} from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 import WebLayout from "@/Layouts/WebLayout.vue";
 import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
-import {Navigation} from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import 'swiper/css'
 import 'swiper/css/navigation'
-import {Swiper, SwiperSlide} from "swiper/vue";
-import {ref} from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { ref } from "vue";
 
 const props = defineProps({
     path: Object
 })
 const path = ref(props.path.data);
+
 </script>
 <style scoped>
-    .zo-path-section .zo-title-section {
-        justify-content: flex-start
-    }
+.zo-path-section .zo-title-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 0
+}
+
 </style>
