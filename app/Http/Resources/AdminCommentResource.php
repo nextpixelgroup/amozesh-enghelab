@@ -20,7 +20,7 @@ class AdminCommentResource extends JsonResource
         if($this->user_id){
             $avatar = $this->user?->avatar?->url ?? $avatar;
         }
-
+        $route = $this->commentable_type === Course::class ? 'web.courses.show' : 'web.books.show';
         $data = [
             'id' => $this->id,
             'user' => [
@@ -33,7 +33,7 @@ class AdminCommentResource extends JsonResource
             'model' => [
                 'type' => class_exists($this->commentable_type) ? $this->commentable_type::label() : 'نامشخص',
                 'title' => $this->commentable->title,
-                'url' => route('web.courses.show',$this->commentable->slug).'#comments',
+                'url' => route($route,$this->commentable->slug ).'#comments'
             ],
             'comment' => $this->body,
             'is_approved' => $this->is_approved,

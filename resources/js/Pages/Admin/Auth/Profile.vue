@@ -18,55 +18,39 @@
         <v-card class="pa-5 mb-3 elevation-2">
             <v-row dense>
                 <v-col cols="12" md="6" lg="3">
-                    <v-text-field label="نام" variant="outlined" density="comfortable" prepend-inner-icon="mdi-account" hide-details type="text" />
+                    <v-text-field v-model="form.firstname" label="نام" variant="outlined" density="comfortable" prepend-inner-icon="mdi-account" hide-details type="text" />
                 </v-col>
                 <v-col cols="12" md="6" lg="3">
-                    <v-text-field label="نام خانوادگی" variant="outlined" density="comfortable" prepend-inner-icon="mdi-account-circle" hide-details type="text" />
+                    <v-text-field v-model="form.lastname" label="نام خانوادگی" variant="outlined" density="comfortable" prepend-inner-icon="mdi-account-circle" hide-details type="text" />
                 </v-col>
                 <v-col cols="12" md="6" lg="3">
-                    <v-select label="جنسیت" variant="outlined" density="comfortable" prepend-inner-icon="mdi-gender-male" hide-details />
+                    <v-text-field v-model="form.username" type="text" variant="outlined" density="comfortable" label="نام کاربری" prepend-inner-icon="mdi-account-star" hide-details />
                 </v-col>
                 <v-col cols="12" md="6" lg="3">
-                    <v-text-field label="تلفن همراه" variant="outlined" density="comfortable" prepend-inner-icon="mdi-cellphone-settings" hide-details type="text" />
+                    <v-select v-model="form.gender" :items="genders" label="جنسیت" variant="outlined" density="comfortable" prepend-inner-icon="mdi-gender-male" hide-details />
                 </v-col>
                 <v-col cols="12" md="6" lg="3">
-                    <v-text-field type="text" variant="outlined" density="comfortable" label="تلفن ثابت" prepend-inner-icon="mdi-phone-classic" hide-details />
+                    <v-text-field v-model="user.mobile" readonly label="تلفن همراه" variant="outlined" density="comfortable" prepend-inner-icon="mdi-cellphone-settings" hide-details type="text" />
                 </v-col>
                 <v-col cols="12" md="6" lg="3">
-                    <v-text-field label="ایمیل" variant="outlined" density="comfortable" prepend-inner-icon="mdi-email" hide-details type="email" />
+                    <v-text-field v-model="form.tel" type="text" variant="outlined" density="comfortable" label="تلفن ثابت" prepend-inner-icon="mdi-phone-classic" hide-details />
                 </v-col>
                 <v-col cols="12" md="6" lg="3">
-                    <v-text-field type="text" label="کدملی" variant="outlined" density="comfortable" prepend-inner-icon="mdi-badge-account" hide-details />
+                    <v-text-field v-model="form.email" label="ایمیل" variant="outlined" density="comfortable" prepend-inner-icon="mdi-email" hide-details type="email" />
                 </v-col>
                 <v-col cols="12" md="6" lg="3">
-                    <v-text-field type="text" variant="outlined" density="comfortable" label="کدپستی" prepend-inner-icon="mdi-home-variant" hide-details />
-                </v-col>
-                <v-col cols="12" lg="6">
-                    <v-text-field label="آدرس" variant="outlined" density="comfortable" prepend-inner-icon="mdi-map-marker-radius" hide-details type="text" />
-                </v-col>
-                <v-col cols="12" lg="6">
-                    <v-row dense>
-                        <v-col class="v-col-4">
-                            <v-select label="روز تولد" variant="outlined" density="comfortable" prepend-inner-icon="mdi-calendar-today" hide-details />
-                        </v-col>
-                        <v-col class="v-col-4">
-                            <v-select label="ماه تولد" variant="outlined" density="comfortable" prepend-inner-icon="mdi-calendar-month" hide-details />
-                        </v-col>
-                        <v-col class="v-col-4">
-                            <v-select label="سال تولد" variant="outlined" density="comfortable" prepend-inner-icon="mdi-calendar-badge" hide-details />
-                        </v-col>
-                    </v-row>
-                </v-col>
-                <v-col cols="6">
-                    <ImageUploader upload-route="admin.upload.users.image" label="فقط فایل تصویری آپلود کنید" title="بارگذاری آواتار" accept="image/*" type="userAvatar" />
-                </v-col>
-                <v-col cols="6">
-                    <ImageUploader upload-route="admin.upload.users.image" label="فقط فایل تصویری آپلود کنید" title="بارگذاری تصویر کارت ملی" accept="image/*" type="userNationalCardImage" />
+                    <v-text-field v-model="form.national_code" type="text" label="کدملی" variant="outlined" density="comfortable" prepend-inner-icon="mdi-badge-account" hide-details />
                 </v-col>
             </v-row>
         </v-card>
         <div class="text-end">
-            <v-btn color="primary" type="submit">
+            <v-btn
+                color="primary"
+                type="submit"
+                @click="saveProfile"
+                :loading="isLoading"
+                :disabled="isLoading"
+            >
                 ویرایش پروفایل کاربری
             </v-btn>
         </div>
@@ -75,10 +59,43 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import ImageUploader from "@/Components/ImageUploader.vue";
-
+import {useForm} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
+import {ref} from "vue";
+const isLoading = ref(false)
 const props = defineProps({
-    user: Object
+    user: Object,
+    genders: Object,
 })
-const user = props.user;
+const form = useForm({
+    firstname: props.user.firstname,
+    lastname: props.user.lastname,
+    username: props.user.username,
+    gender: props.user.gender,
+    tel: props.user.tel,
+    email: props.user.email,
+    national_code: props.user.national_code,
+});
+
+
+
+const saveProfile = () => {
+    form.put(route('admin.profile.update'), {
+        preserveScroll: true,
+        preserveState: true,
+        onStart: () => {
+            isLoading.value = true;
+        },
+        onSuccess: () => {
+            isLoading.value = false;
+        },
+        onError: () => {
+            isLoading.value = false;
+        },
+        onFinish: () => {
+            isLoading.value = false;
+        }
+    })
+}
 
 </script>

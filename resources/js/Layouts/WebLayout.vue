@@ -73,7 +73,7 @@
                                                 <a :href="route('web.cart')" v-bind="props">
                                                     <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
                                                 </a>
-                                            </template>
+                                             </template>
                                             <span>سبد خرید</span>
                                         </v-tooltip>
                                     </div>
@@ -94,8 +94,7 @@
                                             <span>خروج از حساب کاربری</span>
                                         </v-tooltip>
                                     </div>
-                                    <v-app-bar-nav-icon variant="text" class="d-block d-lg-none"
-                                                        @click.stop="drawer = !drawer"/>
+                                    <v-app-bar-nav-icon variant="text" class="d-block d-lg-none" @click.stop="drawer = !drawer"/>
                                 </div>
                             </v-col>
                         </v-row>

@@ -122,6 +122,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
 
         /********* Auth *********/
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+        Route::put('profile/update', [AuthController::class, 'update'])->name('profile.update');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         Route::get('/test', [TestController::class, 'index']);

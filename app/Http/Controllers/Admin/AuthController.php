@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AuthLoginRequest;
+use App\Http\Requests\Admin\ProfileUpdateRequest;
 use App\Http\Resources\AdminResource;
 use App\Models\Restriction;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -77,7 +79,30 @@ class AuthController extends Controller
     public function profile()
     {
         $user = auth()->user();
-        return Inertia::render('Admin/Auth/Profile', compact('user'));
+        $genders = genders();
+        return Inertia::render('Admin/Auth/Profile', compact('user', 'genders'));
+    }
+
+    public function update(ProfileUpdateRequest $request)
+    {
+        try {
+            $user = auth()->user();
+
+            $user->update([
+                'firstname' => $request->input('firstname'),
+                'lastname' => $request->input('lastname'),
+                'username' => $request->input('username'),
+                'gender' => $request->input('gender'),
+                'tel' => $request->input('tel'),
+                'email' => $request->input('email'),
+                'national_code' => $request->input('national_code'),
+            ]);
+
+            return redirectMessage('success','با موفقیت ذخیره شد');
+
+        } catch (\Exception $e) {
+            return redirectMessage('error', $e->getMessage());
+        }
     }
 
 }

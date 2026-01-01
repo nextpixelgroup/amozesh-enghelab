@@ -313,7 +313,7 @@ if (!function_exists('genders')) {
     {
         return collect(GenderEnum::cases())->map(function ($item) {
             return [
-                'label' => $item->value,
+                'title' => $item->value,
                 'value' => $item->name,
             ];
         });
