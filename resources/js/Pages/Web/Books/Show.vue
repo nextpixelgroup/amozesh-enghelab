@@ -293,10 +293,14 @@ const addToCart = () => {
         },
         onSuccess: () => {
             isOrdering.value = false;
+            window.dispatchEvent(new CustomEvent('cart-updated'));
+
         },
         onError: () => {
             isOrdering.value = false;
         },
+        onFinish: () => {
+        }
     })
 }
 const removeFromCart = () => {
@@ -308,6 +312,8 @@ const removeFromCart = () => {
         },
         onSuccess: () => {
             isOrdering.value = false;
+            window.dispatchEvent(new CustomEvent('cart-updated'));
+
         },
         onError: () => {
             isOrdering.value = false;
@@ -326,6 +332,7 @@ const updateQty = () => {
         onSuccess: () => {
             qtyLoading.value = false;
             disabling.value = false;
+            window.dispatchEvent(new CustomEvent('cart-updated'));
         },
         onError: () => {
             qtyLoading.value = false;

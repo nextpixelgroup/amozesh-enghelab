@@ -252,4 +252,11 @@ class PaymentController extends Controller
     {
         return 90000;
     }
+
+    public function cartCount(Request $request)
+    {
+        $count = auth()->check() ? auth()->user()->cart_items_count : 0;
+        return response()->json(['count' => $count]);
+    }
+
 }

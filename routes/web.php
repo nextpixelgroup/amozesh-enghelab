@@ -80,6 +80,8 @@ Route::name('web.')->group(function () {
         Route::put('/cart/{cartItem}/update', [PaymentController::class, 'update'])->name('cart.item.update');
         Route::delete('/cart/{cartItem}/destroy', [PaymentController::class, 'destroy'])->name('cart.item.destroy');
         Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
+        Route::get('/cart/count', [PaymentController::class, 'cartCount'])->name('cart.count');
+
 
         Route::get('/video/record/{uuid}', [VideoController::class, 'index'])->name('video.record');
         Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
