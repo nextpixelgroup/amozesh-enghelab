@@ -21,7 +21,7 @@ class PanelOrdersResource extends JsonResource
                 return [
                     'id' => $item->id,
                     'title' => $item->title,
-                    'thumbnail' => $item->item->thumbnail->url ?? asset('/assets/img/default.svg'),
+                    'thumbnail' => $item?->item->thumbnail->url ?? asset('/assets/img/default.svg'),
                     'qty' => $item->qty,
                     'price' => $item->price,
                     'discount' => $item->discount,

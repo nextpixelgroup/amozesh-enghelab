@@ -70,10 +70,18 @@
                                     <div class="zo-cart" v-if="showCart">
                                         <v-tooltip bottom>
                                             <template #activator="{ props }">
-                                                <a :href="route('web.cart')" v-bind="props">
+                                                <!-- لینک باید position: relative داشته باشد -->
+                                                <a :href="route('web.cart')" v-bind="props" class="cart-link-wrapper">
+
                                                     <img src="/assets/img/site/cart.svg" alt="" class="img-fluid">
+
+                                                    <!-- کانتر دستی -->
+                                                    <span class="cart-badge" v-if="cartCount > 0">
+                    {{ cartCount }}
+                </span>
+
                                                 </a>
-                                             </template>
+                                            </template>
                                             <span>سبد خرید</span>
                                         </v-tooltip>
                                     </div>
@@ -195,7 +203,7 @@
     <ConfirmDialog ref="confirmRef" />
 </template>
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, onUnmounted, ref} from 'vue'
 import FlashMessage from "@/Components/FlashMessage.vue";
 import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
@@ -222,13 +230,35 @@ const social = ref(page.props.social || {});
 const logos = ref(page.props.logos || {});
 const showCart = ref(page.props.showCart || false);
 const isAuth = ref(page.props.isAuth || false);
-
+const cartCount = ref(page.props.cartCount || 0);
 const drawer = ref(false);
 const searchDialog = ref(false);
 const isLoading = ref(false);
 const display = useDisplay();
 const searchText = ref('');
-const leaving = ref(false)
+const leaving = ref(false);
+
+
+// Function to update cart count
+const updateCartCount = async () => {
+    try {
+        const response = await axios.get(route('web.cart.count'));
+        cartCount.value = response.data.count;
+    } catch (error) {
+        console.error('Error updating cart count:', error);
+    }
+};
+
+// Listen for cart update events
+onMounted(() => {
+    window.addEventListener('cart-updated', updateCartCount);
+});
+
+// Clean up event listener
+onUnmounted(() => {
+    window.removeEventListener('cart-updated', updateCartCount);
+});
+
 const search = () => {
     isLoading.value = true
     window.location.href = route('web.courses.index', {search: searchText.value});
@@ -524,5 +554,25 @@ const logout = () => {
         margin: 0
     }
 }
+.cart-link-wrapper {
+    position: relative;
+    display: inline-block;
+}
 
+.cart-badge {
+    position: absolute;
+    top: -7px;      /* تنظیم فاصله از بالا */
+    left: -9px;    /* تنظیم فاصله از چپ */
+    background-color: #c8a064; /* رنگ قرمز */
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white; /* حاشیه سفید برای خوانایی بهتر */
+}
 </style>

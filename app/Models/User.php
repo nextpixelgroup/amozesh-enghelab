@@ -13,6 +13,7 @@ use App\Models\LessonCompletion;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -57,6 +58,13 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['cart_items_count'];
 
     /**
      * Get the attributes that should be cast.
@@ -71,6 +79,27 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the user's cart.
+     */
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    /**
+     * Get the total number of items in the user's cart.
+     * This sums up the quantities of all items in the cart.
+     */
+    public function getCartItemsCountAttribute(): int
+    {
+        if (!$this->cart) {
+            return 0;
+        }
+        
+        return (int) $this->cart->items()->sum('qty');
+    }
+    
     public static function allRoles(){
         return collect([
             [

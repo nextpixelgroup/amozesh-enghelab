@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $path = $request->path();
+        $user = $request->user();
         $shared = array_merge(parent::share($request), [
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
@@ -51,7 +52,6 @@ class HandleInertiaRequests extends Middleware
         ]);
 
         if (str_starts_with($request->path(), 'admin')) {
-            $user = $request->user();
             if($user &&in_array($user->roles->first()->name,['admin','super-admin'])){
                 $shared['menuItems'] = [
                     [
@@ -237,6 +237,10 @@ class HandleInertiaRequests extends Middleware
             $shared['social'] = $setting->get('index.social');
             $shared['logos'] = $setting->get('web.logos');
             $shared['showCart'] = false;
+            $shared['cartCount'] = 0;
+            if($user){
+                $shared['cartCount'] = $user->cart_items_count;
+            }
             if(str_starts_with($request->path(), 'books')){
                 $shared['showCart'] = true;
             }
