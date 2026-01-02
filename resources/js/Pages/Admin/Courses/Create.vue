@@ -659,7 +659,7 @@
             <v-col class="v-col-12 v-col-lg-3">
                 <v-card class="pa-3 mb-3 elevation-2  position-sticky top-0"
                         :style="{ top: stickyOffset + 'px !important' }">
-                    <v-select
+<!--                    <v-select
                         v-model="course.must_complete_quizzes"
                         hide-details
                         :items="[
@@ -672,7 +672,7 @@
                         variant="outlined"
                         density="comfortable"
                         prepend-inner-icon="mdi mdi-alert"
-                    />
+                    />-->
                     <v-select
                         v-model="course.status"
                         hide-details
@@ -754,7 +754,7 @@ const course = reactive({
     summary: '',
     description: '',
     requirements: [],
-    must_complete_quizzes: null,
+    //must_complete_quizzes: null,
     status: 'pending',
     thumbnail_id: null,
     intro_filename: null,

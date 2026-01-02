@@ -28,7 +28,7 @@ class AdminCourseResource extends JsonResource
                     'title' => $category->title,
                 ];
             }),
-            'must_complete_quizzes' => $this->must_complete_quizzes,
+            //'must_complete_quizzes' => $this->must_complete_quizzes,
             'description' => $this->description,
             'status'      => $this->statusObject,
             'member'      => $this->students()->count(),

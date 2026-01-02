@@ -192,7 +192,7 @@ class CourseController extends Controller
             'teacher_id'            => $request->teacher,
             'price'                 => 0,
             'rate'                  => null,
-            'must_complete_quizzes' => $request->must_complete_quizzes,
+            //'must_complete_quizzes' => $request->must_complete_quizzes,
             'status'                => $request->status,
             'published_at'          => $request->published_at ? verta()->parse($request->published_at)->datetime() : now(),
         ];
@@ -223,7 +223,7 @@ class CourseController extends Controller
             'description'           => $request->description,
             'thumbnail_id'          => $request->thumbnail_id,
             'teacher_id'            => $request->teacher,
-            'must_complete_quizzes' => $request->must_complete_quizzes,
+            //'must_complete_quizzes' => $request->must_complete_quizzes,
             'status'                => $request->status,
             'intro_filename'             => $request->intro_filename,
             'intro_url'        => $request->intro_filename ?  courseVideoUrl($request->intro_filename) : '',

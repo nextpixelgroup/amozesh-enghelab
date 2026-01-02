@@ -144,7 +144,7 @@ class WebCourseDetailsResource extends JsonResource
             'category' => $this->categories?->first()?->title,
             'thumbnail' => $this->thumbnail->url ?? '/assets/img/default.svg',
             'students' => $this->students->count(),
-            'must_complete_quizzes' => $this->must_complete_quizzes,
+            //'must_complete_quizzes' => $this->must_complete_quizzes,
             'seasons' => $processedSeasons,
             'stats' => [
                 'seasons' => $seasons->count(),

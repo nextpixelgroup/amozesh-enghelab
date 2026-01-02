@@ -660,7 +660,7 @@
             </v-col>
             <v-col class="v-col-12 v-col-lg-3">
                 <v-card class="pa-3 mb-3 elevation-2  position-sticky top-0">
-                    <v-select
+<!--                    <v-select
                         v-model="course.must_complete_quizzes"
                         hide-details
                         :items="[
@@ -673,7 +673,7 @@
                         variant="outlined"
                         density="comfortable"
                         prepend-inner-icon="mdi mdi-alert"
-                    />
+                    />-->
                     <v-select
                         v-model="course.status"
                         hide-details
@@ -777,7 +777,7 @@ const course = reactive({
     summary: data.value.summary,
     description: data.value.description,
     requirements: data.value.requirements,
-    must_complete_quizzes: data.value.must_complete_quizzes ? 1 : 0,
+    //must_complete_quizzes: data.value.must_complete_quizzes ? 1 : 0,
     status: data.value.status.value,
     thumbnail_id: data.value.thumbnail.id,
     intro_filename: data.value.intro_filename,

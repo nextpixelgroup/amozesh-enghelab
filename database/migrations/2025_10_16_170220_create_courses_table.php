@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreignId('teacher_id')->nullable()->constrained('users');
             $table->unsignedBigInteger('price')->nullable()->default(0);
             $table->float('rate')->nullable()->default(0); // میانگین امتیاز
-            $table->boolean('must_complete_quizzes')->default(false);
+            $table->boolean('must_complete_quizzes')->default(true);
             $table->enum('status', enumNames(CourseStatusEnum::cases()))->default('draft');
             $table->integer('views')->index()->default(0);
             $table->dateTime('published_at')->index();
