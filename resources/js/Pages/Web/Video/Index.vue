@@ -319,11 +319,15 @@ const startRecording = async () => {
         if (!stream.value || !stream.value.active) {
             stream.value = await navigator.mediaDevices.getUserMedia({
                 video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
+                    width: { ideal: 854 },  // تغییر به 480p
+                    height: { ideal: 480 }, // تغییر به 480p
+                    frameRate: { ideal: 24, max: 30 }, // فریم ریت بهینه
                     facingMode: "user"
                 },
-                audio: true
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true
+                }
             });
             videoPreview.value.srcObject = stream.value;
             await videoPreview.value.play();
@@ -332,7 +336,30 @@ const startRecording = async () => {
         // ادامه کد بدون تغییر...
         await axios.post(route('web.video.init', videoUuid.value));
 
-        let options = { mimeType: 'video/webm;codecs=vp9,opus', videoBitsPerSecond: 1000000 };
+        // تنظیمات بهینه شده برای فشرده‌سازی حداکثری با حفظ کیفیت
+        let options = {
+            // کدک VP9 بهترین فشرده‌سازی را دارد (حدود 30-50% بهتر از H264)
+            mimeType: 'video/webm;codecs=vp9,opus',
+
+            // بیت‌ریت 600 کیلوبیت برای رزولوشن 480p با کدک VP9 کیفیت بسیار خوبی می‌دهد
+            // قبلاً 1000000 بود، الان حدود 40٪ کاهش حجم داریم بدون افت محسوس کیفیت بصری
+            videoBitsPerSecond: 600000
+        };
+
+        // فال‌بک برای مرورگرهایی که VP9 ندارند (مثل سافاری قدیمی)
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            // سافاری معمولاً این را ترجیح می‌دهد (فشرده‌سازی کمتر اما سازگارتر)
+            options = {
+                mimeType: 'video/mp4',
+                videoBitsPerSecond: 800000 // برای MP4 باید بیت‌ریت کمی بالاتر باشد
+            };
+
+            // اگر MP4 هم پشتیبانی نشد، بگذار مرورگر تصمیم بگیرد
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                delete options.mimeType;
+            }
+        }
+
         if (!MediaRecorder.isTypeSupported(options.mimeType)) delete options.mimeType;
 
         mediaRecorder.value = new MediaRecorder(stream.value, options);
@@ -419,18 +446,28 @@ const initializeCamera = async () => {
     errorMessage.value = '';
 
     try {
-        // تلاش اول: کیفیت ایده آل
+        // تلاش اول: کیفیت بهینه (480p Wide)
         const mediaStream = await navigator.mediaDevices.getUserMedia({
             video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
+                // رزولوشن 854x480 (FWVGA) استاندارد موبایل و وب برای کیفیت خوب و حجم کم
+                width: { ideal: 854 },
+                height: { ideal: 480 },
+
+                // محدود کردن فریم‌ریت به 24 (کاهش حجم پردازش و فایل)
+                frameRate: { ideal: 24, max: 30 },
+
                 facingMode: "user"
             },
-            audio: true
+            audio: {
+                // حذف نویز و اکو برای کیفیت بهتر صدا با بیت‌ریت پایین
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            }
         });
         handleStreamSuccess(mediaStream);
     } catch (err) {
-        console.warn('HD failed, trying fallback...', err);
+        console.warn('Optimal quality failed, trying fallback...', err);
         try {
             // تلاش دوم: حداقل کیفیت (مناسب برای دستگاه‌های قدیمی یا ناسازگار)
             const fallbackStream = await navigator.mediaDevices.getUserMedia({
