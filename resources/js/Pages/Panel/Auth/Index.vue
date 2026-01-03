@@ -26,10 +26,8 @@
                             </p>
                         </div>
 
-                        <!-- دکمه‌ها -->
                         <div class="d-flex flex-column gap-4">
 
-                            <!-- دکمه ۱: کاربر معمولی -->
                             <v-hover v-slot="{ isHovering, props }">
                                 <Link :href="getLoginUrl('user')">
                                     <v-btn
@@ -54,10 +52,8 @@
                                 </Link>
                             </v-hover>
 
-                            <!-- جداکننده متنی یا خطی (اختیاری) -->
                             <div class="text-center my-1 text-caption text-grey-lighten-1">یا</div>
 
-                            <!-- دکمه ۲: دانشگاه و موسسه -->
                             <v-hover v-slot="{ isHovering, props }">
                                 <Link :href="getLoginUrl('student')">
                                     <v-btn
@@ -86,7 +82,6 @@
 
                         </div>
 
-                        <!-- فوتر کارت -->
                         <div class="text-center mt-8">
                             <Link :href="route('web.contact.index')">
                                 <v-btn variant="text" size="small" color="grey-darken-1" class="text-caption">
