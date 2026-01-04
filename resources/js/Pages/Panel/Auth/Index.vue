@@ -1,18 +1,15 @@
 <template>
-    <!-- پس‌زمینه کل صفحه با سبز خیلی ملایم -->
     <WebLayout>
         <v-container fluid class="mt-10 justify-center align-center">
 
             <v-row justify="center" align="center" class="w-100">
                 <v-col cols="12" sm="8" md="6" lg="4">
 
-                    <!-- کارت اصلی -->
                     <v-card
                         class="pa-6 pa-md-10 rounded-xl persian-wrapper glass-card"
                         elevation="10"
                         color="white"
                     >
-                        <!-- بخش لوگو و هدر -->
                         <div class="text-center mb-10">
                             <v-avatar size="80" color="green-lighten-5" class="mb-4">
                                 <v-icon size="45" color="green-darken-2">mdi-shield-account-outline</v-icon>
@@ -98,7 +95,6 @@
 </template>
 
 <script setup>
-// لاجیک خاصی فعلا نیاز نیست، لینک‌ها در href دکمه‌ها قرار دارند
 import WebLayout from "@/Layouts/WebLayout.vue";
 import {Link} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
@@ -117,25 +113,20 @@ const getLoginUrl = (type) => {
 </script>
 
 <style scoped>
-/* --- تنظیمات فونت فارسی --- */
 .persian-wrapper :deep(*) {
     font-family: inherit !important;
     letter-spacing: 0 !important;
 }
 
-/* --- فاصله‌گذاری بین دکمه‌ها --- */
 .gap-4 {
     gap: 16px;
 }
 
-/* --- تنظیمات دکمه‌ها برای چیدمان متن --- */
-/* این استایل باعث می‌شود متن داخل دکمه راست‌چین و منظم باشد */
 :deep(.v-btn__content) {
     width: 100%;
     justify-content: space-between;
 }
 
-/* --- اشکال پس‌زمینه (Background Blobs) --- */
 .bg-shape {
     position: absolute;
     border-radius: 50%;
@@ -160,11 +151,9 @@ const getLoginUrl = (type) => {
     background: rgba(129, 199, 132, 0.15); /* سبز متفاوت */
 }
 
-/* --- افکت کارت شیشه‌ای (اختیاری) --- */
 .glass-card {
     position: relative;
     z-index: 1;
-    /* اگر می‌خواهید کمی پشت کارت معلوم باشد، opacity را تنظیم کنید، وگرنه bg-white کافی است */
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(10px);
 }
