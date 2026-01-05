@@ -151,7 +151,7 @@ export default {
 .zo-login-section .zo-cover {
     position: relative;
     overflow: hidden;
-    background: url(/assets/img/login.png) center/cover no-repeat;
+    background: url(/assets/img/login.jpg) center/cover no-repeat;
 }
 
 .zo-login-section .zo-cover::before {

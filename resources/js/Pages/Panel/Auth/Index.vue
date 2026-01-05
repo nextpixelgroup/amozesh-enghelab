@@ -140,7 +140,7 @@ const getLoginUrl = (type) => {
     right: -5%;
     width: 400px;
     height: 400px;
-    background: rgba(76, 175, 80, 0.15); /* سبز کمرنگ */
+    background: rgba(76, 175, 80, 0.15);
 }
 
 .shape-2 {
@@ -148,7 +148,7 @@ const getLoginUrl = (type) => {
     left: -5%;
     width: 300px;
     height: 300px;
-    background: rgba(129, 199, 132, 0.15); /* سبز متفاوت */
+    background: rgba(129, 199, 132, 0.15);
 }
 
 .glass-card {
