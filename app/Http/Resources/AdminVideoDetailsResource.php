@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Certificate;
 use App\Models\Course;
+use App\Models\CourseStudent;
 use App\Models\QuizCompletion;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -124,6 +125,7 @@ class AdminVideoDetailsResource extends JsonResource
                 'updatedAtTimestamp' => $this->updated_at->timestamp,
             ],
             'certificate' => $certificate,
+            'requestedCertificate' => CourseStudent::where('user_id',$this->user_id)->where('course_id',$this->course_id)->first()?->has_requested_certificate,
             'finalQuiz' => $quizData,
             'quizzes' => $quizzes,
             'course' => [

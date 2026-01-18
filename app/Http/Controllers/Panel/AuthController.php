@@ -39,7 +39,6 @@ class AuthController extends Controller
     public function sendCode(Request $request)
     {
         try {
-
             $validator = Validator::make(
                 $request->all(),
                 [
@@ -51,18 +50,13 @@ class AuthController extends Controller
                     'mobile.regex' => 'شماره همراه باید با ۰۹ شروع شود و ۱۱ رقم باشد.',
                 ]
             );
-
             if ($validator->fails()) {
                 return redirectMessage('error', $validator->errors()->first());
             }
-
-
             $data = [];
-
             $mobile = $request->mobile;
             $maxAttempts = 5;
             $banDays = 1;
-
             $otp = OTP::where('login', $mobile)->first();
             $user = User::where('mobile',$mobile)->first();
 
@@ -88,10 +82,10 @@ class AuthController extends Controller
                 $otp->login = $mobile;
             }
 
-            $code = 12345;
             if(env('APP_ENV') == 'production'){
                 $code = rand(10000, 99999);
             }
+            $code = 12345;
             $otp->code = $code;
             $otp->attempts = 0;
             $otp->expires_at = now()->addMinutes(5);
@@ -161,7 +155,8 @@ class AuthController extends Controller
 
             // بررسی تعداد تلاش‌ها
             if ($user && $otp->attempts >= $maxAttempts) {
-                (new Restriction)->temporaryBanUser($mobile, $banDays, "{$maxAttempts} تلاش ناموفق.");
+                (new Restriction)->temporaryBanUser($user->id, $banDays, "{$maxAttempts} تلاش ناموفق.");
+                $otp->delete();
                 return redirectMessage('error', "حساب به مدت {$banDays} روز مسدود شد.");
             }
 

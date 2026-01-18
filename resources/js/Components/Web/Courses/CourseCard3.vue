@@ -1,5 +1,11 @@
 <template>
-    <Link :href="course.url" :class="['zo-course', progress === 100 ? 'zo-done' : '']">
+    <a :href="course.url" :class="['zo-course', progress === 100 ? '' : '']">
+        <div v-if="progress === 100" class="course-badge completed">
+            تکمیل شده
+        </div>
+        <div v-else class="course-badge enrolled">
+            درحال یادگیری
+        </div>
         <figure>
             <div class="zo-thumbnail">
                 <img :src="course.thumbnail" alt="" class="img-fluid" />
@@ -27,11 +33,11 @@
                 <strong>{{ course.price }}</strong>
             </div>
             <div class="zo-more">اطلاعات بیشتر</div>
-            <v-progress-linear color="secondary" :model-value="progress" height="15" reverse class="mt-3">
-                <strong :class="progressTextClass">{{ progress }}%</strong>
+            <v-progress-linear color="secondary" :model-value="progress" height="20" reverse class="mt-1">
+                <strong :class="progressTextClass">{{`${progress}%`}}</strong>
             </v-progress-linear>
         </div>
-    </Link>
+    </a>
 </template>
 <script setup lang="ts">
 import { Link } from "@inertiajs/vue3";

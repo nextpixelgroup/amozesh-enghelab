@@ -35,7 +35,7 @@
                                 class="mx-auto mb-4"
                             ></v-img>
 
-                            <h2 class="text-h6 font-weight-black text-green-darken-4 mb-1 d-flex justify-center align-center">
+                            <h2 v-if="institution?.name" class="text-h6 font-weight-black text-green-darken-4 mb-1 d-flex justify-center align-center">
                                 <v-icon color="green" class="ml-2" size="small">mdi-check-decagram</v-icon>
                                 {{ institution?.name }}
                             </h2>

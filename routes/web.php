@@ -24,73 +24,78 @@ if(env('APP_ENV') === 'production') {
         });
     });
 }
+Route::middleware('profile.completed')->group(function () {
+    Route::name('web.')->group(function () {
 
-Route::name('web.')->group(function () {
+        Route::get('404', fn() => inertia('Web/404'))->name('404');
+        Route::get('/', [IndexController::class, 'index'])->name('index');
 
-    Route::get('404', fn () => inertia('Web/404'))->name('404');
-    Route::get('/', [IndexController::class, 'index'])->name('index');
+        Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
-    Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-    Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
+        Route::get('/books', [BookController::class, 'index'])->name('books.index');
+        Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');
+        Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
 
-    Route::get('/books', [BookController::class, 'index'])->name('books.index');
-    Route::get('/books/archives', [BookController::class, 'archives'])->name('books.archives');
-    Route::get('/books/{book:slug}', [BookController::class, 'show'])->name('books.show');
+        Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.index');
+        Route::get('/teacher/{teacher:slug}', [TeacherController::class, 'show'])->name('teachers.show');
 
-    Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.index');
-    Route::get('/teacher/{teacher:slug}', [TeacherController::class, 'show'])->name('teachers.show');
+        Route::get('/path', [PathController::class, 'index'])->name('path.index');
+        Route::post('/path/enroll/{path}', [PathController::class, 'enroll'])->name('path.enroll');
 
-    Route::get('/path', [PathController::class, 'index'])->name('path.index');
+        Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+        Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
+        Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 
-    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-    Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
-    Route::get('/about', [AboutController::class, 'index'])->name('about.index');
+        Route::get('/comments/courses/{course:slug}', [CommentController::class, 'courseComments'])->name('comments.course.index');
+        Route::get('/comments/books/{book:slug}', [CommentController::class, 'bookComments'])->name('comments.book.index');
 
-    Route::get('/comments/courses/{course:slug}', [CommentController::class, 'courseComments'])->name('comments.course.index');
-    Route::get('/comments/books/{book:slug}', [CommentController::class, 'bookComments'])->name('comments.book.index');
+        Route::get('/cart', [PaymentController::class, 'cart'])->name('cart');
 
-    Route::get('/cart', [PaymentController::class, 'cart'])->name('cart');
+        Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
 
-    Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
+        Route::get('/paying', [PaymentController::class, 'paying'])->name('paying');
+        Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
-    Route::get('/paying', [PaymentController::class, 'paying'])->name('paying');
-    Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+        Route::middleware(['auth'])->group(function () {
 
-    Route::middleware(['auth'])->group(function () {
+            Route::post('/courses/enroll/{course}', [CourseController::class, 'enroll'])->name('courses.enroll');
+            Route::post('/courses/certificate/{course}', [CourseController::class, 'hasCertificate'])->name('courses.certificate.store');
+            Route::post('/courses/lesson/{lesson}/completed', [CourseController::class, 'LessonCompleted'])->name('courses.lesson.completed');
+            Route::post('/courses/lesson/{lesson}/quiz', [CourseController::class, 'LessonQuizStore'])->name('courses.lesson.quiz.store');
+            Route::post('/courses/{course:slug}/rating', [CourseController::class, 'rating'])->name('courses.rating');
 
-        Route::post('/courses/enroll/{course}', [CourseController::class, 'enroll'])->name('courses.enroll');
-        Route::post('/courses/lesson/{lesson}/completed', [CourseController::class, 'LessonCompleted'])->name('courses.lesson.completed');
-        Route::post('/courses/lesson/{lesson}/quiz', [CourseController::class, 'LessonQuizStore'])->name('courses.lesson.quiz.store');
-        Route::post('/courses/{course:slug}/rating', [CourseController::class, 'rating'])->name('courses.rating');
+            Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
+            Route::post('/bookmarks/course/{course}/store', [BookmarkController::class, 'courseStore'])->name('bookmark.course.store');
+            Route::post('/bookmarks/book/{book}/store', [BookmarkController::class, 'bookStore'])->name('bookmark.book.store');
+            Route::delete('/bookmarks/course/{course}/destroy', [BookmarkController::class, 'courseDestroy'])->name('bookmark.course.destroy');
+            Route::delete('/bookmarks/book/{book}/destroy', [BookmarkController::class, 'bookDestroy'])->name('bookmark.book.destroy');
 
-        Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
-        Route::post('/bookmarks/course/{course}/store', [BookmarkController::class, 'courseStore'])->name('bookmark.course.store');
-        Route::post('/bookmarks/book/{book}/store', [BookmarkController::class, 'bookStore'])->name('bookmark.book.store');
-        Route::delete('/bookmarks/course/{course}/destroy', [BookmarkController::class, 'courseDestroy'])->name('bookmark.course.destroy');
-        Route::delete('/bookmarks/book/{book}/destroy', [BookmarkController::class, 'bookDestroy'])->name('bookmark.book.destroy');
+            Route::post('/books/{book:slug}/rating', [BookController::class, 'rating'])->name('books.rating');
 
-        Route::post('/books/{book:slug}/rating', [BookController::class, 'rating'])->name('books.rating');
+            Route::post('/comment/courses/{course:slug}/store', [CommentController::class, 'courseStore'])->name('comments.course.store');
+            Route::post('/comments/books/{book:slug}/store', [CommentController::class, 'bookStore'])->name('comments.book.store');
+            Route::post('/comments/{comment}', [CommentController::class, 'reply'])->name('comments.reply');
 
-        Route::post('/comment/courses/{course:slug}/store', [CommentController::class, 'courseStore'])->name('comments.course.store');
-        Route::post('/comments/books/{book:slug}/store', [CommentController::class, 'bookStore'])->name('comments.book.store');
-        Route::post('/comments/{comment}', [CommentController::class, 'reply'])->name('comments.reply');
-
-        Route::post('/cart/{book:slug}/store', [PaymentController::class, 'store'])->name('cart.store');
-        Route::post('/cart', [PaymentController::class, 'cart'])->name('cart');
-        Route::put('/cart/{cartItem}/update', [PaymentController::class, 'update'])->name('cart.item.update');
-        Route::delete('/cart/{cartItem}/destroy', [PaymentController::class, 'destroy'])->name('cart.item.destroy');
-        Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
-        Route::get('/cart/count', [PaymentController::class, 'cartCount'])->name('cart.count');
+            Route::post('/cart/{book:slug}/store', [PaymentController::class, 'store'])->name('cart.store');
+            Route::post('/cart', [PaymentController::class, 'cart'])->name('cart');
+            Route::put('/cart/{cartItem}/update', [PaymentController::class, 'update'])->name('cart.item.update');
+            Route::delete('/cart/{cartItem}/destroy', [PaymentController::class, 'destroy'])->name('cart.item.destroy');
+            Route::post('/pay', [PaymentController::class, 'pay'])->name('pay');
+            Route::get('/cart/count', [PaymentController::class, 'cartCount'])->name('cart.count');
 
 
-        Route::get('/video/record/{uuid}', [VideoController::class, 'index'])->name('video.record');
-        Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
-        Route::delete('/video/cancel/{uuid}', [VideoController::class, 'cancel'])->name('video.cancel');
-        Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
-        Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');
+            Route::get('/video/record/{uuid}', [VideoController::class, 'index'])->name('video.record');
+            Route::post('/video/init/{uuid}', [VideoController::class, 'init'])->name('video.init');
+            Route::delete('/video/cancel/{uuid}', [VideoController::class, 'cancel'])->name('video.cancel');
+            Route::post('/video/chunk', [VideoController::class, 'uploadChunk'])->name('video.chunk');
+            Route::post('/video/finish', [VideoController::class, 'finish'])->name('video.finish');
+        });
+
     });
 
 });
+
 
 require_once 'web/admin.php';
 require_once 'web/panel.php';

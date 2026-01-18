@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\CourseStudent;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -54,35 +55,53 @@ class WebCourseDetailsResource extends JsonResource
         // چون map اسکوپ جدید می‌سازد، این‌ها را باید با use (&...) پاس بدهیم
         $canShowNextVideo = true;
         $lockedReasonMessage = null;
-        $processedSeasons = $seasons->map(function ($season) use (&$canShowNextVideo, &$lockedReasonMessage, $userId) {
+        $canShowVideoForEnrolledCourse = false;
 
-            $processedLessons = $season->lessons->map(function ($lesson) use (&$canShowNextVideo, &$lockedReasonMessage, $userId) {
+        $enrolledCourse = [];
+        if($userId){
+            $enrolledCourse = CourseStudent::where('user_id',$userId)->where('course_id', $this->id)->first();
+            if($enrolledCourse && $enrolledCourse->has_requested_certificate){
+                $canShowVideoForEnrolledCourse = true;
+            }
+        }
+
+        $processedSeasons = $seasons->map(function ($season) use ($enrolledCourse,&$canShowVideoForEnrolledCourse,&$canShowNextVideo, &$lockedReasonMessage, $userId) {
+
+            $processedLessons = $season->lessons->map(function ($lesson) use ($enrolledCourse,&$canShowVideoForEnrolledCourse,&$canShowNextVideo, &$lockedReasonMessage, $userId) {
 
                 // وضعیت پاس شدن آزمون همین درس
                 // چون eager load کردیم، نیازی به exists() نیست، چک می‌کنیم کالکشن خالی نباشد
                 $quizCompleted = $lesson->quiz && $lesson->quiz->quizCompletions->isNotEmpty();
+                $courseCompleted = $lesson->completions()->where('user_id', $userId)->exists();
 
-                // وضعیت نمایش این درس بر اساس وضعیت درس‌های قبلی تعیین می‌شود
                 $currentLessonCanShow = $canShowNextVideo;
                 $currentLockedReason = $lockedReasonMessage;
 
-                // حالا وضعیت را برای درس **بعدی** (در هر فصلی که باشد) آپدیت می‌کنیم
-                // اگر زنجیره هنوز باز است، چک می‌کنیم آیا این درس آن را می‌بندد؟
-                if ($canShowNextVideo) {
-                    // اگر درس آزمون دارد ولی پاس نشده
+
+                if($courseCompleted){
+                    $canShowNextVideo = true;
                     if ($lesson->quiz && !$quizCompleted) {
-                        $canShowNextVideo = false; // درس‌های بعدی قفل شوند
-                        $lockedReasonMessage = "برای مشاهده درس‌های بعدی باید آزمون درس «{$lesson->title}» را کامل کرده باشید.";
+                        $canShowNextVideo = false;
+                    }
+                    $currentLessonCanShow = true;
+                }
+                else{
+                    if($userId && $enrolledCourse && $enrolledCourse->has_requested_certificate) {
+                        $canShowNextVideo = false;
                     }
                 }
+
+
+                //$lockedReasonMessage = "برای مشاهده درس‌های بعدی باید آزمون درس «{$lesson->title}» را کامل کرده باشید.";
+
                 $quiz = $lesson->quiz;
                 return [
                     'id' => $lesson->id,
                     'title' => $lesson->title,
                     'description' => $lesson->description,
                     'duration' => formatDurationTime($lesson->duration),
-                    'video' => $lesson->video_url,
-                    'download_url' => $lesson->video_url
+                    'video' => $enrolledCourse && $currentLessonCanShow ? $lesson->video_url : '',
+                    'download_url' => $enrolledCourse && $currentLessonCanShow && $lesson->video_url
                         ? route('web.courses.download.video', $lesson->video_filename)
                         : '',
                     'poster' => $lesson->poster?->url,
@@ -158,7 +177,8 @@ class WebCourseDetailsResource extends JsonResource
                 //'videoCompleted' => $user ? $this->video()->where('user_id',$user->id)->first() : null,
                 'url' => '',
             ],
-            'isBookmarked' => $userId ? (bool)$user->bookmarkedCourses()->where('bookmarkable_id', $this->id)->exists() : false
+            'isBookmarked' => $userId ? (bool)$user->bookmarkedCourses()->where('bookmarkable_id', $this->id)->exists() : false,
+            'hasRequestedCertificate' => $userId && $enrolledCourse ? $enrolledCourse->has_requested_certificate : null
         ];
         if(
             $userId &&

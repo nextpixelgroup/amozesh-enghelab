@@ -53,6 +53,34 @@
                         </ul>
                     </v-col>
                 </v-row>
+                <div class="zo-courses-section mt-6">
+                    <v-row>
+                        <v-col>
+                            <div class="zo-dashboard-section">
+                                <div class="zo-header mb-3">
+                                    <v-row class="align-center">
+                                        <v-col cols="12">
+                                            <div class="zo-info">
+                                                <div class="zo-icon elevation-4">
+                                                    <i class="mdi mdi-human-male-board"></i>
+                                                </div>
+                                                <div class="zo-name">
+                                                    <strong class="d-block mb-1">دوره های مدرس</strong>
+                                                    <span>در این بخش می توانید دوره های مدرس را مشاهده کنید.</span>
+                                                </div>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </div>
+                            </div>
+                        </v-col>
+                    </v-row>
+                    <v-row dense class="align-center">
+                        <v-col v-for="(course, index) in courses" :key="index" cols="12" sm="6" md="4" lg="3">
+                            <CourseCard :course="course" />
+                        </v-col>
+                    </v-row>
+                </div>
             </v-container>
         </div>
     </WebLayout>
@@ -60,10 +88,13 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
 import WebLayout from "@/Layouts/WebLayout.vue";
+import CourseCard from "@/Components/Web/Courses/CourseCard.vue";
 const props = defineProps({
-    teacher: Object
+    teacher: Object,
+    courses: Object,
 });
-const teacher = props.teacher.data;
+const teacher = props.teacher?.data;
+const courses = props.courses?.data;
 
 </script>
 <style scoped>
@@ -121,6 +152,17 @@ const teacher = props.teacher.data;
     display: block;
     margin: 0 0 15px;
     color: var(--Sub)
+}
+
+.zo-courses-section .zo-name {
+    margin: 0;
+    position: relative;
+    text-align: center;
+    z-index: 15
+}
+
+.zo-courses-section .zo-name strong{
+    text-align: right;
 }
 
 .zo-prof-section .zo-bio {

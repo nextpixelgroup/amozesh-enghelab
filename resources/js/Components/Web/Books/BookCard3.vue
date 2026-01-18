@@ -1,5 +1,5 @@
 <template>
-    <Link :href="book.url" class="zo-book">
+    <a :href="book.url" class="zo-book">
     <div class="zo-content">
         <div class="zo-thumbnails">
             <div class="zo-back">
@@ -49,7 +49,7 @@
             </div>
         </div>
     </div>
-    </Link>
+    </a>
 </template>
 <script setup>
 import { Link } from "@inertiajs/vue3";

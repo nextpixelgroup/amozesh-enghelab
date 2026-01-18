@@ -98,7 +98,7 @@ const submitQuiz = () => {
         },
         {
             onStart: () => {
-                //isLoading.value = true
+                isLoading.value = true
             },
             onSuccess: () => {
                 dialog.value = false

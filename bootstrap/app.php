@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckProfileComplete;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsClient;
@@ -33,8 +34,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'video/complete',
         ]);
         $middleware->alias([
-            'admin' => IsAdmin::class,
-            'client' => IsClient::class,
+            'admin'             => IsAdmin::class,
+            'client'            => IsClient::class,
+            'profile.completed' => CheckProfileComplete::class,
         ]);
         $middleware->web(append: [
             HandleInertiaRequests::class,

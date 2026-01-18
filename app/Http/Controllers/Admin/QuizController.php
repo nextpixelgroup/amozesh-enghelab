@@ -9,6 +9,7 @@ use App\Http\Resources\AdminVideosResource;
 use App\Jobs\SendSmsForQuiz;
 use App\Models\Certificate;
 use App\Models\Video;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -27,7 +28,6 @@ class QuizController extends Controller
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             });
-
         $quizzes = AdminVideosResource::collection($query->orderBy('created_at', 'desc')->paginate(env('PER_PAGE')));
         $status = enumFormated(VideoStatusEnum::cases());
         return inertia('Admin/Quizzes/List', compact('quizzes', 'status'));

@@ -38,9 +38,7 @@
                                     >
                                         <div class="d-flex flex-column align-start py-2 w-100">
                                             <span class="text-body-1 font-weight-bold">ورود کاربر</span>
-                                            <span class="text-caption text-green-lighten-4 opacity-80" style="font-weight: 300">
-                       پنل کاربران خارج از دانشگاه و موسسه
-                    </span>
+                                            <span class="text-caption text-green-lighten-4 opacity-80" style="font-weight: 300">پنل کاربران خارج از دانشگاه و موسسه</span>
                                         </div>
                                         <template v-slot:append>
                                             <v-icon>mdi-chevron-left</v-icon>
@@ -48,9 +46,7 @@
                                     </v-btn>
                                 </Link>
                             </v-hover>
-
                             <div class="text-center my-1 text-caption text-grey-lighten-1">یا</div>
-
                             <v-hover v-slot="{ isHovering, props }">
                                 <Link :href="getLoginUrl('student')">
                                     <v-btn
@@ -66,9 +62,7 @@
                                     >
                                         <div class="d-flex flex-column align-start py-2 w-100 text-green-darken-3">
                                             <span class="text-body-1 font-weight-bold">ورود دانشجو</span>
-                                            <span class="text-caption text-green-darken-1 opacity-80" style="font-weight: 300">
-                      پنل دانجشویان موسسه و دانشگاه
-                    </span>
+                                            <span class="text-caption text-green-darken-1 opacity-80" style="font-weight: 300">پنل دانشجویان موسسه و دانشگاه</span>
                                         </div>
                                         <template v-slot:append>
                                             <v-icon>mdi-chevron-left</v-icon>
@@ -76,9 +70,7 @@
                                     </v-btn>
                                 </Link>
                             </v-hover>
-
                         </div>
-
                         <div class="text-center mt-8">
                             <Link :href="route('web.contact.index')">
                                 <v-btn variant="text" size="small" color="grey-darken-1" class="text-caption">
@@ -86,14 +78,12 @@
                                 </v-btn>
                             </Link>
                         </div>
-
                     </v-card>
                 </v-col>
             </v-row>
         </v-container>
     </WebLayout>
 </template>
-
 <script setup>
 import WebLayout from "@/Layouts/WebLayout.vue";
 import {Link} from "@inertiajs/vue3";
@@ -117,11 +107,9 @@ const getLoginUrl = (type) => {
     font-family: inherit !important;
     letter-spacing: 0 !important;
 }
-
 .gap-4 {
     gap: 16px;
 }
-
 :deep(.v-btn__content) {
     width: 100%;
     justify-content: space-between;

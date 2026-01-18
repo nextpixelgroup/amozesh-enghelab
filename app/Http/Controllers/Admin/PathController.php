@@ -13,9 +13,9 @@ class PathController extends Controller
 {
     public function index()
     {
-        $courses = Course::orderBy('id', 'desc')->get()->map(fn ($course) => ['value' => $course->id, 'title' => $course->title]);
+        $courses = Course::orderBy('id', 'desc')->get()->map(fn ($course) => ['value' => $course->id, 'title' => $course->title, 'status' => $course->statusObject['title']]);
         $paths = Path::with(['items.course' => function($query) {
-            $query->select('id', 'title');
+            $query->select('id', 'title', 'status');
         }])->orderBy('order', 'asc')
             ->get()
             ->map(function($path) {
@@ -27,7 +27,8 @@ class PathController extends Controller
                     'items' => $path->items->map(function($item) {
                         return [
                             'id' => $item->course->id,
-                            'title' => $item->course->title
+                            'title' => $item->course->title,
+                            'status' => $item->course->statusObject['title'],
                         ];
                     })
                 ];

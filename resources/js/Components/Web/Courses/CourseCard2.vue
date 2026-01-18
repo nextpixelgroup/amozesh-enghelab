@@ -1,5 +1,5 @@
 <template>
-    <Link :href="course.url" class="zo-course">
+    <a :href="course.url" class="zo-course">
         <v-row dense>
             <v-col cols="12" lg="6">
                 <figure>
@@ -34,7 +34,7 @@
                 </div>
             </v-col>
         </v-row>
-    </Link>
+    </a>
 </template>
 <script setup>
 import {Link} from "@inertiajs/vue3";
@@ -50,7 +50,7 @@ const props = defineProps({
     .zo-courses-section .zo-course figure {
         margin: 0
     }
-    
+
     .zo-courses-section .zo-course figure .zo-thumbnail img {
         height: 170px
     }

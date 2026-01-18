@@ -58,6 +58,7 @@
                     <th class="text-center">شناسه</th>
                     <th class="text-center">دوره</th>
                     <th class="text-center">کاربر</th>
+                    <th class="text-center">درخواست گواهینامه</th>
                     <th class="text-center">تاریخ</th>
                     <th class="text-center">وضعیت</th>
                     <th class="text-center">عملیات</th>
@@ -74,6 +75,10 @@
                     </td>
                     <td class="text-center">
                         <strong>{{ item.user?.name }}</strong>
+                    </td>
+                    <td class="text-center">
+                        <v-icon color="green" v-if="item.requestedCertificate">mdi mdi-check</v-icon>
+                        <v-icon color="red" v-else>mdi mdi-close</v-icon>
                     </td>
                     <td>
                         <span class="d-block">{{ item.created_at.title.split(' ')[0] }}</span>

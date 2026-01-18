@@ -111,7 +111,7 @@
                                         تغییر ۲: فضای خالی برای جلوگیری از افتادن محتوا زیر دکمه‌های ثابت
                                         این فضا فقط در موبایل (smAndDown) دیده می‌شود.
                                     -->
-                                    <div class="mobile-spacer d-md-none" style="height: 160px; width: 100%;"></div>
+                                    <div class="mobile-spacer" style="height: 120px; width: 100%;"></div>
                                 </div>
 
                                 <!-- کنترل‌های شروع (بدون تغییر) -->
@@ -200,7 +200,7 @@
                                     class="px-8 font-weight-bold"
                                     :href="route('web.courses.index')"
                                 >
-                                    بازگشت به دوره
+                                    بازگشت به دوره‌ها
                                 </v-btn>
                             </div>
 
@@ -371,7 +371,7 @@ const startRecording = async () => {
 
     } catch (err) {
         console.error(err);
-        errorMessage.value = 'خطا در دسترسی به دوربین یا ارتباط با سرور.';
+        errorMessage.value = err.response.data.message ?? 'خطا در دسترسی به دوربین یا ارتباط با سرور.';
         state.value = 'idle';
         isRecording.value = false;
     } finally {

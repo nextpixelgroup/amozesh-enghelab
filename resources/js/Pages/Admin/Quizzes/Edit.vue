@@ -234,19 +234,33 @@
                                     </span>
                                 </div>
 
+                                <v-divider class="mb-3 border-dashed"></v-divider>
+                                <div class="d-flex align-center mb-2">
+                                    <v-icon size="small" color="grey-darken-1" class="ml-2">mdi-badge-account-outline</v-icon>
+                                    <strong>درخواست گواهینامه:</strong>
+                                    <v-chip
+                                        :color="quizData.requestedCertificate ? 'green-lighten-4' : 'red-lighten-4'"
+                                        size="small"
+                                        :class="`${quizData.requestedCertificate ? 'text-green-darken-3' : 'text-red-darken-3'} font-weight-bold`"
+                                    >
+                                        <v-icon :color="quizData.requestedCertificate ? 'green' : 'red'">mdi mdi-{{quizData.requestedCertificate ? 'check' : 'close'}}</v-icon>
+                                    </v-chip>
+                                </div>
+
                                 <v-divider class="mb-3 border-dashed" v-if="quizData.certificate?.number"></v-divider>
                                 <div class="d-flex align-center mb-2" v-if="quizData.certificate?.number">
-                                    <v-icon size="small" color="grey-darken-1" class="ml-2">mdi-certificate</v-icon>
-
+                                    <v-icon size="small" color="grey-darken-1" class="ml-2">mdi-certificate-outline</v-icon>
+                                    <strong>شماره گواهی دوره:</strong>
                                     <v-chip
                                         v-if="quizData.certificate?.number"
                                         color="green-lighten-4"
                                         size="small"
                                         class="text-green-darken-3 font-weight-bold"
                                     >
-                                        شماره گواهی دوره: {{ quizData.certificate?.number }}
+                                        {{ quizData.certificate?.number }}
                                     </v-chip>
                                 </div>
+
                             </v-card-text>
                         </v-card>
                         <!-- ========================================== -->

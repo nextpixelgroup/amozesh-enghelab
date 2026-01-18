@@ -57,6 +57,10 @@ class VideoController extends Controller
         try {
             $video = Video::where('uuid',$uuid)->first();
 
+            if(!in_array($video->status,['pending', 'rejected'])){
+                return response()->json(['status' => 'error', 'message' => 'شما نمی‌توانید در آزمون شرکت کنید.'], 500);
+            }
+
             if ($video->path && Storage::exists($video->path)) {
                 Storage::delete($video->path);
                 Storage::delete($video->thumbnail);

@@ -12,6 +12,9 @@ use App\Models\Comment;
 use App\Models\Course;
 use App\Models\CourseLesson;
 use App\Models\CourseStudent;
+use App\Models\EnrollPath;
+use App\Models\Path;
+use App\Models\PathItem;
 use App\Models\Setting;
 use App\Models\Video;
 use Illuminate\Http\Request;
@@ -61,6 +64,48 @@ class CourseController extends Controller
     public function show(Request $request, Course $course)
     {
         Gate::authorize('view', $course);
+
+        $user = auth()->user();
+        $enrollPath = null;
+        // چک میکنیم که این دوره در مسیر هست یا نه
+        $pathItem = PathItem::where('course_id', $course->id)->first();
+        if($user && $pathItem) {
+            // چک میکنیم که آیا کاربر در مسیر مورد نظر عضو هست یا نه
+            $enrollPath = EnrollPath::where('path_id', $pathItem->path_id)->where('user_id', $user->id)->exists();
+            if($user?->account_type === 'user' && $enrollPath === false){
+                // در اینجا مشخص میکنیم اگر کاربر معمولی بود و مسیر رو ثبت نام نکرده مجاز هست که بتونه هرجور دلش بخواد دوره هارو ببینه
+                $enrollPath = null;
+            }
+        }
+        if($enrollPath === true || $user?->account_type === 'student') {
+
+            // همه دوره های مسیر موردنظر رو میگیریم
+            $pathItems = PathItem::where('path_id', $pathItem->path_id)->get();
+
+            // اگر دوره در مسیر قرار داشت
+            if($pathItem){
+
+                // اگر در مسیر ثبت نام کرده بود
+                if($enrollPath === true){
+                    // گرفتن دوره‌هایی که کاربر قبلاً در مسیر مورد نظر گذرانده
+                    $completedCourses = CourseStudent::where('user_id',$user->id)
+                        ->whereIn('course_id',$pathItems->pluck('course_id'))
+                        ->where('has_passed', true)
+                        ->pluck('course_id');
+                    // بررسی اینکه آیا کاربر قبلاً دوره‌های قبلی را گذرانده
+                    $previousCourses = $pathItems->where('order', '<', $pathItem->order);
+
+                    foreach ($previousCourses as $prev) {
+                        if (!$completedCourses->contains($prev->course_id)) {
+                            // اگر یکی از دوره‌های قبلی گذرانده نشده
+                            $enrollPath = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         $course->update(['views' => $course->views + 1]);
         $courseRequest = $course;
         $requirements = WebCoursesResource::collection($course->requirements()->where('status','publish')->get());
@@ -73,7 +118,6 @@ class CourseController extends Controller
             ->get();
         $related = WebCoursesResource::collection($similarCourses);
         $course = WebCourseDetailsResource::make($course);
-        $user = auth()->user();
         $isEnrolled = false;
         if($user) $isEnrolled = $user->isEnrolledIn($courseRequest);
         $pageTitle = $courseRequest->title;
@@ -84,7 +128,7 @@ class CourseController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();*/
-        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user'));
+        return inertia('Web/Courses/Show', compact('course','requirements', 'related', 'isEnrolled', 'pageTitle','user', 'enrollPath'));
     }
 
     public function rating(Request $request, Course $course)
@@ -170,16 +214,32 @@ class CourseController extends Controller
         }
 
         if (!$user->isEnrolledIn($course)) {
-            $user->enrolledCourses()->attach($course, [
+            $parms = [
                 'enrolled_at' => now(),
                 'progress' => 0,
-            ]);
+            ];
+            if($user->account_type === 'student'){
+                $parms['has_requested_certificate'] = true;
+            }
+            $user->enrolledCourses()->attach($course, $parms);
+
             return redirectMessage('success', 'عضویت با موفقیت انجام شد');
         }
         else{
             return redirectMessage('error', 'شما قبلا عضو دوره شده‌اید');
         }
 
+    }
+
+    public function hasCertificate(Course $course, Request $request)
+    {
+        $user = $request->user();
+        if($user->account_type === 'student' && $request->response === false){
+            return redirectMessage('error', 'گواهینامه برای دانشجو اجباری می‌باشد.');
+        }
+        $courseStudent = CourseStudent::where('user_id',$user->id)->where('course_id', $course->id)->first();
+        $courseStudent->update(['has_requested_certificate' => $request->response]);
+        return redirectMessage('success', 'درخواست شما با موفقیت ثبت شد.');
     }
 
     public function LessonCompleted(CourseLesson $lesson, Request $request)
@@ -240,7 +300,7 @@ class CourseController extends Controller
                     'progress' => 100
                 ]);
             }
-            if($course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
+            if($courseStudent->has_requested_certificate === true && $course->quiz && $course->quiz->is_active && $course->quiz->quizCompletions->isEmpty()){
                 $uuid = (string) Str::uuid();
                 $video = Video::create([
                     'uuid'      => $uuid,
@@ -249,9 +309,7 @@ class CourseController extends Controller
                     'quiz_id'   => $course->quiz->id,
                     'status'    => 'pending',
                 ]);
-
                 SendSmsForQuiz::dispatch($user,$uuid, 'finalQuiz');
-
             }
         }
 

@@ -1,20 +1,20 @@
 <template>
     <v-dialog v-model="visible" persistent max-width="420">
         <v-card class="pa-4 rounded-lg elevation-6">
-            <v-card-title class="text-h6 font-weight-bold pb-2 d-flex justify-center">
+            <v-card-title class="font-weight-bold pb-2 d-flex justify-center">
                 {{ title }}
             </v-card-title>
 
             <v-divider class="mb-4"></v-divider>
 
-            <v-card-text class="text-body-2 text-center text-grey-darken-2 px-6">
+            <v-card-text class="text-center text-grey-darken-2 px-6">
                 {{ message }}
             </v-card-text>
 
             <v-card-actions class="mt-4 d-flex justify-center gap-3">
                 <v-btn
-                    color="grey-darken-1"
-                    variant="outlined"
+                    color="red-darken-1"
+                    variant="flat"
                     rounded="lg"
                     class="px-6"
                     @click="cancel"
@@ -42,14 +42,13 @@ import {ref} from 'vue'
 const visible = ref(false)
 const message = ref('')
 const title = ref('تأیید عملیات')
-const confirmColor = ref('red')
+const confirmColor = ref('primary')
 
 let resolver = null
 
-function open({msg, ttl = 'تأیید عملیات', color = 'red'}) {
+function open({msg, ttl = 'تأیید عملیات'}) {
     message.value = msg
     title.value = ttl
-    confirmColor.value = color
     visible.value = true
 
     return new Promise((resolve) => {

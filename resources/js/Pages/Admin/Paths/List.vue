@@ -1,6 +1,5 @@
 <template>
     <Head :title="adminPageTitle"/>
-    <Head title="Courses"/>
     <AdminLayout>
         <div class="zo-header-section mb-5">
             <v-row class="align-center">
@@ -105,6 +104,13 @@
                                         class="ml-2 course-drag-handle"
                                     ></v-btn>
                                     {{ course.title }}
+                                    <v-chip
+                                        size="small"
+                                        class="mr-4 px-3 py-1 elevation-2"
+                                        style="border-radius: 4px; font-weight: 500;"
+                                    >
+                                        {{ course.status }}
+                                    </v-chip>
                                 </div>
                                 <v-btn
                                     icon="mdi-close"
@@ -200,7 +206,8 @@ onMounted(() => {
                 ),
                 courses: path.items?.map(item => ({
                     value: item?.id,
-                    title: item?.title || 'دوره حذف شده'
+                    title: item?.title || 'دوره حذف شده',
+                    status: item?.status || 'نامشخص',
                 })) || []
             });
         });

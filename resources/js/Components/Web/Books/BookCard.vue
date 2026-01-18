@@ -1,5 +1,5 @@
 <template>
-    <Link :href="book.url" class="zo-book">
+    <a :href="book.url" class="zo-book">
     <img :src="book.thumbnail" alt="">
     <div class="zo-content">
         <v-tooltip :text="book.title" location="top">
@@ -40,7 +40,7 @@
             <span>خرید آنلاین</span>
         </div>
     </div>
-    </Link>
+    </a>
 </template>
 <script setup>
 import { Link } from "@inertiajs/vue3";

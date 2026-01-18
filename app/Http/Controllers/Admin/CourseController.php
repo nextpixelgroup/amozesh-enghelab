@@ -187,7 +187,6 @@ class CourseController extends Controller
             'thumbnail_id'          => $request->thumbnail_id,
             'intro_filename'        => $request->intro_filename,
             'intro_url'             => $request->intro_filename ? courseVideoUrl($request->intro_filename) : '',
-            'video_status'          => 'pending',
             'poster_id'             => $request->poster_id,
             'teacher_id'            => $request->teacher,
             'price'                 => 0,

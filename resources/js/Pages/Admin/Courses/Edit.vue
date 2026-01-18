@@ -817,17 +817,7 @@ function addSeason() {
                 title: '',
                 description: '',
                 is_active: false,
-                questions: [
-                    {
-                        id: crypto.randomUUID(),
-                        text: '',
-                        is_active: false,
-                        option1: {text: '', is_correct: false},
-                        option2: {text: '', is_correct: false},
-                        option3: {text: '', is_correct: false},
-                        option4: {text: '', is_correct: false},
-                    }
-                ]
+                questions: []
             }
         }]
     });
@@ -846,21 +836,11 @@ function addLesson(sIndex) {
         duration: null,
         video_url: '',
         video_filename: '',
-        is_active: false,
+        is_active: true,
         //has_quiz: true,
         poster_id: null,
         quiz: {
-            questions: [
-                {
-                    id: crypto.randomUUID(),
-                    text: '',
-                    is_active: true,
-                    option1: {text: '', is_correct: false},
-                    option2: {text: '', is_correct: false},
-                    option3: {text: '', is_correct: false},
-                    option4: {text: '', is_correct: false},
-                }
-            ]
+            questions: []
         },
     });
 }

@@ -112,6 +112,14 @@ const props = defineProps({
         type: Boolean,
         required: true
     },
+    enrollPath: {
+        type: [Boolean, null],
+        required: true
+    },
+    showEnrollPathDialog: {
+        type: [Boolean],
+        required: true
+    },
     user: {
         type: Object,
         required: true
@@ -129,7 +137,12 @@ const message = ref({
     text: '',
     type: '',
 })
+const emit = defineEmits(['update:showEnrollPathDialog']); // اضافه کردن این خط
 const enrollInCourse = () => {
+    if (props.enrollPath === false){
+        emit('update:showEnrollPathDialog', true); // تغییر مقدار showEnrollPathDialog
+        return false;
+    }
     if (props.isEnrolled.value) return false;
     try {
         router.post(route('web.courses.enroll', { course: props.course.id }), {}, {
@@ -212,14 +225,14 @@ const submitRating = async (n) => {
     align-items: center;
     justify-content: center;
     gap: 5px;
-    background: rgb(50, 180, 55);
+    background: var(--Primary);
     color: rgb(255, 255, 255);
     border-radius: .5rem
 }
 
 .zo-sidebar-section .zo-content .zo-add.added {
     cursor: auto;
-    background: rgb(5, 105, 60)
+    background: var(--Secondary)
 }
 
 .zo-sidebar-section .zo-content .zo-add img {
