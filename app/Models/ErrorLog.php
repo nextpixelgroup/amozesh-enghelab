@@ -40,7 +40,7 @@ class ErrorLog extends Model
             'details'    => $exception->getMessage(),
             'file'       => $exception->getFile(),
             'line'       => $exception->getLine(),
-            'trace'      => $exception->getTrace(),
+            'trace'      => null,//$exception->getTrace()
             'url'        => Request::fullUrl(),
             'method'     => Request::method(),
             'input'      => array_merge(Request::all(), $extra),
