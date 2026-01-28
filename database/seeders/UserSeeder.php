@@ -25,12 +25,5 @@ class UserSeeder extends Seeder
 
         $user->assignRole('super-admin');
 
-        $user = User::create([
-            'firstname' => 'حسین',
-            'lastname' => 'معلمیان',
-            'password' => Hash::make('123456'),
-            'email' => 'teacher@gmail.com',
-        ]);
-        $user->assignRole('teacher');
     }
 }
