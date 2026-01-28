@@ -85,7 +85,6 @@ class AuthController extends Controller
             if(env('APP_ENV') == 'production'){
                 $code = rand(10000, 99999);
             }
-            $code = 12345;
             $otp->code = $code;
             $otp->attempts = 0;
             $otp->expires_at = now()->addMinutes(5);
