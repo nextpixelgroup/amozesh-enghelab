@@ -220,7 +220,10 @@ const props = defineProps({
     stats: Array,
     bestsellerBooks: Object,
     institutions: Array,
-    about: Array,
+    about: {
+        type: Object,
+        default: {}
+    },
 })
 const popularCourses = ref(props.popularCourses.data)
 const latestCourses = ref(props.latestCourses.data)
