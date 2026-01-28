@@ -46,19 +46,19 @@ class CourseCreateRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:255',
-                'required_if:seasons.*.lessons.*.has_quiz,true'
+                //'required_if:seasons.*.lessons.*.has_quiz,true'
             ],
             'seasons.*.lessons.*.quiz.description'                      => 'nullable|string',
             'seasons.*.lessons.*.quiz.is_active'                        => [
                 'boolean',
-                'required_if:seasons.*.lessons.*.has_quiz,true'
+                //'required_if:seasons.*.lessons.*.has_quiz,true'
             ],
             'seasons.*.lessons.*.quiz.questions'                        => 'required_with:seasons.*.lessons.*.quiz|array|min:1',
             'seasons.*.lessons.*.quiz.questions.*.question'             => [
                 'nullable',
                 'string',
                 'min:3',
-                'required_if:seasons.*.lessons.*.has_quiz,true'
+                //'required_if:seasons.*.lessons.*.has_quiz,true'
             ],
             //'seasons.*.lessons.*.quiz.questions.*.type'                 => 'required|in:true_false,multiple_option,descriptive',
             'seasons.*.lessons.*.quiz.questions.*.explanation'          => 'nullable|string',
