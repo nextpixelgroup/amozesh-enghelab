@@ -119,6 +119,7 @@ class ProcessVideoJob implements ShouldQueue
                 $finalVideoPath
             ];
 
+
             Log::info("Starting FFmpeg conversion for $uuid...");
 
             $this->runProcess($command);
