@@ -35,13 +35,16 @@ class ProcessVideoJob implements ShouldQueue
 
     public function handle()
     {
-        // افزایش مموری برای این اسکریپت خاص
-        ini_set('memory_limit', '1024M');
-        ini_set('max_execution_time', 10800);
+        // جلوگیری از محدودیت حافظه اسکریپت (نه سرور)
+        ini_set('memory_limit', '512M');
 
         $uuid = $this->video->uuid;
         $tempPath = storage_path("app/temp_uploads/{$uuid}");
         $outputDir = storage_path("app/private/videos");
+
+        // مسیر فایل خام ادغام شده (قبل از تبدیل)
+        $rawMergedPath = "{$tempPath}/merged_raw_video.tmp";
+        // مسیر نهایی MP4
         $finalVideoPath = "{$outputDir}/{$uuid}.mp4";
         $thumbnailPath = "{$outputDir}/{$uuid}.jpg";
 
@@ -50,135 +53,122 @@ class ProcessVideoJob implements ShouldQueue
         }
 
         try {
-            Log::info("Job started for Video: $uuid | Chunks: {$this->totalChunks}");
-
             // =========================================================
-            // مرحله ۱: ساخت لیست فایل‌ها برای FFmpeg (روش Concat Demuxer)
+            // مرحله ۱: ادغام فیزیکی چانک‌ها (به روش کم‌مصرف Stream)
             // =========================================================
-            // این روش به جای چسباندن فیزیکی فایل‌ها، یک لیست متنی به ffmpeg می‌دهد
-            // که بسیار سریع‌تر است و مشکل I/O ندارد.
+            Log::info("Starting merge stream for $uuid. Total chunks: {$this->totalChunks}");
 
-            $listFilePath = "{$tempPath}/mylist.txt";
-            $fileListContent = "";
+            // باز کردن فایل مقصد برای نوشتن (Append Mode)
+            $targetStream = fopen($rawMergedPath, 'ab');
 
-            // پیدا کردن تمام فایل‌های .tmp در پوشه و مرتب‌سازی دقیق
-            $chunkFiles = glob("{$tempPath}/*.tmp");
-            sort($chunkFiles); // مرتب‌سازی الفبایی (چون در کنترلر zero-padding کردیم درست کار میکند)
-
-            if (empty($chunkFiles)) {
-                throw new \Exception("No chunk files found in $tempPath");
+            if ($targetStream === false) {
+                throw new \Exception("Could not open target file for writing: $rawMergedPath");
             }
 
-            foreach ($chunkFiles as $file) {
-                // ساختار فایل لیست باید به صورت: file '/path/to/file' باشد
-                $fileListContent .= "file '" . $file . "'\n";
+            for ($i = 0; $i < $this->totalChunks; $i++) {
+                $chunkFile = "{$tempPath}/{$i}.tmp";
+
+                if (file_exists($chunkFile)) {
+                    $chunkStream = fopen($chunkFile, 'rb');
+                    if ($chunkStream) {
+                        // کپی مستقیم از دیسک به دیسک (بدون بارگذاری در رم)
+                        stream_copy_to_stream($chunkStream, $targetStream);
+                        fclose($chunkStream);
+                    } else {
+                        Log::warning("Could not open chunk: $chunkFile");
+                    }
+
+                    // حذف چانک برای آزادسازی فضای دیسک در حین عملیات (اختیاری ولی پیشنهادی)
+                    // unlink($chunkFile);
+                } else {
+                    Log::warning("Chunk missing: $chunkFile");
+                }
+            }
+            fclose($targetStream);
+
+            if (!file_exists($rawMergedPath) || filesize($rawMergedPath) < 1024) {
+                throw new \Exception("Merged file is empty or too small.");
             }
 
-            File::put($listFilePath, $fileListContent);
+            Log::info("Merge completed. File size: " . filesize($rawMergedPath));
 
-            Log::info("Created concat list file for $uuid");
 
             // =========================================================
-            // مرحله ۲: پردازش اصلی با FFmpeg
+            // مرحله ۲: تبدیل با FFmpeg
             // =========================================================
-
-            // اگر سرور شما چند هسته‌ای است، Threads را 0 یا 2 بگذارید.
-            // 1 خیلی کند است. اگر سرور ضعیف است روی 1 بماند.
-            // من روی 0 میگذارم (Automatic) ولی با nice process
-            $threads = '1';
+            // الان ما یک فایل واحد داریم، پس ورودی ffmpeg فایل rawMergedPath است
 
             $command = [
                 'ffmpeg',
-                '-f', 'concat',       // استفاده از متد concat
-                '-safe', '0',         // اجازه خواندن مسیرهای absolute
-                '-i', $listFilePath,  // فایل متنی لیست چانک‌ها
+                '-i', $rawMergedPath,  // ورودی فایل ادغام شده است
 
-                '-threads', $threads,
+                '-threads', '1',       // بسیار مهم برای سرور شما
 
-                // تنظیمات ویدیو (H.264)
                 '-c:v', 'libx264',
-                '-preset', 'ultrafast', // سریع‌ترین حالت فشرده‌سازی
-                '-crf', '28',           // کیفیت متوسط رو به بالا (عدد کمتر = کیفیت بهتر/حجم بیشتر)
-                '-pix_fmt', 'yuv420p',  // سازگاری با همه پلیرها
-                '-r', '24',             // تثبیت فریم ریت روی ۲۴ (جلوگیری از مشکلات صدا/تصویر)
+                '-preset', 'ultrafast',
+                '-crf', '28',
+                '-pix_fmt', 'yuv420p',
 
-                // تنظیمات صدا
                 '-c:a', 'aac',
-                '-b:a', '96k',          // کاهش بیت‌ریت صدا برای کاهش حجم
+                '-b:a', '128k',
                 '-ac', '2',
                 '-ar', '44100',
 
-                '-movflags', '+faststart', // بهینه‌سازی برای پخش وب
+                '-movflags', '+faststart',
                 '-y',
                 $finalVideoPath
             ];
 
-            Log::info("Running FFmpeg conversion for $uuid...");
+            Log::info("Starting FFmpeg conversion for $uuid...");
 
-            // اجرای دستور
             $this->runProcess($command);
 
-            // چک کردن خروجی
-            if (!file_exists($finalVideoPath) || filesize($finalVideoPath) < 1024) {
-                throw new \Exception("Output video file is missing or empty.");
-            }
-
             // =========================================================
-            // مرحله ۳: ساخت تامنیل
+            // مرحله ۳: تامنیل و پایان
             // =========================================================
 
             $duration = $this->getVideoDuration($finalVideoPath);
-            // گرفتن عکس از ۲۰٪ ویدیو (جایی که معمولا تصویر سیاه نیست)
-            $seekSeconds = max(1, floor($duration * 0.2));
-            $seekTime = gmdate('H:i:s', $seekSeconds);
+            $seekTime = ($duration > 10) ? '00:00:05.000' : '00:00:01.000';
 
             $thumbCommand = [
                 'ffmpeg',
                 '-ss', $seekTime,
                 '-i', $finalVideoPath,
                 '-vframes', '1',
-                '-q:v', '5', // کیفیت تامنیل (کمتر=بهتر)
+                '-q:v', '2',
                 '-y',
                 $thumbnailPath
             ];
 
-            try {
-                $this->runProcess($thumbCommand);
-            } catch (\Exception $e) {
-                Log::warning("Thumbnail creation failed for $uuid (ignoring): " . $e->getMessage());
-                // ادامه می‌دهیم، چون ویدیو اصلی ساخته شده
-            }
-
-            // =========================================================
-            // مرحله ۴: ذخیره در دیتابیس و پاکسازی
-            // =========================================================
+            $this->runProcess($thumbCommand);
 
             $this->video->update([
                 'status' => 'completed',
                 'path' => "videos/{$uuid}.mp4",
-                'thumbnail' => file_exists($thumbnailPath) ? "videos/{$uuid}.jpg" : null,
+                'thumbnail' => "videos/{$uuid}.jpg",
                 'duration' => $duration,
                 'size' => File::size($finalVideoPath),
             ]);
 
-            Log::info("Video processing completed successfully for $uuid");
-
-            // پاکسازی فایل‌های موقت
-            File::deleteDirectory($tempPath);
+            Log::info("Video $uuid processed successfully.");
 
         } catch (\Exception $e) {
-            Log::error("Video processing FAILED for $uuid: " . $e->getMessage());
-            // اینجا throw می‌کنیم تا متد failed صدا زده شود
+            Log::error("Failed video $uuid: " . $e->getMessage());
             throw $e;
+        } finally {
+            // پاکسازی همه فایل‌های موقت
+            if (File::exists($rawMergedPath)) {
+                @unlink($rawMergedPath);
+            }
+            if (File::exists($tempPath)) {
+                File::deleteDirectory($tempPath);
+            }
         }
     }
 
     private function runProcess(array $command)
     {
-        // استفاده از timeout که در کلاس تعریف شده
         $process = Process::timeout($this->timeout)->start($command);
-
-        // صبر تا پایان پردازش
         $result = $process->wait();
 
         if ($result->failed()) {
@@ -186,7 +176,7 @@ class ProcessVideoJob implements ShouldQueue
             if (empty($errorMsg)) {
                 $errorMsg = $result->output();
             }
-            throw new \Exception("FFmpeg Error: " . substr($errorMsg, -500)); // فقط ۵۰۰ کاراکتر آخر ارور
+            throw new \Exception("FFmpeg Error: " . $errorMsg);
         }
     }
 
@@ -199,18 +189,7 @@ class ProcessVideoJob implements ShouldQueue
 
     public function failed(Throwable $exception)
     {
-        // ثبت وضعیت خطا در دیتابیس
-        if ($this->video) {
-            $this->video->update(['status' => 'failed']);
-        }
-
-        // پاکسازی فایل‌های موقت اگر مانده باشند
-        $uuid = $this->video->uuid ?? 'unknown';
-        $tempPath = storage_path("app/temp_uploads/{$uuid}");
-        if (File::exists($tempPath)) {
-            File::deleteDirectory($tempPath);
-        }
-
-        Log::error("Final failure for video {$uuid}: " . $exception->getMessage());
+        $this->video->update(['status' => 'failed']);
+        Log::error("Job Failed Trace: " . $exception);
     }
 }
