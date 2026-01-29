@@ -134,7 +134,7 @@ class VideoController extends Controller
 
     public function uploadChunk(Request $request)
     {
-        // اعتبارسنجی سبک
+        // 1. اعتبارسنجی
         $request->validate([
             'uuid' => 'required|string',
             'chunk_index' => 'required|integer',
@@ -143,44 +143,32 @@ class VideoController extends Controller
 
         $uuid = $request->input('uuid');
 
-        // *** افزودن چک وضعیت (Race Condition Fix) ***
-        // فقط یک کوئری سبک میزنیم تا وضعیت رو بگیریم.
-        // اگر از مدل Video استفاده می‌کنید:
-        $videoStatus = Video::where('uuid', $uuid)->value('status');
+        // 2. بررسی وضعیت (برای جلوگیری از آپلود ویدیوهای کنسل شده)
+        // بهتر است کش کنید یا کوئری سبک بزنید
+        $videoStatus = \App\Models\Video::where('uuid', $uuid)->value('status');
 
-        // اگر ویدیو پیدا نشد یا وضعیتش در حال ضبط نبود (یعنی کنسل شده)، عملیات را متوقف کن
-        // توجه: فرض بر این است که وقتی کنسل می‌کنید وضعیت به pending برمی‌گردد
-        // اگر مقدار enum دارید باید چک کنید برابر مقدار recording باشد
-        // مثلا: if ($videoStatus !== 'recording') ...
-
-        // اینجا فرض میکنیم اگر pending باشد یعنی ریست شده و نباید ذخیره شود
-        if (!$videoStatus || $videoStatus === 'pending' || $videoStatus === 'rejected') {
-            // فایل رو نادیده میگیریم و موفق برمیگردونیم تا کلاینت ارور نده
-            return response()->json(['status' => 'ignored_cancelled']);
+        // اگر وضعیت نامعتبر بود، فایل را ذخیره نکن ولی ارور هم نده (Fail Soft)
+        if (!$videoStatus || in_array($videoStatus, ['pending', 'rejected', 'failed'])) {
+            return response()->json(['status' => 'ignored']);
         }
-        // *******************************************
 
         $index = $request->input('chunk_index');
         $file = $request->file('chunk');
 
-        // مسیر موقت: storage/app/temp_uploads/{uuid}/
+        // 3. مسیردهی
         $path = storage_path("app/temp_uploads/{$uuid}");
-
         if (!file_exists($path)) {
-            // یک لایه امنیتی دیگر: اگر پوشه وجود ندارد و وضعیت هم رکوردینگ نیست، نسازش
-            // اما چون بالا چک کردیم، اینجا فقط می‌سازیم
             mkdir($path, 0777, true);
         }
 
-        // ذخیره فایل فیزیکی
-        $file->move($path, "{$index}.tmp");
-
-        // ثبت در Redis
-        Redis::sadd("upload:{$uuid}:chunks", $index);
-        Redis::expire("upload:{$uuid}:chunks", 86400);
+        // 4. ذخیره فایل با نام‌گذاری صحیح (Zero Padding)
+        // این کار باعث می‌شود فایل‌ها به ترتیب صحیح الفبایی خوانده شوند: 00001, 00002, ...
+        $fileName = sprintf("%05d.tmp", $index);
+        $file->move($path, $fileName);
 
         return response()->json(['status' => 'ok']);
     }
+
 
 
     public function finish(Request $request)
