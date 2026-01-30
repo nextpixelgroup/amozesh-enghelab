@@ -291,7 +291,7 @@ const startRecording = async () => {
 
         mediaRecorder.value = new MediaRecorder(stream.value, options);
         mediaRecorder.value.ondataavailable = handleDataAvailable;
-        mediaRecorder.value.start(10000); // 10s chunks
+        mediaRecorder.value.start(5000); // 10s chunks
 
         isRecording.value = true;
         startTimer();

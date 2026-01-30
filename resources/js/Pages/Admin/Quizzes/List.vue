@@ -71,7 +71,7 @@
                 >
                     <td class="text-center">{{ item.id }}</td>
                     <td class="text-center">
-                        {{ item.quiz.title }}
+                        {{ item.course.title }}
                     </td>
                     <td class="text-center">
                         <strong>{{ item.user?.name }}</strong>
