@@ -1,4 +1,5 @@
 <template>
+    <Head :title="adminPageTitle"/>
     <AdminLayout>
         <v-container fluid class="px-4 px-md-8">
             <v-row>
@@ -395,10 +396,12 @@
 <script setup lang="ts">
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 import QuizViewer from "@/Components/Admin/Quiz/QuizViewer.vue";
+import usePageTitle from "@/Composables/usePageTitle.js";
 import {ref, computed, reactive} from "vue";
-import {useForm} from "@inertiajs/vue3";
+import {Head, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 
+const {adminPageTitle} = usePageTitle('آزمون‌ها');
 const props = defineProps({
     quiz: {
         type: Object,
