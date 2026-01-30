@@ -5,7 +5,7 @@
                 <v-col cols="12">
                     <v-card class="rounded-lg overflow-hidden" elevation="3" v-if="quizData?.video.url">
                         <video
-                            :poster="quizData?.video?.poster"
+                            :poster="`${quizData?.video?.poster}?v=${quizData?.video?.updatedAtTimestamp}`"
                             controls
                             class="w-100 d-block"
                             style="max-height: 500px; width: 100%; object-fit: contain; background: #000;"
