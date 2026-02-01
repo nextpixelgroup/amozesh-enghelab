@@ -213,7 +213,7 @@ import { route } from "ziggy-js";
 import VideoLayout from "@/Layouts/VideoLayout.vue";
 
 // --- تنظیمات محدودیت زمانی ---
-const MAX_RECORDING_MINUTES = ref(10);
+const MAX_RECORDING_MINUTES = ref(5);
 const MAX_DURATION_SECONDS = computed(() => MAX_RECORDING_MINUTES.value * 60);
 
 const props = defineProps({

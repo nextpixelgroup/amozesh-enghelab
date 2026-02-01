@@ -36,7 +36,7 @@ class ProcessVideoJob implements ShouldQueue
     public function handle()
     {
         // جلوگیری از محدودیت حافظه اسکریپت (نه سرور)
-        ini_set('memory_limit', '512M');
+        ini_set('memory_limit', '1024M');
 
         $uuid = $this->video->uuid;
         $tempPath = storage_path("app/temp_uploads/{$uuid}");
