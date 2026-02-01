@@ -82,6 +82,7 @@ class AuthController extends Controller
                 $otp->login = $mobile;
             }
 
+            $code = 12345;
             if(env('APP_ENV') == 'production'){
                 $code = rand(10000, 99999);
             }
