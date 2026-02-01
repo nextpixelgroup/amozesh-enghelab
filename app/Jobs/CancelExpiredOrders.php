@@ -29,7 +29,7 @@ class CancelExpiredOrders implements ShouldQueue
     public function handle(): void
     {
         return;
-        $threshold = Carbon::now()->subMinutes(15);
+        $threshold = Carbon::now()->subMinutes(60);
 
         Order::where('status', 'pending')
             ->where('updated_at', '<=', $threshold)
