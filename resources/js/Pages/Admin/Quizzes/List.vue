@@ -238,4 +238,9 @@ watch(() => props.tickets, (newVal) => {
         color: rgb(200,160,100);
         border: 1px solid rgb(200,160,100)
     }
+    .zo-process {
+        background: rgba(200, 160, 100, .05);
+        color: rgb(5, 205, 255);
+        border: 1px solid rgb(5, 205, 255)
+    }
 </style>
