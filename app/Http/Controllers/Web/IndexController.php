@@ -66,6 +66,7 @@ class IndexController extends Controller
             'thumbnail' => $query->thumbnail?->url,
             'url' => route('web.about.index'),
         ];
-        return inertia('Web/Index', compact('slider', 'popularCourses', 'latestCourses', 'stats', 'bestsellerBooks', 'institutions', 'about'));
+        $pageTitle = 'خانه';
+        return inertia('Web/Index', compact('slider', 'popularCourses', 'latestCourses', 'stats', 'bestsellerBooks', 'institutions', 'about', 'pageTitle'));
     }
 }

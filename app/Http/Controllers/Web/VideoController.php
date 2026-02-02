@@ -43,8 +43,8 @@ class VideoController extends Controller
             $video = [
                 'status' => $video->statusObject,
             ];
-
-            return inertia('Web/Video/Index', compact('uuid', 'quiz', 'video'));
+            $pageTitle = 'اتاق آزمون';
+            return inertia('Web/Video/Index', compact('uuid', 'quiz', 'video', 'pageTitle'));
         }
         else{
             return redirect()->route('web.404');

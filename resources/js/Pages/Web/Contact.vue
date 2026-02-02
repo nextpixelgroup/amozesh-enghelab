@@ -1,5 +1,5 @@
 <template>
-    <WebLayout title="ContactUs">
+    <WebLayout>
         <div class="zo-contact-section">
             <v-container>
                 <v-row dense>
