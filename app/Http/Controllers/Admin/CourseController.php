@@ -135,6 +135,139 @@ class CourseController extends Controller
         return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug', 'course', 'site_url'));
     }
 
+
+
+    private function storeCourse($request)
+    {
+        $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
+        $slug = makeSlugUnique($slug, Course::class);
+
+        $args = [
+            'user_id'               => auth()->user()->id,
+            'title'                 => $request->title,
+            'slug'                  => $slug,
+            'summary'               => $request->summary,
+            'description'           => $request->description,
+            'thumbnail_id'          => $request->thumbnail_id,
+            'intro_filename'        => $request->intro_filename,
+            'intro_url'             => $request->intro_filename ? courseVideoUrl($request->intro_filename) : '',
+            'poster_id'             => $request->poster_id,
+            'teacher_id'            => $request->teacher,
+            'price'                 => 0,
+            'rate'                  => null,
+            //'must_complete_quizzes' => $request->must_complete_quizzes,
+            'status'                => $request->status,
+            'published_at'          => $request->published_at ? verta()->parse($request->published_at)->datetime() : now(),
+        ];
+        $course = Course::create($args);
+
+
+        $requirements = $request->requirements ? collect($request->requirements)->pluck('value')->toArray() : [];
+        $course->requirements()->sync($requirements);
+        $course->categories()->sync($request->category);
+        return $course;
+    }
+    private function processSeasons($course, $seasons)
+    {
+        $order = 1;
+        foreach ($seasons as $seasonData) {
+            $season = $course->seasons()->create([
+                'title'       => $seasonData['title'],
+                'description' => $seasonData['description'] ?? null,
+                'is_active'   => $seasonData['is_active'] ?? true,
+                'order'       => $order,
+            ]);
+            $order++;
+            if (isset($seasonData['lessons']) && is_array($seasonData['lessons'])) {
+                $this->processLessons($season, $seasonData['lessons']);
+            }
+        }
+    }
+    private function processLessons($season, $lessons)
+    {
+        $order = 1;
+        foreach ($lessons as $lessonData) {
+            $lesson = $season->lessons()->create([
+                'title'          => $lessonData['title'],
+                'description'    => $lessonData['description'] ?? null,
+                'video_id'       => null,
+                'poster_id'      => $lessonData['poster_id'],
+                'duration'       => $lessonData['duration'],
+                'order'          => $order,
+                'is_active'      => $lessonData['is_active'] ?? true,
+                'video_filename' => $lessonData['video_filename'],
+                'video_url'      => $lessonData['video_filename'] ? courseVideoUrl($lessonData['video_filename']) : null,
+            ]);
+            $order++;
+            if ($lessonData['has_quiz'] == true && isset($lessonData['quiz']) && is_array($lessonData['quiz'])) {
+                $this->processQuiz($lesson, $lessonData['quiz']);
+            }
+        }
+    }
+    private function processQuiz($lesson, $quizData)
+    {
+        $quiz = Quiz::create([
+            'lesson_id'   => $lesson->id,
+            'title'       => $quizData['title'] ?? 'Quiz',
+            'description' => $quizData['description'] ?? null,
+            'is_active'   => $quizData['is_active'] ?? true,
+        ]);
+
+        if (isset($quizData['questions']) && is_array($quizData['questions'])) {
+            $this->processQuestions($quiz, $quizData['questions']);
+        }
+    }
+    private function processQuestions($quiz, $questions)
+    {
+        $order = 1;
+        foreach ($questions as $questionData) {
+            $question = $quiz->questions()->create([
+                'question_text' => $questionData['question'],
+                'type'          => $questionData['type'] ?? 'multipleOption',
+                'is_active'     => $questionData['is_active'] ?? null,
+                'order'         => $order
+            ]);
+            $order++;
+            $this->processOptions($question, $questionData);
+        }
+    }
+    private function processOptions($question, $questionData)
+    {
+        $options = [
+            'option1' => $questionData['option1'] ?? ['text' => '', 'is_correct' => false],
+            'option2' => $questionData['option2'] ?? ['text' => '', 'is_correct' => false],
+            'option3' => $questionData['option3'] ?? ['text' => '', 'is_correct' => false],
+            'option4' => $questionData['option4'] ?? ['text' => '', 'is_correct' => false],
+        ];
+
+        $optionsToInsert = array_map(fn($option, $key) => [
+            'question_id' => $question->id,
+            'option_text' => $option['text'],
+            'is_correct'  => $option['is_correct'],
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ], $options, array_keys($options));
+
+        $question->options()->insert($optionsToInsert);
+    }
+    private function finalQuiz($course,$quizData)
+    {
+        try {
+            $quiz = Quiz::create([
+                'course_id'   => $course->id,
+                'title'       => $quizData['title'] ?? '',
+                'description' => $quizData['description'] ?? '',
+                'is_active'   => $quizData['is_active'] ?? false,
+            ]);
+            if (isset($quizData['questions']) && is_array($quizData['questions'])) {
+                $this->processQuestions($quiz, $quizData['questions']);
+            }
+            return $quiz;
+        }
+        catch (\Exception $e) {
+            return redirectMessage('error',$e->getMessage());
+        }
+    }
     public function update(CourseUpdateRequest $request, Course $course)
     {
         //dd($request->all());
@@ -172,38 +305,6 @@ class CourseController extends Controller
             return redirectMessage('error', $e->getMessage());
         }
     }
-
-    private function storeCourse($request)
-    {
-        $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);
-        $slug = makeSlugUnique($slug, Course::class);
-
-        $args = [
-            'user_id'               => auth()->user()->id,
-            'title'                 => $request->title,
-            'slug'                  => $slug,
-            'summary'               => $request->summary,
-            'description'           => $request->description,
-            'thumbnail_id'          => $request->thumbnail_id,
-            'intro_filename'        => $request->intro_filename,
-            'intro_url'             => $request->intro_filename ? courseVideoUrl($request->intro_filename) : '',
-            'poster_id'             => $request->poster_id,
-            'teacher_id'            => $request->teacher,
-            'price'                 => 0,
-            'rate'                  => null,
-            //'must_complete_quizzes' => $request->must_complete_quizzes,
-            'status'                => $request->status,
-            'published_at'          => $request->published_at ? verta()->parse($request->published_at)->datetime() : now(),
-        ];
-        $course = Course::create($args);
-
-
-        $requirements = $request->requirements ? collect($request->requirements)->pluck('value')->toArray() : [];
-        $course->requirements()->sync($requirements);
-        $course->categories()->sync($request->category);
-        return $course;
-    }
-
     private function updateCourse($request, $course, $introId = null)
     {
         $slug = $request->slug;
@@ -245,22 +346,6 @@ class CourseController extends Controller
         return $course;
     }
 
-    private function processSeasons($course, $seasons)
-    {
-        $order = 1;
-        foreach ($seasons as $seasonData) {
-            $season = $course->seasons()->create([
-                'title'       => $seasonData['title'],
-                'description' => $seasonData['description'] ?? null,
-                'is_active'   => $seasonData['is_active'] ?? true,
-                'order'       => $order,
-            ]);
-            $order++;
-            if (isset($seasonData['lessons']) && is_array($seasonData['lessons'])) {
-                $this->processLessons($season, $seasonData['lessons']);
-            }
-        }
-    }
     private function processUpdateSeasons($course, $seasons)
     {
         $order = 1;
@@ -310,28 +395,6 @@ class CourseController extends Controller
         }
     }
 
-
-    private function processLessons($season, $lessons)
-    {
-        $order = 1;
-        foreach ($lessons as $lessonData) {
-            $lesson = $season->lessons()->create([
-                'title'          => $lessonData['title'],
-                'description'    => $lessonData['description'] ?? null,
-                'video_id'       => null,
-                'poster_id'      => $lessonData['poster_id'],
-                'duration'       => $lessonData['duration'],
-                'order'          => $order,
-                'is_active'      => $lessonData['is_active'] ?? true,
-                'video_filename' => $lessonData['video_filename'],
-                'video_url'      => $lessonData['video_filename'] ? courseVideoUrl($lessonData['video_filename']) : null,
-            ]);
-            $order++;
-            if ($lessonData['has_quiz'] == true && isset($lessonData['quiz']) && is_array($lessonData['quiz'])) {
-                $this->processQuiz($lesson, $lessonData['quiz']);
-            }
-        }
-    }
     private function processUpdateLessons($season, $lessons)
     {
         $order = 1;
@@ -373,60 +436,50 @@ class CourseController extends Controller
         }
     }
 
-    private function processQuiz($lesson, $quizData)
-    {
-        $quiz = Quiz::create([
-            'lesson_id'   => $lesson->id,
-            'title'       => $quizData['title'] ?? 'Quiz',
-            'description' => $quizData['description'] ?? null,
-            'is_active'   => $quizData['is_active'] ?? true,
-        ]);
-
-        if (isset($quizData['questions']) && is_array($quizData['questions'])) {
-            $this->processQuestions($quiz, $quizData['questions']);
-        }
-    }
-
     private function processUpdateQuiz($lesson, $quizData)
     {
-        if(isset($quizData['id'])) {
-            if (is_numeric($quizData['id']) && $quizData['id'] > 0) {
-                $quiz = Quiz::find($quizData['id']);
+        $quiz = null; // ✅ تعریف اولیه
+
+        // اگر کوییز غیرفعال یا وجود ندارد، کلاً خارج شو
+        if (
+            empty($quizData) ||
+            (isset($quizData['has_quiz']) && $quizData['has_quiz'] === false)
+        ) {
+            return;
+        }
+
+        if (!empty($quizData['id']) && is_numeric($quizData['id'])) {
+            $quiz = Quiz::find($quizData['id']);
+
+            if ($quiz) {
                 $quiz->update([
-                    'lesson_id' => $lesson->id,
-                    'title' => $quizData['title'],
+                    'lesson_id'   => $lesson->id,
+                    'title'       => $quizData['title'] ?? '',
                     'description' => $quizData['description'] ?? null,
-                    'is_active' => $quizData['is_active'],
-                ]);
-            } elseif($quizData['title'] && $quizData['description']){
-                $quiz = Quiz::create([
-                    'lesson_id' => $lesson->id,
-                    'title' => $quizData['title'],
-                    'description' => $quizData['description'] ?? null,
-                    'is_active' => $quizData['is_active'],
+                    'is_active'   => $quizData['is_active'] ?? true,
                 ]);
             }
-
         }
-        if (isset($quizData['questions']) && is_array($quizData['questions']) && count($quizData['questions'])) {
+        elseif (!empty($quizData['title'])) {
+            $quiz = Quiz::create([
+                'lesson_id'   => $lesson->id,
+                'title'       => $quizData['title'],
+                'description' => $quizData['description'] ?? null,
+                'is_active'   => $quizData['is_active'] ?? true,
+            ]);
+        }
+
+        // ✅ فقط اگر Quiz ساخته شد، سوال‌ها را پردازش کن
+        if (
+            $quiz &&
+            isset($quizData['questions']) &&
+            is_array($quizData['questions']) &&
+            count($quizData['questions'])
+        ) {
             $this->processUpdateQuestions($quiz, $quizData['questions']);
         }
     }
 
-    private function processQuestions($quiz, $questions)
-    {
-        $order = 1;
-        foreach ($questions as $questionData) {
-            $question = $quiz->questions()->create([
-                'question_text' => $questionData['question'],
-                'type'          => $questionData['type'] ?? 'multipleOption',
-                'is_active'     => $questionData['is_active'] ?? null,
-                'order'         => $order
-            ]);
-            $order++;
-            $this->processOptions($question, $questionData);
-        }
-    }
 
     private function processUpdateQuestions($quiz, $questions)
     {
@@ -459,26 +512,6 @@ class CourseController extends Controller
         if (!empty($questionsToDelete)) {
             Question::whereIn('id', $questionsToDelete)->delete();
         }
-    }
-
-    private function processOptions($question, $questionData)
-    {
-        $options = [
-            'option1' => $questionData['option1'] ?? ['text' => '', 'is_correct' => false],
-            'option2' => $questionData['option2'] ?? ['text' => '', 'is_correct' => false],
-            'option3' => $questionData['option3'] ?? ['text' => '', 'is_correct' => false],
-            'option4' => $questionData['option4'] ?? ['text' => '', 'is_correct' => false],
-        ];
-
-        $optionsToInsert = array_map(fn($option, $key) => [
-            'question_id' => $question->id,
-            'option_text' => $option['text'],
-            'is_correct'  => $option['is_correct'],
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ], $options, array_keys($options));
-
-        $question->options()->insert($optionsToInsert);
     }
 
     private function processUpdateOptions($question, $questionData)
@@ -517,26 +550,6 @@ class CourseController extends Controller
             $question->options()->insert($optionsToInsert);
         }
     }
-
-    private function finalQuiz($course,$quizData)
-    {
-        try {
-            $quiz = Quiz::create([
-                'course_id'   => $course->id,
-                'title'       => $quizData['title'] ?? '',
-                'description' => $quizData['description'] ?? '',
-                'is_active'   => $quizData['is_active'] ?? false,
-            ]);
-            if (isset($quizData['questions']) && is_array($quizData['questions'])) {
-                $this->processQuestions($quiz, $quizData['questions']);
-            }
-            return $quiz;
-        }
-        catch (\Exception $e) {
-            return redirectMessage('error',$e->getMessage());
-        }
-    }
-
 
     private function finalUpdateQuiz($course,$quizData)
     {
