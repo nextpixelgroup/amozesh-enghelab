@@ -216,7 +216,7 @@ const props = defineProps({
     enrollPath: [Boolean, null],
     user: Object,
 })
-const showRequestedCertificateDialog = ref(props.isEnrolled && props.course.data.hasRequestedCertificate === null)
+const showRequestedCertificateDialog = ref(props.course.data.quiz.hasQuiz && props.isEnrolled && props.course.data.hasRequestedCertificate === null)
 const showEnrollPathDialog = ref(props.enrollPath === false)
 // Watch for course data changes
 watch(() => props.course, (newVal) => {

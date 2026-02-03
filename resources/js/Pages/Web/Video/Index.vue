@@ -43,7 +43,7 @@
                                         {{ formatTime(timer) }}
                                     </span>
 
-                                    <!-- آیکون ضبط (در حالت بحرانی مخفی می‌شود تا شلوغ نشود یا رنگش عوض می‌شود) -->
+                                    <!-- آیکون ضبط -->
                                     <v-icon v-if="isRecording" icon="mdi-record"
                                             :color="isCriticalTime ? 'white' : 'red'"
                                             size="x-small"
@@ -80,18 +80,18 @@
 
                                         <div v-if="isRecording" class="rec-indicator"><span class="dot"></span><span class="text-caption font-weight-bold">ضبط</span></div>
 
-                                        <!-- هشدار متنی روی ویدیو (فقط یک متن کلی، بدون تایمر) -->
-                                        <v-slide-y-transition>
+                                        <!-- هشدار متنی روی ویدیو (تغییر مکان به پایین) -->
+                                        <v-slide-y-reverse-transition>
                                             <div v-if="isRecording && isCriticalTime"
                                                  class="critical-overlay d-flex align-center justify-center gap-2 px-3 py-1 rounded-pill elevation-6"
                                             >
                                                 <v-icon icon="mdi-clock-alert-outline" color="white" class="rapid-pulse" size="small"></v-icon>
                                                 <span class="text-white font-weight-bold text-caption">زمان رو به اتمام است!</span>
                                             </div>
-                                        </v-slide-y-transition>
+                                        </v-slide-y-reverse-transition>
                                     </div>
 
-                                    <!-- تایمر شناور موبایل (فقط تایمر اصلی با حالت چشمک زن) -->
+                                    <!-- تایمر شناور موبایل -->
                                     <div v-if="$vuetify.display.smAndDown && isRecording" class="mobile-timer-group">
                                         <div class="mobile-overlay-timer transition-swing" :class="{ 'critical-pulse-mobile': isCriticalTime }">
                                             {{ formatTime(timer) }}
@@ -139,7 +139,7 @@
                                 </div>
                             </div>
 
-                            <!-- سایر وضعیت‌ها (بدون تغییر) -->
+                            <!-- سایر وضعیت‌ها -->
                             <div v-else-if="state === 'uploading' || state === 'processing'" class="d-flex flex-column align-center justify-center py-16 px-4 bg-surface h-100 text-center">
                                 <div class="mb-8 position-relative" style="height: 100px; width: 100px;">
                                     <div class="pulsing-circle-primary"></div>
@@ -349,17 +349,26 @@ const cancelRecording = async () => {
     if (await $confirm('آیا آزمون را لغو می‌کنید؟')) {
         state.value = 'idle';
         isRecording.value = false;
+
         if (mediaRecorder.value) {
+            // جلوگیری از ذخیره آخرین چانک هنگام لغو
             mediaRecorder.value.ondataavailable = null;
             if (mediaRecorder.value.state === 'recording') mediaRecorder.value.stop();
         }
+
         stopStream();
         stopTimer();
+
+        // --- خط اضافه شده: ریست کردن مقدار تایمر به صفر ---
+        timer.value = 0;
+        // ---------------------------------------------
+
         await localforage.clear();
         try { await axios.delete(route('web.video.cancel', videoUuid.value)); } catch (e) {}
         initializeCamera();
     }
 };
+
 
 const initializeCamera = async () => {
     if (stream.value) return;
@@ -507,7 +516,18 @@ const handleBeforeUnload = (event) => {
 /* Video Overlay Warning */
 .rapid-pulse { animation: rapid-pulse-anim 1s infinite; }
 @keyframes rapid-pulse-anim { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
-.critical-overlay { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #d32f2f, #ef5350); z-index: 30; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4); border: 1px solid rgba(255,255,255,0.3); min-width: 180px; }
+/* تغییر مکان به پایین */
+.critical-overlay {
+    position: absolute;
+    bottom: 8px; /* از پایین 30 پیکسل فاصله */
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #d32f2f, #ef5350);
+    z-index: 30;
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+    border: 1px solid rgba(255,255,255,0.3);
+    min-width: 180px;
+}
 
 /* Standard Animations */
 .border-red { border: 1px solid #ff5252 !important; }

@@ -57,7 +57,7 @@ Route::middleware('profile.completed')->group(function () {
             Route::post('/courses/lesson/{lesson}/quiz', [CourseController::class, 'LessonQuizStore'])->name('courses.lesson.quiz.store');
             Route::post('/courses/{course:slug}/rating', [CourseController::class, 'rating'])->name('courses.rating');
 
-            Route::get('/courses/download/video/{filename}', [CourseController::class, 'download'])->name('courses.download.video');
+            Route::get('/courses/download/video/{path}', [CourseController::class, 'download'])->where('path', '.*')->name('courses.download.video');
             Route::post('/bookmarks/course/{course}/store', [BookmarkController::class, 'courseStore'])->name('bookmark.course.store');
             Route::post('/bookmarks/book/{book}/store', [BookmarkController::class, 'bookStore'])->name('bookmark.book.store');
             Route::delete('/bookmarks/course/{course}/destroy', [BookmarkController::class, 'courseDestroy'])->name('bookmark.course.destroy');

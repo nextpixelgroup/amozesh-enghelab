@@ -157,48 +157,77 @@ class CourseController extends Controller
         return sendJson('success', 'امتیاز با موفقیت ثبت شد', ['rate' => number_format(Course::find($course->id)->rate,1)]);
     }
 
-    public function download($filename)
+    public function download(string $path)
     {
-        $remoteUrl = video_upload_path("{$filename}");
+        // ✅ جلوگیری از Path Traversal
+        if (str_contains($path, '..')) {
+            abort(403);
+        }
 
-        // مرحله 1: دریافت هدرها (برای گرفتن Content-Length)
+        // اگر تابع helper داری
+        // example: video_upload_path('moghavemat/video.mp4')
+        $remoteUrl = video_upload_path($path);
+
+        /*
+        |--------------------------------------------------------------------------
+        | مرحله 1: گرفتن Content-Length
+        |--------------------------------------------------------------------------
+        */
         $chHead = curl_init($remoteUrl);
         curl_setopt_array($chHead, [
-            CURLOPT_NOBODY => true, // فقط هدرها
+            CURLOPT_NOBODY         => true,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER => true,
+            CURLOPT_HEADER         => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYPEER => false,
         ]);
 
         $headerData = curl_exec($chHead);
+
+        if ($headerData === false) {
+            curl_close($chHead);
+            abort(404);
+        }
+
         curl_close($chHead);
 
         $contentLength = null;
         if (preg_match('/Content-Length:\s*(\d+)/i', $headerData, $matches)) {
-            $contentLength = (int)$matches[1];
+            $contentLength = (int) $matches[1];
         }
 
-        // مرحله 2: استریم خود فایل
+        /*
+        |--------------------------------------------------------------------------
+        | مرحله 2: Stream فایل
+        |--------------------------------------------------------------------------
+        */
         $response = new StreamedResponse(function () use ($remoteUrl) {
-            $ch = curl_init();
+            $ch = curl_init($remoteUrl);
             curl_setopt_array($ch, [
-                CURLOPT_URL => $remoteUrl,
                 CURLOPT_RETURNTRANSFER => false,
-                CURLOPT_HEADER => false,
+                CURLOPT_HEADER         => false,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_FILE => fopen('php://output', 'wb'),
+                CURLOPT_FILE           => fopen('php://output', 'wb'),
             ]);
+
             curl_exec($ch);
             curl_close($ch);
         });
 
-        // مرحله 3: ست کردن هدرهای دامنه دانلود
-        $response->headers->set('Content-Type', 'video/mp4');
-        $response->headers->set('Content-Disposition', "attachment; filename=\"{$filename}\"");
+        /*
+        |--------------------------------------------------------------------------
+        | مرحله 3: Headerها
+        |--------------------------------------------------------------------------
+        */
+        $filename = basename($path);
 
-        // این خط باعث میشه سایز فایل برای مرورگر قابل شناسایی بشه 🎯
+        $response->headers->set('Content-Type', 'video/mp4');
+        $response->headers->set(
+            'Content-Disposition',
+            'attachment; filename="' . $filename . '"'
+        );
+
         if ($contentLength) {
             $response->headers->set('Content-Length', $contentLength);
         }

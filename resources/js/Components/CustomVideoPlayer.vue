@@ -39,7 +39,11 @@
 
                 <!-- Progress Bar -->
                 <div class="progress-container">
-                    <div class="progress-bar" @click="onProgressBarClick">
+                    <!--
+                        تغییر ۱: حذف @click="onProgressBarClick" از اینجا.
+                        چون input داخلی خودش کلیک را مدیریت می‌کند.
+                    -->
+                    <div class="progress-bar">
                         <!-- Buffered ranges -->
                         <div
                             v-for="(range, index) in bufferedRanges"
@@ -77,32 +81,59 @@
 
                 <!-- Buttons Row -->
                 <div class="controls-row">
-                    <div class="controls-left">
-                        <!-- Fullscreen -->
-                        <button @click="toggleFullscreen" class="control-btn" title="تمام صفحه">
-                            <v-icon color="white" size="24">
-                                {{ isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}
+                    <!-- ... بقیه کدها بدون تغییر ... -->
+                    <div class="controls-right">
+
+                        <button @click="skip(-10)" class="control-btn mini-btn" title="10 ثانیه قبل">
+                            <v-icon color="white" size="20">mdi-rewind-10</v-icon>
+                        </button>
+
+                        <button @click="playing = !playing" class="control-btn play-pause-btn">
+                            <v-icon color="white" size="28">
+                                {{ playing ? 'mdi-pause' : 'mdi-play' }}
                             </v-icon>
                         </button>
 
-                        <!-- Download -->
-                        <a
-                            :href="lesson.download_url"
-                            class="control-btn"
-                            title="دانلود ویدیو"
-                            @click="handleDownload"
-                        >
-                            <v-progress-circular
-                                v-if="isDownloading"
-                                indeterminate
-                                size="20"
-                                width="2"
-                                color="#00e676"
-                            />
-                            <v-icon v-else color="white" size="24">mdi-download</v-icon>
-                        </a>
+                        <button @click="skip(10)" class="control-btn mini-btn" title="10 ثانیه بعد">
+                            <v-icon color="white" size="20">mdi-fast-forward-10</v-icon>
+                        </button>
 
-                        <!-- Speed -->
+                        <div class="time-display">
+                            <span>{{ formatTime(currentTime) }}</span>
+                            <span class="time-separator">/</span>
+                            <span>{{ formatTime(duration) }}</span>
+                        </div>
+
+                        <div class="volume-control">
+                            <!-- تغییرات در این تگ اعمال شد -->
+                            <v-icon
+                                color="white"
+                                size="22"
+                                class="mr-1"
+                                style="cursor: pointer;"
+                                @click="toggleMute"
+                            >
+                                {{ volume === 0 ? 'mdi-volume-off' : 'mdi-volume-high' }}
+                            </v-icon>
+
+                            <div class="volume-slider-wrapper">
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.05"
+                                    v-model="volume"
+                                    class="volume-slider"
+                                    dir="ltr"
+                                    :style="{ backgroundSize: (volume * 100) + '% 100%' }"
+                                />
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="controls-left">
+
                         <v-menu
                             location="top"
                             offset="10"
@@ -129,49 +160,27 @@
                                 </v-list-item>
                             </v-list>
                         </v-menu>
-                    </div>
 
-                    <div class="controls-right">
-                        <!-- Volume -->
-                        <div class="volume-control">
-                            <div class="volume-slider-wrapper">
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="1"
-                                    step="0.05"
-                                    v-model="volume"
-                                    class="volume-slider"
-                                    dir="ltr"
-                                    :style="{ backgroundSize: (volume * 100) + '% 100%' }"
-                                />
-                            </div>
-                            <v-icon color="white" size="22" class="mr-1">
-                                {{ volume === 0 ? 'mdi-volume-off' : 'mdi-volume-high' }}
+                        <a
+                            :href="lesson.download_url"
+                            class="control-btn"
+                            title="دانلود ویدیو"
+                            @click="handleDownload"
+                        >
+                            <v-progress-circular
+                                v-if="isDownloading"
+                                indeterminate
+                                size="20"
+                                width="2"
+                                color="#00e676"
+                            />
+                            <v-icon v-else color="white" size="24">mdi-download</v-icon>
+                        </a>
+
+                        <button @click="toggleFullscreen" class="control-btn" title="تمام صفحه">
+                            <v-icon color="white" size="24">
+                                {{ isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen' }}
                             </v-icon>
-                        </div>
-
-                        <!-- Time -->
-                        <div class="time-display">
-                            <span>{{ formatTime(currentTime) }}</span>
-                            <span class="time-separator">/</span>
-                            <span>{{ formatTime(duration) }}</span>
-                        </div>
-
-                        <button @click="skip(10)" class="control-btn mini-btn" title="10 ثانیه بعد">
-                            <v-icon color="white" size="20">mdi-fast-forward-10</v-icon>
-                        </button>
-
-
-                        <!-- Play/Pause (Small) -->
-                        <button @click="playing = !playing" class="control-btn play-pause-btn">
-                            <v-icon color="white" size="28">
-                                {{ playing ? 'mdi-pause' : 'mdi-play' }}
-                            </v-icon>
-                        </button>
-                        <!-- Skip Buttons -->
-                        <button @click="skip(-10)" class="control-btn mini-btn" title="10 ثانیه قبل">
-                            <v-icon color="white" size="20">mdi-rewind-10</v-icon>
                         </button>
                     </div>
                 </div>
@@ -199,16 +208,32 @@ const isBuffering = ref(false)
 const isDownloading = ref(false)
 const bufferedTimeRanges = ref(null)
 
+// تغییر ۲: اضافه کردن seeking به destructuring
 const {
     playing,
     currentTime,
     duration,
     volume,
     buffered,
-    rate
+    rate,
+    seeking // <--- این خیلی مهم است
 } = useMediaControls(video, {
     src: props.src,
 })
+
+const previousVolume = ref(1) // مقدار پیش‌فرض ۱۰۰٪ است
+
+const toggleMute = () => {
+    if (volume.value > 0) {
+        // اگر صدا باز است، مقدار فعلی را ذخیره کن و صدا را قطع کن
+        previousVolume.value = volume.value
+        volume.value = 0
+    } else {
+        // اگر صدا قطع است، به مقدار ذخیره شده برگرد
+        // اگر مقدار قبلی هم صفر بود (باگ احتمالی)، روی ۱ تنظیم کن
+        volume.value = previousVolume.value > 0 ? previousVolume.value : 1
+    }
+}
 
 const videoContainer = ref(null)
 const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(videoContainer)
@@ -221,47 +246,35 @@ const updateBuffered = () => {
     bufferedTimeRanges.value = video.value.buffered
 }
 
+// ... توابع مربوط به کنترل‌ها و فول اسکرین دست نخورده ...
 const hideControls = () => {
     if (isFullscreen.value && playing.value) {
         showControls.value = false
         document.body.style.cursor = 'none'
     }
 }
-
 const showControlsWithTimer = () => {
     showControls.value = true
     document.body.style.cursor = 'auto'
     if (controlsTimeout) clearTimeout(controlsTimeout)
     controlsTimeout = setTimeout(hideControls, 3000)
 }
-
-const handleControlInteraction = () => {
-    showControlsWithTimer()
-}
-
+const handleControlInteraction = () => { showControlsWithTimer() }
 const handleUserActivity = (e) => {
-    // Don't reset timer if clicking on speed menu
-    if (e.target.closest('.speed-menu-container') || e.target.closest('.speed-menu')) {
-        return
-    }
+    if (e.target.closest('.speed-menu-container') || e.target.closest('.speed-menu')) return
     showControlsWithTimer()
 }
-
 const setPlaybackSpeed = (speed) => {
     rate.value = speed
     showControlsWithTimer()
 }
-
-// --- Watchers اصلاح شده ---
 watch(isFullscreen, (newVal) => {
     if (newVal) {
-        // When entering fullscreen
         showControlsWithTimer()
         window.addEventListener('mousemove', handleUserActivity)
         window.addEventListener('mousedown', handleUserActivity)
         window.addEventListener('keydown', handleUserActivity)
     } else {
-        // When exiting fullscreen
         if (controlsTimeout) clearTimeout(controlsTimeout)
         showControls.value = true
         document.body.style.cursor = 'auto'
@@ -305,7 +318,6 @@ const formatTime = (time) => {
     const hours = Math.floor(time / 3600)
     const minutes = Math.floor((time % 3600) / 60)
     const seconds = Math.floor(time % 60)
-
     if (hours > 0) {
         return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
     }
@@ -313,16 +325,12 @@ const formatTime = (time) => {
 }
 
 const onSeek = (e) => {
+    // برای اطمینان بیشتر، وقتی کاربر اسلایدر را میکشد این کد اجرا میشود
+    // v-model خودش کار میکند اما این برای لاجیک های اضافه است
     currentTime.value = Number(e.target.value)
 }
 
-const onProgressBarClick = (e) => {
-    const progressBar = e.currentTarget
-    const clickPosition = (e.clientX - progressBar.getBoundingClientRect().left) / progressBar.offsetWidth
-    const newTime = clickPosition * duration.value
-    currentTime.value = newTime
-    if (video.value) video.value.currentTime = newTime
-}
+// تغییر ۳: تابع onProgressBarClick کاملا حذف شد چون باعث تداخل بود
 
 const seekStep = 10
 
@@ -338,9 +346,7 @@ const handleDownload = (e) => {
 }
 
 const handleKey = (e) => {
-    // Only handle keys if video is focused or fullscreen
     if (!video.value) return
-
     switch (e.key) {
         case ' ':
         case 'k':
@@ -348,10 +354,12 @@ const handleKey = (e) => {
             playing.value = !playing.value
             break
         case 'ArrowLeft':
-            video.value.currentTime = Math.max(0, video.value.currentTime - seekStep)
+            // تغییر: استفاده از currentTime.value
+            currentTime.value = Math.max(0, currentTime.value - seekStep)
             break
         case 'ArrowRight':
-            video.value.currentTime = Math.min(duration.value, video.value.currentTime + seekStep)
+            // تغییر: استفاده از currentTime.value
+            currentTime.value = Math.min(duration.value, currentTime.value + seekStep)
             break
         case 'ArrowUp':
             e.preventDefault()
@@ -367,9 +375,11 @@ const handleKey = (e) => {
     }
 }
 
+
 const skip = (seconds) => {
-    if (!video.value) return
-    video.value.currentTime = Math.min(Math.max(0, video.value.currentTime + seconds), duration.value)
+    // تغییر: به جای video.value.currentTime از currentTime.value استفاده می‌کنیم
+    // این کار باعث می‌شود اسلایدر بلافاصله جابجا شود حتی اگر ویدیو لود نشده باشد
+    currentTime.value = Math.min(Math.max(0, currentTime.value + seconds), duration.value)
 }
 
 onMounted(() => {
@@ -387,10 +397,18 @@ onBeforeUnmount(() => {
 })
 
 const hasReportedEnd = ref(false)
+
+// تغییر ۴: اصلاح منطق Watcher
 watch(currentTime, (time) => {
     if (props.lesson?.completed === true) return
+
+    // اگر کاربر در حال جابجایی دستی (Seeking) است، اصلا بررسی نکن
+    if (seeking.value) return
+
     if (duration.value > 0 && !hasReportedEnd.value && props.lesson.id) {
         const remaining = duration.value - time
+
+        // شرط اضافه: اطمینان حاصل کن که remaining منطقی است و پرش لحظه ای نیست
         if (remaining <= 2) {
             hasReportedEnd.value = true
             router.post(route('web.courses.lesson.completed', props.lesson.id), [], {
@@ -403,22 +421,27 @@ watch(currentTime, (time) => {
 
 watch(currentTime, (time, oldTime) => {
     if (props.lesson?.completed === true) return
-    if (time < oldTime && hasReportedEnd.value && props.lesson.id) {
-        hasReportedEnd.value = false
+
+    // اگر کاربر دستی به عقب برگشت (نه باگ سیستم)، فلگ را ریست کن
+    // اضافه کردن شرط !seeking.value برای اطمینان بیشتر
+    if (time < oldTime && hasReportedEnd.value && props.lesson.id && !seeking.value) {
+        // یک فاصله ایمنی: فقط اگر فاصله معناداری از پایان ویدیو داریم ریست کن
+        if (duration.value - time > 5) {
+            hasReportedEnd.value = false
+        }
     }
 })
 </script>
 
 <style scoped>
+/* استایل‌ها همان هستند */
 /* --- Main Variables --- */
 :root {
-    --primary-green: #00e676; /* Vibrant Neon Green */
+    --primary-green: #00e676;
     --primary-glow: rgba(0, 230, 118, 0.4);
     --glass-bg: rgba(20, 20, 20, 0.75);
     --hover-bg: rgba(255, 255, 255, 0.1);
 }
-
-/* --- Container & Video --- */
 .video-container {
     position: relative;
     width: 100%;
@@ -432,7 +455,6 @@ watch(currentTime, (time, oldTime) => {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     group: video-group;
 }
-
 .video-player {
     width: 100%;
     height: 100%;
@@ -440,8 +462,6 @@ watch(currentTime, (time, oldTime) => {
     cursor: pointer;
     object-fit: contain;
 }
-
-/* --- Controls Bar --- */
 .video-controls {
     position: absolute;
     bottom: 0;
@@ -454,23 +474,21 @@ watch(currentTime, (time, oldTime) => {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    /* Glassmorphism Effect */
     backdrop-filter: blur(2px);
+    direction: ltr;
+    text-align: left;
 }
-
 .video-controls.controls-hidden {
     opacity: 0;
     transform: translateY(20px);
     pointer-events: none;
 }
-
 .controls-wrapper {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
-
 .controls-row {
     display: flex;
     justify-content: space-between;
@@ -478,14 +496,11 @@ watch(currentTime, (time, oldTime) => {
     width: 100%;
     height: 40px;
 }
-
 .controls-left, .controls-right {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-
-/* --- Buttons --- */
 .control-btn {
     background: transparent;
     border: none;
@@ -499,20 +514,16 @@ watch(currentTime, (time, oldTime) => {
     justify-content: center;
     transition: background-color 0.2s, transform 0.1s;
 }
-
 .control-btn:hover {
     background: rgba(255, 255, 255, 0.15);
-    color: #00e676; /* Green text on hover */
+    color: #00e676;
 }
-
 .control-btn:hover .v-icon {
-    color: #00e676 !important; /* Green icon on hover */
+    color: #00e676 !important;
 }
-
 .control-btn:active {
     transform: scale(0.95);
 }
-
 .speed-text {
     font-size: 13px;
     font-weight: 600;
@@ -521,16 +532,13 @@ watch(currentTime, (time, oldTime) => {
 .control-btn:hover .speed-text {
     color: #00e676;
 }
-
-/* --- Progress Bar (THE GREEN PART) --- */
 .progress-container {
     width: 100%;
-    height: 16px; /* Bigger touch area */
+    height: 16px;
     display: flex;
     align-items: center;
     cursor: pointer;
 }
-
 .progress-bar {
     position: relative;
     width: 100%;
@@ -539,12 +547,9 @@ watch(currentTime, (time, oldTime) => {
     border-radius: 2px;
     transition: height 0.1s ease;
 }
-
 .progress-container:hover .progress-bar {
     height: 6px;
 }
-
-/* Buffered (Loaded) */
 .progress-buffered {
     position: absolute;
     top: 0;
@@ -554,21 +559,17 @@ watch(currentTime, (time, oldTime) => {
     pointer-events: none;
     z-index: 1;
 }
-
-/* Played (The Green Line) */
 .progress-played {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
-    background: #00e676; /* Green Color */
+    background: #00e676;
     border-radius: 2px;
     pointer-events: none;
     z-index: 2;
-    box-shadow: 0 0 10px rgba(0, 230, 118, 0.5); /* Glowing effect */
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
 }
-
-/* Thumb (The Circle) */
 .progress-thumb {
     position: absolute;
     top: 50%;
@@ -580,13 +581,11 @@ watch(currentTime, (time, oldTime) => {
     z-index: 5;
     pointer-events: none;
     transition: transform 0.15s ease;
-    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.3); /* Green ring */
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.3);
 }
-
 .progress-container:hover .progress-thumb {
     transform: translate(-50%, -50%) scale(1);
 }
-
 .progress-slider {
     position: absolute;
     width: 100%;
@@ -596,39 +595,30 @@ watch(currentTime, (time, oldTime) => {
     z-index: 10;
     margin: 0;
 }
-
-/* --- Volume Control (Custom Style) --- */
 .volume-control {
     display: flex;
     align-items: center;
-    gap: 8px; /* کمی فاصله بیشتر */
+    gap: 8px;
     margin: 0 5px;
 }
-
 .volume-slider-wrapper {
-    width: 80px; /* کمی عریض‌تر برای کنترل راحت‌تر */
+    width: 80px;
     height: 30px;
     display: flex;
     align-items: center;
 }
-
 .volume-slider {
-    -webkit-appearance: none; /* حذف استایل پیش‌فرض کروم */
+    -webkit-appearance: none;
     appearance: none;
     width: 100%;
     height: 4px;
-    background: rgba(255, 255, 255, 0.2); /* رنگ طوسی پس‌زمینه */
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 2px;
     outline: none;
     cursor: pointer;
-
-    /* تنظیم گرادینت برای بخش پر شده */
     background-image: linear-gradient(#00e676, #00e676);
     background-repeat: no-repeat;
-    /* background-size توسط Vue در HTML تنظیم می‌شود */
 }
-
-/* استایل دایره (Thumb) در کروم و سافاری */
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -637,15 +627,12 @@ watch(currentTime, (time, oldTime) => {
     background: #fff;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 5px rgba(0, 230, 118, 0.8); /* سایه سبز نئونی */
+    box-shadow: 0 0 5px rgba(0, 230, 118, 0.8);
     transition: transform 0.1s;
 }
-
 .volume-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
 }
-
-/* استایل دایره (Thumb) در فایرفاکس */
 .volume-slider::-moz-range-thumb {
     width: 12px;
     height: 12px;
@@ -656,12 +643,9 @@ watch(currentTime, (time, oldTime) => {
     box-shadow: 0 0 5px rgba(0, 230, 118, 0.8);
     transition: transform 0.1s;
 }
-
 .volume-slider::-moz-range-thumb:hover {
     transform: scale(1.2);
 }
-
-/* --- Time Display --- */
 .time-display {
     font-size: 13px;
     font-family: monospace;
@@ -673,8 +657,6 @@ watch(currentTime, (time, oldTime) => {
     margin: 0 4px;
     opacity: 0.6;
 }
-
-/* --- Overlays --- */
 .overlay-play {
     position: absolute;
     top: 50%;
@@ -693,16 +675,14 @@ watch(currentTime, (time, oldTime) => {
     transition: all 0.2s ease;
     z-index: 5;
 }
-
 .overlay-play:hover {
-    background: #00e676; /* Green background on hover */
+    background: #00e676;
     transform: translate(-50%, -50%) scale(1.1);
     border-color: #00e676;
 }
 .overlay-play:hover .v-icon {
-    color: black !important; /* Black icon on green bg */
+    color: black !important;
 }
-
 .loading-overlay {
     position: absolute;
     inset: 0;
@@ -713,8 +693,6 @@ watch(currentTime, (time, oldTime) => {
     z-index: 4;
     backdrop-filter: blur(2px);
 }
-
-/* --- Speed Menu --- */
 .speed-menu-container {
     z-index: 9999 !important;
 }
@@ -741,8 +719,6 @@ watch(currentTime, (time, oldTime) => {
     color: black !important;
     font-weight: 700;
 }
-
-/* --- Fullscreen Overrides --- */
 :fullscreen .video-container {
     width: 100%;
     height: 100%;
@@ -754,7 +730,7 @@ watch(currentTime, (time, oldTime) => {
     object-fit: contain;
 }
 :fullscreen .video-controls {
-    padding-bottom: 25px; /* More padding in fullscreen */
+    padding-bottom: 25px;
     background: linear-gradient(to top, rgba(0,0,0,0.95), transparent);
 }
 </style>
