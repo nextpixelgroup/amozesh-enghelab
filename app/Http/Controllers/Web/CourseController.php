@@ -18,6 +18,7 @@ use App\Models\PathItem;
 use App\Models\Setting;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -159,18 +160,34 @@ class CourseController extends Controller
 
     public function download(string $path)
     {
-        // ✅ جلوگیری از Path Traversal
+        // 1. دیکریپت کردن مسیر
+        $path = Crypt::decrypt($path);
+        $path = urldecode($path);
+
+        // 2. ✅ جلوگیری از Path Traversal
         if (str_contains($path, '..')) {
             abort(403);
         }
 
-        // اگر تابع helper داری
-        // example: video_upload_path('moghavemat/video.mp4')
-        $remoteUrl = video_upload_path($path);
+        /*
+        |--------------------------------------------------------------------------
+        | اصلاحیه: استانداردسازی URL برای فاصله و حروف فارسی
+        |--------------------------------------------------------------------------
+        | ما مسیر را بر اساس "/" تکه تکه می‌کنیم و هر تکه (نام پوشه یا فایل) را
+        | جداگانه rawurlencode می‌کنیم تا فاصله به %20 تبدیل شود.
+        */
+        $pathParts = explode('/', $path);
+        $encodedParts = array_map('rawurlencode', $pathParts);
+        $safePath = implode('/', $encodedParts);
+
+        // اکنون مسیر امن (safePath) را به تابع هلپر می‌دهیم
+        // مثال تبدیل شده: moghavemat/%D8%A7%D9...%2001.mp4
+        $remoteUrl = video_upload_path($safePath);
+
 
         /*
         |--------------------------------------------------------------------------
-        | مرحله 1: گرفتن Content-Length
+        | مرحله 1: گرفتن Content-Length (بررسی وجود فایل)
         |--------------------------------------------------------------------------
         */
         $chHead = curl_init($remoteUrl);
@@ -180,16 +197,21 @@ class CourseController extends Controller
             CURLOPT_HEADER         => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYPEER => false,
+            // اگر سرور مقصد خیلی حساس است، شاید نیاز به User-Agent باشد
+            CURLOPT_USERAGENT      => 'Mozilla/5.0 (Laravel Streamer)',
         ]);
 
         $headerData = curl_exec($chHead);
-
-        if ($headerData === false) {
-            curl_close($chHead);
-            abort(404);
-        }
+        $httpCode = curl_getinfo($chHead, CURLINFO_HTTP_CODE); // گرفتن کد وضعیت HTTP
 
         curl_close($chHead);
+
+        // بررسی دقیق‌تر: اگر فایل پیدا نشد یا دسترسی نبود (کد غیر از 200)
+        if ($headerData === false || $httpCode >= 400) {
+            // لاگ کردن برای دیباگ راحت‌تر (اختیاری)
+            // \Log::error("Stream failed for URL: $remoteUrl - Code: $httpCode");
+            abort(404);
+        }
 
         $contentLength = null;
         if (preg_match('/Content-Length:\s*(\d+)/i', $headerData, $matches)) {
@@ -203,16 +225,28 @@ class CourseController extends Controller
         */
         $response = new StreamedResponse(function () use ($remoteUrl) {
             $ch = curl_init($remoteUrl);
+            // استفاده از fopen برای کاهش مصرف رم در استریم‌های بزرگ
+            $outputStream = fopen('php://output', 'wb');
+
             curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => false,
+                CURLOPT_RETURNTRANSFER => false, // مهم: مستقیم به خروجی بفرستد
                 CURLOPT_HEADER         => false,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_FILE           => fopen('php://output', 'wb'),
+                CURLOPT_FILE           => $outputStream,
+                // بافرینگ را برای کاهش تاخیر غیرفعال می‌کنیم
+                CURLOPT_BUFFERSIZE     => 1024 * 64,
             ]);
 
             curl_exec($ch);
+
+            // چک کردن خطای احتمالی در حین دانلود
+            if (curl_errno($ch)) {
+                // \Log::error('Curl error: ' . curl_error($ch));
+            }
+
             curl_close($ch);
+            fclose($outputStream);
         });
 
         /*
@@ -220,13 +254,13 @@ class CourseController extends Controller
         | مرحله 3: Headerها
         |--------------------------------------------------------------------------
         */
+        // نام فایل اصلی را برای کاربر نگه می‌داریم (بدون اینکودینگ) تا در دانلود منیجر درست نمایش داده شود
         $filename = basename($path);
 
         $response->headers->set('Content-Type', 'video/mp4');
-        $response->headers->set(
-            'Content-Disposition',
-            'attachment; filename="' . $filename . '"'
-        );
+
+        // هدر استاندارد برای پشتیبانی از نام‌های فارسی در مرورگرها
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"; filename*=UTF-8\'\'' . rawurlencode($filename));
 
         if ($contentLength) {
             $response->headers->set('Content-Length', $contentLength);

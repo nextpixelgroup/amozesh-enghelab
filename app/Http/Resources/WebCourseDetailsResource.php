@@ -6,6 +6,7 @@ use App\Models\CourseStudent;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Crypt;
 
 class WebCourseDetailsResource extends JsonResource
 {
@@ -65,9 +66,10 @@ class WebCourseDetailsResource extends JsonResource
             }
         }
 
-        $processedSeasons = $seasons->map(function ($season) use ($enrolledCourse,&$canShowVideoForEnrolledCourse,&$canShowNextVideo, &$lockedReasonMessage, $userId) {
+        $course = $this->resource;
+        $processedSeasons = $seasons->map(function ($season) use ($enrolledCourse,&$canShowVideoForEnrolledCourse,&$canShowNextVideo, &$lockedReasonMessage, $userId, $course) {
 
-            $processedLessons = $season->lessons->map(function ($lesson) use ($enrolledCourse,&$canShowVideoForEnrolledCourse,&$canShowNextVideo, &$lockedReasonMessage, $userId) {
+            $processedLessons = $season->lessons->map(function ($lesson) use ($enrolledCourse,&$canShowVideoForEnrolledCourse,&$canShowNextVideo, &$lockedReasonMessage, $userId, $course, $season) {
 
                 // وضعیت پاس شدن آزمون همین درس
                 // چون eager load کردیم، نیازی به exists() نیست، چک می‌کنیم کالکشن خالی نباشد
@@ -102,7 +104,7 @@ class WebCourseDetailsResource extends JsonResource
                     'duration' => formatDurationTime($lesson->duration),
                     'video' => $enrolledCourse && $currentLessonCanShow ? $lesson->video_url : '',
                     'download_url' => $enrolledCourse && $currentLessonCanShow && $lesson->video_url
-                        ? route('web.courses.download.video', $lesson->video_filename)
+                        ? route('web.courses.download.video', Crypt::encrypt($lesson->video_filename))
                         : '',
                     'poster' => $lesson->poster?->url,
                     'completed' => $userId
