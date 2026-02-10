@@ -77,6 +77,7 @@ class CourseCreateRequest extends FormRequest
             'title.required' => 'عنوان دوره الزامی است.',
             'title.min' => 'عنوان دوره باید حداقل ۳ کاراکتر باشد.',
             'title.max' => 'عنوان دوره نمی‌تواند بیشتر از ۱۰۰ کاراکتر باشد.',
+            'thumbnail_id.exists'   => 'تصویر انتخاب‌شده معتبر نیست یا قبلاً حذف شده است.',
             'slug.unique' => 'این آدرس قبلا استفاده شده است.',
             'teacher.required' => 'انتخاب مدرس الزامی است.',
             'teacher.exists' => 'مدرس انتخاب شده معتبر نیست.',

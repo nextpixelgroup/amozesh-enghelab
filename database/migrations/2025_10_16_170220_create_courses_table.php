@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('summary')->fulltext(); // خلاصه
             $table->text('description')->fulltext(); // توضیحات
             $table->foreignId('thumbnail_id')->nullable()->constrained('media'); // تصویر شاخص
+
             $table->text('intro_url')->nullable(); // آدرس کامل ویدیو اینترو
             $table->string('intro_filename')->nullable(); // نام فایل ویدیو اینترو
             $table->foreignId('poster_id')->nullable()->constrained('media'); // تصویر شاخص
