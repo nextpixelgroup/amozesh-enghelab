@@ -135,8 +135,6 @@ class CourseController extends Controller
         return inertia('Admin/Courses/Edit', compact('categories', 'teachers', 'status', 'courses', 'video_upload_slug', 'course', 'site_url'));
     }
 
-
-
     private function storeCourse($request)
     {
         $slug = $request->slug ? createSlug($request->slug) : createSlug($request->title);

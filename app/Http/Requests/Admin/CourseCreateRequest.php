@@ -25,6 +25,7 @@ class CourseCreateRequest extends FormRequest
     {
         return [
             'title'                                                     => 'required|min:3|max:100',
+            'thumbnail_id' => ['nullable', 'exists:media,id'],
             "category"                                                  => 'nullable|exists:categories,id',
             'teacher'                                                   => ['required', 'exists:users,id', new TeacherRole],
             "description"                                               => 'nullable',
