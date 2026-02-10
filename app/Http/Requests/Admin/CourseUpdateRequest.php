@@ -27,6 +27,7 @@ class CourseUpdateRequest extends FormRequest
         //dd($this->all());
         return [
             'title'                                                     => 'required|min:3|max:100',
+            'thumbnail_id' => ['nullable', 'exists:media,id'],
             'category'                                                  => 'nullable|array',
             'category.*'                                                => 'exists:categories,id',
             'teacher'                                                   => ['required', 'exists:users,id', new TeacherRole],
