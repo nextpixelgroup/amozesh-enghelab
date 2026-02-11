@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable();
             $table->string('title');// عنوان
             $table->string('slug')->unique(); // اسلاگ
-            $table->text('summary')->fulltext(); // خلاصه
-            $table->text('description')->fulltext(); // توضیحات
+            $table->text('summary')->nullable()->fulltext(); // خلاصه
+            $table->text('description')->nullable()->fulltext(); // توضیحات
             $table->foreignId('thumbnail_id')->nullable()->constrained('media'); // تصویر شاخص
 
             $table->text('intro_url')->nullable(); // آدرس کامل ویدیو اینترو
