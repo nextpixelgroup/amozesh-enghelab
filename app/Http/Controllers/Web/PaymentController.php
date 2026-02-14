@@ -247,6 +247,7 @@ class PaymentController extends Controller
                 'message' => $isCancelled ? 'پرداخت توسط کاربر لغو شد.' : 'پرداخت با موفقیت انجام شد.',
             ];
         }
+        $data['pageTitle'] = 'رسید پرداخت';
         return inertia('Web/Payment/Callback',$data);
     }
 
