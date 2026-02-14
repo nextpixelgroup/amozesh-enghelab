@@ -36,7 +36,8 @@ class PaymentController extends Controller
             $items = $cart->items()->with('item')->orderBy('created_at', 'desc')->get();
         }
         $items = CartItemResource::collection($items);
-        return inertia('Web/Payment/Cart', compact('user', 'items'));
+        $pageTitle = 'سبد خرید';
+        return inertia('Web/Payment/Cart', compact('user', 'items', 'pageTitle'));
     }
 
     public function store(Request $request,Book $book)
@@ -96,7 +97,8 @@ class PaymentController extends Controller
         }
         $items = CartItemResource::collection($items);
         $shipping_price = $this->shipping_price();
-        return inertia('Web/Payment/Checkout', compact('user', 'items', 'shipping_price'));
+        $pageTitle = 'جزئیات پرداخت';
+        return inertia('Web/Payment/Checkout', compact('user', 'items', 'shipping_price', 'pageTitle'));
     }
 
     public function pay(PayRequest $request)
