@@ -236,7 +236,7 @@
                                 type="book"
                             />
                             <div class="text-caption text-grey text-center mt-2">
-                                سایز پیشنهادی: ۱۹۲۰x۶۰۰ پیکسل
+                                سایز پیشنهادی: ۱۷۵x۲۷۰ پیکسل
                             </div>
                         </v-col>
                         <v-col class="v-col-12">
