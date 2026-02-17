@@ -119,7 +119,7 @@
                         color="white"
                         size="small"
                         class="position-absolute"
-                        style="top: -40px; right: 0; z-index: 10;"
+                        style="top: -23px; right: -13px; z-index: 10;"
                         @click="searchDialog = false"
                     >
                         <v-icon>mdi-close</v-icon>
