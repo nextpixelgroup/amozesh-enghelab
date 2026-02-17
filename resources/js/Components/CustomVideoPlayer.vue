@@ -551,13 +551,13 @@ watch(currentTime, (time, oldTime) => {
     height: 6px;
 }
 .progress-buffered {
-    position: absolute;
+    /*position: absolute;
     top: 0;
     height: 100%;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 2px;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1;*/
 }
 .progress-played {
     position: absolute;

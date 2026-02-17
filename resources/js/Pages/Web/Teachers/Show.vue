@@ -21,7 +21,7 @@
                         <div class="zo-bio">
                             <p class="text-justify">{{teacher.bio}}</p>
                         </div>
-                        <ul>
+                        <ul v-if="0"> <!--به گفته کارفرما از قسمت حذف شد-->
                             <li>
                                 <i class="mdi mdi-school"></i>
                                 <div>

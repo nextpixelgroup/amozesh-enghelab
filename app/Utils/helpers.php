@@ -495,15 +495,27 @@ if (!function_exists('formatFileSize')) {
 
 function formatDurationTime($minutes)
 {
-    if($minutes == null) return 0;
+    if ($minutes === null || $minutes <= 0) {
+        return '۰ دقیقه';
+    }
+
     $hours = intdiv($minutes, 60);
     $remainingMinutes = $minutes % 60;
 
-    // اگه دقیقه کمتر از 10 باشه صفر جلوش بذار (مثل 1:05)
-    $formattedMinutes = str_pad($remainingMinutes, 2, '0', STR_PAD_LEFT);
+    // فقط دقیقه
+    if ($hours === 0) {
+        return $remainingMinutes . ' دقیقه';
+    }
 
-    return "{$hours}:{$formattedMinutes}";
+    // فقط ساعت (دقیقه صفر)
+    if ($remainingMinutes === 0) {
+        return $hours . ' ساعت';
+    }
+
+    // ساعت و دقیقه
+    return $hours . ' ساعت و ' . $remainingMinutes . ' دقیقه';
 }
+
 
 function buildMenuTree($items, $grouped)
 {
