@@ -120,7 +120,7 @@
                                 </div>
                                 <div class="zo-text">
                                     <div class="zo-subtitle">درباره کتاب</div>
-                                    <div v-html="book.content"></div>
+                                    <div class="zo-description-content" v-html="book.content"></div>
                                 </div>
                                 </div>
                                 <div class="zo-books-section">
@@ -577,5 +577,91 @@ const updateQty = () => {
 .zo-book-section .zo-books-section {
     margin: 0 0 30px;
     padding: 0 15px 0 0
+}
+
+.zo-text {
+    width: 100%;
+    display: inline-block;
+    margin: 0 0 30px;
+}
+
+.zo-text .zo-title {
+    display: block;
+    margin: 0 0 15px;
+    font-size: 1.125rem;
+    color: var(--Secondary);
+}
+
+/* ✅ پاراگراف‌ها: حفظ فاصله و آرایش متن */
+.zo-text :deep(p) {
+    margin: 0 0 1.2rem 0; /* فاصله بین پاراگراف‌ها */
+    text-align: justify;
+    line-height: 1.9;
+}
+
+/* ✅ پاراگراف خالی‌ها فقط فاصله ظریف بدهند */
+.zo-text :deep(p:empty) {
+    margin: 0;
+    display: block;
+    height: 0.8rem; /* فاصله بصری ملایم بین پاراگراف‌ها */
+}
+
+/* ✅ فونت‌ها و سبک هدرها */
+.zo-text :deep(h1),
+.zo-text :deep(h2),
+.zo-text :deep(h3),
+.zo-text :deep(h4),
+.zo-text :deep(h5),
+.zo-text :deep(h6) {
+    margin: 0 0 1rem;
+    font-weight: 600;
+}
+
+.zo-text :deep(h1) { font-size: 1.25rem; }
+.zo-text :deep(h2) { font-size: 1.15rem; }
+.zo-text :deep(h3) { font-size: 1.10rem; }
+.zo-text :deep(h4) { font-size: 1.05rem; }
+.zo-text :deep(h5) { font-size: 1rem; }
+.zo-text :deep(h6) { font-size: .95rem; }
+
+/* ✅ لیست‌ها */
+.zo-text :deep(ul) {
+    padding: 0 0 15px;
+}
+
+.zo-text :deep(ul li) {
+    width: 100%;
+    display: inline-block;
+    padding: 1.5px 10px 1.5px 0;
+    position: relative;
+}
+
+.zo-text :deep(ul li:before) {
+    content: '';
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 9.5px;
+    right: 0;
+    background: var(--Secondary);
+}
+
+/* ✅ فونت‌های داخل span و strong */
+.zo-text :deep(span) {
+    font-size: 16px; /* هماهنگ با خروجی TipTap */
+}
+
+.zo-text :deep(strong) {
+    font-weight: 600;
+}
+
+@media (max-width: 960px) {
+    .zo-text {
+        margin: 0 0 5px;
+    }
+    .zo-text :deep(p) {
+        line-height: 1.8;
+        margin-bottom: 1rem;
+    }
 }
 </style>
