@@ -10,7 +10,7 @@
 
         <v-card-text class="bg-grey-lighten-5 pa-4">
             <v-row>
-                <!-- ورودی سروش پلاس -->
+                <!-- ورودی بله -->
                 <v-col cols="12" md="6">
                     <v-card variant="outlined" class="bg-white border-dashed" rounded="lg">
                         <v-card-text>
@@ -19,13 +19,13 @@
                                     <v-icon color="green-darken-3" size="24">mdi-message-text</v-icon>
                                 </v-avatar>
                                 <div>
-                                    <div class="text-body-2 font-weight-bold">پیام‌رسان سروش پلاس</div>
+                                    <div class="text-body-2 font-weight-bold">پیام‌رسان بله</div>
                                 </div>
                             </div>
                             <v-text-field
-                                v-model="form.soroush"
+                                v-model="form.bale"
                                 label="آدرس اینترنتی (URL)"
-                                placeholder="https://splus.ir/your-channel"
+                                placeholder="https://..."
                                 variant="outlined"
                                 density="comfortable"
                                 dir="ltr"
@@ -52,7 +52,59 @@
                             <v-text-field
                                 v-model="form.eitaa"
                                 label="آدرس اینترنتی (URL)"
-                                placeholder="https://eitaa.com/your-channel"
+                                placeholder="https://..."
+                                variant="outlined"
+                                density="comfortable"
+                                dir="ltr"
+                                hide-details="auto"
+                                clearable
+                                prepend-inner-icon="mdi-link"
+                            />
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <!-- ورودی اینستاگرام -->
+                <v-col cols="12" md="6">
+                    <v-card variant="outlined" class="bg-white border-dashed" rounded="lg">
+                        <v-card-text>
+                            <div class="d-flex align-center mb-3">
+                                <v-avatar color="green-lighten-5" rounded="lg" class="me-3" size="40">
+                                    <v-icon color="green-darken-3" size="24">mdi-message-text</v-icon>
+                                </v-avatar>
+                                <div>
+                                    <div class="text-body-2 font-weight-bold">پیام‌رسان اینستاگرام</div>
+                                </div>
+                            </div>
+                            <v-text-field
+                                v-model="form.instagram"
+                                label="آدرس اینترنتی (URL)"
+                                placeholder="https://..."
+                                variant="outlined"
+                                density="comfortable"
+                                dir="ltr"
+                                hide-details="auto"
+                                clearable
+                                prepend-inner-icon="mdi-link"
+                            />
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <!-- ورودی تلگرام -->
+                <v-col cols="12" md="6">
+                    <v-card variant="outlined" class="bg-white border-dashed" rounded="lg">
+                        <v-card-text>
+                            <div class="d-flex align-center mb-3">
+                                <v-avatar color="green-lighten-5" rounded="lg" class="me-3" size="40">
+                                    <v-icon color="green-darken-3" size="24">mdi-message-text</v-icon>
+                                </v-avatar>
+                                <div>
+                                    <div class="text-body-2 font-weight-bold">پیام‌رسان تلگرام</div>
+                                </div>
+                            </div>
+                            <v-text-field
+                                v-model="form.telegram"
+                                label="آدرس اینترنتی (URL)"
+                                placeholder="https://..."
                                 variant="outlined"
                                 density="comfortable"
                                 dir="ltr"
@@ -94,8 +146,10 @@ const props = defineProps({
     socialLinks: {
         type: Object,
         default: () => ({
-            soroush: '',
+            bale: '',
             eitaa: '',
+            instagram: '',
+            instagram: '',
         }),
     },
 })
@@ -103,8 +157,10 @@ const props = defineProps({
 const emit = defineEmits(['saved'])
 
 const form = useForm({
-    soroush: props.socialLinks?.soroush ?? '',
+    bale: props.socialLinks?.bale ?? '',
     eitaa: props.socialLinks?.eitaa ?? '',
+    instagram: props.socialLinks?.instagram ?? '',
+    telegram: props.socialLinks?.telegram ?? '',
 })
 
 const isSaving = ref(false)
@@ -112,8 +168,10 @@ const isSaving = ref(false)
 watch(
     () => props.socialLinks,
     (links) => {
-        form.soroush = links?.soroush ?? ''
+        form.bale = links?.bale ?? ''
         form.eitaa = links?.eitaa ?? ''
+        form.instagram = links?.eitaa ?? ''
+        form.telegram = links?.eitaa ?? ''
     },
     { deep: true }
 )

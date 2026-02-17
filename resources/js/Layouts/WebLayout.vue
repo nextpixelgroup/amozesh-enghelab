@@ -178,13 +178,23 @@
                                 <div class="zo-social">
                                     <ul>
                                         <li>
-                                            <a :href="social.soroush" target="_blank">
-                                                <img src="/assets/img/site/social-1.svg" alt="">
+                                            <a :href="social.eitaa" target="_blank">
+                                                <img src="/assets/img/social/eitaa-gold.svg" alt="" width="28">
                                             </a>
                                         </li>
                                         <li>
-                                            <a :href="social.eitaa" target="_blank">
-                                                <img src="/assets/img/site/social-2.svg" alt="">
+                                            <a :href="social.bale" target="_blank">
+                                                <img src="/assets/img/social/bale-gold.svg" alt="" width="28">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a :href="social.instagram" target="_blank">
+                                                <img src="/assets/img/social/instagram-gold.svg" alt="" width="28">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a :href="social.telegram" target="_blank">
+                                                <img src="/assets/img/social/telegram-gold.svg" alt="" width="28">
                                             </a>
                                         </li>
                                     </ul>
@@ -516,8 +526,8 @@ const logout = () => {
     width: 5px;
     height: 5px;
     position: absolute;
-    top: 10px;
-    right: -13.5px;
+    top: 13px;
+    right: -12px;
     background: var(--Secondary);
     border-radius: 50%
 }

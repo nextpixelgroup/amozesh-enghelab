@@ -27,24 +27,32 @@
                             <div v-html="contact.content"></div>
                             <ul class="zo-social">
                                 <li>
-                                    <v-btn color="primary">
-                                        <img src="/assets/img/aparat.svg" width="20" height="20" />
-                                    </v-btn>
+                                    <a :href="social.bale" target="_blank">
+                                        <v-btn color="primary">
+                                           <img src="/assets/img/social/bale-white.svg" width="20" height="20" />
+                                        </v-btn>
+                                    </a>
                                 </li>
                                 <li>
-                                    <v-btn color="primary">
-                                        <img src="/assets/img/bale.svg" width="20" height="20" />
-                                    </v-btn>
+                                    <a :href="social.eitaa" target="_blank">
+                                        <v-btn color="primary">
+                                            <img src="/assets/img/social/eitaa-white.svg" width="20" height="20" />
+                                        </v-btn>
+                                    </a>
                                 </li>
                                 <li>
-                                    <v-btn color="primary">
-                                        <img src="/assets/img/eitaa.svg" width="20" height="20" />
-                                    </v-btn>
+                                    <a :href="social.instagram" target="_blank">
+                                        <v-btn color="primary">
+                                            <img src="/assets/img/social/instagram-white.svg" width="20" height="20" />
+                                        </v-btn>
+                                    </a>
                                 </li>
                                 <li>
-                                    <v-btn color="primary">
-                                        <img src="/assets/img/soroosh.svg" width="20" height="20" />
-                                    </v-btn>
+                                    <a :href="social.telegram" target="_blank">
+                                        <v-btn color="primary">
+                                            <img src="/assets/img/social/telegram-white.svg" width="20" height="20" />
+                                        </v-btn>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -143,14 +151,15 @@
 <script setup>
 import WebLayout from "@/Layouts/WebLayout.vue";
 import {ref} from "vue";
-import {useForm} from "@inertiajs/vue3";
+import {useForm, usePage} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 const props = defineProps({
     contact: Object
 })
+const page = usePage();
 const isLoading = ref(false);
 const contact = ref(props.contact.data)
-
+const social = ref(page.props.social || {});
 const form = useForm({
     name: '',
     email: '',

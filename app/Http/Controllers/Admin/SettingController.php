@@ -77,8 +77,10 @@ class SettingController extends Controller
     {
         $setting = new SettingsService;
         $social = [
-            'soroush' => $request->input('soroush'),
+            'bale' => $request->input('bale'),
             'eitaa' => $request->input('eitaa'),
+            'instagram' => $request->input('instagram'),
+            'telegram' => $request->input('telegram'),
         ];
         $setting->set('index.social',$social,'setting');
 
