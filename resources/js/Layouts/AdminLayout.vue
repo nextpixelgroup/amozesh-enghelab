@@ -155,10 +155,10 @@ const contactCount = computed(() => page.props.contactCount || 0)
 
 /* Social Buttons */
 const socialButtons = [
-    { src: '/assets/img/soroosh.svg', alt: 'Soroosh' },
-    { src: '/assets/img/bale.svg', alt: 'Bale' },
-    { src: '/assets/img/eitaa.svg', alt: 'Eitaa' },
-    { src: '/assets/img/aparat.svg', alt: 'Aparat' },
+    {src: '/assets/img/social/bale-white.svg', alt: 'Bale'},
+    {src: '/assets/img/social/eitaa-white.svg', alt: 'Eitaa'},
+    {src: '/assets/img/social/instagram-white.svg', alt: 'Instagram'},
+    {src: '/assets/img/social/telegram-white.svg', alt: 'Telegram'},
 ]
 
 /* Global Confirm */
