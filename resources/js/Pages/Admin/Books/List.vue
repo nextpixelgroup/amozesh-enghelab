@@ -92,7 +92,7 @@
                 >
                     <td class="text-center">{{ item.id }}</td>
                     <td class="text-center">
-                        <img :src="item.thumbnail.url ?? '/assets/img/default_image.png'" :alt="item.title" width="90" height="135">
+                        <img :src="item.thumbnail.url ?? '/assets/img/default.svg'" :alt="item.title" width="90" height="135">
                     </td>
                     <td>
                         <strong class="d-block">{{ item.title }}</strong>
