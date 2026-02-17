@@ -110,24 +110,130 @@
                 </div>
             </header>
             <!-- Search Dialog -->
-            <v-dialog v-model="searchDialog" max-width="500">
-                <div class="zo-search-section">
-                    <div class="zo-close">
-                        <v-btn icon size="small" @click="searchDialog = false">
-                            <i class="mdi mdi-close"></i>
-                        </v-btn>
-                    </div>
-                    <v-card class="pa-5">
-                        <v-form class="zo-form" @submit.prevent="search">
-                            <v-text-field v-model="searchText" variant="outlined" color="primary" hide-details
-                                          label="جستجو دوره‌های آموزشی"></v-text-field>
-                            <v-btn type="submit" flat size="large" color="primary" class="zo-button"
-                                   :disabled="isLoading" :loading="isLoading">جستجو
-                            </v-btn>
-                        </v-form>
+            <v-dialog v-model="searchDialog" max-width="550" transition="dialog-bottom-transition">
+                <div class="zo-search-wrapper position-relative">
+                    <!-- دکمه بستن -->
+                    <v-btn
+                        icon
+                        variant="flat"
+                        color="white"
+                        size="small"
+                        class="position-absolute"
+                        style="top: -40px; right: 0; z-index: 10;"
+                        @click="searchDialog = false"
+                    >
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+
+                    <v-card class="rounded-xl overflow-hidden elevation-10">
+
+                        <!-- هدر سبز رنگ -->
+                        <!-- تغییر ۱: اضافه کردن hide-slider برای حذف اسلایدر باگ‌دار -->
+                        <v-tabs
+                            v-model="activeTab"
+                            bg-color="#006940"
+                            color="white"
+                            grow
+                            height="60"
+                            hide-slider
+                            class="elevation-2"
+                        >
+                            <!-- تغییر ۲: استفاده از کلاس شرطی برای خط زیرین -->
+                            <v-tab
+                                value="courses"
+                                class="text-white"
+                                :class="{ 'custom-active-border': activeTab === 'courses' }"
+                                style="opacity: 1;"
+                            >
+                                <v-icon start>mdi-school-outline</v-icon>
+                                دوره‌های آموزشی
+                            </v-tab>
+
+                            <v-tab
+                                value="books"
+                                class="text-white"
+                                :class="{ 'custom-active-border': activeTab === 'books' }"
+                                style="opacity: 1;"
+                            >
+                                <v-icon start>mdi-book-open-page-variant-outline</v-icon>
+                                کتاب‌ها
+                            </v-tab>
+                        </v-tabs>
+
+                        <!-- بدنه سفید -->
+                        <v-card-text class="pa-6 bg-white">
+                            <v-window v-model="activeTab">
+
+                                <!-- تب جستجوی دوره‌ها -->
+                                <v-window-item value="courses">
+                                    <v-form @submit.prevent="searchCourses">
+                                        <!-- تغییر ۳: افزایش فاصله بالا (mt-4) برای جلوگیری از بریده شدن لیبل -->
+                                        <v-text-field
+                                            v-model="courseSearchText"
+                                            variant="outlined"
+                                            color="#006940"
+                                            density="comfortable"
+                                            label="جستجو در دوره‌ها"
+                                            placeholder="مثلاً: انقلاب اسلامی..."
+                                            prepend-inner-icon="mdi-magnify"
+                                            clearable
+                                            class="mt-4 rounded-lg"
+                                            hide-details="auto"
+                                        ></v-text-field>
+
+                                        <v-btn
+                                            type="submit"
+                                            block
+                                            size="large"
+                                            color="#006940"
+                                            class="text-white font-weight-bold rounded-lg mt-4"
+                                            elevation="0"
+                                            :loading="isCourseLoading"
+                                        >
+                                            جستجوی دوره
+                                        </v-btn>
+                                    </v-form>
+                                </v-window-item>
+
+                                <!-- تب جستجوی کتاب‌ها -->
+                                <v-window-item value="books">
+                                    <v-form @submit.prevent="searchBooks">
+                                        <!-- تغییر ۳: افزایش فاصله بالا (mt-4) -->
+                                        <v-text-field
+                                            v-model="bookSearchText"
+                                            variant="outlined"
+                                            color="#006940"
+                                            density="comfortable"
+                                            label="جستجو در کتاب‌ها"
+                                            placeholder="مثلاً: انقلاب اسلامی..."
+                                            prepend-inner-icon="mdi-book-search-outline"
+                                            clearable
+                                            class="mt-4 rounded-lg"
+                                            hide-details="auto"
+                                        ></v-text-field>
+
+                                        <v-btn
+                                            type="submit"
+                                            block
+                                            size="large"
+                                            color="#006940"
+                                            class="text-white  font-weight-bold rounded-lg mt-4"
+                                            elevation="0"
+                                            :loading="isBookLoading"
+                                        >
+                                            جستجوی کتاب
+                                        </v-btn>
+                                    </v-form>
+                                </v-window-item>
+
+                            </v-window>
+                        </v-card-text>
                     </v-card>
                 </div>
             </v-dialog>
+
+
+
             <!-- Main -->
             <main class="flex-grow">
                 <slot/>
@@ -243,12 +349,33 @@ const isAuth = ref(page.props.isAuth || false);
 const cartCount = ref(page.props.cartCount || 0);
 const drawer = ref(false);
 const searchDialog = ref(false);
+const activeTab = ref('courses'); // تب پیش‌فرض
+
 const isLoading = ref(false);
 const display = useDisplay();
 const searchText = ref('');
 const leaving = ref(false);
 
+const courseSearchText = ref('');
+const isCourseLoading = ref(false);
 
+// متغیرهای جستجوی کتاب
+const bookSearchText = ref('');
+const isBookLoading = ref(false);
+
+const searchCourses = () => {
+    isCourseLoading.value = true;
+    window.location.href = route('web.courses.index', {search: courseSearchText.value});
+    // عملیات جستجو را اینجا انجام دهید
+    // بعد از پایان جستجو: isCourseLoading.value = false;
+};
+
+const searchBooks = () => {
+    isBookLoading.value = true;
+    window.location.href = route('web.books.archives', {search: bookSearchText.value});
+    // عملیات جستجو را اینجا انجام دهید
+    // بعد از پایان جستجو: isBookLoading.value = false;
+};
 // Function to update cart count
 const updateCartCount = async () => {
     try {
@@ -584,5 +711,14 @@ const logout = () => {
     align-items: center;
     justify-content: center;
     border: 2px solid white; /* حاشیه سفید برای خوانایی بهتر */
+}
+.custom-active-border {
+
+    /* پس‌زمینه سفید با شفافیت ۱۵ درصد (حالت هایلایت) */
+    background-color: rgba(255, 255, 255, 0.15);
+
+    /* بولد شدن متن و جلوگیری از محو بودن متن */
+    font-weight: bold;
+    opacity: 1 !important;
 }
 </style>
