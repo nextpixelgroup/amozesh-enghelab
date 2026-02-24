@@ -70,8 +70,7 @@
                     <v-icon color="#c8a064" size="64" class="mb-4" style="animation: pulse 2s infinite;">
                         mdi-information-outline
                     </v-icon>
-                    <div class="font-weight-bold">آیا می‌خواهید گواهینامه دوره را دریافت کنید؟</div>
-                    <div class="mt-2 text-grey">این عملیات قابل برگشت نیست.</div>
+                    <div class="font-weight-bold">با انتخاب این گزینه، محتوای دوره برای شما طبق سیر آموزشی مشخص‌شده (ترتیبی) باز خواهد شد. صدور گواهینامه نهایی منوط به مشاهده کامل جلسات، شرکت در آزمون‌های میان‌دوره و پایان‌دوره و کسب حداقل نمره قبولی است.</div>
                 </v-card-text>
 
                 <!-- اکشن‌ها -->

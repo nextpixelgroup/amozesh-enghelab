@@ -1,5 +1,5 @@
 <script>
-import {Head, useForm} from '@inertiajs/vue3'
+import {Head, useForm, usePage} from '@inertiajs/vue3'
 import {ref} from 'vue'
 import {route} from 'ziggy-js'
 import AdminLayout from '../../../Layouts/AdminLayout.vue'
@@ -13,7 +13,7 @@ export default {
             password: '',
             remember: false,
         })
-
+        const page = usePage();
         const showPassword = ref(false)
 
         const login = () => {
@@ -24,12 +24,7 @@ export default {
             showPassword.value = !showPassword.value
         }
 
-        const socialButtons = [
-            {src: '/assets/img/social/bale-white.svg', alt: 'Bale'},
-            {src: '/assets/img/social/eitaa-white.svg', alt: 'Eitaa'},
-            {src: '/assets/img/social/instagram-white.svg', alt: 'Instagram'},
-            {src: '/assets/img/social/telegram-white.svg', alt: 'Telegram'},
-        ]
+        const socialButtons = ref(page.props.social);
 
         return {form, login, showPassword, togglePasswordVisibility, socialButtons}
     },
@@ -100,10 +95,33 @@ export default {
                             </template>
                         </v-btn>
                         <ul class="zo-social">
-                            <li v-for="(btn, index) in socialButtons" :key="index">
-                                <v-btn color="primary">
-                                    <img :src="btn.src" :alt="btn.alt" width="20" height="20"/>
-                                </v-btn>
+                            <li class="bg-primary rounded-circle">
+                                <a :href="socialButtons.bale" target="_blank">
+                                    <v-btn icon size="small" variant="text">
+                                        <img src="/assets/img/social/bale-white.svg" alt="bale" width="18" height="18">
+                                    </v-btn>
+                                </a>
+                            </li>
+                            <li class="bg-primary rounded-circle">
+                                <a :href="socialButtons.eitaa" target="_blank">
+                                    <v-btn icon size="small" variant="text">
+                                        <img src="/assets/img/social/eitaa-white.svg" alt="eitaa" width="18" height="18">
+                                    </v-btn>
+                                </a>
+                            </li>
+                            <li class="bg-primary rounded-circle">
+                                <a :href="socialButtons.instagram" target="_blank">
+                                    <v-btn icon size="small" variant="text">
+                                        <img src="/assets/img/social/instagram-white.svg" alt="instagram" width="18" height="18">
+                                    </v-btn>
+                                </a>
+                            </li>
+                            <li class="bg-primary rounded-circle">
+                                <a :href="socialButtons.bale" target="_blank">
+                                    <v-btn icon size="small" variant="text">
+                                        <img src="/assets/img/social/telegram-white.svg" alt="telegram" width="18" height="18">
+                                    </v-btn>
+                                </a>
                             </li>
                         </ul>
                         <div class="zo-copyright">

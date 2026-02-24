@@ -26,13 +26,13 @@
         >
             <v-expansion-panel-title>
                 <v-row class="align-center">
-                    <v-col cols="12" md="9">
+                    <v-col cols="12" md="8">
                         <div class="zo-title">
                             <strong>{{ season.title }}</strong>
                             <p>{{ season.description }}</p>
                         </div>
                     </v-col>
-                    <v-col cols="12" md="3">
+                    <v-col cols="12" md="4">
                         <ul class="zo-meta">
                             <li>{{ season.lessons.length }} درس</li>
                             <li>{{ season.duration }}</li>

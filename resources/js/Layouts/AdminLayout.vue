@@ -70,10 +70,33 @@
             <template #append>
                 <div class="d-flex justify-center py-3">
                     <ul class="zo-social elevation-4 d-flex gap-2">
-                        <li v-for="(btn, i) in socialButtons" :key="i">
-                            <v-btn icon size="small" variant="text">
-                                <img :src="btn.src" :alt="btn.alt" width="18" height="18">
-                            </v-btn>
+                        <li>
+                            <a :href="socialButtons.bale" target="_blank">
+                                <v-btn icon size="small" variant="text">
+                                    <img src="/assets/img/social/bale-white.svg" alt="bale" width="18" height="18">
+                                </v-btn>
+                            </a>
+                        </li>
+                        <li>
+                            <a :href="socialButtons.eitaa" target="_blank">
+                                <v-btn icon size="small" variant="text">
+                                    <img src="/assets/img/social/eitaa-white.svg" alt="eitaa" width="18" height="18">
+                                </v-btn>
+                            </a>
+                        </li>
+                        <li>
+                            <a :href="socialButtons.instagram" target="_blank">
+                                <v-btn icon size="small" variant="text">
+                                    <img src="/assets/img/social/instagram-white.svg" alt="instagram" width="18" height="18">
+                                </v-btn>
+                            </a>
+                        </li>
+                        <li>
+                            <a :href="socialButtons.bale" target="_blank">
+                                <v-btn icon size="small" variant="text">
+                                    <img src="/assets/img/social/telegram-white.svg" alt="telegram" width="18" height="18">
+                                </v-btn>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -147,19 +170,12 @@ const confirmRef = ref(null)
 const isLoading = ref(false)
 
 const groupStates = ref({})
-
+console.log(page.props.social)
 /* From server props */
 const menuItems = computed(() => page.props.menuItems || [])
 const ticketCount = computed(() => page.props.ticketCount || 0)
 const contactCount = computed(() => page.props.contactCount || 0)
-
-/* Social Buttons */
-const socialButtons = [
-    {src: '/assets/img/social/bale-white.svg', alt: 'Bale'},
-    {src: '/assets/img/social/eitaa-white.svg', alt: 'Eitaa'},
-    {src: '/assets/img/social/instagram-white.svg', alt: 'Instagram'},
-    {src: '/assets/img/social/telegram-white.svg', alt: 'Telegram'},
-]
+const socialButtons = ref(page.props.social || {});
 
 /* Global Confirm */
 onMounted(() => {

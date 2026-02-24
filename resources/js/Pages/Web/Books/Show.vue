@@ -353,10 +353,16 @@ const updateQty = () => {
 }
 
 .zo-book-section .zo-card .zo-content .zo-thumbnail {
-    padding: 90px 15px 30px;
-    text-align: center;
-    border: 2px solid var(--Secondary);
-    border-radius: 200px 200px 0 0
+    width: 100%;
+    height: 100%;
+
+    /* کلید حل مشکل اینجاست: */
+    object-fit: contain;
+    /* contain: کل عکس را نشان میدهد (بدون کراپ) */
+    /* cover: کل فضا را پر میکند (باعث کراپ میشود) - حالت فعلی شما احتمالا این است */
+
+    object-position: center; /* عکس را دقیقا در مرکز نگه می‌دارد */
+    max-height: 100%;
 }
 
 .zo-book-section .zo-card .zo-content .zo-thumbnail {

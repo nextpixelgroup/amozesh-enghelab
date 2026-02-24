@@ -173,7 +173,8 @@ class HandleInertiaRequests extends Middleware
                     ],
                 ];
             }
-
+            $setting = new SettingsService;
+            $shared['social'] = $setting->get('index.social');
         }
         else{
 

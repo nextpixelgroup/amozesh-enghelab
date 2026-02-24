@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\ProfileUpdateRequest;
 use App\Http\Resources\AdminResource;
 use App\Models\Restriction;
 use App\Models\User;
+use App\Services\SettingsService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,8 +26,9 @@ class AuthController extends Controller
         if (auth()->check()) {
             return redirect()->route('admin.courses.index');
         }
-
-        return Inertia::render('Admin/Auth/Login');
+        $setting = new SettingsService;
+        $social = $setting->get('index.social');
+        return Inertia::render('Admin/Auth/Login', compact('social'));
     }
 
 
