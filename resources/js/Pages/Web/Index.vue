@@ -5,7 +5,7 @@
                 <div class="zo-swiper">
                     <swiper dir="rtl" :slides-per-view="1" :space-between="15" :modules="[Navigation]" navigation>
                         <swiper-slide v-for="(slide,index) in slider">
-                            <a :href="slide.url" :key="index">
+                            <a :href="slide.link" :target="slide.target" :key="index">
                                 <img :src="slide.image.url" alt="">
                                 <div class="zo-caption">
                                     <strong>{{slide.title}}</strong>
