@@ -24,7 +24,7 @@ class WebCoursesResource extends JsonResource
             'title' => $this->title,
             'category' => $this->categories->count() ? $this->categories->first()->title : '',
             'teacher' => $this->teacher->firstname . ' ' . $this->teacher->lastname,
-            'duration' => formatDurationTime($this->duration),
+            'duration' => formatHoursOrMinutes($this->duration),
             'students' => $students ? number_format($students) : '0',
             'price' => $this->price > 0 ? number_format($this->price) : 'رایگان',
             'url' => route('web.courses.show',$this->slug),

@@ -516,6 +516,39 @@ function formatDurationTime($minutes)
     return $hours . ' ساعت و ' . $remainingMinutes . ' دقیقه';
 }
 
+function formatHoursOrMinutes($minutes, $useShortFormat = false)
+{
+    // ۱. بررسی مقادیر خالی یا صفر
+    if ($minutes === null || $minutes <= 0) {
+        return $useShortFormat ? '۰′' : '۰ دقیقه';
+    }
+
+    // تابع کمکی (داخلی) برای تبدیل اعداد انگلیسی به فارسی
+    $toPersian = function($number) {
+        return str_replace(
+            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'],
+            (string)$number
+        );
+    };
+
+    // ۲. شرط جدید: اگر زمان کمتر از یک ساعت (۶۰ دقیقه) بود
+    if ($minutes < 60) {
+        $faMinutes = $toPersian($minutes);
+        // در حالت کوتاه از علامت پریم (′) که استاندارد دقیقه است استفاده می‌کنیم
+        return $useShortFormat ? $faMinutes . '′' : $faMinutes . ' دقیقه';
+    }
+
+    // ۳. اگر زمان ۶۰ دقیقه یا بیشتر بود (فقط محاسبه ساعت)
+    $hours = intdiv($minutes, 60);
+    $faHours = $toPersian($hours);
+
+    // در حالت کوتاه از علامت بالانویس (ʰ) استفاده می‌کنیم
+    return $useShortFormat ? $faHours . 'ʰ' : $faHours . ' ساعت';
+}
+
+
+
 
 function buildMenuTree($items, $grouped)
 {

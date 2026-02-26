@@ -19,11 +19,11 @@
                     <ul>
                         <li>
                             <img src="/assets/img/site/c-clock.svg"/>
-                            <span>{{ course.duration }}</span>
+                            <span class="zo-duration">{{ course.duration }}</span>
                         </li>
                         <li>
                             <img src="/assets/img/site/c-students.svg"/>
-                            <span>{{ course.students }} دانشجو</span>
+                            <span class="zo-students">{{ course.students }} دانشجو</span>
                         </li>
                     </ul>
                     <div class="zo-price">
