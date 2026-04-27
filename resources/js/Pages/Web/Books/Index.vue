@@ -21,16 +21,16 @@
             </v-container>
             <BookSection1
                 :books="section1.data"
-                title="فروش ویژه آثار آیت الله خامنه‌ای"
+                title="تازه های نشر"
                 description="لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد."
             />
             <BookSection2
                 :books="section2.data"
-                title="آثار برگزیده"
+                title="معرفی کتاب‌ها"
             />
             <BookSection3
                 :books="section3.data"
-                title="آثار برگزیده"
+                title="فروش ویژه"
                 :more-url="section3.moreUrl"
             />
             <BookSection4
@@ -38,7 +38,7 @@
             />
             <BookSection5
                 :books="section5.data"
-                title="کتب معارف اسلامی"
+                title="کتاب‌های تقریضی"
                 :more-url="section5.moreUrl"
             />
         </div>
