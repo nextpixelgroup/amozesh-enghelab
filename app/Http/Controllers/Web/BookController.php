@@ -15,15 +15,23 @@ class BookController extends Controller
 
     public function index()
     {
-        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'special')->orderBy('created_at', 'desc')->paginate(15);
+        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'tazehha')->orderBy('created_at', 'desc')->paginate(15);
         $section1 = WebBooksResource::collection($query);
-        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'popular')->orderBy('created_at', 'desc')->paginate(15);
+
+        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'moarrefi_ketab')->orderBy('created_at', 'desc')->paginate(15);
         $section2 = WebBooksResource::collection($query);
+
+        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'forush_ketab')->orderBy('created_at', 'desc')->paginate(15);
         $section3 = WebBooksResource::collection($query)->response()->getData(true);
-        $section3['moreUrl'] = route('web.books.archives', ['category' => 'popular']);
+        $section3['moreUrl'] = route('web.books.archives', ['category' => 'forush_ketab']);
+
+        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'favorite')->orderBy('created_at', 'desc')->paginate(15);
         $section4 = WebBooksResource::collection($query);
+
+        $query = Book::where('status', 'publish')->whereRelation('categories', 'slug', 'taqriziha')->orderBy('created_at', 'desc')->paginate(15);
         $section5 = WebBooksResource::collection($query)->response()->getData(true);
-        $section5['moreUrl'] = route('web.books.archives', ['category' => 'معارف-اسلامی']);
+        $section5['moreUrl'] = route('web.books.archives', ['category' => 'taqriziha']);
+
         $pageTitle = 'فروشگاه کتاب';
         return inertia('Web/Books/Index', compact('section1', 'section2', 'section3', 'section4', 'section5', 'pageTitle'));
     }
