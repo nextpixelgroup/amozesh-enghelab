@@ -281,7 +281,7 @@
                                 </div>
                             </v-col>
                             <v-col cols="12" lg="2">
-                                <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=6184768&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=6184768&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG' alt='' style='cursor:pointer' code='vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'></a>
+                                <a referrerpolicy='origin' class="zo-enamad" target='_blank' href='https://trustseal.enamad.ir/?id=6184768&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=6184768&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG' alt='' style='cursor:pointer' code='vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'></a>
                                 <div class="zo-social">
                                     <ul>
                                         <li>
@@ -633,10 +633,19 @@ const logout = () => {
     color: var(--White)
 }
 
+.zo-footer-section .zo-enamad{
+    display: flex;
+    justify-content: center;
+}
+
+.zo-footer-section .zo-enamad{
+    width: 91px;
+}
+
 .zo-footer-section .zo-social {
     display: flex;
     justify-content: flex-end;
-    margin: 95px 0 0
+    margin: 15px 0 0
 }
 
 .zo-footer-section .zo-social ul {
