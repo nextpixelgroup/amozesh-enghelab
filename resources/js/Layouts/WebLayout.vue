@@ -638,7 +638,7 @@ const logout = () => {
     justify-content: center;
 }
 
-.zo-footer-section .zo-enamad{
+.zo-footer-section .zo-enamad img{
     width: 91px;
 }
 
