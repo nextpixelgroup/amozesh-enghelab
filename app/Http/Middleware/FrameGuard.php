@@ -16,7 +16,7 @@ class FrameGuard
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
-
+        //جهت اینکه آی فریم در سایت اینماد به درستی نمایش داده شود
         $response->headers->set(
             'Content-Security-Policy',
             "frame-ancestors 'self' https://enamad.ir https://*.enamad.ir"
