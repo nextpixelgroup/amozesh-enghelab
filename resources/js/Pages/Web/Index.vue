@@ -154,29 +154,34 @@
                     </v-row>
                 </v-container>
                 <div class="zo-swiper">
-                    <swiper dir="rtl" :space-between="60" :breakpoints="{
-                                0: {
-                                    slidesPerView: 1.5,
-                                    spaceBetween: 10
-                                },
-                                990: {
-                                    slidesPerView: 3.5,
-                                    spaceBetween: 15
-                                },
-                                1260: {
-                                    slidesPerView: 5.5,
-                                    spaceBetween: 30
-                                }
-                            }">
-                        <swiper-slide v-for="(institution,index) in institutions">
-                            <div class="zo-university" :key="index">
+                    <swiper
+                        dir="rtl"
+                        :space-between="60"
+                        :center-insufficient-slides="true"
+                        :breakpoints="{
+                            0: {
+                                slidesPerView: 1.5,
+                                spaceBetween: 10
+                            },
+                            990: {
+                                slidesPerView: 3.5,
+                                spaceBetween: 15
+                            },
+                            1260: {
+                                slidesPerView: 5.5,
+                                spaceBetween: 30
+                            }
+                        }">
+                        <swiper-slide v-for="(institution, index) in institutions" :key="index">
+                            <div class="zo-university">
                                 <figure>
                                     <img :src="institution.avatar" alt="">
                                 </figure>
-                                <span>{{institution.title}}</span>
+                                <span>{{ institution.title }}</span>
                             </div>
                         </swiper-slide>
                     </swiper>
+
                 </div>
             </div>
             <div class="zo-about-section" v-if="about">
