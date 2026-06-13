@@ -281,7 +281,7 @@
                                 </div>
                             </v-col>
                             <v-col cols="12" lg="2">
-                                <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=728774&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=728774&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG' alt='' style='cursor:pointer' code='vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'></a>
+                                <a class="zo-enamad" referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=728774&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=728774&Code=vv0XTlOy83suoMuFgZraZFJjWr7SIpfG' alt='' style='cursor:pointer' code='vv0XTlOy83suoMuFgZraZFJjWr7SIpfG'></a>
                                 <div class="zo-social">
                                     <ul>
                                         <li>
