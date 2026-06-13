@@ -639,7 +639,7 @@ const logout = () => {
 }
 
 .zo-footer-section .zo-enamad img{
-    width: 91px;
+    width: 125px;
     background-color: #FFFFFF;
 }
 
