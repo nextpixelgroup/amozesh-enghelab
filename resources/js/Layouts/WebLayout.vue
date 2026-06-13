@@ -645,7 +645,7 @@ const logout = () => {
 
 .zo-footer-section .zo-social {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     margin: 15px 0 0
 }
 
