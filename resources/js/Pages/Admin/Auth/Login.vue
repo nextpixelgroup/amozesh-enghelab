@@ -96,28 +96,28 @@ export default {
                         </v-btn>
                         <ul class="zo-social">
                             <li class="bg-primary rounded-circle">
-                                <a :href="socialButtons.bale" target="_blank">
+                                <a :href="socialButtons?.bale" target="_blank">
                                     <v-btn icon size="small" variant="text">
                                         <img src="/assets/img/social/bale-white.svg" alt="bale" width="18" height="18">
                                     </v-btn>
                                 </a>
                             </li>
                             <li class="bg-primary rounded-circle">
-                                <a :href="socialButtons.eitaa" target="_blank">
+                                <a :href="socialButtons?.eitaa" target="_blank">
                                     <v-btn icon size="small" variant="text">
                                         <img src="/assets/img/social/eitaa-white.svg" alt="eitaa" width="18" height="18">
                                     </v-btn>
                                 </a>
                             </li>
                             <li class="bg-primary rounded-circle">
-                                <a :href="socialButtons.instagram" target="_blank">
+                                <a :href="socialButtons?.instagram" target="_blank">
                                     <v-btn icon size="small" variant="text">
                                         <img src="/assets/img/social/instagram-white.svg" alt="instagram" width="18" height="18">
                                     </v-btn>
                                 </a>
                             </li>
                             <li class="bg-primary rounded-circle">
-                                <a :href="socialButtons.bale" target="_blank">
+                                <a :href="socialButtons?.bale" target="_blank">
                                     <v-btn icon size="small" variant="text">
                                         <img src="/assets/img/social/telegram-white.svg" alt="telegram" width="18" height="18">
                                     </v-btn>

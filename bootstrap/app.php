@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckProfileComplete;
+use App\Http\Middleware\ComingSoonMiddleware;
 use App\Http\Middleware\FrameGuard;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\IsAdmin;
@@ -40,6 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'profile.completed' => CheckProfileComplete::class,
         ]);
         $middleware->web(append: [
+            ComingSoonMiddleware::class,
             HandleInertiaRequests::class,
             FrameGuard::class
         ]);
