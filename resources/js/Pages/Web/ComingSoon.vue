@@ -199,10 +199,7 @@ import { Head } from '@inertiajs/vue3'
 
         <section class="content">
             <div class="card">
-                <div class="icon-wrapper">
-                    <!-- SVG icon -->
-                </div>
-
+      
                 <span class="badge">در حال آماده‌سازی</span>
 
                 <h1 class="title">به‌زودی</h1>
