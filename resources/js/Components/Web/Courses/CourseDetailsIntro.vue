@@ -89,8 +89,9 @@ const dialog = ref(false)
         display: none
     }
 
+    /* در تبلت و موبایل ارتفاع آزاد است تا تصویر نسبت خودش را حفظ کند و برش نخورد */
     .zo-intro-section .zo-thumbnail img {
-        height: 250px
+        height: auto
     }
 }
 
