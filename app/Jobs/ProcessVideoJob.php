@@ -35,8 +35,9 @@ class ProcessVideoJob implements ShouldQueue
 
     public function handle()
     {
-        // جلوگیری از محدودیت حافظه اسکریپت (نه سرور)
-        ini_set('memory_limit', '1024M');
+        // تلاش برای افزایش حافظه‌ی اسکریپت؛ اگر سرور اجازه ندهد (مثلاً به دلیل سقف max_memory_limit)
+        // فقط هشدار ثبت می‌شود و جاب با حافظه‌ی فعلی ادامه پیدا می‌کند، نه اینکه کل جاب fail شود
+        $this->ensureMemoryLimit('1024M');
 
         $uuid = $this->video->uuid;
         $tempPath = storage_path("app/temp_uploads/{$uuid}");
@@ -65,25 +66,34 @@ class ProcessVideoJob implements ShouldQueue
                 throw new \Exception("Could not open target file for writing: $rawMergedPath");
             }
 
+            $missingChunks = [];
+
             for ($i = 0; $i < $this->totalChunks; $i++) {
                 $chunkFile = "{$tempPath}/{$i}.tmp";
 
-                if (file_exists($chunkFile)) {
-                    $chunkStream = fopen($chunkFile, 'rb');
-                    if ($chunkStream) {
-                        // کپی مستقیم از دیسک به دیسک (بدون بارگذاری در رم)
-                        stream_copy_to_stream($chunkStream, $targetStream);
-                        fclose($chunkStream);
-                    } else {
-                        Log::warning("Could not open chunk: $chunkFile");
-                    }
-
-                    // حذف چانک برای آزادسازی فضای دیسک در حین عملیات (اختیاری ولی پیشنهادی)
-                    // unlink($chunkFile);
-                } else {
+                if (!file_exists($chunkFile)) {
                     Log::warning("Chunk missing: $chunkFile");
+                    $missingChunks[] = $i;
+                    continue;
+                }
+
+                $chunkStream = fopen($chunkFile, 'rb');
+                if ($chunkStream) {
+                    // کپی مستقیم از دیسک به دیسک (بدون بارگذاری در رم)
+                    stream_copy_to_stream($chunkStream, $targetStream);
+                    fclose($chunkStream);
+                } else {
+                    Log::warning("Could not open chunk: $chunkFile");
                 }
             }
+
+            // اگر هر یک از چانک‌ها موجود نباشد، ادغام ناقص خواهد بود؛ بهتر است همینجا شکست بخورد
+            if (!empty($missingChunks)) {
+                throw new \Exception(
+                    "Some upload chunks are missing: [" . implode(', ', $missingChunks) . "]"
+                );
+            }
+
             fclose($targetStream);
 
             if (!file_exists($rawMergedPath) || filesize($rawMergedPath) < 1024) {
@@ -186,6 +196,57 @@ class ProcessVideoJob implements ShouldQueue
         $command = ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', $path];
         $result = Process::run($command);
         return $result->successful() && is_numeric(trim($result->output())) ? (float) trim($result->output()) : 0;
+    }
+
+    /**
+     * اگر memory_limit فعلی کمتر از حد نیاز باشد آن را افزایش می‌دهد.
+     * روی سرورهایی که بیلد PHPشان سقف max_memory_limit دارد، ini_set با هشدار شکست می‌خورد و
+     * Laravel این هشدار را به ErrorException تبدیل می‌کند؛ پس تلاش را با @ انجام می‌دهیم
+     * تا در صورت عدم موفقیت، جاب به جای خطا با حافظه‌ی فعلی ادامه دهد.
+     */
+    private function ensureMemoryLimit(string $target): void
+    {
+        $currentRaw = strtolower(trim((string) ini_get('memory_limit')));
+        $targetBytes = self::memoryToBytes($target);
+        $currentBytes = self::memoryToBytes($currentRaw);
+
+        // نامحدود (-1) یا قابل تحلیل نبودن مقدار فعلی → نیازی/امکانِ تغییر نداریم
+        if ($currentBytes === null || $targetBytes === null || $currentBytes >= $targetBytes) {
+            return;
+        }
+
+        $result = @ini_set('memory_limit', $target);
+
+        if ($result !== false && self::memoryToBytes((string) ini_get('memory_limit')) >= $targetBytes) {
+            Log::info("Memory limit raised from {$currentRaw} to {$target}.");
+        } else {
+            Log::warning(
+                "Could not raise memory_limit from {$currentRaw} to {$target}; continuing with current limit."
+            );
+        }
+    }
+
+    /**
+     * تبدیل مقدار shorthand مثل 512M یا 1024M به بایت. -1 (نامحدود) یا مقادیر نامعتبر → null
+     */
+    private static function memoryToBytes(string $value): ?int
+    {
+        $value = strtolower(trim($value));
+
+        if ($value === '' || $value === '-1') {
+            return null;
+        }
+
+        if (!preg_match('/^(\d+(?:\.\d+)?)\s*(k|m|g)?$/', $value, $matches)) {
+            return null;
+        }
+
+        return (int) ((float) $matches[1] * match ($matches[2] ?? '') {
+            'k' => 1024,
+            'm' => 1024 ** 2,
+            'g' => 1024 ** 3,
+            default => 1,
+        });
     }
 
     public function failed(Throwable $exception)
