@@ -89,15 +89,7 @@ class AdminCourseDetailsResource extends JsonResource
                                 'description' => $lesson->quiz?->description ?? '',
                                 'is_active' =>  $lesson->quiz?->is_active ? true : false,
                                 'questions' => $lesson->quiz?->questions->sortBy('order')->values()->map(function ($question) {
-                                    return [
-                                        'id' => $question->id,
-                                        'text' => $question->question_text,
-                                        'is_active' => $question->is_active ? true : false,
-                                        'option1' => ['text' => $question->options[0]->option_text, 'is_correct' => $question->options[0]->is_correct],
-                                        'option2' => ['text' => $question->options[1]->option_text, 'is_correct' => $question->options[1]->is_correct],
-                                        'option3' => ['text' => $question->options[2]->option_text, 'is_correct' => $question->options[2]->is_correct],
-                                        'option4' => ['text' => $question->options[3]->option_text, 'is_correct' => $question->options[3]->is_correct],
-                                    ];
+                                    return $this->formatQuestion($question);
                                 })
                             ] :  [ // ساختار خالی برای وقتی آزمون ندارد
 
@@ -118,15 +110,7 @@ class AdminCourseDetailsResource extends JsonResource
                 'description' => $this->quiz?->description ?? '',
                 'is_active' =>  $this->quiz?->is_active ?? false,
                 'questions' => $this->quiz?->questions ? $this->quiz->questions->sortBy('order')->values()->map(function ($question) {
-                    return [
-                        'id' => $question->id,
-                        'text' => $question->question_text,
-                        'is_active' => $question->is_active ? true : false,
-                        'option1' => ['text' => $question->options[0]->option_text, 'is_correct' => $question->options[0]->is_correct],
-                        'option2' => ['text' => $question->options[1]->option_text, 'is_correct' => $question->options[1]->is_correct],
-                        'option3' => ['text' => $question->options[2]->option_text, 'is_correct' => $question->options[2]->is_correct],
-                        'option4' => ['text' => $question->options[3]->option_text, 'is_correct' => $question->options[3]->is_correct],
-                    ];
+                    return $this->formatQuestion($question);
                 }) : [
                     [
                         'id' => Str::uuid(),
@@ -141,5 +125,37 @@ class AdminCourseDetailsResource extends JsonResource
             ],
         ];
         return $data;
+    }
+
+    /**
+     * Format a question while tolerating incomplete option data.
+     *
+     * Questions created before the four-option validation was introduced may
+     * have fewer than four options. Missing options are returned as empty
+     * values so the admin edit form can still render and repair the question.
+     */
+    private function formatQuestion($question): array
+    {
+        $options = $question->options
+            ->sortBy('order')
+            ->values();
+
+        $formattedOptions = [];
+
+        for ($index = 0; $index < 4; $index++) {
+            $option = $options->get($index);
+
+            $formattedOptions['option'.($index + 1)] = [
+                'text' => $option?->option_text ?? '',
+                'is_correct' => (bool) ($option?->is_correct ?? false),
+            ];
+        }
+
+        return [
+            'id' => $question->id,
+            'text' => $question->question_text,
+            'is_active' => $question->is_active ? true : false,
+            ...$formattedOptions,
+        ];
     }
 }
