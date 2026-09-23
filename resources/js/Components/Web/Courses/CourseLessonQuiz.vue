@@ -208,7 +208,15 @@ watch(() => props.lesson, (newVal) => {
 
 const startRetake = () => {
     isRetaking.value = true;
-    selectedAnswers.value = {};
+    // Only clear answers for questions the user got wrong
+    if (props.lesson.quiz?.questions) {
+        props.lesson.quiz.questions.forEach(question => {
+            const selectedOption = question.options.find(opt => opt.selected);
+            if (selectedOption && !selectedOption.is_correct) {
+                delete selectedAnswers.value[question.id];
+            }
+        });
+    }
 };
 
 const submitQuiz = () => {
