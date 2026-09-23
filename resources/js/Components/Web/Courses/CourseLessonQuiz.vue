@@ -218,7 +218,6 @@ const submitQuiz = () => {
             onStart: () => { isLoading.value = true },
             onSuccess: () => {
                 isRetaking.value = false;
-                dialog.value = false
                 isLoading.value = false
             },
             onError: () => { isLoading.value = false }
