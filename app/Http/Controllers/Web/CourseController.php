@@ -384,6 +384,10 @@ class CourseController extends Controller
         if(array_diff($questions->pluck('id')->toArray(),array_keys($request->selectedAnswers))){
             return redirectMessage('error','لطفا همه سوال ها را پاسخ دهید');
         }
+
+        // حذف پاسخ‌های قبلی برای امکان تلاش مجدد
+        $lesson->quiz->quizCompletions()->where('user_id', $user->id)->delete();
+
         foreach ($request->selectedAnswers as $questionId => $answerId){
             $lesson->quiz->quizCompletions()->create([
                 'user_id' => $user->id,

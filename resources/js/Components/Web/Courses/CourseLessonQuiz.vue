@@ -14,16 +14,16 @@
                     <button
                         v-bind="activatorProps"
                         class="quiz-trigger-btn"
-                        :class="{ 'completed': !!lesson.quiz.completed }"
+                        :class="{ 'completed': showResults }"
                     >
                         <div class="btn-content">
                             <v-icon size="28" class="mb-1">
-                                {{ !!lesson.quiz.completed ? 'mdi-check-decagram' : 'mdi-school-outline' }}
+                                {{ showResults ? 'mdi-check-decagram' : 'mdi-school-outline' }}
                             </v-icon>
                             <span class="btn-title">
-                                {{ !!lesson.quiz.completed ? 'مشاهده نتیجه آزمون' : 'شرکت در آزمون آنلاین' }}
+                                {{ showResults ? 'مشاهده نتیجه آزمون' : 'شرکت در آزمون آنلاین' }}
                             </span>
-                            <span class="btn-subtitle" v-if="!lesson.quiz.completed">
+                            <span class="btn-subtitle" v-if="!showResults">
                                 برای سنجش یادگیری خود کلیک کنید
                             </span>
                         </div>
@@ -58,10 +58,40 @@
                             <p class="text-grey-darken-1">
                                 {{ lesson.quiz.description }}
                             </p>
-                            <v-chip v-if="!!lesson.quiz.completed" color="success" class="mt-3 font-weight-bold" variant="flat">
-                                <v-icon start>mdi-check</v-icon>
-                                آزمون تکمیل شده است
-                            </v-chip>
+
+                            <!-- Result Summary -->
+                            <div v-if="showResults" class="mt-4">
+                                <v-alert
+                                    :type="lesson.quiz.quiz_passed ? 'success' : 'error'"
+                                    variant="tonal"
+                                    class="text-center mx-auto"
+                                    style="max-width: 500px;"
+                                    prominent
+                                >
+                                    <div class="font-weight-bold mb-1" style="font-size: 1.25rem; line-height: 1.6; letter-spacing: 0.0125em; font-family: 'Estedad', sans-serif;">
+                                        {{ lesson.quiz.correct_count }} از {{ lesson.quiz.total_count }} پاسخ درست بود
+                                    </div>
+                                    <div v-if="lesson.quiz.quiz_passed" style="font-size: 1rem; line-height: 1.5; letter-spacing: 0.03125em; font-family: 'Estedad', sans-serif;">
+                                       آزمون با موفقیت گذرانده شد
+                                    </div>
+                                    <div v-else style="font-size: 1rem; line-height: 1.5; letter-spacing: 0.03125em; font-family: 'Estedad', sans-serif;">
+                                        متأسفانه آزمون قبول نشدید. حداکثر یک پاسخ نادرست مجاز است.
+                                    </div>
+                                </v-alert>
+
+                                <v-btn
+                                    v-if="!lesson.quiz.quiz_passed"
+                                    color="warning"
+                                    variant="outlined"
+                                    rounded="xl"
+                                    size="large"
+                                    class="mt-4 font-weight-bold"
+                                    prepend-icon="mdi-refresh"
+                                    @click="startRetake"
+                                >
+                                    تلاش مجدد
+                                </v-btn>
+                            </div>
                         </div>
 
                         <v-divider class="mb-8 border-opacity-25"></v-divider>
@@ -81,7 +111,7 @@
                                 <div class="options-wrapper">
                                     <v-radio-group
                                         v-model="selectedAnswers[question.id]"
-                                        :readonly="!!lesson.quiz.completed"
+                                        :readonly="(showResults || (!!lesson.quiz.completed && !isRetaking))"
                                         hide-details
                                     >
                                         <div
@@ -90,7 +120,9 @@
                                             class="option-item"
                                             :class="{
                                                 'is-selected': selectedAnswers[question.id] === option.id,
-                                                'is-readonly': !!lesson.quiz.completed
+                                                'is-readonly': showResults || (!!lesson.quiz.completed && !isRetaking),
+                                                'is-correct-answer': showResults && option.is_correct === true,
+                                                'is-wrong-answer': showResults && option.is_correct === false,
                                             }"
                                         >
                                             <v-radio
@@ -99,7 +131,19 @@
                                                 class="custom-radio"
                                             >
                                                 <template v-slot:label>
-                                                    <span class="option-label">{{ option.text }}</span>
+                                                    <span class="option-label d-flex align-center justify-space-between">
+                                                        <span>{{ option.text }}</span>
+                                                        <v-icon
+                                                            v-if="showResults && option.is_correct === true"
+                                                            color="success"
+                                                            size="22"
+                                                        >mdi-check-circle</v-icon>
+                                                        <v-icon
+                                                            v-if="showResults && option.is_correct === false"
+                                                            color="error"
+                                                            size="22"
+                                                        >mdi-close-circle</v-icon>
+                                                    </span>
                                                 </template>
                                             </v-radio>
                                         </div>
@@ -109,7 +153,7 @@
                         </div>
 
                         <!-- Submit Button Area -->
-                        <div class="submit-area text-center py-8" v-if="!lesson.quiz.completed">
+                        <div class="submit-area text-center py-8" v-if="!lesson.quiz.completed || isRetaking">
                             <v-btn
                                 size="x-large"
                                 rounded="xl"
@@ -135,7 +179,7 @@
 </template>
 
 <script setup>
-import { ref, shallowRef, watch } from 'vue'
+import { ref, shallowRef, computed, watch } from 'vue'
 import { router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
@@ -145,9 +189,14 @@ const props = defineProps({
 const dialog = shallowRef(false)
 const selectedAnswers = ref({});
 const isLoading = ref(false)
+const isRetaking = ref(false)
+
+const showResults = computed(() => {
+    return !!props.lesson.quiz.completed && !isRetaking.value;
+});
 
 watch(() => props.lesson, (newVal) => {
-    if (newVal?.quiz?.completed && newVal.quiz.questions) {
+    if (newVal?.quiz?.completed && newVal.quiz.questions && !isRetaking.value) {
         newVal.quiz.questions.forEach(question => {
             const selectedOption = question.options.find(opt => opt.selected);
             if (selectedOption) {
@@ -157,12 +206,18 @@ watch(() => props.lesson, (newVal) => {
     }
 }, { immediate: true, deep: true });
 
+const startRetake = () => {
+    isRetaking.value = true;
+    selectedAnswers.value = {};
+};
+
 const submitQuiz = () => {
     router.post(route('web.courses.lesson.quiz.store', props.lesson.id),
         { selectedAnswers: selectedAnswers.value },
         {
             onStart: () => { isLoading.value = true },
             onSuccess: () => {
+                isRetaking.value = false;
                 dialog.value = false
                 isLoading.value = false
             },
@@ -303,6 +358,27 @@ const submitQuiz = () => {
 
 .is-selected .option-label {
     color: var(--Primary);
+    font-weight: 700;
+}
+
+/* --- Correct / Wrong Answer Indicators --- */
+.option-item.is-correct-answer {
+    border-color: #4caf50 !important;
+    background-color: #e8f5e9 !important;
+}
+
+.option-item.is-correct-answer .option-label {
+    color: #2e7d32 !important;
+    font-weight: 700;
+}
+
+.option-item.is-wrong-answer {
+    border-color: #f44336 !important;
+    background-color: #ffebee !important;
+}
+
+.option-item.is-wrong-answer .option-label {
+    color: #c62828 !important;
     font-weight: 700;
 }
 

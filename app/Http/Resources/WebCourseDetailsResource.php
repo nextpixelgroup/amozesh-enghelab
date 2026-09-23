@@ -34,7 +34,7 @@ class WebCourseDetailsResource extends JsonResource
                 'lessons.quiz' => function ($q) use ($userId) {
                     $q->where('is_active', 1)
                         ->with(['questions' => function($q) {
-                            $q->where('is_active', 1)->orderBy('order');
+                            $q->where('is_active', 1)->orderBy('order')->with(['options']);
                         }]);
                 },
                 // بارگذاری وضعیت پاس شدن آزمون توسط کاربر جاری
@@ -76,14 +76,38 @@ class WebCourseDetailsResource extends JsonResource
                 $quizCompleted = $lesson->quiz && $lesson->quiz->quizCompletions->isNotEmpty();
                 $courseCompleted = $lesson->completions()->where('user_id', $userId)->exists();
 
+                // محاسبه وضعیت قبولی در آزمون (حداکثر یک اشتباه مجاز)
+                $quizPassed = false;
+                $correctCount = 0;
+                $totalCount = 0;
+                $wrongCount = 0;
+
+                if ($quizCompleted && $lesson->quiz) {
+                    $totalCount = $lesson->quiz->questions->count();
+                    foreach ($lesson->quiz->questions as $question) {
+                        $selectedOptionId = $lesson->quiz->quizCompletions
+                            ->where('question_id', $question->id)
+                            ->pluck('question_option_id')
+                            ->first();
+                        $correctOption = $question->options->where('is_correct', true)->first();
+                        if ($selectedOptionId && $correctOption && $selectedOptionId === $correctOption->id) {
+                            $correctCount++;
+                        }
+                    }
+                    $wrongCount = $totalCount - $correctCount;
+                    // حداکثر یک اشتباه مجاز است
+                    $quizPassed = $wrongCount <= 1;
+                }
+
                 $currentLessonCanShow = $canShowNextVideo;
                 $currentLockedReason = $lockedReasonMessage;
 
 
                 if($courseCompleted){
                     $canShowNextVideo = true;
-                    if ($lesson->quiz && !$quizCompleted) {
+                    if ($course->must_complete_quizzes && $lesson->quiz && !$quizPassed) {
                         $canShowNextVideo = false;
+                        $lockedReasonMessage = "برای مشاهده درس‌های بعدی باید آزمون درس «{$lesson->title}» را با موفقیت گذرانده باشید (حداکثر یک پاسخ نادرست مجاز است).";
                     }
                     $currentLessonCanShow = true;
                 }
@@ -93,8 +117,7 @@ class WebCourseDetailsResource extends JsonResource
                     }
                 }
 
-
-                //$lockedReasonMessage = "برای مشاهده درس‌های بعدی باید آزمون درس «{$lesson->title}» را کامل کرده باشید.";
+                $currentLockedReason = $lockedReasonMessage;
 
                 $quiz = $lesson->quiz;
                 return [
@@ -118,14 +141,21 @@ class WebCourseDetailsResource extends JsonResource
                         'title' => $quiz->title,
                         'description' => $quiz->description,
                         'completed' => $quizCompleted,
+                        'quiz_passed' => $quizPassed,
+                        'correct_count' => $correctCount,
+                        'wrong_count' => $wrongCount,
+                        'total_count' => $totalCount,
                         'questions' => $quiz->questions->map(fn($question) => [
                             'id' => $question->id,
                             'text' => $question->question_text,
                             'options' => $question->options->map(function($option) use($quiz,$quizCompleted) {
+                                $selected = $quizCompleted ? in_array($option->id,$quiz->quizCompletions->pluck('question_option_id')->toArray()) : false;
                                 return [
                                     'id' => $option->id,
                                     'text' => $option->option_text,
-                                    'selected' => $quizCompleted ? in_array($option->id,$quiz->quizCompletions->pluck('question_option_id')->toArray()) : false,
+                                    'selected' => $selected,
+                                    // فقط وضعیت درست/غلط گزینه انتخاب‌شده نمایش داده می‌شود تا جواب صحیح فاش نشود
+                                    'is_correct' => $quizCompleted && $selected ? (bool)$option->is_correct : null,
                                 ];
                             }),
                         ]),

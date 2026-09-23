@@ -1,3 +1,6 @@
+/* Import unified Estedad font family (same as admin.css) */
+@import './fonts.css';
+
 @font-face {
     font-family: 'Estedad-Regular';
     src: url('/public/assets/fonts/Estedad-Regular.woff2') format('woff2');
@@ -41,7 +44,10 @@
 *,
 ::before,
 ::after {
-    box-sizing: border-box !important
+    box-sizing: border-box !important;
+    font-family: 'Estedad', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
