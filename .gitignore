@@ -26,3 +26,4 @@ app/Http/Controllers/TestController.php
 bootstrap/ssr/*
 rr
 .rr.yaml
+llm-context.txt
