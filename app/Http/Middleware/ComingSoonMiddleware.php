@@ -15,6 +15,12 @@ class ComingSoonMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // اگر حالت "به‌زودی" خاموش باشد، هیچ درخواستی متوقف نمی‌شود.
+        // فعال/غیرفعال کردن با متغیر COMING_SOON_ENABLED در فایل .env انجام می‌شود.
+        if (! config('coming_soon.enabled')) {
+            return $next($request);
+        }
+
         // مسیرهایی که همیشه باید باز باشند (حتی برای مهمان / نقش user)
         // فقط لاگین ادمین استثناست طبق درخواست شما
         if ($this->isAdminLoginRequest($request)) {
